@@ -24,6 +24,7 @@ from ..base_magic import AncientMagic, MagicCapability
 
 @dataclass
 class HealingSession:
+    pass
 
 
 """回復セッションのデータクラス""" str
@@ -38,6 +39,7 @@ class HealingSession:
 
 @dataclass
 class SystemDiagnosis:
+    pass
 
 
 
@@ -51,6 +53,7 @@ class SystemDiagnosis:
 
 
 class HealingMagic(AncientMagic):
+    pass
 
 
 
@@ -1053,6 +1056,7 @@ class HealingMagic(AncientMagic):
             }
     
     def _get_all_sessions_overview(self) -> Dict[str, Any]:
+        pass
 
             """全セッションの概要を取得"""
             return {
@@ -1093,6 +1097,7 @@ class HealingMagic(AncientMagic):
         }
     
     def get_healing_statistics(self) -> Dict[str, Any]:
+        pass
 
             """回復統計の取得"""
             return {

@@ -447,8 +447,6 @@ class KnowledgeConsolidator(BaseManager):
         .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: \
             20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(
             0,
-            0,
-            0,
             0.1
         ); }}
         h1 {{ color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }}
@@ -491,7 +489,6 @@ class KnowledgeConsolidator(BaseManager):
                 <div class="stat-value">{len(data['implementations']['managers'])}</div>
                 <div class="stat-label">Managers</div>
             </div>
-        </div>
 
         <h2>🏗️ Architecture</h2>
         <pre>{json.dumps(data['system_map']['architecture'], indent=2)}</pre>
@@ -501,11 +498,9 @@ class KnowledgeConsolidator(BaseManager):
         <table>
             <tr><th>Worker</th><th>Classes</th><th>Functions</th><th>Lines</th></tr>
             {"".join(
-                (
-                    f"f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
-                    f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,"
-                )
-                info in data['implementations']['workers'].items()
+                f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
+                f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>"
+                for name, info in data['implementations']['workers'].items()
             )}
         </table>
 
@@ -513,20 +508,19 @@ class KnowledgeConsolidator(BaseManager):
         <table>
             <tr><th>Manager</th><th>Classes</th><th>Functions</th><th>Lines</th></tr>
             {"".join(
-                (
-                    f"f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
-                    f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,"
-                )
-                info in data['implementations']['managers'].items()
+                f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
+                f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>"
+                for name, info in data['implementations']['managers'].items()
             )}
         </table>
 
         <h2>📚 Knowledge Base</h2>
         <table>
             <tr><th>Document</th><th>Lines</th><th>Modified</th></tr>
-                        { \
-                "".join(f"<tr><td>{f['filename']}</td><td>{f['lines']}<" \
-                    f"/td><td>{f['modified']}</td></tr>" for f in data['knowledge']['files'])}
+            {"".join(
+                f"<tr><td>{f['filename']}</td><td>{f['lines']}</td><td>{f['modified']}</td></tr>"
+                for f in data['knowledge']['files']
+            )}
         </table>
     </div>
 </body>

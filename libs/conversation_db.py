@@ -20,8 +20,8 @@ class ConversationDB:
 
     def init_db(self):
         """データベース初期化"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         # 会話テーブル
@@ -73,7 +73,7 @@ class ConversationDB:
         conversation_id = f"conv_{task_id}"
         context = initial_context or {}
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -87,7 +87,7 @@ class ConversationDB:
             conn.commit()
             logger.info(f"会話作成: {conversation_id}")
             return conversation_id
-        except sqlite3.IntegrityError:
+        except sqlite3IntegrityError:
             logger.warning(f"会話既存: {conversation_id}")
             return conversation_id
         finally:
@@ -102,7 +102,7 @@ class ConversationDB:
         metadata: Dict = None,
     ) -> int:
         """メッセージ追加"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -139,7 +139,7 @@ class ConversationDB:
 
     def update_state(self, conversation_id: str, new_state: str) -> bool:
         """会話状態更新"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -159,8 +159,8 @@ class ConversationDB:
 
     def get_messages(self, conversation_id: str, limit: int = 100) -> List[Dict]:
         """メッセージ履歴取得"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         cursor.execute(
@@ -184,8 +184,8 @@ class ConversationDB:
 
     def get_active_conversations(self) -> List[Dict]:
         """アクティブな会話一覧"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         cursor.execute(

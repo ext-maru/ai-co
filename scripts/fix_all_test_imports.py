@@ -122,9 +122,8 @@ Breaks circular dependencies by providing centralized mocks
 from unittest.mock import Mock, MagicMock, patch
 import json
 
-def create_mock_rabbitmq():
-    """Create mock RabbitMQ connection and channel"""
-    mock_connection = Mock()
+def create_mock_rabbitmq()mock_connection = Mock()
+"""Create mock RabbitMQ connection and channel"""
     mock_channel = Mock()
     mock_connection.channel.return_value = mock_channel
 
@@ -140,9 +139,8 @@ def create_mock_rabbitmq():
 
     return mock_connection, mock_channel
 
-def create_mock_redis():
-    """Create mock Redis client"""
-    mock_redis = Mock()
+def create_mock_redis()mock_redis = Mock()
+"""Create mock Redis client"""
     mock_redis.get = Mock(return_value=None)
     mock_redis.set = Mock(return_value=True)
     mock_redis.delete = Mock(return_value=1)
@@ -156,18 +154,16 @@ def create_mock_redis():
     mock_redis.execute = Mock(return_value=[])
     return mock_redis
 
-def create_mock_slack():
-    """Create mock Slack client"""
-    mock_slack = Mock()
+def create_mock_slack()mock_slack = Mock()
+"""Create mock Slack client"""
     mock_slack.chat_postMessage = Mock(return_value={'ok': True, 'ts': '1234567890.123456'})
     mock_slack.conversations_list = Mock(return_value={'ok': True, 'channels': []})
     mock_slack.users_list = Mock(return_value={'ok': True, 'members': []})
     mock_slack.conversations_history = Mock(return_value={'ok': True, 'messages': []})
     return mock_slack
 
-def create_mock_logger():
-    """Create mock logger"""
-    mock_logger = Mock()
+def create_mock_logger()mock_logger = Mock()
+"""Create mock logger"""
     mock_logger.info = Mock()
     mock_logger.debug = Mock()
     mock_logger.warning = Mock()
@@ -194,9 +190,8 @@ def create_test_task_data(task_id='test-123', task_type='test_task'):
             print(f"✅ Created mock_utils.py to break circular dependencies")
             self.fixes_applied += 1
 
-    def run_all_fixes(self):
-        """Run all import fixes"""
-        print("🛡️ IMPORT FIX KNIGHT DEPLOYED")
+    def run_all_fixes(self)print("🛡️ IMPORT FIX KNIGHT DEPLOYED")
+    """Run all import fixes"""
         print("=" * 60)
 
         # Step 1: Add missing __init__.py files

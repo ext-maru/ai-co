@@ -19,7 +19,7 @@ PMWorkerがナレッジベースを自動参照できるようにする方法で
 
 ## 🔧 実装方法
 
-### 1. PMWorkerの修正
+### 1.0 PMWorkerの修正
 
 `workers/pm_worker.py`の先頭に以下を追加：
 
@@ -33,7 +33,7 @@ class PMWorker(BaseWorker, KnowledgeAwareMixin):
         # 既存の初期化コード...
 ```
 
-### 2. メッセージ処理での活用
+### 2.0 メッセージ処理での活用
 
 ```python
 def process_message(self, ch, method, properties, body):
@@ -50,7 +50,7 @@ def process_message(self, ch, method, properties, body):
     # 既存の処理...
 ```
 
-### 3. 定期的な更新チェック
+### 3.0 定期的な更新チェック
 
 ```python
 def _check_knowledge_updates_periodically(self):
@@ -90,9 +90,9 @@ if "worker" in task_data.get('prompt', ''):
 
 ## 📊 効果
 
-1. **自動問題解決**: テストエラーなどの既知の問題を自動解決
-2. **品質向上**: ベストプラクティスを自動適用
-3. **学習効果**: 過去の知識を活用して改善
+1.0 **自動問題解決**: テストエラーなどの既知の問題を自動解決
+2.0 **品質向上**: ベストプラクティスを自動適用
+3.0 **学習効果**: 過去の知識を活用して改善
 
 ## 🚀 即座に適用
 

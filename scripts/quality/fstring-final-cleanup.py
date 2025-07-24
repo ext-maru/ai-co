@@ -6,6 +6,7 @@ import ast
 import os
 
 def fstring_final_cleanup():
+    pass
 
 
 """残り5件のf-stringエラーを特定・修正"""

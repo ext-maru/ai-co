@@ -92,9 +92,8 @@ class ModelRegistry:
 class BasePredictor:
     """予測モデル基底クラス"""
 
-    def __init__(self, name:
+    def __init__(self, name: str):
         """初期化メソッド"""
-    str):
         self.name = name
         self.prediction_count = 0
         self.last_used = None
@@ -176,9 +175,8 @@ class BasePredictor:
 class TimeSeriesPredictor(BasePredictor):
     """時系列予測モデル"""
 
-    def __init__(self, metric_name:
+    def __init__(self, metric_name: str):
         """初期化メソッド"""
-    str):
         super().__init__(f"time_series_{metric_name}")
         self.metric_name = metric_name
         self.history_window = 168  # 1週間（時間単位）
@@ -375,9 +373,8 @@ class AnomalyDetector(BasePredictor):
 class LoadPredictor(BasePredictor):
     """負荷予測モデル"""
 
-    def __init__(self, resource_type:
+    def __init__(self, resource_type: str):
         """初期化メソッド"""
-    str):
         super().__init__(f"load_predictor_{resource_type}")
         self.resource_type = resource_type
         self.patterns = self._initialize_patterns()
@@ -681,14 +678,14 @@ if __name__ == "__main__":
     registry = ModelRegistry()
 
     # 時系列予測モデル
-    print("\n1. 時系列予測モデル")
+    print("\n1.0 時系列予測モデル")
     ts_model = TimeSeriesPredictor("cpu")
     predictions = ts_model.predict(24)
     print(f"   予測数: {len(predictions)}")
     print(f"   最初の5予測: {predictions[:5]}")
 
     # 異常検知モデル
-    print("\n2. 異常検知モデル")
+    print("\n2.0 異常検知モデル")
     anomaly_model = AnomalyDetector()
     test_data = [50 + np.random.randn() * 5 for _ in range(200)]
     test_data[50] = 100  # 異常値
@@ -700,14 +697,14 @@ if __name__ == "__main__":
         print(f"   最初の異常: {anomalies[0]}")
 
     # 負荷予測モデル
-    print("\n3. 負荷予測モデル")
+    print("\n3.0 負荷予測モデル")
     load_model = LoadPredictor("cpu")
     load_predictions = load_model.predict(60)
     intervals = load_model.get_confidence_intervals(load_predictions)
 
-    print(f"   現在の負荷: {load_model.get_current_load():.1f}%")
-    print(f"   予測最大値: {max(load_predictions):.1f}%")
-    print(f"   予測最小値: {min(load_predictions):.1f}%")
+    print(f"   現在の負荷: {load_model.get_current_load():0.1f}%")
+    print(f"   予測最大値: {max(load_predictions):0.1f}%")
+    print(f"   予測最小値: {min(load_predictions):0.1f}%")
 
     # モデル登録
     registry.register_model("ts_cpu", ts_model)

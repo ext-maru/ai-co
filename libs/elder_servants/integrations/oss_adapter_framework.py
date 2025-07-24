@@ -753,7 +753,7 @@ async def test_framework():
         print(f"\n🔧 Testing {request.tool_name}...")
         response = await framework.execute_with_fallback(request)
         print(f"✅ Success: {response.success}")
-        print(f"⏱️  Time: {response.execution_time:.2f}s")
+        print(f"⏱️  Time: {response.execution_time:0.2f}s")
         print(f"🎯 Quality: {response.quality_score}")
         if response.error:
             print(f"❌ Error: {response.error}")

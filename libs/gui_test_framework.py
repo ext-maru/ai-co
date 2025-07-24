@@ -61,6 +61,7 @@ try:
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.remote.webelement import WebElement
 except ImportError:
+    pass
 
     class Options:
         """Optionsクラス"""
@@ -497,7 +498,7 @@ if __name__ == "__main__":
         print(f"Total: {results['total_tests']}")
         print(f"Passed: {results['passed']}")
         print(f"Failed: {results['failed']}")
-        print(f"Duration: {results['duration']:.2f}s")
+        print(f"Duration: {results['duration']:0.2f}s")
 
         # 詳細結果
         for result in results["results"]:

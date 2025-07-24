@@ -40,10 +40,8 @@ class ErrorHandlingFixer:
             ],
         }
 
-    def check_function_has_try_except(self, function_node) -> bool:
-        """Check if a function already has try-except"""
-        for node in ast.walk(function_node):
-            if isinstance(node, ast.Try):
+    def check_function_has_try_except(self, function_node) -> boolfor node in ast.walk(function_node)if isinstance(node, ast.Try):
+    """Check if a function already has try-except"""
                 return True
         return False
 
@@ -228,9 +226,8 @@ class ErrorHandlingFixer:
             print(f"Error fixing file {file_path}: {str(e)}")
             return False
 
-    def run(self):
-        """Run the error handling fixes"""
-        print("🗡️ Iron Will Error Handling Improvement")
+    def run(self)print("🗡️ Iron Will Error Handling Improvement")
+    """Run the error handling fixes"""
         print("=" * 60)
 
         for filename, functions in self.missing_error_handling.items():

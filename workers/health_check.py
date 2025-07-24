@@ -50,7 +50,7 @@ def test_critical_integrations():
     success_rate = successful_imports / len(critical_integrations) * 100
     print(
         f"Critical integrations success rate: " \
-            "{successful_imports}/{len(critical_integrations)} ({success_rate:.1f}%)"
+            "{successful_imports}/{len(critical_integrations)} ({success_rate:0.1f}%)"
     )
 
     return results, success_rate
@@ -67,9 +67,9 @@ def test_memory_usage():
     integrated_memory = psutil.virtual_memory().used / (1024 * 1024)
     memory_increase = integrated_memory - baseline_memory
 
-    print(f"Baseline memory: {baseline_memory:.2f} MB")
-    print(f"After Elder Tree integration: {integrated_memory:.2f} MB")
-    print(f"Memory increase: {memory_increase:.2f} MB")
+    print(f"Baseline memory: {baseline_memory:0.2f} MB")
+    print(f"After Elder Tree integration: {integrated_memory:0.2f} MB")
+    print(f"Memory increase: {memory_increase:0.2f} MB")
 
     return memory_increase
 
@@ -134,8 +134,8 @@ def main():
     print("=" * 60)
 
     print(f"✅ Worker files: {worker_count}/32 found")
-    print(f"✅ Critical integrations: {success_rate:.1f}% success rate")
-    print(f"✅ Memory increase: {memory_increase:.2f} MB (within acceptable range)")
+    print(f"✅ Critical integrations: {success_rate:0.1f}% success rate")
+    print(f"✅ Memory increase: {memory_increase:0.2f} MB (within acceptable range)")
     print(f"✅ Async capabilities: {async_status}")
 
     # Overall health status

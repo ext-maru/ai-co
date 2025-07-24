@@ -16,9 +16,8 @@ from ..base_sage import BaseSage
 class KnowledgeSage(BaseSage):
     """ナレッジ賢者 - 知識管理と学習"""
 
-    def __init__(self, knowledge_base_path:
+    def __init__(self, knowledge_base_path: str = "knowledge_base"):
         """初期化メソッド"""
-    str = "knowledge_base"):
         super().__init__("Knowledge")
 
         self.knowledge_base_path = knowledge_base_path
@@ -44,7 +43,7 @@ class KnowledgeSage(BaseSage):
         """知識ベースデータベースの初期化"""
         os.makedirs(self.knowledge_base_path, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS knowledge_entries (
@@ -145,7 +144,7 @@ class KnowledgeSage(BaseSage):
         # 重複チェック用のハッシュ
         content_hash = hashlib.md5(f"{title}{content}".encode()).hexdigest()
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 重複チェック
@@ -188,7 +187,7 @@ class KnowledgeSage(BaseSage):
         if not query:
             return {"success": False, "error": "Search query is required"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 基本検索クエリ
@@ -261,7 +260,7 @@ class KnowledgeSage(BaseSage):
             return {"success": False, "error": "Learning content is required"}
 
         # 学習セッションを記録
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
                 """
@@ -346,7 +345,7 @@ class KnowledgeSage(BaseSage):
 
         params.append(knowledge_id)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"""
@@ -368,7 +367,7 @@ class KnowledgeSage(BaseSage):
 
     async def _get_categories(self) -> Dict[str, Any]:
         """利用可能な知識カテゴリを取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute(
                 """
@@ -392,7 +391,7 @@ class KnowledgeSage(BaseSage):
         """知識ベースからの洞察を提供"""
         topic = request.get("topic", "general")
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 統計情報を取得

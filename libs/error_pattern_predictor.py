@@ -92,7 +92,7 @@ class ErrorPatternPredictor(BaseManager):
         """機械学習用データベースの初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # エラー発生履歴
             conn.execute(
                 """
@@ -176,7 +176,7 @@ class ErrorPatternPredictor(BaseManager):
             "recent_events": self._get_recent_events(),
         }
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO error_occurrences
@@ -210,19 +210,19 @@ class ErrorPatternPredictor(BaseManager):
         predictions = []
         current_time = datetime.now()
 
-        # 1. 時間的パターンに基づく予測
+        # 1.0 時間的パターンに基づく予測
         temporal_predictions = self._predict_temporal_patterns(current_time)
         predictions.extend(temporal_predictions)
 
-        # 2. 因果関係に基づく予測
+        # 2.0 因果関係に基づく予測
         causal_predictions = self._predict_causal_patterns(context)
         predictions.extend(causal_predictions)
 
-        # 3. 環境パターンに基づく予測
+        # 3.0 環境パターンに基づく予測
         environmental_predictions = self._predict_environmental_patterns(context)
         predictions.extend(environmental_predictions)
 
-        # 4. 予測の統合と優先順位付け
+        # 4.0 予測の統合と優先順位付け
         merged_predictions = self._merge_predictions(predictions)
 
         # 予測を記録
@@ -238,7 +238,7 @@ class ErrorPatternPredictor(BaseManager):
         predictions = []
 
         # 曜日と時間帯のパターンを分析
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 同じ曜日・時間帯のエラー頻度を取得
             cursor = conn.execute(
                 """
@@ -294,7 +294,7 @@ class ErrorPatternPredictor(BaseManager):
         # 最近のイベントから因果関係を確認
         recent_events = context.get("recent_events", [])
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             for event in recent_events:
             # 繰り返し処理
                 cursor = conn.execute(
@@ -406,7 +406,7 @@ class ErrorPatternPredictor(BaseManager):
             f"temporal_{error_type}_{occurred_at.weekday()}_{occurred_at.hour}"
         )
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 既存パターンを確認
             cursor = conn.execute(
                 "SELECT pattern_data, occurrences FROM learned_patterns WHERE pattern_id = ?",
@@ -452,7 +452,7 @@ class ErrorPatternPredictor(BaseManager):
         recent_events = context.get("recent_events", [])
         error_type = error_info.get("error_type", "unknown")
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             for event in recent_events[-5:]:  # 直近5イベントを確認
                 # 既存の関係を確認
                 cursor = conn.execute(
@@ -648,7 +648,7 @@ class ErrorPatternPredictor(BaseManager):
             f"pred_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{prediction.error_type}"
         )
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO predictions
@@ -670,7 +670,7 @@ class ErrorPatternPredictor(BaseManager):
 
     def _load_patterns(self):
         """既存のパターンをキャッシュに読み込む"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT pattern_id, pattern_data, confidence FROM learned_patterns"
             )
@@ -684,7 +684,7 @@ class ErrorPatternPredictor(BaseManager):
         self, prediction_id: str, actual_occurred: bool, prevented: bool = False
     ):
         """予測の実際の結果をフィードバック"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 UPDATE predictions
@@ -696,7 +696,7 @@ class ErrorPatternPredictor(BaseManager):
 
     def get_prediction_accuracy(self, days: int = 7) -> Dict:
         """予測精度を計算"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT
@@ -778,10 +778,10 @@ if __name__ == "__main__":
     # 繰り返し処理
     for pred in predictions:
         print(f"\nError Type: {pred.error_type}")
-        print(f"Probability: {pred.probability:.2%}")
-        print(f"Confidence: {pred.confidence:.2%}")
+        print(f"Probability: {pred.probability:0.2%}")
+        print(f"Confidence: {pred.confidence:0.2%}")
         print(f"Time Window: {pred.time_window}")
-        print(f"Risk Score: {pred.risk_score:.2f}")
+        print(f"Risk Score: {pred.risk_score:0.2f}")
         print(f"Rationale: {pred.rationale}")
 
         if pred.preventive_actions:

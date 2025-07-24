@@ -56,10 +56,10 @@ class BaseIntegrationTest:
 
         self.config_path = config_path
 
-    def create_test_database(self) -> sqlite3.Connection:
+    def create_test_database(self) -> sqlite3Connection:
         """テスト用データベース作成"""
         db_path = self.test_data_dir / "test.db"
-        conn = sqlite3.connect(str(db_path))
+        conn = sqlite3connect(str(db_path))
 
         # テスト用テーブル作成
         conn.execute(
@@ -135,7 +135,7 @@ class BaseIntegrationTest:
         return False
 
     def assert_database_record_exists(
-        self, conn: sqlite3.Connection, table: str, conditions: Dict[str, Any]
+        self, conn: sqlite3Connection, table: str, conditions: Dict[str, Any]
     ) -> bool:
         """データベースレコードの存在確認"""
         where_clause = " AND ".join([f"{k} = ?" for k in conditions.keys()])

@@ -142,8 +142,8 @@ async def debug_effort_estimation():
             hours_in_range = min_hours <= estimated_hours <= max_hours
             confidence_valid = 0.3 <= confidence <= 0.95
             
-            print(f"  Estimated hours: {estimated_hours:.2f} (range: {min_hours}-{max_hours}) - {'✅' if hours_in_range else '❌'}")
-            print(f"  Confidence: {confidence:.2f} (range: 0.3-0.95) - {'✅' if confidence_valid else '❌'}")
+            print(f"  Estimated hours: {estimated_hours:0.2f} (range: {min_hours}-{max_hours}) - {'✅' if hours_in_range else '❌'}")
+            print(f"  Confidence: {confidence:0.2f} (range: 0.3-0.95) - {'✅' if confidence_valid else '❌'}")
             print(f"  Breakdown keys: {list(breakdown.keys())}")
             
             # Check breakdown calculation

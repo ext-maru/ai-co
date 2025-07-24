@@ -692,19 +692,19 @@ class TestSecurityIntegration(unittest.IsolatedAsyncioTestCase):
     
     async def test_end_to_end_security_workflow(self):
         """エンドツーエンドセキュリティワークフローテスト"""
-        # 1. ヘルスチェック
+        # 1.0 ヘルスチェック
         health_result = await self.manager.process_request({
             "operation": "health_check"
         })
         self.assertEqual(health_result['status'], 'success')
         
-        # 2. セキュリティメトリクス取得
+        # 2.0 セキュリティメトリクス取得
         metrics_result = await self.manager.process_request({
             "operation": "get_security_metrics"
         })
         self.assertEqual(metrics_result['status'], 'success')
         
-        # 3. セキュリティスキャン
+        # 3.0 セキュリティスキャン
         scan_result = await self.manager.process_request({
             "operation": "security_scan",
             "scan_type": "comprehensive"

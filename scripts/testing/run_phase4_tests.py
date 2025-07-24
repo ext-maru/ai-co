@@ -32,9 +32,8 @@ class Phase4TestRunner:
                 print(f"📁 {test_dir.name}: {len(files)} test files")
         return total_files
 
-    def simulate_test_execution(self):
-        """Simulate test execution and coverage calculation"""
-        print("\n🧪 Simulating test execution...")
+    def simulate_test_execution(self)print("\n🧪 Simulating test execution...")
+    """Simulate test execution and coverage calculation"""
 
         # Base coverage from previous phases
         base_coverage = 66.7
@@ -75,9 +74,8 @@ class Phase4TestRunner:
 
         return new_coverage
 
-    def validate_test_quality(self):
-        """Validate test file quality"""
-        print("\n🔍 Validating test quality...")
+    def validate_test_quality(self)print("\n🔍 Validating test quality...")
+    """Validate test file quality"""
 
         issues = []
         valid_tests = 0
@@ -124,9 +122,9 @@ Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}
 ## Coverage Achievement
 - **Previous Coverage**: 66.7%
 - **New Coverage**: {new_coverage}%
-- **Coverage Gain**: +{new_coverage - 66.7:.1f}%
+- **Coverage Gain**: +{new_coverage - 66.7:0.1f}%
 - **Target**: 75%
-- **Status**: {'✅ TARGET ACHIEVED!' if new_coverage >= 75 else f'❌ {75 - new_coverage:.1f}% to go'}
+- **Status**: {'✅ TARGET ACHIEVED!' if new_coverage >= 75 else f'❌ {75 - new_coverage:0.1f}% to go'}
 
 ## Test Files Created
 """
@@ -162,9 +160,8 @@ Phase 4 Coverage Assault Complete
 
         return report
 
-    def run(self):
-        """Execute Phase 4 test runner"""
-        print("🚀 PHASE 4 TEST EXECUTION")
+    def run(self)print("🚀 PHASE 4 TEST EXECUTION")
+    """Execute Phase 4 test runner"""
         print("=" * 50)
 
         # Count test files
@@ -187,14 +184,14 @@ Phase 4 Coverage Assault Complete
         print(f"  Valid Tests: {valid_tests}")
         print(f"  New Coverage: {new_coverage}%")
         print(
-            f"  Target (75%): {'✅ ACHIEVED' if new_coverage >= 75 else '❌ NOT YET'}"
+            f"  Target (75%): {'✅ ACHIEVED' if new_coverage >}"
         )
 
         if new_coverage >= 75:
             print("\n🎉 PHASE 4 COMPLETE! Ready for Phase 5!")
             print("🚀 Next target: 85% coverage")
         else:
-            print(f"\n⚔️ Continue the assault! {75 - new_coverage:.1f}% to go!")
+            print(f"\n⚔️ Continue the assault! {75 - new_coverage:0.1f}% to go!")
 
         return new_coverage >= 75
 

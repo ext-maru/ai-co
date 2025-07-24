@@ -737,7 +737,7 @@ class GrandElderApprovalSystem:
                 request.approved_by = "auto_sage_consensus"
                 request.approved_at = datetime.now(timezone.utc)
                 request.elder_notes = (
-                    f"4賢者コンセンサス率{consensus_rate:.1%}による自動承認"
+                    f"4賢者コンセンサス率{consensus_rate:0.1%}による自動承認"
                 )
             else:
                 # グランドエルダー審査へ

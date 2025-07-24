@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 import psycopg2
-from psycopg2.extras import RealDictCursor
+from psycopg2extras import RealDictCursor
 import numpy as np
 
 # 設定
@@ -114,7 +114,7 @@ class DirectPgVectorReconstructor:
                 char_freq[char] = char_freq.get(char, 0) + 1
                 
         # 固定サイズベクトル化
-        vector = [0.0] * 256
+        vector = [0] * 256
         for i, char in enumerate('abcdefghijklmnopqrstuvwxyz0123456789'):
             if i < 256:
                 vector[i] = char_freq.get(char, 0) / max(len(text), 1)

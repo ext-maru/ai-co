@@ -10,7 +10,7 @@ SQLite + MessagePack + FAISS による高性能セッション管理
 📚 ナレッジ賢者: データ分割戦略・整合性管理
 📋 タスク賢者: 実装優先順位・品質保証
 🚨 インシデント賢者: 障害対策・セキュリティ
-🔍 RAG賢者: ベクトル検索・パフォーマンス最適化
+"🔍" RAG賢者: ベクトル検索・パフォーマンス最適化
 """
 
 import sys
@@ -72,13 +72,13 @@ class SQLiteAdapter:
         self._executor = ThreadPoolExecutor(max_workers=10)
         self._init_db()
 
-    def _get_connection(self) -> sqlite3.Connection:
+    def _get_connection(self) -> sqlite3Connection:
         """スレッドローカル接続取得"""
         if not hasattr(self._local, "connection"):
-            self._local.connection = sqlite3.connect(
+            self._local.connection = sqlite3connect(
                 self.db_path, check_same_thread=False, timeout=30.0
             )
-            self._local.connection.row_factory = sqlite3.Row
+            self._local.connection.row_factory = sqlite3Row
             # WALモード有効化（並行性向上）
             self._local.connection.execute("PRAGMA journal_mode=WAL")
             self._local.connection.execute("PRAGMA synchronous=NORMAL")
@@ -708,13 +708,13 @@ class HybridStorage:
         transaction_id = await self.transaction_manager.begin_transaction()
 
         try:
-            # 1. SQLite にメタデータ・相互作用保存
+            # 1.0 SQLite にメタデータ・相互作用保存
             await self.sqlite_adapter.save_metadata(context.metadata)
             await self.sqlite_adapter.save_interactions(
                 context.metadata.session_id, context.sage_interactions
             )
 
-            # 2. JSON にコンテキストデータ保存
+            # 2.0 JSON にコンテキストデータ保存
             context_data = {
                 "tasks": context.tasks,
                 "knowledge_graph": context.knowledge_graph,
@@ -728,7 +728,7 @@ class HybridStorage:
                 context.metadata.session_id, context_data
             )
 
-            # 3. Vector にベクトルデータ保存（スナップショットから）
+            # 3.0 Vector にベクトルデータ保存（スナップショットから）
             if context.snapshots:
                 latest_snapshot = context.snapshots[-1]
                 if latest_snapshot.vector_embeddings:
@@ -757,19 +757,19 @@ class HybridStorage:
     async def load_session(self, session_id: str) -> Optional[SessionContext]:
         """セッション読み込み"""
         try:
-            # 1. SQLite からメタデータ・相互作用読み込み
+            # 1.0 SQLite からメタデータ・相互作用読み込み
             metadata = await self.sqlite_adapter.load_metadata(session_id)
             if not metadata:
                 return None
 
             interactions = await self.sqlite_adapter.load_interactions(session_id)
 
-            # 2. JSON からコンテキストデータ読み込み
+            # 2.0 JSON からコンテキストデータ読み込み
             context_data = await self.json_adapter.load_context_data(session_id)
             if not context_data:
                 context_data = {}
 
-            # 3. SessionContext 復元
+            # 3.0 SessionContext 復元
             context = SessionContext(
                 metadata=metadata,
                 tasks=context_data.get("tasks", []),

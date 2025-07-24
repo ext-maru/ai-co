@@ -83,9 +83,8 @@ class ManaPool:
 class BaseElf(ABC):
     """エルフ基底クラス"""
 
-    def __init__(self, name:
+    def __init__(self, name: str, forest: "ElfForest"):
         """初期化メソッド"""
-    str, forest: "ElfForest"):
         self.name = name
         self.forest = forest
         self.mana_consumption = 5.0
@@ -111,9 +110,8 @@ class BaseElf(ABC):
 class FlowElf(BaseElf):
     """フローエルフ - タスクの流れを監視"""
 
-    def __init__(self, name:
+    def __init__(self, name: str, forest: "ElfForest", specialty: str = "queue"):
         """初期化メソッド"""
-    str, forest: "ElfForest", specialty: str = "queue"):
         super().__init__(name, forest)
         self.specialty = specialty
 
@@ -187,9 +185,8 @@ class FlowElf(BaseElf):
 class TimeElf(BaseElf):
     """タイムエルフ - 時間管理とリマインダー"""
 
-    def __init__(self, name:
+    def __init__(self, name: str, forest: "ElfForest", precision: str = "minute"):
         """初期化メソッド"""
-    str, forest: "ElfForest", precision: str = "minute"):
         super().__init__(name, forest)
         self.precision = precision
         self.reminders: List[Dict[str, Any]] = []
@@ -207,7 +204,7 @@ class TimeElf(BaseElf):
                 # 時間効率の分析
                 efficiency = self._analyze_time_efficiency()
                 if efficiency < 0.7:
-                    self.log_action(f"⏰ 時間効率低下: {efficiency:.1%}")
+                    self.log_action(f"⏰ 時間効率低下: {efficiency:0.1%}")
                     self.consume_mana(ManaType.TIME, 10.0)
 
                 await asyncio.sleep(60)  # 1分ごとにチェック
@@ -296,7 +293,7 @@ class BalanceElf(BaseElf):
                 imbalance = self._analyze_load_balance()
 
                 if imbalance > 0.3:  # 30%以上の不均衡
-                    self.log_action(f"⚖️ 負荷不均衡検出: {imbalance:.1%}")
+                    self.log_action(f"⚖️ 負荷不均衡検出: {imbalance:0.1%}")
                     self.consume_mana(ManaType.BALANCE)
                     await self._rebalance_tasks()
 
@@ -378,9 +375,8 @@ class HealingElf(BaseElf):
 class WisdomElf(BaseElf):
     """ウィズダムエルフ - 学習と知識蓄積"""
 
-    def __init__(self, name:
+    def __init__(self, name: str, forest: "ElfForest", domain: str = "general"):
         """初期化メソッド"""
-    str, forest: "ElfForest", domain: str = "general"):
         super().__init__(name, forest)
         self.domain = domain
         self.learned_patterns: List[Dict[str, Any]] = []
@@ -454,7 +450,7 @@ class WisdomElf(BaseElf):
                     {
                         "type": "optimization",
                         "target": pattern["task_type"],
-                        "suggestion": f"平均実行時間: {pattern['average']:.1f}秒",
+                        "suggestion": f"平均実行時間: {pattern['average']:0.1f}秒",
                         "confidence": min(0.9, pattern["samples"] / 20),
                     }
                 )
@@ -537,14 +533,14 @@ class ElfForest:
 ========================
 
 稼働時間: {runtime}
-総マナレベル: {'█' * int(self.mana_pool.total / 10)}{'░' * (10 - int(self.mana_pool.total / 10))} {self.mana_pool.total:.1f}%
+総マナレベル: {'█' * int(self.mana_pool.total / 10)}{'░' * (10 - int(self.mana_pool.total / 10))} {self.mana_pool.total:0.1f}%
 
 マナ詳細:
-- フロー: {self.mana_pool.flow:.1f}%
-- タイム: {self.mana_pool.time:.1f}%
-- バランス: {self.mana_pool.balance:.1f}%
-- ヒール: {self.mana_pool.heal:.1f}%
-- ウィズダム: {self.mana_pool.wisdom:.1f}%
+- フロー: {self.mana_pool.flow:0.1f}%
+- タイム: {self.mana_pool.time:0.1f}%
+- バランス: {self.mana_pool.balance:0.1f}%
+- ヒール: {self.mana_pool.heal:0.1f}%
+- ウィズダム: {self.mana_pool.wisdom:0.1f}%
 
 エルフ活動状況:
 """

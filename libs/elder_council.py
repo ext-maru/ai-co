@@ -66,13 +66,13 @@ class ElderCouncil:
         for prophecy_name, prophecy in self.prophecy_engine.prophecies.items():
             logger.info(f"📜 予言書レビュー: {prophecy_name}")
 
-            # 1. 現在の進捗確認
+            # 1.0 現在の進捗確認
             current_metrics = await self.collect_current_metrics(prophecy_name)
             evaluation = self.prophecy_engine.evaluate_prophecy(
                 prophecy_name, current_metrics
             )
 
-            # 2. 基準見直しの必要性判定
+            # 2.0 基準見直しの必要性判定
             needs_adjustment = self.assess_adjustment_need(prophecy_name, evaluation)
 
             review_item = {
@@ -83,7 +83,7 @@ class ElderCouncil:
             }
 
             if needs_adjustment:
-                # 3. エルダーズの儀式実行
+                # 3.0 エルダーズの儀式実行
                 adjustment = await self.elder_council_decision(
                     prophecy_name, evaluation
                 )
@@ -96,7 +96,7 @@ class ElderCouncil:
 
             review_results["prophecies_reviewed"].append(review_item)
 
-        # 4. レビュー結果記録
+        # 4.0 レビュー結果記録
         self.review_history.append(review_results)
 
         # 履歴は最新30日分のみ保持
@@ -138,23 +138,23 @@ class ElderCouncil:
         """調整必要性の判定"""
         reasons = []
 
-        # 1. 長期間同じゲートで停滞
+        # 1.0 長期間同じゲートで停滞
         if self.is_stagnant(prophecy_name, days=30):
             reasons.append("長期停滞")
 
-        # 2. 基準が実際の状況と乖離
+        # 2.0 基準が実際の状況と乖離
         if self.criteria_mismatch(evaluation):
             reasons.append("基準乖離")
 
-        # 3. チームフィードバックで問題報告
+        # 3.0 チームフィードバックで問題報告
         if self.team_feedback_issues(prophecy_name):
             reasons.append("チーム問題")
 
-        # 4. 新しい技術や方法論の登場
+        # 4.0 新しい技術や方法論の登場
         if self.new_best_practices_available(prophecy_name):
             reasons.append("新技術対応")
 
-        # 5. 進化準備度が長期間低い
+        # 5.0 進化準備度が長期間低い
         if self.low_readiness_persists(prophecy_name, evaluation):
             reasons.append("準備度低迷")
 

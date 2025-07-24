@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 RAG Sage A2A Agent - Google A2A Protocol実装
+"🔍" RAG Sage A2A Agent - Google A2A Protocol実装
 ===========================================
 
 Elder Loop Phase 2: A2Aエージェント実装
@@ -482,7 +482,7 @@ class RAGSageAgent:
         if not await self.initialize():
             raise RuntimeError("Failed to initialize RAG Sage Agent")
         
-        logger.info("Starting RAG Sage A2A Server on port 8812...")
+        logger.info("Starting RAG Sage A2A Server on port 8812.0..")
         await self.server.start()
     
     async def shutdown(self):

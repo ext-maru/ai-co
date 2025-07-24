@@ -123,6 +123,7 @@ class DocumentIndexOptimizer(EldersServiceLegacy):
 
 
 if __name__ == "__main__":
+    pass
 
     async def test_optimizer():
         """test_optimizerテストメソッド"""

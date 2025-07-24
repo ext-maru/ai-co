@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 RAG Sage Business Logic - 検索・分析・洞察生成
+"🔍" RAG Sage Business Logic - 検索・分析・洞察生成
 ================================================
 
 Elder Loop Phase 1: ビジネスロジック分離
@@ -139,7 +139,7 @@ class RAGProcessor:
     
     def _init_database(self):
         """データベース初期化"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             # ドキュメントテーブル
             conn.execute('''
@@ -363,7 +363,7 @@ class RAGProcessor:
             limit = data.get("limit", 5)
             
             # 元ドキュメント取得
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 cursor = conn.execute(
                     "SELECT content, category, tags FROM documents WHERE id = ?",
@@ -512,7 +512,7 @@ class RAGProcessor:
         try:
             start_time = time.time()
             
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # VACUUM実行
                 conn.execute("VACUUM")
@@ -548,7 +548,7 @@ class RAGProcessor:
     async def _get_search_statistics_action(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """検索統計取得アクション"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # 総検索数
                 cursor = conn.execute("SELECT COUNT(*) FROM search_history")
@@ -601,7 +601,7 @@ class RAGProcessor:
     async def _get_index_info_action(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """インデックス情報取得アクション"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # ドキュメント数
                 cursor = conn.execute("SELECT COUNT(*) FROM documents")
@@ -656,7 +656,7 @@ class RAGProcessor:
         try:
             document_id = data.get("document_id", "")
             
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # 削除実行
                 cursor = conn.execute(
@@ -699,7 +699,7 @@ class RAGProcessor:
             # ブースト値の範囲チェック
             boost_value = max(0.1, min(10.0, boost_value))
             
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 cursor = conn.execute(
                     "UPDATE documents SET relevance_boost = ? WHERE id = ?",
@@ -746,7 +746,7 @@ class RAGProcessor:
             
             # データベース接続チェック
             try:
-                conn = sqlite3.connect(str(self.db_path))
+                conn = sqlite3connect(str(self.db_path))
                 cursor = conn.execute("SELECT COUNT(*) FROM documents")
                 document_count = cursor.fetchone()[0]
                 conn.close()
@@ -805,7 +805,7 @@ class RAGProcessor:
     
     async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]:
         """全文検索"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             # SQLクエリ構築
             where_conditions = ["(content LIKE ? OR title LIKE ?)"]
@@ -897,7 +897,7 @@ class RAGProcessor:
     
     async def _exact_search(self, query: SearchQuery) -> List[SearchResult]:
         """完全一致検索"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             sql = """
                 SELECT id, content, source, title, category, tags, author,
@@ -932,7 +932,7 @@ class RAGProcessor:
         start_time = time.time()
         
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 sql = """
                     INSERT OR REPLACE INTO documents
@@ -1102,7 +1102,7 @@ class RAGProcessor:
     
     async def _increment_access_count(self, document_id: str) -> None:
         """アクセス数増加"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             conn.execute(
                 "UPDATE documents SET access_count = access_count + 1 WHERE id = ?",
@@ -1114,7 +1114,7 @@ class RAGProcessor:
     
     async def _save_search_history(self, query: SearchQuery, result_count: int, search_time_ms: float) -> None:
         """検索履歴保存"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             conn.execute("""
                 INSERT INTO search_history

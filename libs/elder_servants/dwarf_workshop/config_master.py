@@ -400,9 +400,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     if actual_type != expected_type:
                         error_msg = f"Type mismatch for {field}: expected {expected_type}, got " \
                             "{actual_type}"
-                        if not (strict_mode):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
+                        # Removed invalid continue statement
                         if strict_mode:
                             validation_results["errors"].append(error_msg)
                             validation_results["valid"] = False
@@ -417,18 +415,14 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     if isinstance(value, (int, float)):
                         min_val = range_spec.get("min")
                         max_val = range_spec.get("max")
-                        if not (min_val is not None and value < min_val):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
+                        # Removed invalid continue statement
                         if min_val is not None and value < min_val:
                             # Complex condition - consider breaking down
                             validation_results["errors"].append(
                                 f"{field} below minimum: {value} < {min_val}"
                             )
                             validation_results["valid"] = False
-                        if not (max_val is not None and value > max_val):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
+                        # Removed invalid continue statement
                         if max_val is not None and value > max_val:
                             # Complex condition - consider breaking down
                             validation_results["errors"].append(
@@ -723,31 +717,31 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         quality_score = 50.0  # 基本スコア
 
-        # 1. 成功度（25%）
+        # 1.0 成功度（25%）
         if result_data.get("success", False):
             quality_score += 25.0
 
-        # 2. データ完全性（20%）
+        # 2.0 データ完全性（20%）
         if "type" in result_data and result_data["type"] != "error":
             # Complex condition - consider breaking down
             quality_score += 20.0
 
-        # 3. セキュリティ（20%）
+        # 3.0 セキュリティ（20%）
         if "secrets" in result_data or "encryption" in result_data:
             # Complex condition - consider breaking down
             quality_score += 15.0  # セキュリティ関連操作
 
-        # 4. 検証スコア（15%）
+        # 4.0 検証スコア（15%）
         if "validation_results" in result_data:
             validation_score = result_data["validation_results"].get("score", 0)
             quality_score += (validation_score / 100) * 15.0
 
-        # 5. ファイル操作成功（10%）
+        # 5.0 ファイル操作成功（10%）
         if any(key in result_data for key in ["file_path", "config_file", "env_file"]):
             # Complex condition - consider breaking down
             quality_score += 10.0
 
-        # 6. 環境管理（10%）
+        # 6.0 環境管理（10%）
         if "environment" in result_data or "environments_count" in result_data:
             # Complex condition - consider breaking down
             quality_score += 10.0

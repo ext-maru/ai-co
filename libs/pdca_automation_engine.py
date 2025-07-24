@@ -92,23 +92,23 @@ class PDCAAutomationEngine:
         """
         insights = []
 
-        # 1. コードレビューからの気づき
+        # 1.0 コードレビューからの気づき
         code_insights = await self._collect_from_code_reviews()
         insights.extend(code_insights)
 
-        # 2. テスト結果からの気づき
+        # 2.0 テスト結果からの気づき
         test_insights = await self._collect_from_test_results()
         insights.extend(test_insights)
 
-        # 3. パフォーマンスメトリクスからの気づき
+        # 3.0 パフォーマンスメトリクスからの気づき
         perf_insights = await self._collect_from_performance_metrics()
         insights.extend(perf_insights)
 
-        # 4. エラーログからの気づき
+        # 4.0 エラーログからの気づき
         error_insights = await self._collect_from_error_logs()
         insights.extend(error_insights)
 
-        # 5. ユーザーフィードバックからの気づき
+        # 5.0 ユーザーフィードバックからの気づき
         user_insights = await self._collect_from_user_feedback()
         insights.extend(user_insights)
 

@@ -23,6 +23,7 @@ from .business_logic import IncidentProcessor
 
 
 class IncidentSageAgent(A2AServer):
+    pass
 
 
 """
@@ -49,6 +50,7 @@ class IncidentSageAgent(A2AServer):
         self.initialized = False
     
     async def initialize(self) -> bool:
+        pass
 
         """エージェント初期化"""
             self.logger.info("Initializing Incident Sage A2A Agent...")
@@ -65,6 +67,7 @@ class IncidentSageAgent(A2AServer):
             return False
     
     async def shutdown(self):
+        pass
 
             """エージェントシャットダウン"""
             self.logger.info("Shutting down Incident Sage A2A Agent...")
@@ -405,6 +408,7 @@ class IncidentSageAgent(A2AServer):
             return self._create_error_message(e)
     
     def _create_error_message(self, error) -> Message:
+        pass
 
             """エラーメッセージ作成"""
             error_response = {
@@ -430,6 +434,7 @@ class IncidentSageAgent(A2AServer):
             )
     
     def get_skills_info(self) -> Dict[str, Any]:
+        pass
 
             """スキル情報取得""" "detect_incident", "category": "incident_management", "description": "Detect and analyze anomalies to create incidents"},
             {"name": "register_incident", "category": "incident_management", "description": "Register new incidents in the system"},

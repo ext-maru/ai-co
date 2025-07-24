@@ -2,9 +2,9 @@
 Test cases for Issue #32: インシデント騎士団のf-string誤認識修正
 
 TDD approach:
-1. Red: 問題のパターンを再現するテストケース
-2. Green: 修正実装でテストを通す
-3. Refactor: より良い実装に改善
+1.0 Red: 問題のパターンを再現するテストケース
+2.0 Green: 修正実装でテストを通す
+3.0 Refactor: より良い実装に改善
 """
 
 import pytest
@@ -99,10 +99,9 @@ class TestIncidentKnightStringDetection:
         second_fix = self._apply_fix(first_fix)
         assert second_fix == first_fix, "修正の冪等性が保たれていない"
     
-    def _simulate_current_logic(self, line: str) -> bool:
-        """現在の問題のあるロジックをシミュレート"""
-        return line.strip().endswith('"""') and line.count('"""') == 1
-    
+    def _simulate_current_logic(self, line: str) -> boolreturn line.strip().endswith('"""') and line.count('"""') == 1
+    """現在の問題のあるロジックをシミュレート"""
+    :
     def _expected_correct_logic(self, line: str) -> bool:
         """期待される修正後のロジック（実装済み）"""
         from libs.incident_knight_string_detector import is_incomplete_docstring
@@ -113,9 +112,8 @@ class TestIncidentKnightStringDetection:
         
         return is_incomplete_docstring(line, surrounding_lines)
     
-    def _apply_fix(self, line: str) -> str:
-        """修正の適用をシミュレート"""
-        if self._expected_correct_logic(line):
+    def _apply_fix(self, line: str) -> strif self._expected_correct_logic(line):
+    """修正の適用をシミュレート"""
             return line + '\n    pass  # Placeholder for implementation'
         return line
 
@@ -126,9 +124,8 @@ class TestIncidentKnightFileProcessing:
     def test_file_with_fstring_patterns(self):
         """f-stringパターンを含むファイルが正しく処理されること"""
         content = '''
-def process_data(name, value):
-    message = f"Processing {name} with value {value}"""
-    logger.info(message)
+def process_data(name, value)logger.info(message)
+message = f"Processing {name} with value {value}"""
     
 def incomplete_function():
     """TODO: Implement this function
@@ -188,9 +185,8 @@ class DataProcessor:
 
 
 @pytest.fixture
-def temp_file():
-    """テスト用の一時ファイル"""
-    fd, path = tempfile.mkstemp(suffix='.py')
+def temp_file()fd, path = tempfile.mkstemp(suffix='.py')
+"""テスト用の一時ファイル"""
     yield path
     os.close(fd)
     os.unlink(path)

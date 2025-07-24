@@ -12,6 +12,7 @@ from uuid import uuid4
 
 
 class SearchType(Enum):
+    pass
 
 
 """検索タイプ"""
@@ -25,6 +26,7 @@ class SearchType(Enum):
 
 @dataclass
 class DocumentMetadata:
+    pass
 
     """ドキュメントメタデータ""" str
     category: str
@@ -39,6 +41,7 @@ class DocumentMetadata:
 
 @dataclass
 class Document:
+    pass
 
 
 
@@ -53,6 +56,7 @@ class Document:
     relevance_boost: float = 1.0  # 関連性ブースト係数
     
     def __post_init__(self):
+        pass
 
     
     """バリデーション"""
@@ -63,6 +67,7 @@ class Document:
 
 @dataclass
 class DocumentChunk:
+    pass
 
             """ドキュメントチャンク（分割されたドキュメント片）""" str
     content: str
@@ -74,6 +79,7 @@ class DocumentChunk:
 
 @dataclass
 class SearchQuery:
+    pass
 
 
 
@@ -87,6 +93,7 @@ class SearchQuery:
     exclude_sources: Set[str] = field(default_factory=set)
     
     def __post_init__(self):
+        pass
 
     
     """バリデーション"""
@@ -99,6 +106,7 @@ class SearchQuery:
 
 @dataclass
 class SearchResult:
+    pass
 
             """検索結果アイテム""" Document
     score: float  # 関連性スコア (0.0-1.0)
@@ -109,6 +117,7 @@ class SearchResult:
 
 @dataclass
 class SearchResults:
+    pass
 
 
 
@@ -121,6 +130,7 @@ class SearchResults:
     
     @property
     def has_results(self) -> bool:
+        pass
 
     
     """結果があるかどうか"""
@@ -134,6 +144,7 @@ class SearchResults:
 
 @dataclass
 class BatchIndexResult:
+    pass
 
 
 
@@ -145,6 +156,7 @@ class BatchIndexResult:
     
     @property
     def success_rate(self) -> float:
+        pass
 
     
     """成功率"""
@@ -154,6 +166,7 @@ class BatchIndexResult:
 
 @dataclass
 class Index:
+    pass
 
             """インデックス情報""" str
     status: IndexStatus
@@ -168,6 +181,7 @@ class Index:
 
 @dataclass
 class OptimizationResult:
+    pass
 
 
 
@@ -180,6 +194,7 @@ class OptimizationResult:
     
     @property
     def size_reduction_percent(self) -> float:
+        pass
 
     
     """サイズ削減率"""
@@ -189,6 +204,7 @@ class OptimizationResult:
 
 @dataclass
 class CacheEntry:
+    pass
 
             """キャッシュエントリ""" str
     value: Any
@@ -199,6 +215,7 @@ class CacheEntry:
     
     @property
     def is_expired(self) -> bool:
+        pass
 
     
     """有効期限切れかどうか"""
@@ -208,6 +225,7 @@ class CacheEntry:
 
 @dataclass
 class SearchContext:
+    pass
 
             """検索コンテキスト（賢者間連携用）""" str
     urgency: str = "normal"  # low, normal, high, critical

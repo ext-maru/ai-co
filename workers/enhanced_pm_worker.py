@@ -215,25 +215,25 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             else:
                 self.logger.info(f"Project approved: {approval_message}")
 
-        # 1. プロジェクト作成
+        # 1.0 プロジェクト作成
         project_name = self._extract_project_name(prompt)
         project_id = self.project_manager.create_project(
             task_id=task_id, name=project_name, description=prompt
         )
 
-        # 2. 要件定義フェーズ
+        # 2.0 要件定義フェーズ
         self._phase_requirements(project_id, body)
 
-        # 3. 設計フェーズ
+        # 3.0 設計フェーズ
         self._phase_design(project_id, body)
 
-        # 4. 開発フェーズ
+        # 4.0 開発フェーズ
         self._phase_development(project_id, body)
 
-        # 5. テストフェーズ
+        # 5.0 テストフェーズ
         self._phase_testing(project_id, body)
 
-        # 6. デプロイフェーズ
+        # 6.0 デプロイフェーズ
         self._phase_deployment(project_id, body)
 
         # プロジェクトレポート生成
@@ -244,7 +244,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
         quality_score = 0.0
         if self.quality_enabled:
             quality_score = self._evaluate_project_quality(project_id, body)
-            self.logger.info(f"プロジェクト品質スコア: {quality_score:.2f}")
+            self.logger.info(f"プロジェクト品質スコア: {quality_score:0.2f}")
 
         # Elder Tree階層への完了報告
         if self.elder_integration_enabled:
@@ -283,7 +283,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
         message = f"{EMOJI['rocket']} プロジェクト完了: {project_name}\n"
         message += f"プロジェクトID: {project_id}\n"
         if self.quality_enabled:
-            message += f"品質スコア: {quality_score:.2f}\n"
+            message += f"品質スコア: {quality_score:0.2f}\n"
         message += "詳細レポートはログを参照してください。"
 
         self.slack.send_message(message)
@@ -876,7 +876,7 @@ EOF""",
             final_score = min(1.0, avg_score + completion_bonus)
 
             self.logger.info(
-                f"プロジェクト品質評価: {final_score:.2f} (ファイル数: {evaluated_files})"
+                f"プロジェクト品質評価: {final_score:0.2f} (ファイル数: {evaluated_files})"
             )
             return final_score
 
@@ -907,7 +907,7 @@ EOF""",
                 suggestions,
             ) = self.quality_checker.check_task_quality(result)
             self.logger.info(
-                f"📊 品質スコア: {quality_score:.2f} (タスク: {task_id}, イテレーション: {iteration + 1})"
+                f"📊 品質スコア: {quality_score:0.2f} (タスク: {task_id}, イテレーション: {iteration + 1})"
             )
 
             if (
@@ -923,10 +923,10 @@ EOF""",
             else:
                 # 品質OK または 最大イテレーション到達
                 if quality_score >= self.quality_checker.min_quality_score:
-                    self.logger.info(f"✅ 品質基準を満たしました (スコア: {quality_score:.2f})")
+                    self.logger.info(f"✅ 品質基準を満たしました (スコア: {quality_score:0.2f})")
                 else:
                     self.logger.warning(
-                        f"⚠️ 最大イテレーション到達 - 現状で受け入れ (スコア: {quality_score:.2f})"
+                        f"⚠️ 最大イテレーション到達 - 現状で受け入れ (スコア: {quality_score:0.2f})"
                     )
 
                 # コンテキストクリア

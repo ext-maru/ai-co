@@ -11,9 +11,8 @@ import sys
 from pathlib import Path
 
 
-def run_coverage_analysis():
-    """Run comprehensive coverage analysis"""
-    print("🎯 PHASE 3 FINAL VICTORY ASSAULT - COVERAGE ANALYSIS")
+def run_coverage_analysis()print("🎯 PHASE 3 FINAL VICTORY ASSAULT - COVERAGE ANALYSIS")
+"""Run comprehensive coverage analysis"""
     print("=" * 70)
 
     # Command to run all tests with coverage
@@ -39,9 +38,9 @@ def run_coverage_analysis():
             coverage_data = json.load(f)
 
         total_percent = coverage_data.get("totals", {}).get("percent_covered", 0)
-        print(f"\n📊 CURRENT TOTAL COVERAGE: {total_percent:.1f}%")
+        print(f"\n📊 CURRENT TOTAL COVERAGE: {total_percent:0.1f}%")
         print(f"🎯 TARGET: 60%")
-        print(f"📈 GAP: {60 - total_percent:.1f}%")
+        print(f"📈 GAP: {60 - total_percent:0.1f}%")
 
         # Identify top uncovered modules
         print("\n🔍 TOP UNCOVERED MODULES (HIGH IMPACT):")
@@ -79,8 +78,8 @@ def run_coverage_analysis():
             print(f"{i:2d}. {item['file']}")
             print(
                 (
-                    f"f"    Coverage: {item['covered']:.1f}% | Missing: {item['missing']} lines | Impact: "
-                    f"{item['impact']:.0f}""
+                    f"f"    Coverage: {item['covered']:0.1f}% | Missing: {item['missing']} lines | Impact: "
+                    f"{item['impact']:0.0f}""
                 )
             )
 
@@ -92,9 +91,8 @@ def run_coverage_analysis():
     return total_percent if "total_percent" in locals() else 0
 
 
-def identify_quick_wins():
-    """Identify quick win opportunities for coverage boost"""
-    print("\n⚡ QUICK WIN OPPORTUNITIES:")
+def identify_quick_wins()print("\n⚡ QUICK WIN OPPORTUNITIES:")
+"""Identify quick win opportunities for coverage boost"""
 
     quick_wins = [
         ("workers/", "Worker classes with simple mock testing"),
@@ -120,7 +118,7 @@ def generate_final_assault_plan(current_coverage):
         print("✅ VICTORY ACHIEVED! Target 60% coverage reached!")
         return
 
-    print(f"Current: {current_coverage:.1f}% | Target: 60% | Gap: {gap:.1f}%")
+    print(f"Current: {current_coverage:0.1f}% | Target: 60% | Gap: {gap:0.1f}%")
     print("\nELDER SERVANTS COORDINATED STRIKE:")
 
     # Elder Servants assignments
@@ -138,11 +136,11 @@ def generate_final_assault_plan(current_coverage):
         print(f"• {servant}: {task}")
 
     print("\n⚔️ EXECUTION STRATEGY:")
-    print("1. Focus on high-impact modules (large files with low coverage)")
-    print("2. Add basic mock tests for all workers")
-    print("3. Cover main execution paths in commands")
-    print("4. Test error handling and edge cases")
-    print("5. Validate all configuration loading")
+    print("1.0 Focus on high-impact modules (large files with low coverage)")
+    print("2.0 Add basic mock tests for all workers")
+    print("3.0 Cover main execution paths in commands")
+    print("4.0 Test error handling and edge cases")
+    print("5.0 Validate all configuration loading")
 
 
 if __name__ == "__main__":

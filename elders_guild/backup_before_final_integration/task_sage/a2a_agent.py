@@ -425,7 +425,7 @@ async def main():
     
     try:
         if await agent.initialize():
-            print(f"🚀 Starting Task Sage A2A Agent on port 8002...")
+            print(f"🚀 Starting Task Sage A2A Agent on port 8002.0..")
             await agent.run()  # A2AServerの標準実行メソッド
         else:
             print("❌ Failed to initialize Task Sage A2A Agent")

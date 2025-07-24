@@ -123,7 +123,7 @@ class ElderCouncilReview:
         """Initialize Elder Council quality database"""
         try:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Quality review history
@@ -276,32 +276,32 @@ class ElderCouncilReview:
             # Parse test file for analysis
             test_ast = ast.parse(test_content)
 
-            # 1. Coverage Effectiveness Analysis
+            # 1.0 Coverage Effectiveness Analysis
             coverage_effectiveness = self._analyze_coverage_effectiveness(
                 test_ast, test_content
             )
 
-            # 2. Test Complexity Score
+            # 2.0 Test Complexity Score
             test_complexity_score = self._analyze_test_complexity(
                 test_ast, test_content
             )
 
-            # 3. Pattern Compliance
+            # 3.0 Pattern Compliance
             pattern_compliance = self._analyze_pattern_compliance(
                 test_ast, test_content
             )
 
-            # 4. Documentation Quality
+            # 4.0 Documentation Quality
             documentation_quality = self._analyze_documentation_quality(
                 test_ast, test_content
             )
 
-            # 5. Edge Case Coverage
+            # 5.0 Edge Case Coverage
             edge_case_coverage = self._analyze_edge_case_coverage(
                 test_ast, test_content
             )
 
-            # 6. Calculate overall quality score (weighted average)
+            # 6.0 Calculate overall quality score (weighted average)
             overall_quality_score = (
                 coverage_effectiveness * self.quality_weights["coverage_effectiveness"]
                 + test_complexity_score * self.quality_weights["test_complexity_score"]
@@ -450,7 +450,7 @@ class ElderCouncilReview:
         if test_methods:
             score += (clear_names / len(test_methods)) * 0.3
 
-        # Check for class docstring
+        # Check for class docstring:
         for node in ast.walk(test_ast):
             if isinstance(node, ast.ClassDef) and ast.get_docstring(node):
                 score += 0.3
@@ -914,7 +914,7 @@ class ElderCouncilReview:
     async def _save_quality_review(self, review_result: QualityReviewResult):
         """Save quality review results to database"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Save main review record
@@ -1058,7 +1058,7 @@ class ElderCouncilReview:
             }
 
             self.logger.info(
-                f"Batch analysis completed: {avg_quality_score:.2f} average quality score"
+                f"Batch analysis completed: {avg_quality_score:0.2f} average quality score"
             )
             return batch_report
 
@@ -1097,7 +1097,7 @@ class ElderCouncilReview:
             start_date = end_date - timedelta(days=time_range_days)
 
             # Query database for recent reviews
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Get review statistics
@@ -1424,7 +1424,7 @@ if __name__ == "__main__":
 
         print(f"Quality Review Results for {test_file}:")
         print(
-            f"Overall Quality Score: {result.quality_metrics.overall_quality_score:.2f}"
+            f"Overall Quality Score: {result.quality_metrics.overall_quality_score:0.2f}"
         )
         print(f"Approval Status: {result.approval_status}")
         print(f"Elder Decision: {result.elder_decision}")

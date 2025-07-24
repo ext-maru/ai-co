@@ -79,7 +79,7 @@ def extract_real_implementation_gaps(
     
     real_gaps = []
     
-    # 1. pass文のみの関数で、明らかに実装が必要なもの
+    # 1.0 pass文のみの関数で、明らかに実装が必要なもの
     if 'pass_only_functions' in filtered_results:
         for item in filtered_results['pass_only_functions']:
             # 除外すべきファイル（既知のプレースホルダーファイル）
@@ -105,7 +105,7 @@ def extract_real_implementation_gaps(
                         'description': f"Function '{funcname}' needs implementation"
                     })
     
-    # 2. NotImplementedError が発生する関数
+    # 2.0 NotImplementedError が発生する関数
     if 'unimplemented_functions' in filtered_results:
         for item in filtered_results['unimplemented_functions']:
             match = re.search(r"(/[^:]+):(\d+): Function '(\w+)' raises NotImplementedError", item)
@@ -119,7 +119,7 @@ def extract_real_implementation_gaps(
                     'description': f"Function '{funcname}' raises NotImplementedError"
                 })
     
-    # 3. 空のクラス（例外クラス以外）
+    # 3.0 空のクラス（例外クラス以外）
     if 'empty_classes' in filtered_results:
         for item in filtered_results['empty_classes']:
             # エラークラスや例外クラスは除外
@@ -135,7 +135,7 @@ def extract_real_implementation_gaps(
                         'description': f"Class '{classname}' needs implementation"
                     })
     
-    # 4. 非テストファイルでのモック使用
+    # 4.0 非テストファイルでのモック使用
     if 'mock_implementations' in filtered_results:
         for item in filtered_results['mock_implementations']:
             # テスト関連ファイルは除外
@@ -195,21 +195,21 @@ def main():
     # 推奨対応
     print("\n📋 推奨対応方針")
     print("-" * 50)
-    print("1. 🔥 CRITICAL FILES:")
+    print("1.0 🔥 CRITICAL FILES:")
     print("   - NotImplementedError を実際の実装に置き換え")
     print("   - 特に elder_servants/integrations/production/ 関連")
     print("   - ml_models.py, ai_priority_optimizer.py の完全実装")
     
-    print("\n2. 🔧 HIGH PRIORITY:")
+    print("\n2.0 🔧 HIGH PRIORITY:")
     print("   - pass-only functions の実装")
     print("   - workers/ ディレクトリのTODOコメント対応")
     print("   - 空のクラスの実装")
     
-    print("\n3. 📝 MEDIUM PRIORITY:")
+    print("\n3.0 📝 MEDIUM PRIORITY:")
     print("   - TODO/FIXME コメントの整理")
     print("   - プレースホルダーキーワードの除去")
     
-    print("\n4. 🧹 LOW PRIORITY:")
+    print("\n4.0 🧹 LOW PRIORITY:")
     print("   - 構文エラーの修正")
     print("   - テスト外でのmock使用の見直し")
     

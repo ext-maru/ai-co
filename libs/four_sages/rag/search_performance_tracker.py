@@ -197,9 +197,8 @@ class QueryPatternAnalyzer:
 class SearchPerformanceTracker(EldersServiceLegacy):
     """検索パフォーマンス追跡システム"""
 
-    def __init__(self, rag_sage:
+    def __init__(self, rag_sage: RAGSage, tracking_db: UnifiedTrackingDB):
         """初期化メソッド"""
-    RAGSage, tracking_db: UnifiedTrackingDB):
         super().__init__(name="SearchPerformanceTracker")
         self.rag_sage = rag_sage
         self.tracking_db = tracking_db
@@ -295,7 +294,7 @@ class SearchPerformanceTracker(EldersServiceLegacy):
             return 0.0
 
         # 品質指標
-        # 1. 関連性スコアの分散（低いほど良い）
+        # 1.0 関連性スコアの分散（低いほど良い）
         scores = [r.get("relevance_score", 0) for r in results]
         if len(scores) > 1:
             score_variance = statistics.variance(scores)
@@ -303,10 +302,10 @@ class SearchPerformanceTracker(EldersServiceLegacy):
         else:
             variance_factor = 1.0
 
-        # 2. 上位結果の関連性
+        # 2.0 上位結果の関連性
         top_relevance = scores[0] if scores else 0
 
-        # 3. 結果数の適切さ
+        # 3.0 結果数の適切さ
         result_count_factor = min(len(results) / 10, 1.0)  # 10件程度が理想
 
         # 総合品質スコア

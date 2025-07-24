@@ -55,7 +55,7 @@ class TaskSageMonitor:
         alerts = []
 
         try:
-            # 1. GitHub Flow の遵守状況チェック
+            # 1.0 GitHub Flow の遵守状況チェック
             git_status = self.check_github_flow_compliance()
             if not git_status["compliant"]:
                 alerts.append(
@@ -69,7 +69,7 @@ class TaskSageMonitor:
                     )
                 )
 
-            # 2. タスク進捗の監視
+            # 2.0 タスク進捗の監視
             progress_status = self.check_task_progress()
             if progress_status["delayed_tasks"]:
                 alerts.append(
@@ -83,7 +83,7 @@ class TaskSageMonitor:
                     )
                 )
 
-            # 3. 品質メトリクスの監視
+            # 3.0 品質メトリクスの監視
             quality_status = self.check_quality_metrics()
             if quality_status["quality_score"] < 0.8:
                 alerts.append(
@@ -91,7 +91,7 @@ class TaskSageMonitor:
                         sage="TaskSage",
                         severity="MEDIUM",
                         category="QUALITY_DEGRADATION",
-                        message=f"品質スコア低下: {quality_status['quality_score']:.2f}",
+                        message=f"品質スコア低下: {quality_status['quality_score']:0.2f}",
                         timestamp=datetime.now(),
                         details=quality_status,
                     )
@@ -187,7 +187,7 @@ class IncidentSageMonitor:
         alerts = []
 
         try:
-            # 1. Git リポジトリの健全性チェック
+            # 1.0 Git リポジトリの健全性チェック
             repo_health = self.check_repository_health()
             if not repo_health["healthy"]:
                 alerts.append(
@@ -201,7 +201,7 @@ class IncidentSageMonitor:
                     )
                 )
 
-            # 2. システムリソースの監視
+            # 2.0 システムリソースの監視
             resource_status = self.check_system_resources()
             if resource_status["disk_usage"] > self.risk_thresholds["disk_usage"]:
                 alerts.append(
@@ -209,13 +209,13 @@ class IncidentSageMonitor:
                         sage="IncidentSage",
                         severity="HIGH",
                         category="HIGH_DISK_USAGE",
-                        message=f"ディスク使用量: {resource_status['disk_usage']:.1%}",
+                        message=f"ディスク使用量: {resource_status['disk_usage']:0.1%}",
                         timestamp=datetime.now(),
                         details=resource_status,
                     )
                 )
 
-            # 3. セキュリティリスクの監視
+            # 3.0 セキュリティリスクの監視
             security_status = self.check_security_risks()
             if security_status["risk_level"] > 0.7:
                 alerts.append(
@@ -354,7 +354,7 @@ class KnowledgeSageMonitor:
         alerts = []
 
         try:
-            # 1. ドキュメント品質の監視
+            # 1.0 ドキュメント品質の監視
             doc_quality = self.check_documentation_quality()
             if doc_quality["quality_score"] < 0.8:
                 alerts.append(
@@ -362,13 +362,13 @@ class KnowledgeSageMonitor:
                         sage="KnowledgeSage",
                         severity="MEDIUM",
                         category="DOC_QUALITY_LOW",
-                        message=f"ドキュメント品質低下: {doc_quality['quality_score']:.2f}",
+                        message=f"ドキュメント品質低下: {doc_quality['quality_score']:0.2f}",
                         timestamp=datetime.now(),
                         details=doc_quality,
                     )
                 )
 
-            # 2. 学習データの整合性監視
+            # 2.0 学習データの整合性監視
             learning_status = self.check_learning_consistency()
             if learning_status["inconsistencies"]:
                 alerts.append(
@@ -382,7 +382,7 @@ class KnowledgeSageMonitor:
                     )
                 )
 
-            # 3. ナレッジベースの更新状況監視
+            # 3.0 ナレッジベースの更新状況監視
             update_status = self.check_knowledge_updates()
             if update_status["days_since_update"] > 7:
                 alerts.append(
@@ -510,7 +510,7 @@ class RAGSageMonitor:
         alerts = []
 
         try:
-            # 1. 検索精度の監視
+            # 1.0 検索精度の監視
             search_accuracy = self.check_search_accuracy()
             if search_accuracy["accuracy"] < 0.8:
                 alerts.append(
@@ -518,13 +518,13 @@ class RAGSageMonitor:
                         sage="RAGSage",
                         severity="MEDIUM",
                         category="SEARCH_ACCURACY_LOW",
-                        message=f"検索精度低下: {search_accuracy['accuracy']:.2f}",
+                        message=f"検索精度低下: {search_accuracy['accuracy']:0.2f}",
                         timestamp=datetime.now(),
                         details=search_accuracy,
                     )
                 )
 
-            # 2. 情報統合品質の監視
+            # 2.0 情報統合品質の監視
             integration_quality = self.check_integration_quality()
             if integration_quality["quality_score"] < 0.75:
                 alerts.append(
@@ -532,13 +532,13 @@ class RAGSageMonitor:
                         sage="RAGSage",
                         severity="MEDIUM",
                         category="INTEGRATION_QUALITY_LOW",
-                        message=f"統合品質低下: {integration_quality['quality_score']:.2f}",
+                        message=f"統合品質低下: {integration_quality['quality_score']:0.2f}",
                         timestamp=datetime.now(),
                         details=integration_quality,
                     )
                 )
 
-            # 3. 最適化状況の監視
+            # 3.0 最適化状況の監視
             optimization_status = self.check_optimization_status()
             if not optimization_status["optimized"]:
                 alerts.append(

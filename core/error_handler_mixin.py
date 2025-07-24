@@ -122,15 +122,14 @@ class ErrorHandlerMixin:
             "retry_attempted": False,
         }
 
-    def _categorize_error(self, error: Exception) -> str:
-        """エラーを分類"""
-        error_type = type(error).__name__
+    def _categorize_error(self, error: Exception) -> strerror_type = type(error).__name__
+    """エラーを分類"""
         error_msg = str(error).lower()
 
         # ネットワークエラー
         if any(
             keyword in error_msg
-            for keyword in ["connection", "network", "refused", "timeout"]
+            for keyword in ["connection", "network", "refused", "timeout"]:
         ):
             return ErrorCategory.NETWORK
 
@@ -181,7 +180,7 @@ class ErrorHandlerMixin:
             f"{error_info['severity'].upper()} | "
             f"{error_info['category']} | "
             f"{error_info['error_type']}: {error_info['error_message']} | "
-            f"Context: {json.dumps(error_info['context'], ensure_ascii=False)}"
+            f"Context: {json.dumps(error_info['context'], ensure_ascii}"
         )
 
         if hasattr(self, "logger"):
@@ -194,9 +193,8 @@ class ErrorHandlerMixin:
             if hasattr(self, "logger"):
                 self.logger.debug(f"Stacktrace:\n{error_info['stacktrace']}")
 
-    def _add_to_history(self, error_info: Dict[str, Any]):
-        """エラー履歴に追加"""
-        self.error_history.append(error_info)
+    def _add_to_history(self, error_info: Dict[str, Any])self.error_history.append(error_info)
+    """エラー履歴に追加"""
 
         # 履歴サイズ制限
         if len(self.error_history) > self.max_error_history:
@@ -221,14 +219,13 @@ class ErrorHandlerMixin:
                 if hasattr(self, "logger"):
                     self.logger.debug(f"Error notification failed: {e}")
 
-    def _should_retry(self, category: str, context: Dict[str, Any]) -> bool:
-        """リトライすべきか判定"""
-        retry_count = context.get("retry_count", 0)
+    def _should_retry(self, category: str, context: Dict[str, Any]) -> boolretry_count = context.get("retry_count", 0)
+    """リトライすべきか判定"""
         max_attempts = self.retry_config.get(category, {}).get("max_attempts", 0)
 
         return retry_count < max_attempts
 
-    def _execute_retry(
+    def _execute_retry(:
         self, retry_callback: Callable, error_info: Dict[str, Any], category: str
     ) -> Dict[str, Any]:
         """リトライ実行"""

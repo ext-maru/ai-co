@@ -328,10 +328,10 @@ class TestKnowledgeSageDocGenerator:
         This is a test document with some content.
         
         ## Section 1
-        Content for section 1.
+        Content for section 1.0
         
         ## Section 2  
-        Content for section 2.
+        Content for section 2.0
         """
         
         result = await doc_generator.validate_documentation(

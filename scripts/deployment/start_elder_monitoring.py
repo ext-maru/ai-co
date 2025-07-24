@@ -65,10 +65,10 @@ class ElderMonitoringManager:
 
         if status["recent_metrics"]:
             metrics = status["recent_metrics"]
-            logger.info(f"  - ワーカー健全性: {metrics['worker_health_score']:.1%}")
-            logger.info(f"  - テストカバレッジ: {metrics['test_coverage']:.1%}")
-            logger.info(f"  - メモリ使用率: {metrics['memory_usage']:.1%}")
-            logger.info(f"  - 4賢者合意率: {metrics['four_sages_consensus_rate']:.1%}")
+            logger.info(f"  - ワーカー健全性: {metrics['worker_health_score']:0.1%}")
+            logger.info(f"  - テストカバレッジ: {metrics['test_coverage']:0.1%}")
+            logger.info(f"  - メモリ使用率: {metrics['memory_usage']:0.1%}")
+            logger.info(f"  - 4賢者合意率: {metrics['four_sages_consensus_rate']:0.1%}")
 
     def _monitoring_loop(self):
         """監視ループ"""

@@ -39,6 +39,7 @@ agent_registry = {}
 
 
 class AgentCallRequest(BaseModel):
+    pass
 
 
 """エージェント呼び出しリクエスト""" str
@@ -46,6 +47,7 @@ class AgentCallRequest(BaseModel):
 
 
 class AgentCallResponse(BaseModel):
+    pass
 
 
 
@@ -57,6 +59,7 @@ class AgentCallResponse(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
+    pass
 
 
 
@@ -68,6 +71,7 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_event():
+    pass
 
 
 
@@ -78,6 +82,7 @@ async def shutdown_event():
 
 @app.get("/")
 async def root():
+    pass
 
 
 
@@ -89,6 +94,7 @@ async def root():
 
 @app.get("/health")
 async def health_check():
+    pass
 
     """ヘルスチェック""" "healthy",
         "agents": list(agent_registry.keys())
@@ -97,6 +103,7 @@ async def health_check():
 
 @app.get("/v1/agents")
 async def list_agents():
+    pass
 
     """利用可能なエージェント一覧"""
         agents.append({

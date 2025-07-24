@@ -386,7 +386,7 @@ class ParallelAncientElderOrchestrator:
             summary_report = self._generate_audit_summary(all_audit_results, total_time)
 
             logger.info(
-                f"🎯 Parallel audit complete: {total_audits} audits in {total_time:.2f}s"
+                f"🎯 Parallel audit complete: {total_audits} audits in {total_time:0.2f}s"
             )
 
             return {
@@ -540,20 +540,20 @@ async def demo_parallel_ancient_elder_audit():
         print(f"Passed: {audit_result['passed']}")
         print(f"Failed: {audit_result['failed']}")
         print(f"Warnings: {audit_result['warnings']}")
-        print(f"Total time: {audit_result['total_time']:.2f}s")
-        print(f"Average time per audit: {audit_result['average_time_per_audit']:.3f}s")
+        print(f"Total time: {audit_result['total_time']:0.2f}s")
+        print(f"Average time per audit: {audit_result['average_time_per_audit']:0.3f}s")
 
         # サマリーレポート表示
         summary = audit_result["summary_report"]
         print(f"\n📊 Summary Report:")
-        print(f"Overall Score: {summary['total_score']:.1f}/100")
+        print(f"Overall Score: {summary['total_score']:0.1f}/100")
 
         print("\n🔍 Specialty Breakdown:")
         for specialty, stats in summary["specialty_breakdown"].items():
             print(f"  {specialty.upper()}:")
             print(f"    - Audits: {stats['total']}")
-            print(f"    - Average Score: {stats['avg_score']:.1f}")
-            print(f"    - Pass Rate: {stats['passed']/stats['total']*100:.1f}%")
+            print(f"    - Average Score: {stats['avg_score']:0.1f}")
+            print(f"    - Pass Rate: {stats['passed']/stats['total']*100:0.1f}%")
 
         print("\n⚠️ Top Findings:")
         for finding, count in summary["top_findings"]:
@@ -561,7 +561,7 @@ async def demo_parallel_ancient_elder_audit():
 
         print(f"\n⚡ Efficiency Metrics:")
         print(
-            f"  - Audits per second: {summary['audit_efficiency']['audits_per_second']:.2f}"
+            f"  - Audits per second: {summary['audit_efficiency']['audits_per_second']:0.2f}"
         )
         print(
             f"  - Parallel speedup: {summary['audit_efficiency']['parallel_speedup']}x"

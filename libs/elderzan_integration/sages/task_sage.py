@@ -575,7 +575,7 @@ class TaskSageIntegration:
             # アクティブタスクから削除
             del self.active_tasks[task_id]
 
-            logger.info(f"タスク完了処理: {task_id}, 完了時間: {completion_time:.2f}秒")
+            logger.info(f"タスク完了処理: {task_id}, 完了時間: {completion_time:0.2f}秒")
 
     async def _handle_session_created(
         self, session_id: str, notification_data: Dict[str, Any]

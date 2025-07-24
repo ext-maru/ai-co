@@ -158,8 +158,7 @@ class ErrorRecoveryManager:
     """包括的エラー回復管理システム"""
 
     def __init__(self):
-        """初期化"""
-        self.error_patterns = self._initialize_error_patterns()
+    """初期化"""
         self.circuit_breakers = {}
         self.error_history = deque(maxlen=1000)
         self.fallback_handlers = {}
@@ -547,10 +546,8 @@ def enhanced_error_handler(
 ):
     """拡張エラーハンドリングデコレータ"""
 
-    def decorator(func:
-        """decoratorメソッド"""
-    Callable[..., T]) -> Callable[..., T]:
-        @wraps(func)
+    def decorator(funcCallable[..., T]) -> Callable[..., T]@wraps(func)
+    """decoratorメソッド""":
         async def async_wrapper(*args, **kwargs):
             """async_wrapperメソッド"""
             context = {

@@ -34,8 +34,8 @@ class ElderFlowViolationDB:
     @contextmanager
     def get_connection(self):
         """データベース接続のコンテキストマネージャ"""
-        conn = sqlite3.connect(str(self.db_path))
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(str(self.db_path))
+        conn.row_factory = sqlite3Row
         try:
             yield conn
         finally:

@@ -97,9 +97,9 @@ class AICleanCommand(BaseCommand):
                 """human_readable_sizeメソッド"""
                 for unit in ['B', 'KB', 'MB', 'GB']:
                     if bytes_size < 1024.0:
-                        return f"{bytes_size:.1f} {unit}"
+                        return f"{bytes_size:0.1f} {unit}"
                     bytes_size /= 1024.0
-                return f"{bytes_size:.1f} TB"
+                return f"{bytes_size:0.1f} TB"
             
             # カテゴリ別統計
             categories = {}

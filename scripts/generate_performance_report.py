@@ -129,23 +129,23 @@ def generate_html_report(benchmark_data: Dict[str, Any]) -> str:
                 <div class="benchmark-name">{name}</div>
                 <div class="metric">
                     <span class="metric-label">Mean:</span>
-                    <span class="metric-value">{mean:.4f}s</span>
+                    <span class="metric-value">{mean:0.4f}s</span>
                 </div>
                 <div class="metric">
                     <span class="metric-label">Median:</span>
-                    <span class="metric-value">{median:.4f}s</span>
+                    <span class="metric-value">{median:0.4f}s</span>
                 </div>
                 <div class="metric">
                     <span class="metric-label">Std Dev:</span>
-                    <span class="metric-value">{stddev:.4f}s</span>
+                    <span class="metric-value">{stddev:0.4f}s</span>
                 </div>
                 <div class="metric">
                     <span class="metric-label">Min:</span>
-                    <span class="metric-value">{min_val:.4f}s</span>
+                    <span class="metric-value">{min_val:0.4f}s</span>
                 </div>
                 <div class="metric">
                     <span class="metric-label">Max:</span>
-                    <span class="metric-value">{max_val:.4f}s</span>
+                    <span class="metric-value">{max_val:0.4f}s</span>
                 </div>
             </div>
         """
@@ -179,11 +179,11 @@ def generate_text_report(benchmark_data: Dict[str, Any]) -> str:
 
         report.append(f"Benchmark: {name}")
         report.append("-" * 40)
-        report.append(f"  Mean:    {stats.get('mean', 0):.4f}s")
-        report.append(f"  Median:  {stats.get('median', 0):.4f}s")
-        report.append(f"  Std Dev: {stats.get('stddev', 0):.4f}s")
-        report.append(f"  Min:     {stats.get('min', 0):.4f}s")
-        report.append(f"  Max:     {stats.get('max', 0):.4f}s")
+        report.append(f"  Mean:    {stats.get('mean', 0):0.4f}s")
+        report.append(f"  Median:  {stats.get('median', 0):0.4f}s")
+        report.append(f"  Std Dev: {stats.get('stddev', 0):0.4f}s")
+        report.append(f"  Min:     {stats.get('min', 0):0.4f}s")
+        report.append(f"  Max:     {stats.get('max', 0):0.4f}s")
         report.append("")
 
     return "\n".join(report)

@@ -37,9 +37,8 @@ except ImportError:
         # モック実装（テスト用）
         class MockSage:
             """MockSage - 4賢者システム関連クラス"""
-            async def process_request(self, request:
+            async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
                 """process_request処理メソッド"""
-            Dict[str, Any]) -> Dict[str, Any]:
                 return {"status": "mock_success", "mock": True}
 
         EnhancedKnowledgeSage = MockSage
@@ -124,7 +123,6 @@ class ElderCastEnhanced:
     async def _cast_knowledge_summon_enhanced(self, query: str) -> Dict[str, Any]:
         """拡張知識召喚の術"""
         print("📚 Enhanced Knowledge Sage召喚中...")
-
         # 正しいAPIコール: "search_knowledge"を使用
         result = await self.enhanced_knowledge_sage.process_request(
             {
@@ -293,7 +291,6 @@ class ElderCastEnhanced:
     async def _cast_task_management(self, task_desc: str, power: str) -> Dict[str, Any]:
         """タスク管理の術"""
         print("📋 Enhanced Task Management召喚中...")
-        
         try:
             # TodoTrackerIntegrationを動的インポート
             import sys

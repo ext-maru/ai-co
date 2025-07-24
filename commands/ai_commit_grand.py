@@ -197,7 +197,7 @@ class GrandCommitCLI:
         self.display_grand_banner()
 
         try:
-            # 1. Git状態確認
+            # 1.0 Git状態確認
             print("🔍 Git状態を確認中...")
             git_changes = self.get_git_changes()
 
@@ -205,7 +205,7 @@ class GrandCommitCLI:
                 print("⚠️ 変更されたファイルがありません")
                 return False
 
-            # 2. 影響度分析
+            # 2.0 影響度分析
             all_files = (
                 git_changes["staged"]
                 + git_changes["unstaged"]
@@ -215,7 +215,7 @@ class GrandCommitCLI:
 
             self.display_change_analysis(git_changes, impact)
 
-            # 3. Grand Protocol 実行確認
+            # 3.0 Grand Protocol 実行確認
             print("👑 Grand Protocol を実行しますか？")
             print("   • 4賢者全員による詳細レビュー")
             print("   • 多段階承認プロセス")
@@ -227,7 +227,7 @@ class GrandCommitCLI:
                 print("❌ Grand Protocol 中止")
                 return False
 
-            # 4. コンテキスト準備
+            # 4.0 コンテキスト準備
             context = {
                 "urgency": CommitUrgency.LOW,  # Grandは急がない
                 "files": all_files,
@@ -237,22 +237,22 @@ class GrandCommitCLI:
                 "impact_analysis": impact,
             }
 
-            # 5. ファイルステージング
+            # 5.0 ファイルステージング
             if args.files:
                 self.stage_specific_files(args.files)
             else:
                 self.stage_all_changes(git_changes)
 
-            # 6. Grand Protocol 4賢者相談（詳細版）
+            # 6.0 Grand Protocol 4賢者相談（詳細版）
             print("\n🧙‍♂️ 4賢者による詳細レビュー開始...")
             print("   時間制限なし - 完全な品質保証を優先\n")
 
             sage_results = await self.harmony_engine.grand_consultation(context)
 
-            # 7. 各賢者の詳細結果表示
+            # 7.0 各賢者の詳細結果表示
             self.display_sage_consultations(sage_results)
 
-            # 8. 多段階承認プロセス
+            # 8.0 多段階承認プロセス
             print("\n🏛️ 多段階承認プロセス")
             print("=" * 60)
 
@@ -269,7 +269,7 @@ class GrandCommitCLI:
             # 第2段階: リスク評価
             risk_decision = self.evaluate_risk_level(sage_results, impact)
             print(f"✅ 第2段階 - リスク評価: {risk_decision['status']}")
-            print(f"   総合リスクスコア: {risk_decision['total_risk']:.2f}")
+            print(f"   総合リスクスコア: {risk_decision['total_risk']:0.2f}")
 
             if not risk_decision["approved"]:
                 print("❌ リスクレベルが高すぎます")
@@ -279,19 +279,19 @@ class GrandCommitCLI:
             # 第3段階: 最終承認
             print("✅ 第3段階 - 最終承認: 承認")
 
-            # 9. コミット実行
+            # 9.0 コミット実行
             print(f"\n🚀 Grand Protocol コミット実行中...")
             success = self._execute_git_commit(message)
 
             if success:
                 elapsed = time.time() - start_time
                 print(f"\n✅ Grand Protocol 完了!")
-                print(f"⏱️ 総実行時間: {elapsed:.1f}秒")
+                print(f"⏱️ 総実行時間: {elapsed:0.1f}秒")
 
-                # 10. エルダー評議会への報告
+                # 10.0 エルダー評議会への報告
                 await self.report_to_elder_council(context, sage_results, elapsed)
 
-                # 11. Grand レポート保存
+                # 11.0 Grand レポート保存
                 await self.save_grand_report(context, sage_results, elapsed)
 
                 return True
@@ -312,7 +312,7 @@ class GrandCommitCLI:
             print(f"\n🧙‍♂️ {result.sage_name} (相談 {i}/4)")
             print("-" * 40)
             print(f"📊 判定: {'✅ 承認' if result.approval else '❌ 却下'}")
-            print(f"⚠️ リスクスコア: {result.risk_score:.2f}")
+            print(f"⚠️ リスクスコア: {result.risk_score:0.2f}")
             print(f"💡 助言: {result.advice}")
 
     def evaluate_sage_decision(self, sage_results) -> Dict:

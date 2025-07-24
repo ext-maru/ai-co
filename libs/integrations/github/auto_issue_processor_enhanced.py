@@ -415,7 +415,7 @@ class EnhancedAutoIssueProcessor(EldersServiceLegacy):
                     f"🤖 Auto-processed by Elder Flow\n\n"
                     f"PR created: {pr_url}\n\n"
                     f"This issue was automatically processed based on its complexity "
-                    f"({complexity.score:.2f}) and priority level."
+                    f"({complexity.score:0.2f}) and priority level."
                 )
 
     async def _handle_reopened_issue_success(

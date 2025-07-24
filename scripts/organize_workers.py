@@ -32,9 +32,8 @@ class WorkerOrganizer:
 
         print("✅ ワーカー整理が完了しました")
 
-    def analyze_workers(self):
-        """ワーカーファイルを分析"""
-        print("\n📊 ワーカーファイルを分析中...")
+    def analyze_workers(self)print("\n📊 ワーカーファイルを分析中...")
+    """ワーカーファイルを分析"""
 
         # 重複判定マップ
         worker_groups = {
@@ -42,7 +41,7 @@ class WorkerOrganizer:
                 "primary": "pm_worker_enhanced.py",  # 最新版を使用
                 "duplicates": [
                     "pm_worker.py",
-                    "pm_worker_v2.py",
+                    "pm_worker_v2.0py",
                     "enhanced_pm_worker.py",
                     "pm_worker_gitflow.py",
                     "quality_pm_worker.py",
@@ -72,9 +71,8 @@ class WorkerOrganizer:
         all_files = list(self.workers_dir.glob("*.py"))
         print(f"  総ワーカーファイル数: {len(all_files)}")
 
-    def archive_duplicates(self):
-        """重複ワーカーをアーカイブ"""
-        print("\n📦 重複ワーカーをアーカイブ中...")
+    def archive_duplicates(self)print("\n📦 重複ワーカーをアーカイブ中...")
+    """重複ワーカーをアーカイブ"""
 
         archived_count = 0
 
@@ -104,9 +102,8 @@ class WorkerOrganizer:
 
         print(f"  ✓ {archived_count}個のファイルをアーカイブしました")
 
-    def update_imports(self):
-        """インポート文の更新が必要なファイルを検出"""
-        print("\n🔍 インポート文の確認...")
+    def update_imports(self)print("\n🔍 インポート文の確認...")
+    """インポート文の更新が必要なファイルを検出"""
 
         # コアファイルでワーカーをインポートしているものを検索
         core_files = [

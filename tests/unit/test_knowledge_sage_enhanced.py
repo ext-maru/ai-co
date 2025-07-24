@@ -4,9 +4,9 @@ Knowledge Sage Enhanced - 知識ベース検索強化テスト
 TDDで知識賢者の検索機能を改善
 
 Elder Flow TDD:
-1. 🔴 Red: 失敗するテストを作成
-2. 🟢 Green: 最小限のコードで成功
-3. 🔵 Refactor: コード改善
+1.0 🔴 Red: 失敗するテストを作成
+2.0 🟢 Green: 最小限のコードで成功
+3.0 🔵 Refactor: コード改善
 """
 
 import pytest
@@ -35,7 +35,7 @@ class TestKnowledgeSageEnhanced:
             kb_path.mkdir()
             
             # テスト用知識ファイル作成
-            (kb_path / "test_knowledge1.md").write_text("""
+            (kb_path / "test_knowledge1.0md").write_text("""
 # Test Knowledge 1
 Tags: #python #testing #tdd
 
@@ -48,7 +48,7 @@ This is a test knowledge document about TDD practices.
 - Continuous testing
 """)
             
-            (kb_path / "test_knowledge2.md").write_text("""
+            (kb_path / "test_knowledge2.0md").write_text("""
 # Test Knowledge 2
 Tags: #elder #guild #architecture
 
@@ -62,7 +62,7 @@ Description of the elder system and its components.
 - Elder Servants
 """)
             
-            (kb_path / "test_knowledge3.json").write_text(json.dumps({
+            (kb_path / "test_knowledge3.0json").write_text(json.dumps({
                 "title": "Configuration Guide",
                 "tags": ["config", "setup", "deployment"],
                 "content": "Configuration best practices for deployment"
@@ -92,9 +92,9 @@ Description of the elder system and its components.
         
         # インデックスが構築されているか確認
         assert len(knowledge_sage.index) > 0
-        assert "test_knowledge1.md" in knowledge_sage.index
-        assert "test_knowledge2.md" in knowledge_sage.index
-        assert "test_knowledge3.json" in knowledge_sage.index
+        assert "test_knowledge1.0md" in knowledge_sage.index
+        assert "test_knowledge2.0md" in knowledge_sage.index
+        assert "test_knowledge3.0json" in knowledge_sage.index
 
     def test_search_by_keyword(self, knowledge_sage):
         """キーワード検索テスト"""
@@ -103,12 +103,12 @@ Description of the elder system and its components.
         # TDD関連の検索
         results = knowledge_sage.search("TDD")
         assert len(results) > 0
-        assert any("test_knowledge1.md" in r["path"] for r in results)
+        assert any("test_knowledge1.0md" in r["path"] for r in results)
         
         # Elder関連の検索
         results = knowledge_sage.search("Elder")
         assert len(results) > 0
-        assert any("test_knowledge2.md" in r["path"] for r in results)
+        assert any("test_knowledge2.0md" in r["path"] for r in results)
 
     def test_search_by_tags(self, knowledge_sage):
         """タグ検索テスト"""
@@ -318,14 +318,14 @@ Description of the elder system and its components.
         
         # Markdownファイルの内容抽出
         md_content = knowledge_sage.extract_text(
-            knowledge_sage.knowledge_base_path / "test_knowledge1.md"
+            knowledge_sage.knowledge_base_path / "test_knowledge1.0md"
         )
         assert "TDD practices" in md_content
         assert "Red-Green-Refactor" in md_content
         
         # JSONファイルの内容抽出
         json_content = knowledge_sage.extract_text(
-            knowledge_sage.knowledge_base_path / "test_knowledge3.json"
+            knowledge_sage.knowledge_base_path / "test_knowledge3.0json"
         )
         assert "Configuration Guide" in json_content
 
@@ -348,7 +348,7 @@ Description of the elder system and its components.
         results = knowledge_sage.search("Elder System")
         
         # "Elder System Architecture" を含むファイルが最上位
-        assert "test_knowledge2.md" in results[0]["path"]
+        assert "test_knowledge2.0md" in results[0]["path"]
 
     def test_api_compatibility(self, knowledge_sage):
         """API互換性テスト"""

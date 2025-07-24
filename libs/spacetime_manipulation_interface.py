@@ -472,7 +472,7 @@ async def spacetime_demo():
 
     interface = SpacetimeManipulationInterface()
 
-    # 1. 時間移動テスト
+    # 1.0 時間移動テスト
     future_time = datetime.now() + timedelta(hours=24)
     time_travel_op = {
         "type": "time_travel",
@@ -483,7 +483,7 @@ async def spacetime_demo():
     result1 = await interface.execute_spacetime_operation(time_travel_op)
     print(f"Time travel result: {json.dumps(result1['result'], indent=2)}")
 
-    # 2. 空間折り畳みテスト
+    # 2.0 空間折り畳みテスト
     point_a = SpacetimeCoordinate(x=0, y=0, z=0, t=0)
     point_b = SpacetimeCoordinate(x=1000, y=1000, z=1000, t=0)
 
@@ -495,10 +495,10 @@ async def spacetime_demo():
     print("\n🌌 Testing space folding...")
     result2 = await interface.execute_spacetime_operation(space_fold_op)
     print(
-        f"Space folding result: Distance reduced by {result2['result']['distance_reduction']:.2f} units"
+        f"Space folding result: Distance reduced by {result2['result']['distance_reduction']:0.2f} units"
     )
 
-    # 3. ワームホール作成テスト
+    # 3.0 ワームホール作成テスト
     entrance = SpacetimeCoordinate(x=100, y=100, z=0, t=0)
     exit = SpacetimeCoordinate(x=900, y=900, z=0, t=0)
 
@@ -511,7 +511,7 @@ async def spacetime_demo():
     result3 = await interface.execute_spacetime_operation(wormhole_op)
     print(f"Wormhole created: {result3['result']}")
 
-    # 4. ポケット次元作成テスト
+    # 4.0 ポケット次元作成テスト
     pocket_op = {
         "type": "pocket_dimension",
         "parameters": {"size": (10, 10, 10), "purpose": "data_storage"},
@@ -521,12 +521,12 @@ async def spacetime_demo():
     result4 = await interface.execute_spacetime_operation(pocket_op)
     print(f"Pocket dimension created: {result4['result']}")
 
-    # 5. 時空間状態レポート
+    # 5.0 時空間状態レポート
     status = await interface.get_spacetime_status()
     print("\n📊 Spacetime Status Report:")
     print(json.dumps(status, indent=2))
 
-    # 6. 因果律レポート
+    # 6.0 因果律レポート
     causality_violations = sum(
         1
         for op in interface.operation_history
@@ -536,7 +536,7 @@ async def spacetime_demo():
     print(f"\n⚖️ Causality Report:")
     print(f"Total operations: {len(interface.operation_history)}")
     print(f"Causality violations: {causality_violations}")
-    print(f"Timeline integrity: {interface.causality_monitor.timeline_integrity:.3f}")
+    print(f"Timeline integrity: {interface.causality_monitor.timeline_integrity:0.3f}")
 
 
 if __name__ == "__main__":

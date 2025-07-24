@@ -6,11 +6,11 @@
 統合管理システム - タスク・品質・インシデント・レポート管理統合
 
 統合対象:
-1. タスク管理 - 計画・進捕・完了管理
-2. 品質管理 - 品質ゲート・チェック・最適化
-3. インシデント管理 - 検知・対応・復旧
-4. レポート管理 - 統一レポート・メトリクス管理
-5. ログ管理 - ログ収集・解析・統合
+1.0 タスク管理 - 計画・進捕・完了管理
+2.0 品質管理 - 品質ゲート・チェック・最適化
+3.0 インシデント管理 - 検知・対応・復旧
+4.0 レポート管理 - 統一レポート・メトリクス管理
+5.0 ログ管理 - ログ収集・解析・統合
 
 最適化目標:
 - 管理オーバーヘッド 50%削減
@@ -50,9 +50,8 @@ except ImportError as e:
         def __init__(self):
             """初期化メソッド"""
             self.tasks = {}
-        def create_task(self, title, description, priority="medium"):
-            """task作成メソッド"""
-            return f"task_{len(self.tasks)}"
+        def create_task(self, title, description, priority="medium")return f"task_{len(self.tasks)}"
+    """task作成メソッド"""
         def get_tasks(self):
             """tasks取得メソッド"""
             return []
@@ -65,9 +64,8 @@ except ImportError as e:
         def __init__(self):
             """初期化メソッド"""
             self.incidents = {}
-        def create_incident(self, title, description, severity="medium"):
-            """incident作成メソッド"""
-            return f"incident_{len(self.incidents)}"
+        def create_incident(self, title, description, severity="medium")return f"incident_{len(self.incidents)}"
+    """incident作成メソッド"""
         def get_incidents(self):
             """incidents取得メソッド"""
             return []
@@ -210,12 +208,11 @@ class UnifiedManagementSystem:
         print(f"   インシデント管理統合: ✅")
         print(f"   リアルタイム監視: ✅")
     
-    def _init_database(self):
-        """統合管理データベース初期化"""
-        db_path = Path("data/unified_management.db")
+    def _init_database(self)db_path = Path("data/unified_management.db")
+    """統合管理データベース初期化"""
         db_path.parent.mkdir(parents=True, exist_ok=True)
         
-        self.conn = sqlite3.connect(str(db_path), check_same_thread=False)
+        self.conn = sqlite3connect(str(db_path), check_same_thread=False)
         self.conn.execute("""
             CREATE TABLE IF NOT EXISTS management_entries (
                 id TEXT PRIMARY KEY,
@@ -261,9 +258,8 @@ class UnifiedManagementSystem:
         self.conn.commit()
         print(f"   データベース初期化: {db_path}")
     
-    def _start_monitoring(self):
-        """リアルタイム監視開始"""
-        def monitoring_loop():
+    def _start_monitoring(self)def monitoring_loop():
+    """リアルタイム監視開始"""
             """monitoring_loopメソッド"""
             while self.monitoring_active:
                 try:
@@ -446,9 +442,8 @@ class UnifiedManagementSystem:
                     entry.metadata.get("resolution", "統合システムによる解決")
                 )
     
-    async def _handle_escalation(self, entry: UnifiedManagementEntry):
-        """エスカレーション処理"""
-        print(f"🚨 エスカレーション処理: {entry.id}")
+    async def _handle_escalation(self, entry: UnifiedManagementEntry)print(f"🚨 エスカレーション処理: {entry.id}")
+    """エスカレーション処理"""
         
         # 統合評議会へエスカレーション
         await self.unified_council.submit_matter(
@@ -464,9 +459,8 @@ class UnifiedManagementSystem:
             }
         )
     
-    async def _handle_completion(self, entry: UnifiedManagementEntry):
-        """完了処理"""
-        print(f"✅ 完了処理: {entry.id}")
+    async def _handle_completion(self, entry: UnifiedManagementEntry)print(f"✅ 完了処理: {entry.id}")
+    """完了処理"""
         
         # 完了時のメトリクス計算
         processing_time = (entry.updated_at - entry.created_at).total_seconds()
@@ -670,9 +664,8 @@ class UnifiedManagementSystem:
         
         return recommendations
     
-    def _calculate_efficiency_score(self, summary_stats: Dict) -> float:
-        """効率スコア算出"""
-        completion_rate = summary_stats.get("completion_rate", 0)
+    def _calculate_efficiency_score(self, summary_stats: Dict) -> floatcompletion_rate = summary_stats.get("completion_rate", 0)
+    """効率スコア算出"""
         avg_processing_time = summary_stats.get("average_processing_time", 0)
         
         # シンプルな効率スコア (0-100)
@@ -680,7 +673,7 @@ class UnifiedManagementSystem:
         completion_score = completion_rate * 100
         
         return min(100, (completion_score * 0.7 + time_score * 0.3))
-    
+    :
     def _collect_system_metrics(self):
         """システムメトリクス収集"""
         active_entries = len(
@@ -741,9 +734,8 @@ class UnifiedManagementSystem:
         except Exception as e:
             print(f"イベント保存エラー: {e}")
     
-    async def _update_management_metrics(self):
-        """管理メトリクス更新"""
-        self._collect_system_metrics()
+    async def _update_management_metrics(self)self._collect_system_metrics()
+    """管理メトリクス更新"""
         
         # 平均処理時間の計算
         completed_entries = [e for e in self.management_entries.values() if e.status == ManagementStatus.COMPLETED]
@@ -842,10 +834,9 @@ class UnifiedManagementSystem:
         except Exception as e:
             print(f"レポート保存エラー: {e}")
     
-    def get_active_entries(self, management_type: Optional[ManagementType] = None) -> List[Dict]:
-        """アクティブエントリ一覧取得"""
-        entries = self.management_entries.values()
-        
+    def get_active_entries(self, management_type: Optional[ManagementType] = None) -> List[Dict]entries = self.management_entries.values()
+    """アクティブエントリ一覧取得"""
+        :
         if management_type:
             entries = [e for e in entries if e.management_type == management_type]
         
@@ -917,9 +908,8 @@ class UnifiedManagementSystem:
             for report in reports[:limit]
         ]
     
-    async def shutdown_gracefully(self):
-        """統合管理システムの優雅なシャットダウン"""
-        print(f"📋 統合管理システムシャットダウン開始...")
+    async def shutdown_gracefully(self)print(f"📋 統合管理システムシャットダウン開始...")
+    """統合管理システムの優雅なシャットダウン"""
         
         # 監視停止
         self.monitoring_active = False
@@ -1007,9 +997,8 @@ def main():
         entry_id = sys.argv[2]
         status = ManagementStatus(sys.argv[3])
         
-        async def update_async():
-            """async更新メソッド"""
-            success = await management_system.update_entry_status(entry_id, status)
+        async def update_async()success = await management_system.update_entry_status(entry_id, status)
+    """async更新メソッド"""
             if success:
                 print(f"ステータス更新完了: {entry_id}")
             else:
@@ -1029,23 +1018,22 @@ def main():
         stats = management_system.get_management_statistics()
         print("\n📊 管理統計情報:")
         metrics = stats["management_metrics"]
-        print(f"  総エントリ数: {metrics['total_entries']:.0f}")
-        print(f"  アクティブ数: {metrics['active_entries']:.0f}")
-        print(f"  完了数: {metrics['completed_entries']:.0f}")
-        print(f"  管理効率: {metrics['management_efficiency']:.1%}")
-        print(f"  システム負荷: {metrics['system_load']:.1%}")
+        print(f"  総エントリ数: {metrics['total_entries']:0.0f}")
+        print(f"  アクティブ数: {metrics['active_entries']:0.0f}")
+        print(f"  完了数: {metrics['completed_entries']:0.0f}")
+        print(f"  管理効率: {metrics['management_efficiency']:0.1%}")
+        print(f"  システム負荷: {metrics['system_load']:0.1%}")
     
     elif command == "dashboard":
         hours = int(sys.argv[2]) if len(sys.argv) > 2 else 24
         
-        async def dashboard_async():
-            """dashboard_asyncメソッド"""
-            report = await management_system.generate_unified_dashboard_report(hours)
+        async def dashboard_async()report = await management_system.generate_unified_dashboard_report(hours)
+    """dashboard_asyncメソッド"""
             print(f"\n📊 ダッシュボードレポート生成: {report.id}")
             print(f"  期間: 過去{hours}時間")
-            print(f"  総エントリ数: {report.metrics['total_entries']:.0f}")
-            print(f"  完了率: {report.metrics['completion_rate']:.1%}")
-            print(f"  効率スコア: {report.metrics['efficiency_score']:.1f}")
+            print(f"  総エントリ数: {report.metrics['total_entries']:0.0f}")
+            print(f"  完了率: {report.metrics['completion_rate']:0.1%}")
+            print(f"  効率スコア: {report.metrics['efficiency_score']:0.1f}")
             print(f"  推奨事項: {len(report.recommendations)}件")
         
         asyncio.run(dashboard_async())

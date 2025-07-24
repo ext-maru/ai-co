@@ -48,9 +48,8 @@ class TimeFeatures:
 class PredictionModel:
     """タスクタイプ別の予測モデル"""
 
-    def __init__(self, task_type:
+    def __init__(self, task_type: TaskType):
         """初期化メソッド"""
-    TaskType):
         self.task_type = task_type
         self.coefficients = {
             "base_time": 300.0,  # 5分（秒）
@@ -176,9 +175,8 @@ class PredictionModel:
 class ExecutionTimePredictor:
     """実行時間予測エンジン"""
 
-    def __init__(self, tracking_db:
+    def __init__(self, tracking_db: UnifiedTrackingDB):
         """初期化メソッド"""
-    UnifiedTrackingDB):
         self.tracking_db = tracking_db
         self.prediction_models = {}
         self.feature_cache = {}
@@ -223,8 +221,8 @@ class ExecutionTimePredictor:
 
             logger.info(
                 f"Predicted execution time for task {task.id}: "
-                f"{predicted_time:.0f}s ({confidence_interval[0]:.0f}s - " \
-                    "{confidence_interval[1]:.0f}s)"
+                f"{predicted_time:0.0f}s ({confidence_interval[0]:0.0f}s - " \
+                    "{confidence_interval[1]:0.0f}s)"
             )
 
             return predicted_time, confidence_interval
@@ -273,7 +271,7 @@ class ExecutionTimePredictor:
 
                 logger.info(
                     f"Initialized model for {task_type.value} with "
-                    f"avg_time={avg_time:.0f}s, std={std_time:.0f}s"
+                    f"avg_time={avg_time:0.0f}s, std={std_time:0.0f}s"
                 )
 
         except Exception as e:
@@ -384,7 +382,7 @@ class ExecutionTimePredictor:
 
             logger.info(
                 f"Updated prediction model for task {task_id}, "
-                f"actual: {actual_execution_time:.0f}s, predicted: {predicted_time:.0f}s"
+                f"actual: {actual_execution_time:0.0f}s, predicted: {predicted_time:0.0f}s"
             )
 
         except Exception as e:

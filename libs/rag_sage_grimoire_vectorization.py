@@ -526,7 +526,7 @@ class RAGSageGrimoireVectorization:
 
         current_idx = 0
 
-        # 1. クエリセマンティック埋め込み
+        # 1.0 クエリセマンティック埋め込み
         query_vector = await self._generate_query_semantic_vector(
             query_data.get("query", "")
         )
@@ -535,28 +535,28 @@ class RAGSageGrimoireVectorization:
         )
         current_idx += self.dimensions.query_semantic
 
-        # 2. コンテキスト埋め込み
+        # 2.0 コンテキスト埋め込み
         context_vector = await self._generate_context_embeddings(query_data, metadata)
         vector[current_idx : current_idx + self.dimensions.context_embeddings] = (
             context_vector
         )
         current_idx += self.dimensions.context_embeddings
 
-        # 3. 知識統合情報
+        # 3.0 知識統合情報
         synthesis_vector = await self._generate_knowledge_synthesis_vector(metadata)
         vector[current_idx : current_idx + self.dimensions.knowledge_synthesis] = (
             synthesis_vector
         )
         current_idx += self.dimensions.knowledge_synthesis
 
-        # 4. 推論パターン
+        # 4.0 推論パターン
         reasoning_vector = await self._generate_reasoning_patterns_vector(query_data)
         vector[current_idx : current_idx + self.dimensions.reasoning_patterns] = (
             reasoning_vector
         )
         current_idx += self.dimensions.reasoning_patterns
 
-        # 5. 検索メタデータ
+        # 5.0 検索メタデータ
         retrieval_vector = await self._generate_retrieval_metadata_vector(metadata)
         vector[current_idx : current_idx + self.dimensions.retrieval_metadata] = (
             retrieval_vector

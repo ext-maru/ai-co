@@ -409,8 +409,8 @@ def main():
         recovery_system.create_windows_batch()
         recovery_system.install_cron_job()
         print("WSL スリープ復旧システムのインストールが完了しました!")
-        print("1. Windows側で start_ai_company.bat を実行してください")
-        print("2. または、WSL起動時に ./scripts/auto_startup.sh を実行してください")
+        print("1.0 Windows側で start_ai_company.bat を実行してください")
+        print("2.0 または、WSL起動時に ./scripts/auto_startup.sh を実行してください")
     else:
         # 通常の復旧モード
         recovery_system.run_recovery()

@@ -152,7 +152,7 @@ def main():
     print("🏛️ Elders Guild Grimoire Migration Analysis")
     print("=" * 80)
 
-    # 1. ファイル発見
+    # 1.0 ファイル発見
     md_files = discover_md_files()
 
     if not md_files:
@@ -161,7 +161,7 @@ def main():
 
     print(f"\n📊 Analyzing {len(md_files)} files...")
 
-    # 2. ファイル分析
+    # 2.0 ファイル分析
     analyses = []
     for i, file_path in enumerate(md_files):
         if (i + 1) % 50 == 0:
@@ -171,10 +171,10 @@ def main():
         if analysis:
             analyses.append(analysis)
 
-    # 3. レポート生成
+    # 3.0 レポート生成
     report = create_migration_report(analyses)
 
-    # 4. レポート保存
+    # 4.0 レポート保存
     report_dir = Path("migration_reports")
     report_dir.mkdir(exist_ok=True)
 
@@ -184,7 +184,7 @@ def main():
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
 
-    # 5. 結果表示
+    # 5.0 結果表示
     summary = report["migration_summary"]
 
     print("\n" + "=" * 80)
@@ -216,7 +216,7 @@ def main():
 
     print("🚀 Next Steps:")
     for step in report["next_steps"]:
-        print(f"  1. {step}")
+        print(f"  1.0 {step}")
 
     print("=" * 80)
     print("🎯 Ready for actual PostgreSQL + pgvector migration!")

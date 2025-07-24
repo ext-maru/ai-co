@@ -253,7 +253,7 @@ class WorkerRAGMigrationVerifier:
                 "total_workers": total_workers,
                 "verified_workers": verified_count,
                 "failed_workers": failed_count,
-                "success_rate": f"{(verified_count / total_workers * 100):.1f}%",
+                "success_rate": f"{(verified_count / total_workers * 100):0.1f}%",
             },
             "details": self.results,
         }

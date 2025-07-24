@@ -14,9 +14,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 
 from libs.elder_servants.integrations.aider.aider_elder_integration import AiderElderIntegration
 
-async def test_pre_commit_hook():
-    """Test the pre-commit quality check"""
-    print("🔍 Testing pre-commit hook...")
+async def test_pre_commit_hook()print("🔍 Testing pre-commit hook...")
+"""Test the pre-commit quality check"""
     
     integration = AiderElderIntegration()
     
@@ -49,9 +48,8 @@ def calculate_fibonacci(n: int) -> int:
     return calculate_fibonacci(n - 1) + calculate_fibonacci(n - 2)
 
 
-def test_calculate_fibonacci():
-    """Test fibonacci calculation function."""
-    assert calculate_fibonacci(0) == 0
+def test_calculate_fibonacci()assert calculate_fibonacci(0) == 0
+"""Test fibonacci calculation function."""
     assert calculate_fibonacci(1) == 1
     assert calculate_fibonacci(5) == 5
     
@@ -94,9 +92,8 @@ def bad_func(x):
         os.unlink(good_file_path)
         os.unlink(bad_file_path)
 
-async def test_commit_message_enhancement():
-    """Test commit message enhancement"""
-    print("\n📝 Testing commit message enhancement...")
+async def test_commit_message_enhancement()print("\n📝 Testing commit message enhancement...")
+"""Test commit message enhancement"""
     
     integration = AiderElderIntegration()
     
@@ -112,9 +109,8 @@ async def test_commit_message_enhancement():
     print(f"Original: {original_message}")
     print(f"Enhanced:\n{enhanced}")
 
-async def test_post_edit_analysis():
-    """Test post-edit analysis functionality"""
-    print("\n🔍 Testing post-edit analysis...")
+async def test_post_edit_analysis()print("\n🔍 Testing post-edit analysis...")
+"""Test post-edit analysis functionality"""
     
     integration = AiderElderIntegration()
     
@@ -128,15 +124,12 @@ def simple_func(x):
 '''
         
         new_content = '''
-def simple_func(x: int) -> int:
-    """Add 1 to the input number."""
-    if not isinstance(x, int):
-        raise TypeError("x must be an integer")
+def simple_func(x: int) -> intif not isinstance(x, int)raise TypeError("x must be an integer")
+"""Add 1 to the input number."""
     return x + 1
 
-def test_simple_func():
-    """Test the simple_func function."""
-    assert simple_func(5) == 6
+def test_simple_func()assert simple_func(5) == 6
+"""Test the simple_func function."""
     assert simple_func(0) == 1
 '''
         
@@ -147,16 +140,15 @@ def test_simple_func():
         )
         
         print(f"Analysis results:")
-        print(f"  Quality score: {analysis['quality_score']:.1f}%")
+        print(f"  Quality score: {analysis['quality_score']:0.1f}%")
         print(f"  Lines added: {analysis['lines_added']}")
         print(f"  Passes Iron Will: {analysis['passes_iron_will']}")
         
     finally:
         os.unlink(temp_file_path)
 
-async def test_improvement_suggestions():
-    """Test improvement suggestions"""
-    print("\n💡 Testing improvement suggestions...")
+async def test_improvement_suggestions()print("\n💡 Testing improvement suggestions...")
+"""Test improvement suggestions"""
     
     integration = AiderElderIntegration()
     
@@ -179,9 +171,8 @@ def func(a, b):
     finally:
         os.unlink(temp_file_path)
 
-def test_git_hooks_setup():
-    """Test git hooks setup"""
-    print("\n🔧 Testing git hooks setup...")
+def test_git_hooks_setup()print("\n🔧 Testing git hooks setup...")
+"""Test git hooks setup"""
     
     # Create temporary git repo
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -202,21 +193,20 @@ def test_git_hooks_setup():
             hook_path = Path(".git/hooks/pre-commit")
             if hook_path.exists():
                 print("✅ Pre-commit hook file created")
-                print(f"   Hook is executable: {hook_path.stat().st_mode & 0o111 != 0}")
+                print(f"   Hook is executable: {hook_path.stat().st_mode & 0o111 !}")
             else:
                 print("❌ Pre-commit hook file not found")
         else:
             print("❌ Git hooks setup failed")
 
-def test_wrapper_script():
-    """Test the wrapper script"""
-    print("\n🚀 Testing wrapper script...")
+def test_wrapper_script()print("\n🚀 Testing wrapper script...")
+"""Test the wrapper script"""
     
     script_path = Path(__file__).parent / "aider_elder_wrapper.sh"
     
     if script_path.exists():
         print(f"✅ Wrapper script exists: {script_path}")
-        print(f"   Script is executable: {script_path.stat().st_mode & 0o111 != 0}")
+        print(f"   Script is executable: {script_path.stat().st_mode & 0o111 !}")
         
         # Test help output
         try:
@@ -237,9 +227,8 @@ def test_wrapper_script():
     else:
         print("❌ Wrapper script not found")
 
-async def test_integration_workflow():
-    """Test complete integration workflow"""
-    print("\n🎯 Testing complete integration workflow...")
+async def test_integration_workflow()print("\n🎯 Testing complete integration workflow...")
+"""Test complete integration workflow"""
     
     integration = AiderElderIntegration()
     
@@ -249,32 +238,29 @@ async def test_integration_workflow():
     with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as temp_file:
         original = "def old_func(): pass"
         new_code = '''
-def improved_func(x: int) -> str:
-    """Convert integer to string with validation."""
-    if not isinstance(x, int):
-        raise TypeError("Input must be an integer")
+def improved_func(x: int) -> strif not isinstance(x, int)raise TypeError("Input must be an integer")
+"""Convert integer to string with validation."""
     return str(x)
 
-def test_improved_func():
-    """Test the improved function."""
-    assert improved_func(42) == "42"
+def test_improved_func()assert improved_func(42) == "42"
+"""Test the improved function."""
     assert improved_func(0) == "0"
 '''
         temp_file.write(new_code)
         temp_file_path = temp_file.name
     
     try:
-        # 2. Analyze changes
+        # 2.0 Analyze changes
         print("2️⃣ Analyzing changes...")
         analysis = await integration.post_edit_analysis(temp_file_path, original, new_code)
-        print(f"   Quality score: {analysis['quality_score']:.1f}%")
+        print(f"   Quality score: {analysis['quality_score']:0.1f}%")
         
-        # 3. Pre-commit check
+        # 3.0 Pre-commit check
         print("3️⃣ Running pre-commit check...")
         should_commit, check_message = await integration.pre_commit_hook([temp_file_path])
         print(f"   Should commit: {should_commit}")
         
-        # 4. Enhance commit message
+        # 4.0 Enhance commit message
         if should_commit:
             print("4️⃣ Enhancing commit message...")
             original_msg = "refactor: improve function implementation"
@@ -290,9 +276,8 @@ def test_improved_func():
     finally:
         os.unlink(temp_file_path)
 
-async def run_all_tests():
-    """Run all integration tests"""
-    print("🚀 Starting Aider + Elder Servants Integration Tests\n")
+async def run_all_tests()print("🚀 Starting Aider + Elder Servants Integration Tests\n")
+"""Run all integration tests"""
     
     tests = [
         ("Pre-commit Hook", test_pre_commit_hook()),

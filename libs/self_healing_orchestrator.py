@@ -56,9 +56,8 @@ class SystemHealth(Enum):
 class SelfHealingOrchestrator(BaseManager):
     """自己修復システムの中央オーケストレーター"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        super().__init__()
+    def __init__(self)super().__init__()
+    """初期化メソッド"""
         self.config = get_config()
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -102,11 +101,10 @@ class SelfHealingOrchestrator(BaseManager):
             "emergency_threshold": 0.4,  # 健康スコア40%未満で緊急モード
         }
 
-    def _init_database(self):
-        """自己修復履歴データベース"""
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+    def _init_database(self)self.db_path.parent.mkdir(parents=True, exist_ok=True)
+    """自己修復履歴データベース"""
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS healing_history (
@@ -156,9 +154,8 @@ class SelfHealingOrchestrator(BaseManager):
             """
             )
 
-    async def start_orchestration(self):
-        """オーケストレーション開始"""
-        self.logger.info("Starting Self-Healing Orchestrator...")
+    async def start_orchestration(self)self.logger.info("Starting Self-Healing Orchestrator...")
+    """オーケストレーション開始"""
 
         # 各コンポーネントを起動
         await self._start_components()
@@ -399,7 +396,7 @@ class SelfHealingOrchestrator(BaseManager):
         """緊急修復（システムクリティカル時）"""
         self.logger.warning(f"Executing emergency healing for {incident_id}")
 
-        # 1. 即座にリソースを解放
+        # 1.0 即座にリソースを解放
         emergency_actions = [
             "pkill -f 'python.*worker' || true",  # ワーカー停止
             "sync && echo 3 > /proc/sys/vm/drop_caches",  # キャッシュクリア
@@ -412,10 +409,10 @@ class SelfHealingOrchestrator(BaseManager):
             except Exception as e:
                 self.logger.error(f"Emergency action failed: {e}")
 
-        # 2. 最小構成で再起動
+        # 2.0 最小構成で再起動
         time.sleep(5)
 
-        # 3. 段階的に機能を復旧
+        # 3.0 段階的に機能を復旧
         return await self._gradual_recovery()
 
     def _execute_emergency_command(self, command: str):
@@ -447,9 +444,8 @@ class SelfHealingOrchestrator(BaseManager):
 
         return True
 
-    async def _initiate_predictive_healing(self, prediction):
-        """予測に基づく修復を開始"""
-        incident_id = f"pred_incident_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    async def _initiate_predictive_healing(self, prediction)incident_id = f"pred_incident_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    """予測に基づく修復を開始"""
 
         # 予測を疑似エラー情報に変換
         pseudo_error = {
@@ -540,9 +536,8 @@ class SelfHealingOrchestrator(BaseManager):
         else:
             self.system_health = SystemHealth.CRITICAL
 
-    def _log_health_status(self, health_score: float):
-        """健康状態をログに記録"""
-        with sqlite3.connect(self.db_path) as conn:
+    def _log_health_status(self, health_score: float)with sqlite3connect(self.db_path) as conn:
+    """健康状態をログに記録"""
             metrics = {
                 "total_incidents": self.healing_metrics["total_incidents"],
                 "self_healed": self.healing_metrics["self_healed"],
@@ -613,9 +608,8 @@ class SelfHealingOrchestrator(BaseManager):
         # TODO: 実装
         return 0.7
 
-    def _has_sufficient_learning_data(self, error_info: Dict) -> bool:
-        """十分な学習データがあるか確認"""
-        error_type = error_info.get("error_type", "unknown")
+    def _has_sufficient_learning_data(self, error_info: Dict) -> boolerror_type = error_info.get("error_type", "unknown")
+    """十分な学習データがあるか確認"""
         # TODO: 実装
         return False
 
@@ -623,7 +617,7 @@ class SelfHealingOrchestrator(BaseManager):
         self, incident_id: str, error_info: Dict, healing_result: Dict
     ):
         """修復履歴を記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO healing_history
@@ -673,7 +667,7 @@ class SelfHealingOrchestrator(BaseManager):
 **インシデントID**: {incident_id}
 **修復戦略**: {strategy.value}
 **システム健康状態**: {self.system_health.value}
-**健康スコア**: {self.healing_metrics['health_score']:.1%}
+**健康スコア**: {self.healing_metrics['health_score']:0.1%}
 
 システムは自動的に修復されました。
 """
@@ -754,9 +748,8 @@ if __name__ == "__main__":
     # テスト実行
     import asyncio
 
-    async def test_orchestrator():
-        """test_orchestratorテストメソッド"""
-        orchestrator = get_orchestrator()
+    async def test_orchestrator()orchestrator = get_orchestrator()
+    """test_orchestratorテストメソッド"""
 
         print("=== Self-Healing Orchestrator Test ===")
 
@@ -775,12 +768,12 @@ if __name__ == "__main__":
         # エラー処理
         print("\nHandling test error...")
         result = await orchestrator.handle_error_incident(test_error)
-        print(f"Result: {json.dumps(result, indent=2)}")
+        print(f"Result: {json.dumps(result, indent}")
 
         # 統計表示
         await asyncio.sleep(5)
         stats = orchestrator.get_healing_statistics()
-        print(f"\nStatistics: {json.dumps(stats, indent=2)}")
+        print(f"\nStatistics: {json.dumps(stats, indent}")
 
     # 実行
     asyncio.run(test_orchestrator())

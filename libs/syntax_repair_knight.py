@@ -270,19 +270,19 @@ class SyntaxRepairKnight(IncidentKnight):
 
             original_content = content
 
-            # 1. 無効なエスケープシーケンスの修復
+            # 1.0 無効なエスケープシーケンスの修復
             content = await self._fix_invalid_escape(content)
 
-            # 2. 未完了の文字列の修復
+            # 2.0 未完了の文字列の修復
             content = await self._fix_unterminated_string(content)
 
-            # 3. 未完了のdocstringの修復
+            # 3.0 未完了のdocstringの修復
             content = await self._fix_unterminated_docstring(content)
 
-            # 4. 基本的なインデント修復
+            # 4.0 基本的なインデント修復
             content = await self._fix_basic_indentation(content)
 
-            # 5. 末尾改行の追加
+            # 5.0 末尾改行の追加
             if not content.endswith("\n"):
                 content += "\n"
 
@@ -470,6 +470,7 @@ class SyntaxRepairKnight(IncidentKnight):
 
 
 if __name__ == "__main__":
+    pass
 
     async def main():
         """mainメソッド"""

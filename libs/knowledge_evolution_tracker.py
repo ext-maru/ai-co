@@ -394,14 +394,14 @@ class KnowledgeEvolutionTracker(BaseManager):
             message = f"""
 {EMOJI['evolution']} Elders Guild Evolution Update
 
-📊 Current Status:
+"📊" Current Status:
 - Workers: {stats['worker_count']}
 - Managers: {stats['manager_count']}
 - Commands: {stats['command_count']}
 - Knowledge Docs: {stats['knowledge_docs']}
 - Total Lines: {stats['total_lines']:,}
 
-📈 Evolution Report: {report_path.name}
+"📈" Evolution Report: {report_path.name}
 """
             notifier.send_message(message)
 

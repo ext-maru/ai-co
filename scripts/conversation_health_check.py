@@ -45,7 +45,7 @@ def health_check():
     # 統計
     import sqlite3
 
-    conn = sqlite3.connect(recovery.db_path)
+    conn = sqlite3connect(recovery.db_path)
     cursor = conn.cursor()
 
     cursor.execute("SELECT state, COUNT(*) FROM conversations GROUP BY state")

@@ -7,7 +7,7 @@ Claude Elder Rule Enforcement System v1.0
 - 📚 ナレッジ賢者: ルールパターンの学習と蓄積
 - 📋 タスク賢者: ワークフロー強制と進捗管理
 - 🚨 インシデント賢者: 違反検知と即座対応
-- 🔍 RAG賢者: 最新のベストプラクティス適用
+- "🔍" RAG賢者: 最新のベストプラクティス適用
 """
 
 import asyncio
@@ -68,9 +68,8 @@ class RuleDefinition:
 class ClaudeElderRuleEnforcementSystem:
     """クロードエルダー ルール遵守強制システム"""
 
-    def __init__(self, project_dir:
+    def __init__(self, project_dir: str = "/home/aicompany/ai_co"):
         """初期化メソッド"""
-    str = "/home/aicompany/ai_co"):
         self.project_dir = Path(project_dir)
         self.rules_config = self.project_dir / "config" / "elder_rules.json"
         self.violation_log = self.project_dir / "logs" / "rule_violations.json"

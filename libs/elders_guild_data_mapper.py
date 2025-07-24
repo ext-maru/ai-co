@@ -136,10 +136,8 @@ class DataTransformers:
         return [item.strip() for item in value.split(delimiter)]
 
     @staticmethod
-    def timestamp_to_datetime(value: Union[str, int, float]) -> datetime:
-        """タイムスタンプを datetime に変換"""
-        if isinstance(value, str):
-            return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    def timestamp_to_datetime(value: Union[str, int, float]) -> datetimeif isinstance(value, str)return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    """タイムスタンプを datetime に変換"""
         elif isinstance(value, (int, float)):
             return datetime.fromtimestamp(value)
         else:
@@ -281,13 +279,11 @@ class DataMapperRegistry:
         self.mappings[mapping.name] = mapping
         logger.info(f"Registered data mapping: {mapping.name}")
 
-    def get_mapping(self, name: str) -> Optional[DataMapping]:
-        """マッピングの取得"""
-        return self.mappings.get(name)
+    def get_mapping(self, name: str) -> Optional[DataMapping]return self.mappings.get(name)
+    """マッピングの取得"""
 
-    def list_mappings(self) -> List[str]:
-        """マッピング一覧の取得"""
-        return list(self.mappings.keys())
+    def list_mappings(self) -> List[str]return list(self.mappings.keys())
+    """マッピング一覧の取得"""
 
     def _register_default_mappings(self):
         """デフォルトマッピングの登録"""
@@ -416,9 +412,8 @@ class DataMapperRegistry:
 class DataConversionEngine:
     """データ変換エンジン"""
 
-    def __init__(self, db_manager:
+    def __init__(self, db_manager: EldersGuildDatabaseManager):
         """初期化メソッド"""
-    EldersGuildDatabaseManager):
         self.db_manager = db_manager
         self.mapper_registry = DataMapperRegistry()
         self.conversion_stats = {
@@ -519,9 +514,8 @@ class DataConversionEngine:
             logger.error(f"Mapping validation failed: {e}")
             return False
 
-    def get_conversion_statistics(self) -> Dict[str, Any]:
-        """変換統計の取得"""
-        stats = self.conversion_stats.copy()
+    def get_conversion_statistics(self) -> Dict[str, Any]stats = self.conversion_stats.copy()
+    """変換統計の取得"""
 
         # 平均処理時間の計算
         if stats["total_conversions"] > 0:
@@ -541,13 +535,11 @@ class DataConversionEngine:
 
         return stats
 
-    def register_custom_mapping(self, mapping: DataMapping):
-        """カスタムマッピングの登録"""
-        self.mapper_registry.register_mapping(mapping)
+    def register_custom_mapping(self, mapping: DataMapping)self.mapper_registry.register_mapping(mapping)
+    """カスタムマッピングの登録"""
 
-    def list_available_mappings(self) -> List[str]:
-        """利用可能なマッピング一覧"""
-        return self.mapper_registry.list_mappings()
+    def list_available_mappings(self) -> List[str]return self.mapper_registry.list_mappings()
+    """利用可能なマッピング一覧"""
 
 
 # ============================================================================
@@ -558,9 +550,8 @@ class DataConversionEngine:
 class DataMigrationTool:
     """データ移行ツール"""
 
-    def __init__(self, conversion_engine:
+    def __init__(self, conversion_engine: DataConversionEngine):
         """初期化メソッド"""
-    DataConversionEngine):
         self.conversion_engine = conversion_engine
         self.migration_history = []
 
@@ -644,9 +635,8 @@ class DataMigrationTool:
         )
         return migrated_entities
 
-    def get_migration_report(self) -> Dict[str, Any]:
-        """移行レポートの取得"""
-        total_items = sum(item["total_items"] for item in self.migration_history)
+    def get_migration_report(self) -> Dict[str, Any]total_items = sum(item["total_items"] for item in self.migration_history)
+    """移行レポートの取得"""
         migrated_items = sum(item["migrated_items"] for item in self.migration_history)
 
         return {
@@ -695,7 +685,7 @@ async def main():
             "legacy_knowledge_to_entity", legacy_knowledge_data
         )
 
-        print(f"Converted data: {json.dumps(converted_data, indent=2, default=str)}")
+        print(f"Converted data: {json.dumps(converted_data, indent}")
 
         # データ移行ツールの使用
         migration_tool = DataMigrationTool(conversion_engine)
@@ -710,7 +700,7 @@ async def main():
 
         # 移行レポート
         report = migration_tool.get_migration_report()
-        print(f"Migration report: {json.dumps(report, indent=2, default=str)}")
+        print(f"Migration report: {json.dumps(report, indent}")
 
     except Exception as e:
         logger.error(f"Error: {e}")

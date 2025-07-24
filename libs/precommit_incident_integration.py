@@ -4,10 +4,10 @@ Pre-commit Incident Integration
 pre-commitフックとインシデント予測システムの統合
 
 コミット前に以下を自動実行：
-1. インポートエラー予測
-2. テスト失敗予測
-3. コード品質チェック
-4. インシデント リスク評価
+1.0 インポートエラー予測
+2.0 テスト失敗予測
+3.0 コード品質チェック
+4.0 インシデント リスク評価
 """
 
 import json
@@ -134,9 +134,8 @@ class GitFileAnalyzer:
 class QuickTestRunner:
     """クイックテスト実行器"""
 
-    def __init__(self, timeout:
+    def __init__(self, timeout: int = 30):
         """初期化メソッド"""
-    int = 30):
         self.timeout = timeout
 
     def run_quick_tests(self, target_files: List[Path]) -> Dict[str, Any]:
@@ -285,9 +284,8 @@ class QuickTestRunner:
 class PreCommitIncidentIntegration:
     """pre-commitインシデント統合メインクラス"""
 
-    def __init__(self, config:
+    def __init__(self, config: Optional[HookConfig] = None):
         """初期化メソッド"""
-    Optional[HookConfig] = None):
         self.config = config or HookConfig()
         self.git_analyzer = GitFileAnalyzer()
         self.quick_test_runner = QuickTestRunner(timeout=self.config.timeout_seconds)
@@ -391,7 +389,7 @@ class PreCommitIncidentIntegration:
 
             if not success:
                 issues.append(
-                    f"Risk score {risk_score:.2f} exceeds threshold {self.config.risk_threshold}"
+                    f"Risk score {risk_score:0.2f} exceeds threshold {self.config.risk_threshold}"
                 )
                 recommendations.append("Address high-risk issues before committing")
 
@@ -424,8 +422,8 @@ class PreCommitIncidentIntegration:
         # ヘッダー
         status = "✅ PASSED" if result.success else "❌ FAILED"
         lines.append(f"\n🔍 Elders Guild Pre-commit Check: {status}")
-        lines.append(f"⏱️  Execution time: {result.execution_time:.2f}s")
-        lines.append(f"📊 Risk score: {result.risk_score:.2f}")
+        lines.append(f"⏱️  Execution time: {result.execution_time:0.2f}s")
+        lines.append(f"📊 Risk score: {result.risk_score:0.2f}")
 
         # 問題
         if result.issues_found:
@@ -450,7 +448,7 @@ class PreCommitIncidentIntegration:
 
         if not result.success:
             lines.append(
-                f"\n🚨 Commit blocked due to high risk (>{self.config.risk_threshold:.1f})"
+                f"\n🚨 Commit blocked due to high risk (>{self.config.risk_threshold:0.1f})"
             )
             lines.append("   Address the issues above and try again.")
         else:

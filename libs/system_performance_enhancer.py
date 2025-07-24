@@ -35,9 +35,8 @@ logger = logging.getLogger(__name__)
 class MemoryPool:
     """メモリプール管理"""
 
-    def __init__(self, max_size_mb:
+    def __init__(self, max_size_mb: int = 500):
         """初期化メソッド"""
-    int = 500):
         self.max_size_bytes = max_size_mb * 1024 * 1024
         self.pools = defaultdict(list)
         self.allocated = 0
@@ -83,9 +82,8 @@ class MemoryPool:
 class AsyncTaskPool:
     """非同期タスクプール"""
 
-    def __init__(self, max_workers:
+    def __init__(self, max_workers: int = 10):
         """初期化メソッド"""
-    int = 10):
         self.max_workers = max_workers
         self.semaphore = asyncio.Semaphore(max_workers)
         self.active_tasks = weakref.WeakSet()
@@ -138,9 +136,8 @@ class AsyncTaskPool:
 class SmartCache:
     """スマートキャッシュ"""
 
-    def __init__(self, max_size:
+    def __init__(self, max_size: int = 1000, ttl_seconds: int = 3600):
         """初期化メソッド"""
-    int = 1000, ttl_seconds: int = 3600):
         self.max_size = max_size
         self.ttl_seconds = ttl_seconds
         self.cache = {}
@@ -236,10 +233,10 @@ class ResourceMonitor:
         # アラートチェック
         alerts = []
         if cpu_percent > self.thresholds["cpu_percent"]:
-            alerts.append(f"High CPU usage: {cpu_percent:.1f}%")
+            alerts.append(f"High CPU usage: {cpu_percent:0.1f}%")
 
         if memory_percent > self.thresholds["memory_percent"]:
-            alerts.append(f"High memory usage: {memory_percent:.1f}%")
+            alerts.append(f"High memory usage: {memory_percent:0.1f}%")
 
         self.alerts.extend(alerts)
 
@@ -520,7 +517,7 @@ class SystemPerformanceEnhancer:
                 )
 
                 elapsed = time.time() - start_time
-                logger.debug(f"{func.__name__} completed in {elapsed:.3f}s")
+                logger.debug(f"{func.__name__} completed in {elapsed:0.3f}s")
 
                 return result
 
@@ -537,7 +534,7 @@ class SystemPerformanceEnhancer:
                 result = func(*args, **kwargs)
 
                 elapsed = time.time() - start_time
-                logger.debug(f"{func.__name__} completed in {elapsed:.3f}s")
+                logger.debug(f"{func.__name__} completed in {elapsed:0.3f}s")
 
                 return result
 
@@ -621,8 +618,8 @@ if __name__ == "__main__":
         result2 = await expensive_operation(10)
         time2 = time.time() - start
 
-        print(f"First call: {time1:.3f}s, Second call: {time2:.3f}s")
-        print(f"Cache speedup: {time1/time2:.1f}x")
+        print(f"First call: {time1:0.3f}s, Second call: {time2:0.3f}s")
+        print(f"Cache speedup: {time1/time2:0.1f}x")
 
         # システム健康状態
         health = enhancer.get_system_health()

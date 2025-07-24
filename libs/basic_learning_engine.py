@@ -5,14 +5,14 @@ AI学習・進化システムの中核エンジン
 
 統合コンポーネント:
 🔗 Learning Data Collector: データ収集・前処理
-📊 Pattern Analyzer: パターン分析・洞察生成
+"📊" Pattern Analyzer: パターン分析・洞察生成
 🤝 Four Sages Integration: 4賢者協調学習システム
 
 4賢者との連携:
 📚 ナレッジ賢者: 学習結果の知識化・蓄積
 📋 タスク賢者: 学習タスクの最適化・スケジューリング
 🚨 インシデント賢者: 学習プロセスの監視・異常対応
-🔍 RAG賢者: 学習パターンの検索・類似分析
+"🔍" RAG賢者: 学習パターンの検索・類似分析
 """
 
 import sys
@@ -91,7 +91,7 @@ class BasicLearningEngine:
         try:
             initialization_results = {}
 
-            # 1. Data Collector初期化
+            # 1.0 Data Collector初期化
             data_collector_config = initialization_config.get("data_collector", {})
             if data_collector_config.get("enabled", True):
                 collector_result = self._initialize_data_collector(
@@ -99,7 +99,7 @@ class BasicLearningEngine:
                 )
                 initialization_results["data_collector"] = collector_result
 
-            # 2. Pattern Analyzer初期化
+            # 2.0 Pattern Analyzer初期化
             pattern_analyzer_config = initialization_config.get("pattern_analyzer", {})
             if pattern_analyzer_config.get("enabled", True):
                 analyzer_result = self._initialize_pattern_analyzer(
@@ -107,7 +107,7 @@ class BasicLearningEngine:
                 )
                 initialization_results["pattern_analyzer"] = analyzer_result
 
-            # 3. Four Sages Integration初期化
+            # 3.0 Four Sages Integration初期化
             sages_config = initialization_config.get("sages_integration", {})
             if sages_config.get("enabled", True):
                 sages_result = self.sages_integration.initialize_sage_integration(
@@ -115,11 +115,11 @@ class BasicLearningEngine:
                 )
                 initialization_results["sages_integration"] = sages_result
 
-            # 4. 学習パイプライン構築
+            # 4.0 学習パイプライン構築
             pipeline_result = self._build_learning_pipeline()
             initialization_results["learning_pipeline"] = pipeline_result
 
-            # 5. 学習エンジン状態更新
+            # 5.0 学習エンジン状態更新
             self.learning_state["engine_status"] = "ready"
             self.learning_state["initialization_time"] = datetime.now()
 

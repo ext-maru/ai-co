@@ -1106,9 +1106,9 @@ async def demo_market_domination():
 
         print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Domination Update:")
         print(f"   Phase: {status.get('current_phase', 'unknown')}")
-        print(f"   Overall Domination: {status.get('overall_domination_level', 0):.2%}")
-        print(f"   Market Influence: {status.get('market_influence', 0):.2%}")
-        print(f"   Competitive Advantage: {status.get('competitive_advantage', 0):.2%}")
+        print(f"   Overall Domination: {status.get('overall_domination_level', 0):0.2%}")
+        print(f"   Market Influence: {status.get('market_influence', 0):0.2%}")
+        print(f"   Competitive Advantage: {status.get('competitive_advantage', 0):0.2%}")
 
         recent_events = status.get("recent_events", [])
         if recent_events:
@@ -1132,7 +1132,7 @@ async def demo_market_domination():
             {}).values() if d > 0.5])}"
     )
     print(
-        f"   Overall Market Control: {final_status.get('overall_domination_level', 0):.1%}"
+        f"   Overall Market Control: {final_status.get('overall_domination_level', 0):0.1%}"
     )
     print(f"   Strategic Positioning: Strong")
     print(

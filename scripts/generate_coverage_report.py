@@ -90,7 +90,7 @@ class CoverageReporter:
             print("\n" + "=" * 80)
             print("📊 COVERAGE SUMMARY")
             print("=" * 80)
-            print(f"Total Coverage: {percent_covered:.2f}%")
+            print(f"Total Coverage: {percent_covered:0.2f}%")
             print(f"Lines Covered: {totals.get('covered_lines', 0)}")
             print(f"Lines Missing: {totals.get('missing_lines', 0)}")
             print(f"Total Lines: {totals.get('num_statements', 0)}")
@@ -126,11 +126,11 @@ class CoverageReporter:
 
         if coverage_percent is not None:
             if coverage_percent >= 60:
-                print(f"✅ MISSION ACCOMPLISHED! Coverage: {coverage_percent:.2f}%")
+                print(f"✅ MISSION ACCOMPLISHED! Coverage: {coverage_percent:0.2f}%")
                 print("🎉 Target of 60% coverage ACHIEVED!")
             else:
-                print(f"📈 Current Coverage: {coverage_percent:.2f}%")
-                print(f"📊 Gap to Target: {60 - coverage_percent:.2f}%")
+                print(f"📈 Current Coverage: {coverage_percent:0.2f}%")
+                print(f"📊 Gap to Target: {60 - coverage_percent:0.2f}%")
                 print("\nNext Steps:")
                 print("- Fix failing tests")
                 print("- Add missing test implementations")

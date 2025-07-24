@@ -396,9 +396,7 @@ class BranchUpdater:
                 elif 'changed in both' in line.lower():
                     # ファイルパスを抽出（簡略化）
                     parts = line.split()
-                    if not (parts):
-                        continue  # Early return to reduce nesting
-                    # Reduced nesting - original condition satisfied
+                    # Removed invalid continue statement
                     if parts:
                         conflict_files.append(parts[-1])
             
@@ -641,7 +639,7 @@ async def example_usage():
     
     print(f"Strategy: {analysis.recommended_strategy.value}")
     print(f"Risk: {analysis.risk_level.value}")
-    print(f"Confidence: {analysis.confidence_score:.2f}")
+    print(f"Confidence: {analysis.confidence_score:0.2f}")
     
     # 安全な更新実行
     if analysis.risk_level in [RiskLevel.SAFE, RiskLevel.LOW]:

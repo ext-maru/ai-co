@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class SoulContext:
+    pass
 
 
 """魂のコンテキスト管理""" str):
@@ -39,19 +40,17 @@ class SoulContext:
         """コンテキストデータの追加"""
         self.context_data[key] = value
         
-    def get_context(self, key: str, default: Any = None) -> Any:
-        """コンテキストデータの取得"""
-        return self.context_data.get(key, default)
+    def get_context(self, key: str, default: Any = None) -> Anyreturn self.context_data.get(key, default)
+    """コンテキストデータの取得"""
+        :
+    def register_task(self, task_id: str)self.active_tasks.add(task_id)
+    """アクティブタスクの登録"""
         
-    def register_task(self, task_id: str):
-        """アクティブタスクの登録"""
-        self.active_tasks.add(task_id)
-        
-    def complete_task(self, task_id: str):
-        """タスクの完了"""
-        self.active_tasks.discard(task_id)
+    def complete_task(self, task_id: str)self.active_tasks.discard(task_id)
+    """タスクの完了"""
         
     def get_runtime(self) -> float:
+        pass
 
         """実行時間の取得（秒）"""
     """
@@ -94,6 +93,7 @@ class SoulContext:
         
     @abstractmethod
     async def initialize(self) -> bool:
+        pass
 
         
     """
@@ -115,6 +115,7 @@ class SoulContext:
         
     @abstractmethod
     async def shutdown(self):
+        pass
 
             """
         魂のシャットダウン処理
@@ -145,6 +146,7 @@ class SoulContext:
             logger.info(f"Soul stopped: {self.soul_name}")
             
     async def _main_loop(self):
+        pass
 
             
     """メインイベントループ"""
@@ -162,6 +164,7 @@ class SoulContext:
                 await self._periodic_tasks()
                 
     async def _periodic_tasks(self):
+        pass
 
                 """定期実行タスク"""
         """
@@ -170,6 +173,7 @@ class SoulContext:
         pass
         
     def _setup_signal_handlers(self):
+        pass
 
         """シグナルハンドラーの設定"""
             logger.info(f"Soul {self.soul_name} received signal: {signum}")
@@ -179,6 +183,7 @@ class SoulContext:
         signal.signal(signal.SIGTERM, signal_handler)
         
     async def request_shutdown(self):
+        pass
 
             """シャットダウンリクエスト""" {self.soul_name}")
         self._running = False
@@ -191,6 +196,7 @@ class SoulContext:
             logger.info(f"Soul {self.soul_name} registered ability: {ability_name}")
             
     def get_soul_info(self) -> Dict[str, Any]:
+        pass
 
             
     """魂の情報を取得""" self.soul_name,

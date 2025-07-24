@@ -298,13 +298,13 @@ def print_colored_report(report: Dict):
     if total_issues > 0:
         print("🛠️ 推奨対応:")
         if duplicate_dirs:
-            print("  1. 重複ディレクトリの統合・削除")
+            print("  1.0 重複ディレクトリの統合・削除")
         if dangerous_patterns:
-            print("  2. 危険パターンディレクトリの改名・削除")
+            print("  2.0 危険パターンディレクトリの改名・削除")
         if sage_conflicts:
-            print("  3. 4賢者システムの重複解決（Issue #302パターン）")
+            print("  3.0 4賢者システムの重複解決（Issue #302パターン）")
         if import_issues:
-            print("  4. 相対importの絶対import化")
+            print("  4.0 相対importの絶対import化")
         print("\n📚 詳細: docs/standards/PROJECT_STRUCTURE_STANDARDS.md")
     else:
         print("🎉 素晴らしい！プロジェクト構造は完璧です")

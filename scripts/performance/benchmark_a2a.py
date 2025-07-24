@@ -77,11 +77,10 @@ class PerformanceMetrics:
     system_memory_total_gb: float
     python_version: str
     
-    def to_dict(self) -> Dict[str, Any]:
-        """辞書形式で出力"""
-        return asdict(self)
+    def to_dict(self) -> Dict[str, Any]return asdict(self)
+    """辞書形式で出力"""
 
-
+:
 class ResourceMonitor:
     """リソース使用量監視"""
     
@@ -194,8 +193,8 @@ class A2APerformanceBenchmark:
                 tracemalloc.stop()
                 
                 logger.info(f"Memory usage - Current: {
-                    current / 1024 / 1024:.2f} MB,
-                    Peak: {peak / 1024 / 1024:.2f
+                    current / 1024 / 1024:0.2f} MB,
+                    Peak: {peak / 1024 / 1024:0.2f
                 } MB")
                 
                 # 次のイテレーションまでの間隔
@@ -327,9 +326,8 @@ class A2APerformanceBenchmark:
         except asyncio.CancelledError:
             pass
     
-    async def _simulate_issue_processing(self, issue_id: int, scenario: Dict[str, Any]):
-        """イシュー処理のシミュレーション"""
-        processing_delay = scenario.get("processing_delay_ms", 100) / 1000.0
+    async def _simulate_issue_processing(self, issue_id: int, scenario: Dict[str, Any])processing_delay = scenario.get("processing_delay_ms", 100) / 1000.0
+    """イシュー処理のシミュレーション"""
         
         # 実際の処理をシミュレート
         if scenario.get("simulate_real_processing", False):
@@ -455,19 +453,19 @@ class A2APerformanceBenchmark:
         
         for i, metrics in enumerate(results):
             report.append(f"## Scenario {i + 1}")
-            report.append(f"- **Duration**: {metrics.duration_seconds:.2f} seconds")
+            report.append(f"- **Duration**: {metrics.duration_seconds:0.2f} seconds")
             report.append(f"- **Issues Processed**: {metrics.issues_processed}")
-            report.append(f"- **Throughput**: {metrics.issues_per_second:.2f} issues/second")
+            report.append(f"- **Throughput**: {metrics.issues_per_second:0.2f} issues/second")
             report.append(f"- **Concurrent Processes**: {metrics.concurrent_processes}")
-            report.append(f"- **Memory Usage**: {metrics.memory_delta_mb:.2f} MB delta")
+            report.append(f"- **Memory Usage**: {metrics.memory_delta_mb:0.2f} MB delta")
             report.append(f"- **CPU Usage**: {
-                metrics.cpu_percent_avg:.1f}% average,
-                {metrics.cpu_percent_peak:.1f
+                metrics.cpu_percent_avg:0.1f}% average,
+                {metrics.cpu_percent_peak:0.1f
             }% peak")
             report.append(f"- **Processing Time**: {metrics.avg_processing_time_per_issue:." \
-                "3f}s avg, {metrics.p95_processing_time:.3f}s p95")
+                "3f}s avg, {metrics.p95_processing_time:0.3f}s p95")
                         report.append(f"- **Errors**: {metrics.errors_count} \
-                ({metrics.errors_count/metrics.issues_processed*100:.1f}%)")
+                ({metrics.errors_count/metrics.issues_processed*100:0.1f}%)")
             report.append("")
         
         # ボトルネック分析

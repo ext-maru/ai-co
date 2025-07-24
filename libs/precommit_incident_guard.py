@@ -319,7 +319,7 @@ class PreCommitIncidentGuard:
         # 脅威レベル
         report.append(f"🎯 脅威レベル: {assessment.overall_risk}")
         report.append(f"🐲 検出されたクリーチャー: {assessment.creature_threat}")
-        report.append(f"📊 リスクスコア: {assessment.risk_score * 100:.1f}%")
+        report.append(f"📊 リスクスコア: {assessment.risk_score * 100:0.1f}%")
         report.append("")
 
         # 変更サマリー

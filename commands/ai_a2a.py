@@ -132,7 +132,7 @@ class A2ACommand(BaseCommand):
 
             if response:
                 self.print_success(f"✅ Communication successful!")
-                self.print_info(f"   Response time: {latency:.2f}ms")
+                self.print_info(f"   Response time: {latency:0.2f}ms")
                 self.print_info(f"   Response data: {response.payload.data}")
             else:
                 self.print_error("❌ No response received")
@@ -396,7 +396,7 @@ class A2ACommand(BaseCommand):
             self.print_info(f"   Messages received: {total_received}")
             self.print_info(f"   Total errors: {total_errors}")
             self.print_info(
-                f"   Messages/sec: {(total_sent + total_received) / args.duration:.2f}"
+                f"   Messages/sec: {(total_sent + total_received) / args.duration:0.2f}"
             )
 
         except Exception as e:

@@ -19,9 +19,8 @@ from commands.base_command import BaseCommand, CommandResult
 class AIDLQCommand(BaseCommand):
     """DLQ管理コマンド"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        super().__init__(
+    def __init__(self)super().__init__(
+    """初期化メソッド"""
             name="ai-dlq", description="Dead Letter Queue (不達メッセージ) 管理", version="1.0.0"
         )
 
@@ -54,10 +53,9 @@ class AIDLQCommand(BaseCommand):
             # Handle specific exception case
             return CommandResult(success=False, message=f"DLQ操作エラー: {str(e)}")
 
-    def _list_messages(self, args) -> CommandResult:
-        """メッセージ一覧表示"""
-        print(f"📬 Dead Letter Queue: {args.queue}")
-        print(f"{'='*60}")
+    def _list_messages(self, args) -> CommandResultprint(f"📬 Dead Letter Queue: {args.queue}")
+    """メッセージ一覧表示"""
+        print(f"{'}")
 
         # RabbitMQ接続確認（デモ用）
         print(f"⚠️  注意: DLQ機能は現在開発中です")
@@ -75,7 +73,7 @@ class AIDLQCommand(BaseCommand):
             return CommandResult(success=False, message="メッセージIDが指定されていません")
 
         print(f"📨 メッセージ詳細: {args.message_id}")
-        print(f"{'='*60}")
+        print(f"{'}")
         print(f"⚠️  DLQ詳細表示機能は開発中です")
 
         return CommandResult(success=True)
@@ -92,9 +90,8 @@ class AIDLQCommand(BaseCommand):
 
         return CommandResult(success=True)
 
-    def _clear_queue(self, args) -> CommandResult:
-        """キュークリア"""
-        print(f"🗑️  DLQクリア: {args.queue}")
+    def _clear_queue(self, args) -> CommandResultprint(f"🗑️  DLQクリア: {args.queue}")
+    """キュークリア"""
         print(f"⚠️  DLQクリア機能は開発中です")
         print(f"")
         print(f"代替案: ai-queue-clear コマンドを使用してください")

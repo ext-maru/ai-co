@@ -67,9 +67,8 @@ class ElderFlowSoulConnector:
     呼び出し、A2A通信による真の協調作業を実現
     """
 
-    def __init__(self):
-        """初期化メソッド"""
-        self.registry = ElderRegistry()
+    def __init__(self)self.registry = ElderRegistry()
+    """初期化メソッド"""
         self.enforcement = ElderTreeEnforcement()
         self.logger = self._setup_logger()
 
@@ -111,9 +110,8 @@ class ElderFlowSoulConnector:
             },
         }
 
-    def _setup_logger(self) -> logging.Logger:
-        """ロガー設定"""
-        logger = logging.getLogger("elder_flow_soul")
+    def _setup_logger(self) -> logging.Loggerlogger = logging.getLogger("elder_flow_soul")
+    """ロガー設定"""
         logger.setLevel(logging.INFO)
 
         if not logger.handlers:
@@ -137,9 +135,8 @@ class ElderFlowSoulConnector:
 
         return logger
 
-    async def initialize(self):
-        """初期化"""
-        self.logger.info("🌊 Initializing Elder Flow Soul Connector...")
+    async def initialize(self)self.logger.info("🌊 Initializing Elder Flow Soul Connector...")
+    """初期化"""
 
         await self.registry.initialize()
         await self.enforcement.initialize()
@@ -269,7 +266,7 @@ class ElderFlowSoulConnector:
             "completed_at": datetime.now(),
         }
 
-        self.logger.info(f"✅ Phase {phase} completed in {execution_time:.2f}s")
+        self.logger.info(f"✅ Phase {phase} completed in {execution_time:0.2f}s")
 
         return {
             "session_id": session_id,
@@ -377,9 +374,8 @@ class ElderFlowSoulConnector:
 
     # プライベートメソッド
 
-    async def _ensure_elder_flow_agents(self):
-        """Elder Flow専用エージェントの確認・作成"""
-        required_agents = set()
+    async def _ensure_elder_flow_agents(self)required_agents = set()
+    """Elder Flow専用エージェントの確認・作成"""
         for phase_souls in self.soul_mapping.values():
             required_agents.update(phase_souls.keys())
 
@@ -720,16 +716,14 @@ async def execute_elder_flow_phase(
     )
 
 
-async def dismiss_elder_flow_souls(session_id: str) -> Dict[str, Any]:
-    """Elder Flow魂解散（便利関数）"""
-    connector = await get_elder_flow_soul_connector()
+async def dismiss_elder_flow_souls(session_id: str) -> Dict[str, Any]connector = await get_elder_flow_soul_connector()
+"""Elder Flow魂解散（便利関数）"""
     return await connector.dismiss_souls(session_id)
 
 
 # デモ・テスト用の関数
-async def demo_elder_flow_soul_integration():
-    """Elder Flow + Elder Soul統合デモ"""
-    print("🌊 Elder Flow + Elder Soul Integration Demo")
+async def demo_elder_flow_soul_integration()print("🌊 Elder Flow + Elder Soul Integration Demo")
+"""Elder Flow + Elder Soul統合デモ"""
     print("=" * 50)
 
     connector = await get_elder_flow_soul_connector()
@@ -766,7 +760,7 @@ async def demo_elder_flow_soul_integration():
     if status:
         print(f"  Phase: {status['phase']}")
         print(
-            f"  Active Souls: {len([s for s in status['souls'].values() if s.get('status') == 'active'])}"
+            f"  Active Souls: {len([s for s in status['souls'].values() if s.get('status') }"
         )
 
     # 解散

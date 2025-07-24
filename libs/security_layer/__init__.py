@@ -10,7 +10,7 @@ PROJECT ELDERZAN SecurityLayer
 📚 ナレッジ賢者: セキュリティ知識統合・脅威パターン分析
 📋 タスク賢者: 実装優先順位・品質管理
 🚨 インシデント賢者: 脅威検出・緊急対応
-🔍 RAG賢者: 暗号化検索・セキュアRAG
+"🔍" RAG賢者: 暗号化検索・セキュアRAG
 """
 
 from .authentication.rbac_manager import ElderZanRBACManager

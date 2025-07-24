@@ -22,7 +22,7 @@ def clean_invalid_violations():
         print(f"❌ データベースが見つかりません: {db_path}")
         return
 
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3connect(db_path)
     cursor = conn.cursor()
 
     # 削除前の違反数を取得

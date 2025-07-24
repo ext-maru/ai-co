@@ -330,7 +330,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
                     for result in rag_results:
                         # Process each item in collection
                         rag_context += f"- {result['content'][:200]}...\n"
-                        rag_context += f"  Source: {result['source']} (Score: {result['similarity_score']:.2f})\n"
+                        rag_context += f"  Source: {result['source']} (Score: {result['similarity_score']:0.2f})\n"
             except Exception as e:
                 # Handle specific exception case
                 self.logger.warning("RAG search failed", error=str(e))
@@ -498,7 +498,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
             # Create knowledge entry for the task
             knowledge_content = f"Task {task_id} completed successfully.\n"
             knowledge_content += f"Files created: {', '.join(created_files)}\n"
-            knowledge_content += f"Duration: {result.get('duration', 0):.2f} seconds\n"
+            knowledge_content += f"Duration: {result.get('duration', 0):0.2f} seconds\n"
 
             if result.get("result", {}).get("stdout"):
                 knowledge_content += f"Output: {result['result']['stdout'][:500]}...\n"

@@ -69,7 +69,7 @@ class SessionInheritanceA2ATest:
         
         # タスク1: OAuth実装
         result1 = self.run_command(
-            f"./scripts/todo-hook add 'OAuth2.0実装' high --user {self.test_user}"
+            f"./scripts/todo-hook add 'OAuth2.実装' high --user {self.test_user}"
         )
         if not result1["success"]:
             print(f"❌ タスク1作成失敗: {result1.get('error', 'Unknown error')}")

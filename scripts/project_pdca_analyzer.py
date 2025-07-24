@@ -282,7 +282,7 @@ class ProjectPDCAAnalyzer:
                 {
                     "id": "improve_test_coverage",
                     "title": "テストカバレッジ向上",
-                    "description": f"現在のカバレッジ {do_analysis['test_coverage']:.1f}% を95%以上に向上",
+                    "description": f"現在のカバレッジ {do_analysis['test_coverage']:0.1f}% を95%以上に向上",
                     "actions": [
                         "未テストのモジュールを特定",
                         "エッジケースのテスト追加",
@@ -356,10 +356,10 @@ class ProjectPDCAAnalyzer:
         self.console.print(
             Panel(
                 f"📊 PDCA分析完了: {project_name}\n\n"
-                f"計画完全性: {plan['plan_completeness']:.1f}%\n"
-                f"実装進捗: {do['implementation_progress']:.1f}%\n"
-                f"テストカバレッジ: {do['test_coverage']:.1f}%\n"
-                f"コード品質スコア: {do['code_quality_score']:.1f}/100",
+                f"計画完全性: {plan['plan_completeness']:0.1f}%\n"
+                f"実装進捗: {do['implementation_progress']:0.1f}%\n"
+                f"テストカバレッジ: {do['test_coverage']:0.1f}%\n"
+                f"コード品質スコア: {do['code_quality_score']:0.1f}/100",
                 title="🔄 PDCA サマリー",
                 border_style="green",
             )

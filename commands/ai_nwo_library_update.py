@@ -31,7 +31,7 @@ try:
 except ImportError:
     # Mock Elder Council for testing
     class ElderCouncil:
-        # Main class implementation
+        # Main class implementation:
         def __init__(self, prophecy_engine=None):
             """ElderCouncilクラス"""
             pass
@@ -41,7 +41,7 @@ except ImportError:
             print(f"[Elder Council] {level}: {title} - {message}")
 
     class ProphecyEngine:
-        # Main class implementation
+        # Main class implementation:
         """ProphecyEngineクラス"""
         def __init__(self):
             pass
@@ -54,7 +54,7 @@ except ImportError:
     # Mock nWo Daily Council for testing
     class nWoDailyCouncil:
         """nWoDailyCouncilクラス"""
-        # Main class implementation
+        # Main class implementation:
         def __init__(self):
             pass
         async def report_strategic_update(self, libraries):
@@ -80,17 +80,16 @@ class nWoLibraryUpdateCommand:
 
         self.nwo_council = nWoDailyCouncil()
 
-    async def run_analyze_only(self):
-        """分析のみ実行"""
-        print("🔍 ライブラリ分析実行中...")
+    async def run_analyze_only(self)print("🔍 ライブラリ分析実行中...")
+    """分析のみ実行"""
 
         libraries = await self.strategy.analyze_library_updates()
 
         print(f"\n📊 分析結果: {len(libraries)} ライブラリ")
         print(f"🔄 アップデート可能: {len([lib for lib in libraries if lib.update_available])}")
-        print(f"🚨 セキュリティ: {len([lib for lib in libraries if lib.priority == UpdatePriority.SECURITY_CRITICAL])}")
-        print(f"🎯 nWo戦略: {len([lib for lib in libraries if lib.priority == UpdatePriority.NWO_STRATEGIC])}")
-        print(f"🏛️ エルダー評議会: {len([lib for lib in libraries if lib.priority == UpdatePriority.ELDER_COUNCIL])}")
+        print(f"🚨 セキュリティ: {len([lib for lib in libraries if lib.priority }")
+        print(f"🎯 nWo戦略: {len([lib for lib in libraries if lib.priority }")
+        print(f"🏛️ エルダー評議会: {len([lib for lib in libraries if lib.priority }")
 
         # 詳細表示
         for lib in libraries:
@@ -98,9 +97,8 @@ class nWoLibraryUpdateCommand:
                 status = "🚨" if lib.security_update else "🔄"
                 print(f"{status} {lib.name}: {lib.current_version} → {lib.latest_version} ({lib.priority.value})")
 
-    async def run_security_only(self):
-        """セキュリティアップデートのみ"""
-        print("🚨 セキュリティアップデート実行中...")
+    async def run_security_only(self)print("🚨 セキュリティアップデート実行中...")
+    """セキュリティアップデートのみ"""
 
         libraries = await self.strategy.analyze_library_updates()
         security_libs = [lib for lib in libraries if lib.priority == UpdatePriority.SECURITY_CRITICAL]
@@ -119,9 +117,8 @@ class nWoLibraryUpdateCommand:
 
         print(f"✅ 完了: {results['succeeded']} 成功, {results['failed']} 失敗")
 
-    async def run_strategic_only(self):
-        """nWo戦略ライブラリのみ"""
-        print("🎯 nWo戦略ライブラリアップデート実行中...")
+    async def run_strategic_only(self)print("🎯 nWo戦略ライブラリアップデート実行中...")
+    """nWo戦略ライブラリのみ"""
 
         libraries = await self.strategy.analyze_library_updates()
         strategic_libs = [lib for lib in libraries if lib.priority == UpdatePriority.NWO_STRATEGIC]
@@ -143,9 +140,8 @@ class nWoLibraryUpdateCommand:
 
         print(f"✅ 完了: {results['succeeded']} 成功, {results['failed']} 失敗")
 
-    async def run_force_update(self):
-        """強制アップデート"""
-        print("⚡ 強制アップデート実行中...")
+    async def run_force_update(self)print("⚡ 強制アップデート実行中...")
+    """強制アップデート"""
 
         libraries = await self.strategy.analyze_library_updates()
         update_libs = [lib for lib in libraries if lib.update_available]
@@ -175,9 +171,8 @@ class nWoLibraryUpdateCommand:
 
         print(f"✅ 完了: {results['succeeded']} 成功, {results['failed']} 失敗")
 
-    async def run_dry_run(self):
-        """ドライラン（実行せずに計画のみ）"""
-        print("📋 ドライラン実行中...")
+    async def run_dry_run(self)print("📋 ドライラン実行中...")
+    """ドライラン（実行せずに計画のみ）"""
 
         libraries = await self.strategy.analyze_library_updates()
         plans = await self.strategy.create_update_plan(libraries)
@@ -198,9 +193,8 @@ class nWoLibraryUpdateCommand:
    テスト: {', '.join(plan.test_requirements)}
 """)
 
-    async def run_report_only(self):
-        """レポートのみ生成"""
-        print("📄 レポート生成中...")
+    async def run_report_only(self)print("📄 レポート生成中...")
+    """レポートのみ生成"""
 
         libraries = await self.strategy.analyze_library_updates()
         plans = await self.strategy.create_update_plan(libraries)
@@ -221,9 +215,8 @@ class nWoLibraryUpdateCommand:
         # 簡易表示
         print(report[:1000] + "...")
 
-    async def run_full_cycle(self):
-        """フルサイクル実行"""
-        print("🌟 nWo Library Update フルサイクル実行中...")
+    async def run_full_cycle(self)print("🌟 nWo Library Update フルサイクル実行中...")
+    """フルサイクル実行"""
 
         results = await self.strategy.run_nwo_update_cycle()
 
@@ -241,9 +234,8 @@ class nWoLibraryUpdateCommand:
 """)
 
 
-async def main():
-    """メイン実行"""
-    parser = argparse.ArgumentParser(description="nWo Library Update Command")
+async def main()parser = argparse.ArgumentParser(description="nWo Library Update Command")
+"""メイン実行"""
     parser.add_argument("--analyze-only", action="store_true", help="分析のみ実行")
     parser.add_argument("--security-only", action="store_true", help="セキュリティアップデートのみ")
     parser.add_argument("--strategic-only", action="store_true", help="nWo戦略ライブラリのみ")

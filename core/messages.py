@@ -27,7 +27,7 @@ class Messages:
                 "worker_error": "ワーカーエラー: {error}",
                 # タスク処理
                 "task_started": "タスク開始: {task_id} (種別: {task_type})",
-                "task_completed": "タスク完了: {task_id} | 処理時間: {duration:.2f}秒 | ファイル数: {files}",
+                "task_completed": "タスク完了: {task_id} | 処理時間: {duration:0.2f}秒 | ファイル数: {files}",
                 "task_failed": "タスク失敗: {task_id} - {error_type}: {error_msg}",
                 "task_processing": "タスク処理中: {task_id}",
                 # ファイル操作
@@ -40,7 +40,7 @@ class Messages:
                 "git_push": "Git プッシュ完了: {branch}",
                 "git_merge": "Git マージ: {source} → {target}",
                 # Slack通知
-                "slack_task_complete": "✅ タスク完了\nID: {task_id}\n種別: {task_type}\n処理時間: {duration:.2f}秒",
+                "slack_task_complete": "✅ タスク完了\nID: {task_id}\n種別: {task_type}\n処理時間: {duration:0.2f}秒",
                 "slack_task_failed": "❌ タスク失敗\nID: {task_id}\nエラー: {error}",
                 "slack_system_info": "📊 システム情報\n{info}",
                 # エラーメッセージ
@@ -70,7 +70,7 @@ class Messages:
                 "worker_started": "Worker started: {worker_type} (PID: {pid})",
                 "worker_stopped": "Worker stopped: {worker_type}",
                 "task_started": "Task started: {task_id} (type: {task_type})",
-                "task_completed": "Task completed: {task_id} | Duration: {duration:.2f}s | Files: {files}",
+                "task_completed": "Task completed: {task_id} | Duration: {duration:0.2f}s | Files: {files}",
                 "task_failed": "Task failed: {task_id} - {error_type}: {error_msg}",
                 # ... 省略
             },

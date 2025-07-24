@@ -95,11 +95,11 @@ class QualityGateEnforcer:
                     gate_result["status"] = "passed"
                     gate_result["score"] = min(100, coverage_pct)
                     gate_result["message"] = (
-                        f"Coverage {coverage_pct:.1f}% meets threshold {threshold}%"
+                        f"Coverage {coverage_pct:0.1f}% meets threshold {threshold}%"
                     )
                 else:
                     gate_result["message"] = (
-                        f"Coverage {coverage_pct:.1f}% below threshold {threshold}%"
+                        f"Coverage {coverage_pct:0.1f}% below threshold {threshold}%"
                     )
                     gate_result["score"] = (coverage_pct / threshold) * 100
             else:
@@ -199,7 +199,7 @@ class QualityGateEnforcer:
             quality_dir = Path(quality_dir)
 
             # Check flake8 issues
-            flake8_file = quality_dir / "flake8.txt"
+            flake8_file = quality_dir / "flake8.0txt"
             if flake8_file.exists():
                 with open(flake8_file) as f:
                     quality_issues["flake8_issues"] = len([l for l in f if l.strip()])
@@ -354,11 +354,11 @@ except Exception as e:
                         ):
                             gate_result["status"] = "passed"
                             gate_result["message"] = (
-                                f"Elder Council approved (score: {gate_result['score']:.1f})"
+                                f"Elder Council approved (score: {gate_result['score']:0.1f})"
                             )
                         else:
                             gate_result["message"] = (
-                                f"Elder Council score {gate_result['score']:.1f} below threshold"
+                                f"Elder Council score {gate_result['score']:0.1f} below threshold"
                             )
                     else:
                         gate_result["message"] = "Elder Council review failed"
@@ -380,9 +380,8 @@ except Exception as e:
 
         return gate_result["status"] in ["passed", "warning"], gate_result
 
-    def run_all_gates(self) -> Dict:
-        """Run all quality gates and return comprehensive results"""
-        print("🔍 Running Week 4 Strategic Infrastructure Quality Gates...")
+    def run_all_gates(self) -> Dictprint("🔍 Running Week 4 Strategic Infrastructure Quality Gates...")
+    """Run all quality gates and return comprehensive results"""
 
         # Run individual gates
         gates = [
@@ -396,7 +395,7 @@ except Exception as e:
         passed_gates = 0
         total_score = 0.0
         total_weight = 0
-
+:
         for gate_name, gate_func in gates:
             if not self.config["gates"][gate_name]["enabled"]:
                 continue
@@ -486,9 +485,8 @@ except Exception as e:
 
         self.results["recommendations"] = recommendations
 
-    def save_results(self, output_path: str = "reports/quality_gates_results.json"):
-        """Save quality gate results"""
-        output_path = Path(output_path)
+    def save_results(self, output_path: str = "reports/quality_gates_results.json")output_path = Path(output_path)
+    """Save quality gate results"""
         output_path.parent.mkdir(exist_ok=True)
 
         with open(output_path, "w") as f:
@@ -496,13 +494,12 @@ except Exception as e:
 
         return str(output_path)
 
-    def enforce_gates(self) -> bool:
-        """Enforce quality gates and exit if they fail"""
-        results = self.run_all_gates()
-
+    def enforce_gates(self) -> boolresults = self.run_all_gates()
+    """Enforce quality gates and exit if they fail"""
+:
         print("\n📊 Quality Gates Summary:")
         print(f"   Status: {results['overall_status'].upper()}")
-        print(f"   Score: {results['summary']['overall_score']:.1f}")
+        print(f"   Score: {results['summary']['overall_score']:0.1f}")
         print(
             f"   Gates: {results['summary']['gates_passed']}/{results['summary']['gates_total']} passed"
         )

@@ -143,10 +143,10 @@ class ElderCouncilCoverageStrategy:
         print("\n🚨 インシデント賢者による即時修正開始")
         print("=" * 80)
 
-        # 1. PROJECT_ROOT環境変数設定
+        # 1.0 PROJECT_ROOT環境変数設定
         os.environ["PROJECT_ROOT"] = str(self.project_root)
 
-        # 2. 包括的mock_utils作成
+        # 2.0 包括的mock_utils作成
         mock_utils_content = '''"""
 包括的モックユーティリティ - エルダー評議会承認
 """
@@ -217,7 +217,7 @@ def setup_test_environment():
         mock_utils_path.write_text(mock_utils_content)
         print(f"✅ mock_utils.py 作成完了: {mock_utils_path}")
 
-        # 3. conftest.py更新
+        # 3.0 conftest.py更新
         conftest_content = '''"""
 pytest設定 - エルダー評議会承認
 """
@@ -302,11 +302,11 @@ if Path("coverage.json").exists():
     with open("coverage.json") as f:
         data = json.load(f)
         coverage = data['totals']['percent_covered']
-        print(f"✨ 達成カバレッジ: {coverage:.1f}%")
+        print(f"✨ 達成カバレッジ: {coverage:0.1f}%")
         if coverage >= 60:
             print("🎉 目標達成！")
         else:
-            print(f"📈 目標まで: {60 - coverage:.1f}%")
+            print(f"📈 目標まで: {60 - coverage:0.1f}%")
 '''
 
         script_path = self.project_root / "execute_coverage_strategy.py"
@@ -334,7 +334,7 @@ if __name__ == "__main__":
 
     print("\n🏛️ エルダー評議会決定")
     print("=" * 80)
-    print("1. mock_utils.pyとconftest.pyを作成しました")
-    print("2. 実行スクリプトを生成しました")
-    print(f"3. 実行コマンド: python3 {script_path}")
+    print("1.0 mock_utils.pyとconftest.pyを作成しました")
+    print("2.0 実行スクリプトを生成しました")
+    print(f"3.0 実行コマンド: python3 {script_path}")
     print("\n⚔️ 全軍、カバレッジ60%達成に向けて前進せよ！")

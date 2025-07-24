@@ -18,8 +18,8 @@ def deploy_worker_recovery():
     print("\n🚀 Worker Auto-Recovery System Deployment\n")
     print("=" * 60)
 
-    # 1. ディレクトリ構造の確認
-    print("1. Checking directory structure...")
+    # 1.0 ディレクトリ構造の確認
+    print("1.0 Checking directory structure...")
     recovery_dir = "/home/aicompany/ai_co/libs/worker_auto_recovery"
 
     if os.path.exists(recovery_dir):
@@ -45,8 +45,8 @@ def deploy_worker_recovery():
         print(f"   ❌ Recovery system directory not found!")
         return False
 
-    # 2. 設定ファイルの確認
-    print("\n2. Checking configuration...")
+    # 2.0 設定ファイルの確認
+    print("\n2.0 Checking configuration...")
     config_file = "/home/aicompany/ai_co/config/worker_recovery.yaml"
 
     if os.path.exists(config_file):
@@ -55,8 +55,8 @@ def deploy_worker_recovery():
         print(f"   ❌ Configuration file not found!")
         return False
 
-    # 3. データディレクトリの作成
-    print("\n3. Creating data directories...")
+    # 3.0 データディレクトリの作成
+    print("\n3.0 Creating data directories...")
     data_dirs = [
         "/home/aicompany/ai_co/data/worker_states",
         "/home/aicompany/ai_co/knowledge_base/elder_notifications",
@@ -66,8 +66,8 @@ def deploy_worker_recovery():
         os.makedirs(dir_path, exist_ok=True)
         print(f"   ✅ {dir_path}")
 
-    # 4. systemdサービスファイルの作成
-    print("\n4. Creating systemd service...")
+    # 4.0 systemdサービスファイルの作成
+    print("\n4.0 Creating systemd service...")
     service_content = """[Unit]
 Description=Elders Guild Worker Recovery System
 After=network.target rabbitmq-server.service
@@ -97,8 +97,8 @@ WantedBy=multi-user.target
     print("      sudo systemctl enable worker-recovery")
     print("      sudo systemctl start worker-recovery")
 
-    # 5. CLIコマンドの作成
-    print("\n5. Creating CLI command...")
+    # 5.0 CLIコマンドの作成
+    print("\n5.0 Creating CLI command...")
     cli_script = """#!/usr/bin/env python3
 import sys
 sys.path.append('/home/aicompany/ai_co')
@@ -113,8 +113,8 @@ main()
     os.chmod(cli_file, 0o755)
     print(f"   ✅ CLI command created: {cli_file}")
 
-    # 6. テスト実行
-    print("\n6. Running system test...")
+    # 6.0 テスト実行
+    print("\n6.0 Running system test...")
     try:
         result = subprocess.run(
             [
@@ -135,8 +135,8 @@ main()
     except Exception as e:
         print(f"   ❌ System test failed: {e}")
 
-    # 7. ドキュメントの作成
-    print("\n7. Creating documentation...")
+    # 7.0 ドキュメントの作成
+    print("\n7.0 Creating documentation...")
     doc_content = f"""# Worker Auto-Recovery System
 
 **Deployed**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
@@ -193,9 +193,9 @@ Edit `/home/aicompany/ai_co/config/worker_recovery.yaml` to adjust settings.
     print("\n" + "=" * 60)
     print("✅ Deployment completed successfully!")
     print("\nNext steps:")
-    print("1. Test the system: python3 test_worker_recovery.py --full")
-    print("2. Start monitoring: python3 commands/ai_worker_recovery.py start")
-    print("3. Or install as service (see instructions above)")
+    print("1.0 Test the system: python3 test_worker_recovery.py --full")
+    print("2.0 Start monitoring: python3 commands/ai_worker_recovery.py start")
+    print("3.0 Or install as service (see instructions above)")
 
     return True
 

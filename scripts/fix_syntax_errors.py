@@ -8,9 +8,8 @@ from pathlib import Path
 
 
 class SyntaxErrorFixer:
-    def __init__(self):
+    def __init__(self)self.project_root = Path(__file__).parent.parent
     """SyntaxErrorFixerクラス"""
-        self.project_root = Path(__file__).parent.parent
         self.fixed_count = 0
 
     def fix_line_continuation_errors(self, filepath):
@@ -89,7 +88,7 @@ class SyntaxErrorFixer:
             for line in lines:
                 stripped = line.strip()
 
-                # Track function/class definitions
+                # Track function/class definitions:
                 if stripped.startswith(("def ", "class ", "async def ")):
                     in_function = True
                     indent_level = len(line) - len(line.lstrip())
@@ -124,9 +123,8 @@ class SyntaxErrorFixer:
             print(f"Error fixing {filepath}: {e}")
             return False
 
-    def fix_all_syntax_errors(self):
-        """Fix all syntax errors"""
-        print("Fixing syntax errors...")
+    def fix_all_syntax_errors(self)print("Fixing syntax errors...")
+    """Fix all syntax errors"""
 
         # Files with known syntax errors
         problem_files = [

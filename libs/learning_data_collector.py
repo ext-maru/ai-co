@@ -97,9 +97,8 @@ class InsightReport:
 class LearningDataCollector:
     """Learning Data Collector - 指示と結果のペア収集・学習"""
 
-    def __init__(self, db_path:
+    def __init__(self, db_path: str = "data/learning_data.db"):
         """初期化メソッド"""
-    str = "data/learning_data.db"):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -131,7 +130,7 @@ class LearningDataCollector:
 
     def _init_database(self):
         """データベース初期化"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # コマンド実行履歴テーブル
@@ -296,7 +295,7 @@ class LearningDataCollector:
 
     async def _save_execution(self, execution: CommandExecution):
         """実行記録の保存"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -336,7 +335,7 @@ class LearningDataCollector:
         command_type = execution.parsed_command["command_type"]
         pattern_id = f"{intent_type}_{command_type}"
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -421,7 +420,7 @@ class LearningDataCollector:
         Returns:
             List[CommandExecution]: 類似実行履歴
         """
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -476,7 +475,7 @@ class LearningDataCollector:
         Returns:
             List[LearningPattern]: 成功率の高いパターン
         """
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -534,7 +533,7 @@ class LearningDataCollector:
         Returns:
             InsightReport: 生成された洞察レポート
         """
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -673,7 +672,7 @@ class LearningDataCollector:
 
     async def _save_insight_report(self, report: InsightReport):
         """洞察レポートの保存"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -710,7 +709,7 @@ class LearningDataCollector:
             output_path: 出力ファイルパス
             quality_threshold: 品質閾値
         """
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -766,7 +765,7 @@ class LearningDataCollector:
 
     def get_statistics(self) -> Dict[str, Any]:
         """統計情報の取得"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -863,8 +862,8 @@ async def demo_learning_collector():
     report = await collector.generate_insights(period_days=7)
     print(f"\n🔍 Insight Report:")
     print(f"Total executions: {report.total_executions}")
-    print(f"Success rate: {report.success_rate:.2%}")
-    print(f"Average confidence: {report.avg_confidence:.2f}")
+    print(f"Success rate: {report.success_rate:0.2%}")
+    print(f"Average confidence: {report.avg_confidence:0.2f}")
     print(f"Suggestions: {', '.join(report.improvement_suggestions)}")
 
 

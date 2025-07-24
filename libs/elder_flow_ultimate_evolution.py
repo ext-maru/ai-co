@@ -59,10 +59,10 @@ class ElderFlowUltimateEvolution:
         total_results = []
 
         for phase_info in self.evolution_phases:
-            print(f"\n{'='*100}")
+            print(f"\n{'='*80}")
             print(f"🚀 Phase {phase_info['phase']}: {phase_info['name']}")
             print(f"優先度: {phase_info['priority']}")
-            print(f"{'='*100}")
+            print(f"{'='*80}")
 
             # Elder Flow自身を使って進化
             result = await self.elder_flow.execute_with_full_sages_wisdom(
@@ -98,14 +98,14 @@ class ElderFlowUltimateEvolution:
         sages_contributions = result["sages_contributions"]
         wisdom_evolution = result["wisdom_evolution"]
 
-        print(f"⚡ 実行時間: {session_info['total_time']:.2f}秒")
-        print(f"📊 並列効率: {execution_results.get('parallel_efficiency', 0):.1f}%")
+        print(f"⚡ 実行時間: {session_info['total_time']:0.2f}秒")
+        print(f"📊 並列効率: {execution_results.get('parallel_efficiency', 0):0.1f}%")
         print(
             f"🎯 成功率: {(execution_results.get(
                 'completed',
                 0) / max(execution_results.get('total_tasks', 1),
                 1)
-            ) * 100:.1f}%"
+            ) * 100:0.1f}%"
         )
 
         print(f"\n🧙‍♂️ 4賢者活動:")
@@ -126,9 +126,9 @@ class ElderFlowUltimateEvolution:
 
     def _display_ultimate_evolution_report(self, total_results):
         """究極進化最終レポート"""
-        print(f"\n{'='*100}")
+        print(f"\n{'='*80}")
         print("🎉 ELDER FLOW ULTIMATE EVOLUTION COMPLETE")
-        print(f"{'='*100}")
+        print(f"{'='*80}")
 
         total_time = sum(
             r["result"]["session_info"]["total_time"] for r in total_results
@@ -145,8 +145,8 @@ class ElderFlowUltimateEvolution:
         )
 
         print(f"\n📊 究極進化統計:")
-        print(f"  🕐 総進化時間: {total_time:.2f}秒")
-        print(f"  ⚡ 平均並列効率: {avg_efficiency:.1f}%")
+        print(f"  🕐 総進化時間: {total_time:0.2f}秒")
+        print(f"  ⚡ 平均並列効率: {avg_efficiency:0.1f}%")
         print(f"  📚 総知識蓄積: {total_knowledge}件")
         print(f"  🧙‍♂️ 進化フェーズ完了: {len(total_results)}/4")
 
@@ -158,7 +158,7 @@ class ElderFlowUltimateEvolution:
                 / max(result["result"]["execution_results"].get("total_tasks", 1), 1)
             ) * 100
             print(
-                f"  Phase {result['phase']}: {result['name']} - 成功率{success_rate:.0f}% (英知: {wisdom_level})"
+                f"  Phase {result['phase']}: {result['name']} - 成功率{success_rate:0.f}% (英知: {wisdom_level})"
             )
 
         print(f"\n🎆 Elder Flow は完全進化を遂げました！")

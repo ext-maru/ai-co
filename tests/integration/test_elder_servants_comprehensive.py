@@ -10,9 +10,9 @@ Issue #91対応: 全サーバント対応・Iron Will品質基準95%達成検証
 - サーバント間協調・連携テスト
 
 TDD方式による実装:
-1. まずテストを作成（このファイル）
-2. 実装されたサーバントがテストを通過することを確認
-3. 品質基準95%達成の自動検証
+1.0 まずテストを作成（このファイル）
+2.0 実装されたサーバントがテストを通過することを確認
+3.0 品質基準95%達成の自動検証
 """
 
 import asyncio
@@ -155,9 +155,8 @@ def factorial(n):
             },
         }
 
-    async def setup_test_environment(self):
-        """テスト環境セットアップ"""
-        self.logger.info("🔧 テスト環境セットアップ開始")
+    async def setup_test_environment(self)self.logger.info("🔧 テスト環境セットアップ開始")
+    """テスト環境セットアップ"""
 
         # 実装されたサーバントのインスタンス化テスト
         await self._instantiate_available_servants()
@@ -190,9 +189,8 @@ def factorial(n):
                 self.logger.warning(f"⚠️  {name} クラスが利用不可 - モック作成")
                 self.servant_instances[name] = self._create_mock_servant(name)
 
-    def _get_servant_specific_payload(self, servant_name: str) -> Dict[str, Any]:
-        """サーバント固有のペイロードを取得"""
-        name_lower = servant_name.lower()
+    def _get_servant_specific_payload(self, servant_name: str) -> Dict[str, Any]name_lower = servant_name.lower()
+    """サーバント固有のペイロードを取得""":
         if "docforge" in name_lower:
             return self.test_data["doc_forge"]
         elif "codecrafter" in name_lower:
@@ -205,9 +203,8 @@ def factorial(n):
             # デフォルト用のシンプルなペイロード
             return {"test": True, "message": "basic test"}
 
-    def _get_servant_specific_task_type(self, servant_name: str) -> str:
-        """サーバント固有のタスクタイプを取得"""
-        name_lower = servant_name.lower()
+    def _get_servant_specific_task_type(self, servant_name: str) -> strname_lower = servant_name.lower()
+    """サーバント固有のタスクタイプを取得""":
         if "docforge" in name_lower:
             return "documentation_generation"
         elif "codecrafter" in name_lower:
@@ -219,9 +216,8 @@ def factorial(n):
         else:
             return "generic_task"
 
-    def _create_mock_servant(self, name: str):
-        """モックサーバント作成"""
-        mock_servant = AsyncMock()
+    def _create_mock_servant(self, name: str)mock_servant = AsyncMock()
+    """モックサーバント作成"""
         mock_servant.name = name
         mock_servant.process_request = AsyncMock(
             return_value=ServantResponse(
@@ -249,11 +245,10 @@ def factorial(n):
         # 一時的なテストファイル作成（必要に応じて）
         pass
 
-    async def test_individual_servant_functionality(self) -> Dict[str, Any]:
-        """個別サーバント機能テスト"""
-        self.logger.info("🧪 個別サーバント機能テスト開始")
+    async def test_individual_servant_functionality(self) -> Dict[str, Any]self.logger.info("🧪 個別サーバント機能テスト開始")
+    """個別サーバント機能テスト"""
 
-        results = {
+        results = {:
             "total_servants": len(self.servant_instances),
             "successful_tests": 0,
             "failed_tests": 0,
@@ -580,11 +575,10 @@ def factorial(n):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def test_servant_collaboration(self) -> Dict[str, Any]:
-        """サーバント間協調テスト"""
-        self.logger.info("🤝 サーバント間協調テスト開始")
+    async def test_servant_collaboration(self) -> Dict[str, Any]self.logger.info("🤝 サーバント間協調テスト開始")
+    """サーバント間協調テスト"""
 
-        results = {
+        results = {:
             "collaboration_scenarios": [],
             "successful_collaborations": 0,
             "failed_collaborations": 0,
@@ -740,11 +734,10 @@ def factorial(n):
 
         return results
 
-    async def test_iron_will_compliance(self) -> Dict[str, Any]:
-        """Iron Will品質基準準拠テスト"""
-        self.logger.info("🗡️ Iron Will品質基準準拠テスト開始")
+    async def test_iron_will_compliance(self) -> Dict[str, Any]self.logger.info("🗡️ Iron Will品質基準準拠テスト開始")
+    """Iron Will品質基準準拠テスト"""
 
-        results = {
+        results = {:
             "criteria_assessments": {},
             "overall_compliance": True,
             "compliance_score": 0.0,
@@ -777,7 +770,7 @@ def factorial(n):
                     results["overall_compliance"] = False
 
                 self.logger.info(
-                    f"  📊 {criterion_name}: {score:.1f}% (基準: {threshold}%) {'✅' if criterion_passed else '❌'}"
+                    f"  📊 {criterion_name}: {score:0.1f}% (基準: {threshold}%) {'✅' if criterion_passed else '❌'}"
                 )
 
             except Exception as e:
@@ -1062,11 +1055,10 @@ def factorial(n):
         except Exception as e:
             return {"score": 0.0, "passed": False, "error": str(e)}
 
-    async def test_stress_and_concurrency(self) -> Dict[str, Any]:
-        """ストレス・並行性テスト"""
-        self.logger.info("💪 ストレス・並行性テスト開始")
+    async def test_stress_and_concurrency(self) -> Dict[str, Any]self.logger.info("💪 ストレス・並行性テスト開始")
+    """ストレス・並行性テスト"""
 
-        results = {
+        results = {:
             "concurrent_requests": self.config.concurrent_test_count,
             "successful_requests": 0,
             "failed_requests": 0,
@@ -1178,9 +1170,8 @@ def factorial(n):
                 "error": str(e),
             }
 
-    async def run_comprehensive_test_suite(self) -> Dict[str, Any]:
-        """包括的テストスイート実行"""
-        self.logger.info("🚀 Elder Servants包括的統合テストスイート開始")
+    async def run_comprehensive_test_suite(self) -> Dict[str, Any]self.logger.info("🚀 Elder Servants包括的統合テストスイート開始")
+    """包括的テストスイート実行"""
         suite_start_time = time.time()
 
         # テスト環境セットアップ
@@ -1189,16 +1180,16 @@ def factorial(n):
         # 各テストカテゴリ実行
         self.logger.info("=" * 80)
 
-        # 1. 個別機能テスト
+        # 1.0 個別機能テスト
         individual_results = await self.test_individual_servant_functionality()
 
-        # 2. 協調テスト
+        # 2.0 協調テスト
         collaboration_results = await self.test_servant_collaboration()
 
-        # 3. Iron Will準拠テスト
+        # 3.0 Iron Will準拠テスト
         iron_will_results = await self.test_iron_will_compliance()
 
-        # 4. ストレス・並行性テスト
+        # 4.0 ストレス・並行性テスト
         stress_results = await self.test_stress_and_concurrency()
 
         total_execution_time = time.time() - suite_start_time
@@ -1208,7 +1199,7 @@ def factorial(n):
             individual_results, collaboration_results, iron_will_results, stress_results
         )
 
-        comprehensive_results = {
+        comprehensive_results = {:
             "test_suite_summary": {
                 "start_time": datetime.now(),
                 "total_execution_time": total_execution_time,
@@ -1326,19 +1317,19 @@ def factorial(n):
         self.logger.info(
             f"🎯 総合成功: {'✅ SUCCESS' if summary['overall_success'] else '❌ FAILED'}"
         )
-        self.logger.info(f"⏱️  実行時間: {summary['total_execution_time']:.2f}秒")
+        self.logger.info(f"⏱️  実行時間: {summary['total_execution_time']:0.2f}秒")
         self.logger.info(f"🤖 テスト対象: {summary['servants_tested']}体のサーバント")
         self.logger.info(
             f"🗡️ Iron Will準拠: {'✅ COMPLIANT' if summary['iron_will_compliance'] else '❌ NON-COMPLIANT'}"
         )
 
         self.logger.info("\n📈 品質メトリクス:")
-        self.logger.info(f"  機能性スコア: {quality['functionality_score']:.1f}%")
-        self.logger.info(f"  協調性スコア: {quality['collaboration_score']:.1f}%")
-        self.logger.info(f"  Iron Willスコア: {quality['iron_will_score']:.1f}%")
-        self.logger.info(f"  ストレステストスコア: {quality['stress_test_score']:.1f}%")
-        self.logger.info(f"  平均応答時間: {quality['average_response_time']:.3f}秒")
-        self.logger.info(f"  スループット: {quality['throughput']:.1f} req/sec")
+        self.logger.info(f"  機能性スコア: {quality['functionality_score']:0.1f}%")
+        self.logger.info(f"  協調性スコア: {quality['collaboration_score']:0.1f}%")
+        self.logger.info(f"  Iron Willスコア: {quality['iron_will_score']:0.1f}%")
+        self.logger.info(f"  ストレステストスコア: {quality['stress_test_score']:0.1f}%")
+        self.logger.info(f"  平均応答時間: {quality['average_response_time']:0.3f}秒")
+        self.logger.info(f"  スループット: {quality['throughput']:0.1f} req/sec")
 
         self.logger.info("\n🏆 テストカテゴリ別結果:")
         individual = results["individual_functionality_tests"]
@@ -1368,16 +1359,14 @@ class TestElderServantsComprehensive:
     """Elder Servants包括的統合テスト用pytestクラス"""
 
     @pytest.fixture
-    async def comprehensive_tester(self):
-        """包括的テスター用フィクスチャ"""
-        config = ComprehensiveTestConfig()
+    async def comprehensive_tester(self)config = ComprehensiveTestConfig()
+    """包括的テスター用フィクスチャ"""
         tester = ElderServantsComprehensiveTester(config)
         yield tester
 
     @pytest.mark.asyncio
-    async def test_environment_setup(self, comprehensive_tester):
-        """テスト環境セットアップテスト"""
-        await comprehensive_tester.setup_test_environment()
+    async def test_environment_setup(self, comprehensive_tester)await comprehensive_tester.setup_test_environment()
+    """テスト環境セットアップテスト"""
 
         # 最低限のサーバントが利用可能であることを確認
         assert len(comprehensive_tester.servant_instances) > 0
@@ -1395,9 +1384,8 @@ class TestElderServantsComprehensive:
         ), f"Expected at least 2 major servants, got {available_major_servants}"
 
     @pytest.mark.asyncio
-    async def test_individual_servant_functionality(self, comprehensive_tester):
-        """個別サーバント機能テスト"""
-        await comprehensive_tester.setup_test_environment()
+    async def test_individual_servant_functionality(self, comprehensive_tester)await comprehensive_tester.setup_test_environment()
+    """個別サーバント機能テスト"""
 
         results = await comprehensive_tester.test_individual_servant_functionality()
 
@@ -1415,9 +1403,8 @@ class TestElderServantsComprehensive:
                 assert servant_result["performance"]["success"]
 
     @pytest.mark.asyncio
-    async def test_servant_collaboration(self, comprehensive_tester):
-        """サーバント間協調テスト"""
-        await comprehensive_tester.setup_test_environment()
+    async def test_servant_collaboration(self, comprehensive_tester)await comprehensive_tester.setup_test_environment()
+    """サーバント間協調テスト"""
 
         results = await comprehensive_tester.test_servant_collaboration()
 
@@ -1438,9 +1425,8 @@ class TestElderServantsComprehensive:
                 assert len(scenario.get("workflow_results", [])) >= 2
 
     @pytest.mark.asyncio
-    async def test_iron_will_compliance(self, comprehensive_tester):
-        """Iron Will品質基準準拠テスト"""
-        await comprehensive_tester.setup_test_environment()
+    async def test_iron_will_compliance(self, comprehensive_tester)await comprehensive_tester.setup_test_environment()
+    """Iron Will品質基準準拠テスト"""
 
         results = await comprehensive_tester.test_iron_will_compliance()
 
@@ -1468,9 +1454,8 @@ class TestElderServantsComprehensive:
         assert results["compliance_score"] >= 75.0  # 最低75%の総合スコア
 
     @pytest.mark.asyncio
-    async def test_stress_and_concurrency(self, comprehensive_tester):
-        """ストレス・並行性テスト"""
-        await comprehensive_tester.setup_test_environment()
+    async def test_stress_and_concurrency(self, comprehensive_tester)await comprehensive_tester.setup_test_environment()
+    """ストレス・並行性テスト"""
 
         # 軽量版のストレステスト（CI環境対応）
         comprehensive_tester.config.concurrent_test_count = 5  # テスト用に軽量化
@@ -1516,9 +1501,8 @@ class TestElderServantsComprehensive:
         assert metrics["iron_will_score"] >= 0.0
 
     @pytest.mark.asyncio
-    async def test_error_resilience(self, comprehensive_tester):
-        """エラー耐性テスト"""
-        await comprehensive_tester.setup_test_environment()
+    async def test_error_resilience(self, comprehensive_tester)await comprehensive_tester.setup_test_environment()
+    """エラー耐性テスト"""
 
         # 故意にエラーを発生させるテスト
         error_scenarios = [

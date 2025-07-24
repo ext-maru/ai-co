@@ -83,7 +83,7 @@ class FourSagesOrchestrator:
                         "title": "A2A Communication Protocol",
                         "content": "A2A protocol enables secure agent-to-agent communication",
                         "relevance": 0.95,
-                        "source": "docs/a2a_protocol_specification_v1.md",
+                        "source": "docs/a2a_protocol_specification_v1.0md",
                     },
                     {
                         "title": "Message Types",
@@ -508,10 +508,10 @@ if __name__ == "__main__":
     print("Four Sages A2A Communication Demo")
     print("=" * 50)
     print("This demo shows how the four sages collaborate using A2A communication:")
-    print("1. Knowledge Sage - Pattern analysis and knowledge management")
-    print("2. Task Sage - Task assignment and resource allocation")
-    print("3. RAG Sage - Document retrieval and context enhancement")
-    print("4. Incident Sage - Risk assessment and recovery planning")
+    print("1.0 Knowledge Sage - Pattern analysis and knowledge management")
+    print("2.0 Task Sage - Task assignment and resource allocation")
+    print("3.0 RAG Sage - Document retrieval and context enhancement")
+    print("4.0 Incident Sage - Risk assessment and recovery planning")
     print("=" * 50)
 
     try:

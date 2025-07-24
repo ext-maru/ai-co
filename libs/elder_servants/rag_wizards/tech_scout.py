@@ -14,6 +14,7 @@ import json
 from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
+from pathlib import Path
 
 from libs.elder_servants.base.specialized_servants import WizardServant
 from libs.elder_servants.base.elder_servant import ServantRequest, ServantResponse
@@ -617,15 +618,15 @@ class TechScout(WizardServant):
             migration_complexity = "very_high"
 
         migration_steps = [
-            "1. Current state assessment",
-            "2. Target architecture design",
-            "3. Migration strategy selection",
-            "4. Dependency mapping",
-            "5. Data migration planning",
-            "6. Incremental migration execution",
-            "7. Testing and validation",
-            "8. Cutover planning",
-            "9. Post-migration optimization",
+            "1.0 Current state assessment",
+            "2.0 Target architecture design",
+            "3.0 Migration strategy selection",
+            "4.0 Dependency mapping",
+            "5.0 Data migration planning",
+            "6.0 Incremental migration execution",
+            "7.0 Testing and validation",
+            "8.0 Cutover planning",
+            "9.0 Post-migration optimization",
         ]
 
         risks = [
@@ -930,7 +931,7 @@ class TechScout(WizardServant):
         return {
             "status": "healthy",
             "servant_id": self.servant_id,
-            "name": self.name,
+            "name": self.servant_name,
             "capabilities": self.get_capabilities(),
             "iron_will_compliance": self.metrics["average_confidence_score"] >= 85,
             "performance_metrics": {

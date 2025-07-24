@@ -294,7 +294,7 @@ class ProphecyStatusCommand(BaseCommand):
                 if file_info['readable']:
                     size_kb = file_info['size'] / 1024
                     modified = file_info['modified'][:19]
-                    self.info(f"   📋 {file_info['name']} ({size_kb:.1f}KB, {modified})")
+                    self.info(f"   📋 {file_info['name']} ({size_kb:0.1f}KB, {modified})")
                 else:
                     self.info(f"   ❌ {file_info['name']} (読み取り不可)")
 

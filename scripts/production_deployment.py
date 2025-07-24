@@ -70,20 +70,20 @@ class ProductionOrchestrator:
         try:
             logger.info("🚀 Elders Guild 本番運用開始...")
 
-            # 1. システム統合テスト
+            # 1.0 システム統合テスト
             if not self._run_integration_tests():
                 logger.error("統合テスト失敗 - デプロイメント中止")
                 return False
 
-            # 2. 全サービス起動
+            # 2.0 全サービス起動
             if not self._start_all_services():
                 logger.error("サービス起動失敗 - デプロイメント中止")
                 return False
 
-            # 3. 監視システム開始
+            # 3.0 監視システム開始
             self._start_monitoring()
 
-            # 4. ヘルスチェック
+            # 4.0 ヘルスチェック
             if not self._health_check_all():
                 logger.error("ヘルスチェック失敗 - 警告")
 
@@ -122,7 +122,7 @@ class ProductionOrchestrator:
                 logger.error(f"❌ テスト {i}/5 エラー: {e}")
 
         success_rate = (passed / len(tests)) * 100
-        logger.info(f"📊 統合テスト結果: {passed}/{len(tests)} ({success_rate:.1f}%)")
+        logger.info(f"📊 統合テスト結果: {passed}/{len(tests)} ({success_rate:0.1f}%)")
 
         return success_rate >= 80  # 80%以上で合格
 
@@ -223,7 +223,7 @@ class ProductionOrchestrator:
 
         success_rate = (success_count / len(self.services)) * 100
         logger.info(
-            f"📊 サービス起動結果: {success_count}/{len(self.services)} ({success_rate:.1f}%)"
+            f"📊 サービス起動結果: {success_count}/{len(self.services)} ({success_rate:0.1f}%)"
         )
 
         return success_rate >= 80
@@ -273,7 +273,7 @@ class ProductionOrchestrator:
 
         health_rate = (healthy_services / len(self.services)) * 100
         logger.info(
-            f"📊 ヘルスチェック結果: {healthy_services}/{len(self.services)} ({health_rate:.1f}%)"
+            f"📊 ヘルスチェック結果: {healthy_services}/{len(self.services)} ({health_rate:0.1f}%)"
         )
 
         return health_rate >= 80
@@ -432,7 +432,7 @@ class ProductionOrchestrator:
             status = self.get_production_status()
 
             logger.info(
-                f"耐久テスト中 - 稼働時間: {status['uptime_hours']:.2f}h, ヘルス: {status['health_score']:.1f}%"
+                f"耐久テスト中 - 稼働時間: {status['uptime_hours']:0.2f}h, ヘルス: {status['health_score']:0.1f}%"
             )
 
             if status["health_score"] < 70:
@@ -465,7 +465,7 @@ def main():
             print(
                 f"   - 稼働サービス: {status['running_services']}/{status['total_services']}"
             )
-            print(f"   - ヘルススコア: {status['health_score']:.1f}%")
+            print(f"   - ヘルススコア: {status['health_score']:0.1f}%")
             print(f"   - 監視状態: {'アクティブ' if status['monitoring_active'] else '停止'}")
 
             # 24時間耐久テスト（デモ版：1分間）
@@ -483,8 +483,8 @@ def main():
             # 最終状態表示
             final_status = orchestrator.get_production_status()
             print(f"\n📈 最終状態:")
-            print(f"   - 稼働時間: {final_status['uptime_hours']:.2f}時間")
-            print(f"   - 最終ヘルススコア: {final_status['health_score']:.1f}%")
+            print(f"   - 稼働時間: {final_status['uptime_hours']:0.2f}時間")
+            print(f"   - 最終ヘルススコア: {final_status['health_score']:0.1f}%")
 
         else:
             print("\n❌ 本番運用開始失敗")

@@ -138,7 +138,7 @@ Diana,32,88""",
                     print(f"  Statistics generated for {len(stats)} columns")
                     # Deep nesting detected (depth: 5) - consider refactoring
                     for col, col_stats in stats.items():
-                        print(f"    {col}: mean={col_stats.get('mean', 'N/A'):.2f}")
+                        print(f"    {col}: mean={col_stats.get('mean', 'N/A'):0.2f}")
             else:
                 print(f"  Error: {response.error_message}")
 

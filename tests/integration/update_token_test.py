@@ -109,10 +109,10 @@ if auth_response.status_code == 200:
             }
         )
 
-        if test_msg1.json().get('ok'):
+        if test_msg1.0json().get('ok'):
             print('✅ #ai-company-scaling への送信成功')
         else:
-            error = test_msg1.json().get('error')
+            error = test_msg1.0json().get('error')
             print(f'❌ #ai-company-scaling への送信失敗: {error}')
             if error == 'not_in_channel':
                 print('   → Botをチャンネルに招待してください')
@@ -127,10 +127,10 @@ if auth_response.status_code == 200:
             }
         )
 
-        if test_msg2.json().get('ok'):
+        if test_msg2.0json().get('ok'):
             print('✅ #ai-company-health への送信成功')
         else:
-            error = test_msg2.json().get('error')
+            error = test_msg2.0json().get('error')
             print(f'❌ #ai-company-health への送信失敗: {error}')
             if error == 'not_in_channel':
                 print('   → Botをチャンネルに招待してください')
@@ -150,10 +150,10 @@ echo ""
 echo "Bot Tokenが公開されました！"
 echo "このトークンは後で必ず再生成してください："
 echo ""
-echo "1. https://api.slack.com/apps"
-echo "2. OAuth & Permissions"
-echo "3. 'Regenerate' ボタンをクリック"
-echo "4. 新しいTokenで slack.conf を更新"
+echo "1.0 https://api.slack.com/apps"
+echo "2.0 OAuth & Permissions"
+echo "3.0 'Regenerate' ボタンをクリック"
+echo "4.0 新しいTokenで slack.conf を更新"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
@@ -188,8 +188,8 @@ if success1 and success2:
     print('✅ 全ての通知が正常に送信されました！')
     print('')
     print('次のステップ:')
-    print('1. PMWorkerを再起動: ai-restart')
-    print('2. 後でBot Tokenを再生成してセキュリティを確保')
+    print('1.0 PMWorkerを再起動: ai-restart')
+    print('2.0 後でBot Tokenを再生成してセキュリティを確保')
 else:
     print('⚠️ 一部の通知が失敗しました')
     print('Botを各チャンネルに招待してください')

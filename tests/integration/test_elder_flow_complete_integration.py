@@ -804,7 +804,7 @@ class ElderFlowCompleteIntegrationTester:
 
                 status_icon = "✅" if result.get("success", False) else "❌"
                 exec_time = result.get("execution_time", 0)
-                print(f"   {status_icon} {test_name}: {exec_time:.2f}秒")
+                print(f"   {status_icon} {test_name}: {exec_time:0.2f}秒")
 
             except Exception as e:
                 error_result = {
@@ -975,17 +975,17 @@ async def main():
         print("\n📊 Elder Flow完全統合テスト結果サマリー")
         print("=" * 60)
         print(f"✅ 総合成功: {results['test_summary']['overall_success']}")
-        print(f"⏱️  実行時間: {results['test_summary']['duration_seconds']:.2f}秒")
+        print(f"⏱️  実行時間: {results['test_summary']['duration_seconds']:0.2f}秒")
         print(
-            f"🧪 成功率: {results['test_summary']['success_rate']:.1%} ("
+            f"🧪 成功率: {results['test_summary']['success_rate']:0.1%} ("
             f"{results['test_summary']['successful_tests']}/{results['test_summary']['total_tests']})"
         )
 
         print(
-            f"\n🌊 Elder Flow信頼性: {results['integration_metrics']['elder_flow_reliability']:.1%}"
+            f"\n🌊 Elder Flow信頼性: {results['integration_metrics']['elder_flow_reliability']:0.1%}"
         )
         print(
-            f"⚡ 平均実行時間: {results['integration_metrics']['average_execution_time']:.2f}秒"
+            f"⚡ 平均実行時間: {results['integration_metrics']['average_execution_time']:0.2f}秒"
         )
         print(
             f"🏛️ 品質準拠: {'✅' if results['integration_metrics']['quality_compliance'] else '❌'}"

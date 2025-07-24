@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 RAG Manager Real
+"🔍" RAG Manager Real
 RAG (Retrieval-Augmented Generation) 管理システム
 
 Created: 2025-07-17
@@ -90,7 +90,7 @@ class RAGResponse:
 
 class RAGManager(EldersAILegacy):
     """
-    🔍 RAG管理システム
+    "🔍" RAG管理システム
     Elder Legacy AI層準拠のRAG統合管理システム
     """
 
@@ -242,7 +242,7 @@ class RAGManager(EldersAILegacy):
     def _initialize_database_sync(self) -> None:
         """データベース初期化（同期版）"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # ドキュメントテーブル作成
@@ -403,7 +403,7 @@ class RAGManager(EldersAILegacy):
             # コンテンツハッシュ計算
             content_hash = self._calculate_content_hash(content)
 
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # 重複チェック
@@ -487,7 +487,7 @@ class RAGManager(EldersAILegacy):
             検索結果
         """
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             results = []
@@ -681,7 +681,7 @@ class RAGManager(EldersAILegacy):
             ドキュメント情報
         """
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -729,7 +729,7 @@ class RAGManager(EldersAILegacy):
             削除結果
         """
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # 存在確認
@@ -776,7 +776,7 @@ class RAGManager(EldersAILegacy):
             統計情報
         """
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # 総ドキュメント数
@@ -828,7 +828,7 @@ class RAGManager(EldersAILegacy):
         """
         try:
             # データベース接続テスト
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM documents")
             doc_count = cursor.fetchone()[0]
@@ -870,6 +870,7 @@ async def create_rag_manager(
 
 
 if __name__ == "__main__":
+    pass
 
     async def test_rag_manager():
         """テスト実行"""

@@ -67,54 +67,51 @@ class ElderTreeBenchmark:
         self.registry = ElderRegistry()
         self.enforcement = ElderTreeEnforcement()
 
-    async def run_comprehensive_benchmark(self):
-        """包括的ベンチマーク実行"""
-        print("🚀 Elder Soul Comprehensive Benchmark")
+    async def run_comprehensive_benchmark(self)print("🚀 Elder Soul Comprehensive Benchmark")
+    """包括的ベンチマーク実行"""
         print("=" * 60)
 
         # ベースライン測定
         await self._measure_baseline()
 
-        # 1. システム初期化ベンチマーク
+        # 1.0 システム初期化ベンチマーク
         await self._benchmark_system_initialization()
 
-        # 2. エージェント登録パフォーマンス
+        # 2.0 エージェント登録パフォーマンス
         await self._benchmark_agent_registration()
 
-        # 3. 通信レイテンシーテスト
+        # 3.0 通信レイテンシーテスト
         await self._benchmark_communication_latency()
 
-        # 4. スケーラビリティテスト
+        # 4.0 スケーラビリティテスト
         await self._benchmark_scalability()
 
-        # 5. 強制実行システムパフォーマンス
+        # 5.0 強制実行システムパフォーマンス
         await self._benchmark_enforcement_system()
 
-        # 6. メモリ効率性テスト
+        # 6.0 メモリ効率性テスト
         await self._benchmark_memory_efficiency()
 
-        # 7. 並行処理パフォーマンス
+        # 7.0 並行処理パフォーマンス
         await self._benchmark_concurrent_operations()
 
-        # 8. ストレステスト
+        # 8.0 ストレステスト
         await self._benchmark_stress_test()
 
         # 結果レポート生成
         await self._generate_benchmark_report()
 
-    async def _measure_baseline(self):
-        """ベースラインメトリクス測定"""
-        print("\n📊 Measuring baseline system metrics...")
+    async def _measure_baseline(self)print("\n📊 Measuring baseline system metrics...")
+    """ベースラインメトリクス測定"""
 
         self.baseline_metrics = await self._get_system_metrics()
-        print(f"  CPU Usage: {self.baseline_metrics.cpu_percent:.1f}%")
-        print(f"  Memory Usage: {self.baseline_metrics.memory_percent:.1f}%")
-        print(f"  Available Memory: {self.baseline_metrics.memory_available_mb:.0f}MB")
+        print(f"  CPU Usage: {self.baseline_metrics.cpu_percent:0.1f}%")
+        print(f"  Memory Usage: {self.baseline_metrics.memory_percent:0.1f}%")
+        print(f"  Available Memory: {self.baseline_metrics.memory_available_mb:0.0f}MB")
         print(f"  Process Count: {self.baseline_metrics.process_count}")
 
-    async def _benchmark_system_initialization(self):
-        """システム初期化ベンチマーク"""
-        print("\n🔧 Benchmarking System Initialization...")
+    async def _benchmark_system_initialization(self)print("\n🔧 Benchmarking System Initialization...")
+    """システム初期化ベンチマーク"""
 
         latencies = []
         memory_usages = []
@@ -136,7 +133,7 @@ class ElderTreeBenchmark:
             latencies.append(latency)
             memory_usages.append(memory_delta)
 
-            print(f"  Run {i+1}: {latency:.2f}ms, Memory: +{memory_delta:.1f}MB")
+            print(f"  Run {i+1}: {latency:0.2f}ms, Memory: +{memory_delta:0.1f}MB")
 
         result = BenchmarkResult(
             test_name="System Initialization",
@@ -154,9 +151,8 @@ class ElderTreeBenchmark:
 
         self.results.append(result)
 
-    async def _benchmark_agent_registration(self):
-        """エージェント登録パフォーマンス"""
-        print("\n👥 Benchmarking Agent Registration...")
+    async def _benchmark_agent_registration(self)print("\n👥 Benchmarking Agent Registration...")
+    """エージェント登録パフォーマンス"""
 
         await self.registry.initialize()
 
@@ -184,7 +180,7 @@ class ElderTreeBenchmark:
 
                 if (i + 1) % 20 == 0:
                     print(
-                        f"  Registered {i+1}/100 agents, avg latency: {statistics.mean(latencies[-20:]):.2f}ms"
+                        f"  Registered {i+1}/100 agents, avg latency: {statistics.mean(latencies[-20:]):0.2f}ms"
                     )
 
             except Exception as e:
@@ -220,9 +216,8 @@ class ElderTreeBenchmark:
             except:
                 pass
 
-    async def _benchmark_communication_latency(self):
-        """通信レイテンシーベンチマーク"""
-        print("\n📡 Benchmarking Communication Latency...")
+    async def _benchmark_communication_latency(self)print("\n📡 Benchmarking Communication Latency...")
+    """通信レイテンシーベンチマーク"""
 
         latencies = []
 
@@ -249,7 +244,7 @@ class ElderTreeBenchmark:
 
             if (i + 1) % 200 == 0:
                 print(
-                    f"  Processed {i+1}/1000 messages, avg latency: {statistics.mean(latencies[-200:]):.1f}μs"
+                    f"  Processed {i+1}/1000 messages, avg latency: {statistics.mean(latencies[-200:]):0.1f}μs"
                 )
 
         result = BenchmarkResult(
@@ -276,9 +271,8 @@ class ElderTreeBenchmark:
 
         self.results.append(result)
 
-    async def _benchmark_scalability(self):
-        """スケーラビリティベンチマーク"""
-        print("\n📈 Benchmarking Scalability...")
+    async def _benchmark_scalability(self)print("\n📈 Benchmarking Scalability...")
+    """スケーラビリティベンチマーク"""
 
         await self.registry.initialize()
 
@@ -326,8 +320,8 @@ class ElderTreeBenchmark:
 
             print(
                 (
-                    f"f"    {count} agents: {execution_time:.1f}ms, {memory_delta:.1f}MB, "
-                    f"{scalability_results[count]['agents_per_second']:.1f} agents/sec""
+                    f"f"    {count} agents: {execution_time:0.1f}ms, {memory_delta:0.1f}MB, "
+                    f"{scalability_results[count]['agents_per_second']:0.1f} agents/sec""
                 )
             )
 
@@ -364,9 +358,8 @@ class ElderTreeBenchmark:
 
         self.results.append(result)
 
-    async def _benchmark_enforcement_system(self):
-        """強制実行システムベンチマーク"""
-        print("\n🛡️ Benchmarking Enforcement System...")
+    async def _benchmark_enforcement_system(self)print("\n🛡️ Benchmarking Enforcement System...")
+    """強制実行システムベンチマーク"""
 
         latencies = []
         memory_start = psutil.Process().memory_info().rss / 1024 / 1024
@@ -384,7 +377,7 @@ class ElderTreeBenchmark:
             latency = (end_time - start_time) * 1000
             latencies.append(latency)
 
-            print(f"  Enforcement run {i+1}: {latency:.1f}ms")
+            print(f"  Enforcement run {i+1}: {latency:0.1f}ms")
 
         memory_end = psutil.Process().memory_info().rss / 1024 / 1024
 
@@ -401,15 +394,14 @@ class ElderTreeBenchmark:
             error_count=0,
             timestamp=datetime.now().isoformat(),
             additional_metrics={
-                "scan_frequency": f"Every {statistics.mean(latencies):.1f}ms sustainable"
+                "scan_frequency": f"Every {statistics.mean(latencies):0.1f}ms sustainable"
             },
         )
 
         self.results.append(result)
 
-    async def _benchmark_memory_efficiency(self):
-        """メモリ効率性ベンチマーク"""
-        print("\n💾 Benchmarking Memory Efficiency...")
+    async def _benchmark_memory_efficiency(self)print("\n💾 Benchmarking Memory Efficiency...")
+    """メモリ効率性ベンチマーク"""
 
         await self.registry.initialize()
 
@@ -434,7 +426,7 @@ class ElderTreeBenchmark:
             memory_measurements.append(current_memory)
 
             print(
-                f"  {batch * 10} agents: {current_memory:.1f}MB (+{current_memory - memory_baseline:.1f}MB)"
+                f"  {batch * 10} agents: {current_memory:0.1f}MB (+{current_memory - memory_baseline:0.1f}MB)"
             )
 
         # メモリ効率計算
@@ -471,9 +463,8 @@ class ElderTreeBenchmark:
 
         self.results.append(result)
 
-    async def _benchmark_concurrent_operations(self):
-        """並行処理パフォーマンス"""
-        print("\n⚡ Benchmarking Concurrent Operations...")
+    async def _benchmark_concurrent_operations(self)print("\n⚡ Benchmarking Concurrent Operations...")
+    """並行処理パフォーマンス"""
 
         await self.registry.initialize()
 
@@ -505,7 +496,7 @@ class ElderTreeBenchmark:
         execution_time = (end_time - start_time) * 1000
 
         print(
-            f"  Concurrent registration: {success_count}/50 succeeded in {execution_time:.1f}ms"
+            f"  Concurrent registration: {success_count}/50 succeeded in {execution_time:0.1f}ms"
         )
 
         # クリーンアップ
@@ -535,9 +526,8 @@ class ElderTreeBenchmark:
 
         self.results.append(result)
 
-    async def _benchmark_stress_test(self):
-        """ストレステスト"""
-        print("\n🔥 Running Stress Test...")
+    async def _benchmark_stress_test(self)print("\n🔥 Running Stress Test...")
+    """ストレステスト"""
 
         await self.registry.initialize()
 
@@ -584,7 +574,7 @@ class ElderTreeBenchmark:
                 if operations_count % 100 == 0:
                     elapsed = time.time() - start_time
                     print(
-                        f"    {operations_count} operations in {elapsed:.1f}s ({operations_count/elapsed:.1f} ops/sec)"
+                        f"    {operations_count} operations in {elapsed:0.1f}s ({operations_count/elapsed:0.1f} ops/sec)"
                     )
 
             except Exception as e:
@@ -647,9 +637,8 @@ class ElderTreeBenchmark:
                     pass
         print(f"  Cleaned up {cleanup_count} stress test agents")
 
-    async def _generate_benchmark_report(self):
-        """ベンチマークレポート生成"""
-        print("\n📊 Generating Benchmark Report...")
+    async def _generate_benchmark_report(self)print("\n📊 Generating Benchmark Report...")
+    """ベンチマークレポート生成"""
 
         # レポートディレクトリ作成
         report_dir = Path("benchmark_results")
@@ -703,10 +692,10 @@ class ElderTreeBenchmark:
         if self.baseline_metrics:
             report.append("📊 System Baseline")
             report.append("-" * 30)
-            report.append(f"CPU Usage: {self.baseline_metrics.cpu_percent:.1f}%")
-            report.append(f"Memory Usage: {self.baseline_metrics.memory_percent:.1f}%")
+            report.append(f"CPU Usage: {self.baseline_metrics.cpu_percent:0.1f}%")
+            report.append(f"Memory Usage: {self.baseline_metrics.memory_percent:0.1f}%")
             report.append(
-                f"Available Memory: {self.baseline_metrics.memory_available_mb:.0f}MB"
+                f"Available Memory: {self.baseline_metrics.memory_available_mb:0.0f}MB"
             )
             report.append(f"Process Count: {self.baseline_metrics.process_count}")
             report.append("")
@@ -716,16 +705,16 @@ class ElderTreeBenchmark:
 
         for result in self.results:
             report.append(f"\n🔸 {result.test_name}")
-            report.append(f"   Execution Time: {result.execution_time:.2f}ms")
-            report.append(f"   Memory Usage: {result.memory_usage:.1f}MB")
-            report.append(f"   CPU Usage: {result.cpu_usage:.1f}%")
-            report.append(f"   Success Rate: {result.success_rate:.1f}%")
-            report.append(f"   Throughput: {result.throughput:.1f} ops/sec")
-            report.append(f"   Avg Latency: {result.latency_avg:.2f}ms")
+            report.append(f"   Execution Time: {result.execution_time:0.2f}ms")
+            report.append(f"   Memory Usage: {result.memory_usage:0.1f}MB")
+            report.append(f"   CPU Usage: {result.cpu_usage:0.1f}%")
+            report.append(f"   Success Rate: {result.success_rate:0.1f}%")
+            report.append(f"   Throughput: {result.throughput:0.1f} ops/sec")
+            report.append(f"   Avg Latency: {result.latency_avg:0.2f}ms")
 
             if result.latency_p95 > 0:
-                report.append(f"   P95 Latency: {result.latency_p95:.2f}ms")
-                report.append(f"   P99 Latency: {result.latency_p99:.2f}ms")
+                report.append(f"   P95 Latency: {result.latency_p95:0.2f}ms")
+                report.append(f"   P99 Latency: {result.latency_p99:0.2f}ms")
 
             if result.error_count > 0:
                 report.append(f"   ⚠️  Errors: {result.error_count}")
@@ -734,7 +723,7 @@ class ElderTreeBenchmark:
                 report.append("   📈 Additional Metrics:")
                 for key, value in result.additional_metrics.items():
                     if isinstance(value, (int, float)):
-                        report.append(f"      {key}: {value:.2f}")
+                        report.append(f"      {key}: {value:0.2f}")
                     else:
                         report.append(f"      {key}: {value}")
 
@@ -748,9 +737,9 @@ class ElderTreeBenchmark:
             [r.throughput for r in self.results if r.throughput > 0]
         )
 
-        report.append(f"Average Success Rate: {avg_success_rate:.1f}%")
-        report.append(f"Total Memory Impact: {total_memory_usage:.1f}MB")
-        report.append(f"Average Throughput: {avg_throughput:.1f} ops/sec")
+        report.append(f"Average Success Rate: {avg_success_rate:0.1f}%")
+        report.append(f"Total Memory Impact: {total_memory_usage:0.1f}MB")
+        report.append(f"Average Throughput: {avg_throughput:0.1f} ops/sec")
 
         # 推奨事項
         report.append("\n💡 Recommendations")
@@ -783,14 +772,12 @@ class ElderTreeBenchmark:
             thread_count=psutil.Process().num_threads(),
         )
 
-    async def _get_cpu_usage(self) -> float:
-        """CPU使用率取得"""
-        return psutil.cpu_percent(interval=0.1)
+    async def _get_cpu_usage(self) -> floatreturn psutil.cpu_percent(interval=0.1)
+    """CPU使用率取得"""
 
-    async def _get_memory_usage(self) -> float:
-        """メモリ使用量取得（MB）"""
-        return psutil.Process().memory_info().rss / 1024 / 1024
-
+    async def _get_memory_usage(self) -> floatreturn psutil.Process().memory_info().rss / 1024 / 1024
+    """メモリ使用量取得（MB）"""
+:
     def _percentile(self, data: List[float], percentile: int) -> float:
         """パーセンタイル計算"""
         if not data:
@@ -800,9 +787,8 @@ class ElderTreeBenchmark:
         return sorted_data[min(index, len(sorted_data) - 1)]
 
 
-async def main():
-    """メイン実行"""
-    benchmark = ElderTreeBenchmark()
+async def main()benchmark = ElderTreeBenchmark()
+"""メイン実行"""
     await benchmark.run_comprehensive_benchmark()
 
 

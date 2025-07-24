@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 Search Magic - 探索魔法
+"🔍" Search Magic - 探索魔法
 ==========================
 
 Ancient Elderの8つの古代魔法の一つ。
@@ -40,6 +40,7 @@ from ..base_magic import AncientMagic, MagicCapability
 
 @dataclass
 class SearchResult:
+    pass
 
     """検索結果のデータクラス""" str
     content: str
@@ -51,6 +52,7 @@ class SearchResult:
 
 @dataclass
 class PatternMatch:
+    pass
 
 
 
@@ -64,6 +66,7 @@ class PatternMatch:
 
 
 class SearchMagic(AncientMagic):
+    pass
 
 
 
@@ -105,6 +108,7 @@ class SearchMagic(AncientMagic):
         self._init_whoosh_index()
         
     def _init_whoosh_index(self):
+        pass
 
         """Whoosh検索インデックスを初期化"""
             return
@@ -1094,23 +1098,21 @@ class SearchMagic(AncientMagic):
         
         return functions
     
-    def _get_line_context(self, lines: List[str], line_index: int, context_size: int = 2) -> str:
-        """行のコンテキストを取得"""
-        start = max(0, line_index - context_size)
+    def _get_line_context(self, lines: List[str], line_index: int, context_size: int = 2) -> strstart = max(0, line_index - context_size)
+    """行のコンテキストを取得"""
         end = min(len(lines), line_index + context_size + 1)
         
-        context_lines = []
+        context_lines = []:
         for i in range(start, end):
             marker = ">>>" if i == line_index else "   "
             context_lines.append(f"{marker} {i+1}: {lines[i]}")
         
         return "\n".join(context_lines)
     
-    def _calculate_relevance(self, query: str, text: str) -> float:
-        """関連性スコアを計算"""
-        query_words = set(query.lower().split())
+    def _calculate_relevance(self, query: str, text: str) -> floatquery_words = set(query.lower().split())
+    """関連性スコアを計算"""
         text_words = set(text.lower().split())
-        
+        :
         if not query_words:
             return 0.0
         

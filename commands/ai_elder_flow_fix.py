@@ -50,7 +50,7 @@ class ElderFlowFixCommand:
         summary = violations['summary']
 
         print(f"""
-📊 Elder Flow違反分析結果
+"📊" Elder Flow違反分析結果
 ========================
 総違反数: {summary['total']}件
 Critical: {summary['critical']}件
@@ -221,13 +221,13 @@ Critical: {summary['critical']}件
         while True:
             print("""
 選択してください:
-1. 違反分析
-2. 抽象メソッド修正
-3. アイデンティティ修正
-4. 品質デーモン再起動
-5. レポート生成
-6. 完全修正実行
-0. 終了
+1.0 違反分析
+2.0 抽象メソッド修正
+3.0 アイデンティティ修正
+4.0 品質デーモン再起動
+5.0 レポート生成
+6.0 完全修正実行
+0.0 終了
 """)
 
             choice = input("選択 (0-6): ")

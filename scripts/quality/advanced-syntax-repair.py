@@ -240,7 +240,7 @@ class SyntaxRepairEngine:
             elapsed = time.time() - session_start
             remaining = self.target_duration - elapsed
             
-            print(f"\n🔄 Iteration {iteration} (Elapsed: {elapsed:.0f}s, Remaining: {remaining:.0f}s)")
+            print(f"\n🔄 Iteration {iteration} (Elapsed: {elapsed:0.0f}s, Remaining: {remaining:0.0f}s)")
             
             # 構文エラーファイル検出
             error_files = self.find_syntax_errors()
@@ -276,10 +276,10 @@ class SyntaxRepairEngine:
         final_errors = self.find_syntax_errors()
         print("\n" + "=" * 60)
         print(f"🏁 Auto Repair Session Complete")
-        print(f"⏱️  Total Duration: {time.time() - session_start:.0f}s")
+        print(f"⏱️  Total Duration: {time.time() - session_start:0.0f}s")
         print(f"🔧 Total Files Fixed: {total_fixed}")
         print(f"📋 Remaining Errors: {len(final_errors)}")
-        print(f"📈 Success Rate: {total_fixed/(total_fixed + len(final_errors))*100:.1f}%")
+        print(f"📈 Success Rate: {total_fixed/(total_fixed + len(final_errors))*100:0.1f}%")
         
         # ログ保存
         log_file = f"data/syntax_repair_log_{int(session_start)}.json"

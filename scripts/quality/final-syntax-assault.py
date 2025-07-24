@@ -9,6 +9,7 @@ import ast
 from pathlib import Path
 
 def get_all_syntax_errors():
+    pass
 
 
 """全構文エラーを取得""" [],
@@ -102,6 +103,7 @@ def smart_fix_file(file_path: str, error_type: str) -> bool:
         return False
 
 def main():
+    pass
 
         """メイン実行"""")
     print(f"   Total errors: {total_errors}")
@@ -138,7 +140,7 @@ def main():
     print(f"   Before: {total_errors} errors")
     print(f"   Fixed: {total_fixed} files")
     print(f"   After: {final_total} errors")
-    print(f"   Reduction: {((total_errors-final_total)/max(1,total_errors)*100):.1f}%")
+    print(f"   Reduction: {((total_errors-final_total)/max(1,total_errors)*100):0.1f}%")
     
     if final_total < 50:
         print("\n🎉 Major progress! Under 50 errors remaining!")

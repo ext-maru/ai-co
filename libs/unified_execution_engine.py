@@ -6,9 +6,9 @@
 統合実行エンジン - Elder Flow + Elder Tree v2 統合システム
 
 統合対象:
-1. Elder Flow - 自動化開発フロー・品質ゲート
-2. Elder Tree v2 - 4賢者+4サーバント統合システム
-3. 従来実行システム群 - 個別機能統合
+1.0 Elder Flow - 自動化開発フロー・品質ゲート
+2.0 Elder Tree v2 - 4賢者+4サーバント統合システム
+3.0 従来実行システム群 - 個別機能統合
 
 最適化目標:
 - 重複処理排除 (60%効率化)
@@ -265,7 +265,7 @@ class UnifiedExecutionEngine:
             await self._update_performance_metrics(task)
             
             print(f"✅ 統合タスク実行完了: {task_id}")
-            print(f"   実行時間: {task.execution_time:.2f}秒")
+            print(f"   実行時間: {task.execution_time:0.2f}秒")
             print(f"   品質スコア: {task.quality_score}")
             
         except Exception as e:
@@ -741,17 +741,17 @@ def main():
         stats = engine.get_performance_statistics()
         print(f"\n⚡ 統合実行エンジンステータス")
         print(f"  エンジンID: {stats['engine_id']}")
-        print(f"  稼働時間: {stats['uptime']:.0f}秒")
+        print(f"  稼働時間: {stats['uptime']:0.0f}秒")
         print(f"  アクティブタスク数: {stats['total_active_tasks']}")
     
     elif command == "stats":
         stats = engine.get_performance_statistics()
         metrics = stats["performance_metrics"]
         print("\n📊 パフォーマンス統計:")
-        print(f"  総実行タスク数: {metrics['total_tasks_executed']:.0f}")
-        print(f"  平均実行時間: {metrics['average_execution_time']:.2f}秒")
-        print(f"  平均品質スコア: {metrics['average_quality_score']:.1f}")
-        print(f"  効率改善率: {metrics['efficiency_improvement']:.1f}%")
+        print(f"  総実行タスク数: {metrics['total_tasks_executed']:0.0f}")
+        print(f"  平均実行時間: {metrics['average_execution_time']:0.2f}秒")
+        print(f"  平均品質スコア: {metrics['average_quality_score']:0.1f}")
+        print(f"  効率改善率: {metrics['efficiency_improvement']:0.1f}%")
     
     elif command == "tasks":
         tasks = engine.get_active_tasks()

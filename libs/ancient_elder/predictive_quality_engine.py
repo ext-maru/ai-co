@@ -299,8 +299,7 @@ class PredictiveQualityEngine(AncientMagicBase):
             
             # 入力検証の不足
             functions = features.get("functions", 0)
-            if functions > 0 and not re.search(r'isinstance\s*\(|len\s*\(.*\)\s*[<>]|validate' \
-                'isinstance\s*\(|len\s*\(.*\)\s*[<>]|validate', code):
+            if functions > 0 and not re.search(r'isinstance\s*\(|len\s*\(.*\)\s*[<>]|validate', code):
                 sec_risk += 0.2
             
             return min(sec_risk, 1.0)
@@ -677,9 +676,9 @@ def risky_function(data):
     engine = PredictiveQualityEngine()
     result = engine.predict_quality_issues(sample_code)
     
-    print(f"Bug Probability: {result.bug_probability:.2f}")
-    print(f"Performance Risk: {result.performance_risk:.2f}")
-    print(f"Security Risk: {result.security_risk:.2f}")
-    print(f"Technical Debt: {result.technical_debt_score:.2f}")
-    print(f"Confidence: {result.confidence:.2f}")
+    print(f"Bug Probability: {result.bug_probability:0.2f}")
+    print(f"Performance Risk: {result.performance_risk:0.2f}")
+    print(f"Security Risk: {result.security_risk:0.2f}")
+    print(f"Technical Debt: {result.technical_debt_score:0.2f}")
+    print(f"Confidence: {result.confidence:0.2f}")
     print(f"Recommendations: {len(result.recommendations)}")

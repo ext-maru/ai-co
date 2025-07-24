@@ -455,9 +455,9 @@ def generate_comprehensive_report(summary: Dict[str, Any]) -> str:
     exec_summary = summary["execution_summary"]
     report_lines.extend([
         "## Executive Summary",
-        f"- **Execution Time**: {exec_summary['execution_time_seconds']:.2f} seconds",
-        f"- **Success Rate**: {exec_summary['success_rate']:.1f}%",
-        f"- **Average Quality Score**: {exec_summary['average_quality_score']:.1f}/100",
+        f"- **Execution Time**: {exec_summary['execution_time_seconds']:0.2f} seconds",
+        f"- **Success Rate**: {exec_summary['success_rate']:0.1f}%",
+        f"- **Average Quality Score**: {exec_summary['average_quality_score']:0.1f}/100",
         f"- **Iron Will Compliance**: {'✅ PASS' if summary['iron_will_compliance'] else '❌ FAIL'}",
         f"- **Parallel Execution**: {'✅ Enabled' if summary['parallel_execution'] else '❌ Disabled'}",
         ""

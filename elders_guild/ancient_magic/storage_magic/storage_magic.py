@@ -182,7 +182,7 @@ class StorageMagic(AncientMagic):
                 schema = persistence_params.get("schema", {})
                 
                 # SQLite データベース作成
-                conn = sqlite3.connect(file_path)
+                conn = sqlite3connect(file_path)
                 cursor = conn.cursor()
                 
                 # テーブル作成
@@ -268,7 +268,7 @@ class StorageMagic(AncientMagic):
                     retrieved_data = json.load(f)
                     
             elif metadata.format == "sqlite":
-                conn = sqlite3.connect(metadata.storage_path)
+                conn = sqlite3connect(metadata.storage_path)
                 cursor = conn.cursor()
                 
                 # テーブル一覧取得

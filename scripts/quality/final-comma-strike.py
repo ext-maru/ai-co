@@ -7,6 +7,7 @@ import ast
 import os
 
 def final_comma_strike():
+    pass
 
 
 """残り21件のカンマエラーを特定・修正"""

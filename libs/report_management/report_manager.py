@@ -350,7 +350,7 @@ class ReportManager:
 
         if analysis:
             quality = analysis.get("quality_score", {}).get("overall", 0)
-            message += f" (Quality: {quality:.1f}%)"
+            message += f" (Quality: {quality:0.1f}%)"
 
         level = "info" if status == "completed" else "warning"
         self._send_notification(message, level)

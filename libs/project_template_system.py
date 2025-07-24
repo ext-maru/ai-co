@@ -93,7 +93,7 @@ class ProjectStatusManager:
 
     def _init_database(self):
         """データベース初期化"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # プロジェクト状態テーブル
@@ -161,7 +161,7 @@ class ProjectStatusManager:
         context_data: Dict = None,
     ) -> bool:
         """プロジェクト状態を作成"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         try:
@@ -183,7 +183,7 @@ class ProjectStatusManager:
             logger.info(f"プロジェクト状態を作成: {project_name} (ID: {project_id})")
             return True
 
-        except sqlite3.IntegrityError:
+        except sqlite3IntegrityError:
             logger.warning(f"プロジェクト状態は既に存在: {project_id}")
             return False
         finally:
@@ -191,7 +191,7 @@ class ProjectStatusManager:
 
     def get_project_status(self, project_id: str) -> Optional[Dict]:
         """プロジェクト状態を取得"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -228,7 +228,7 @@ class ProjectStatusManager:
         context_data: Dict = None,
     ) -> bool:
         """プロジェクトフェーズを更新"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # 現在のフェーズを完了としてマーク
@@ -282,7 +282,7 @@ class ProjectStatusManager:
         next_actions: List[str] = None,
     ) -> bool:
         """継続性ログを記録"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -308,7 +308,7 @@ class ProjectStatusManager:
 
     def get_continuity_log(self, project_id: str, limit: int = 10) -> List[Dict]:
         """継続性ログを取得"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -638,7 +638,7 @@ class ProjectTemplateSystem:
 
     def _complete_project(self, project_id: str, context_data: Dict = None) -> bool:
         """プロジェクトを完了"""
-        conn = sqlite3.connect(self.status_manager.db_path)
+        conn = sqlite3connect(self.status_manager.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -710,7 +710,7 @@ class ProjectTemplateSystem:
 🧙‍♂️ エルダー相談事項
 {chr(10).join(f"- {consul['sage_type']}: {consul['prompt']}" for consul in elder_consultations)}
 
-📈 最近の活動
+"📈" 最近の活動
 {chr(10).join(f"- {log['timestamp']}: {log['action']}" for log in continuity_log[:3])}
 
 🔄 フェーズ進捗
@@ -721,7 +721,7 @@ Phase {project_info['phase_index'] + 1} / {len(template.phases) if template else
 
     def get_project_list(self) -> List[Dict]:
         """プロジェクト一覧を取得"""
-        conn = sqlite3.connect(self.status_manager.db_path)
+        conn = sqlite3connect(self.status_manager.db_path)
         cursor = conn.cursor()
 
         cursor.execute(

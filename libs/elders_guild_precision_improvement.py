@@ -13,11 +13,11 @@ Elders Guild Precision Improvement System
 - 4賢者協調処理: 95%以上
 
 🔧 改善アプローチ:
-1. エラー分析・根本原因特定
-2. データ品質向上
-3. 接続信頼性改善
-4. パフォーマンス最適化
-5. 品質保証強化
+1.0 エラー分析・根本原因特定
+2.0 データ品質向上
+3.0 接続信頼性改善
+4.0 パフォーマンス最適化
+5.0 品質保証強化
 """
 
 import sys
@@ -96,9 +96,8 @@ class ImprovementAction:
 class EldersGuildPrecisionImprovement:
     """エルダーズギルド精度向上システム"""
 
-    def __init__(self, strategy:
+    def __init__(self, strategy: ImprovementStrategy = ImprovementStrategy.SYSTEMATIC):
         """初期化メソッド"""
-    ImprovementStrategy = ImprovementStrategy.SYSTEMATIC):
         self.strategy = strategy
         self.logger = logging.getLogger(__name__)
 
@@ -261,7 +260,7 @@ class EldersGuildPrecisionImprovement:
                     issue_type="overall_precision",
                     severity=ImprovementPriority.CRITICAL,
                     description="全体システムの精度が大幅に基準値を下回っています",
-                    error_details=f"現在スコア: {overall_score:.3f}",
+                    error_details=f"現在スコア: {overall_score:0.3f}",
                     suggested_fix="包括的なシステム見直しと品質向上プロジェクト",
                     estimated_impact=0.9 - overall_score,
                     timestamp=datetime.now(),
@@ -691,27 +690,27 @@ class EldersGuildPrecisionImprovement:
         try:
             self.logger.info("🎯 包括的精度向上プロジェクト開始")
 
-            # 1. 初期化
+            # 1.0 初期化
             init_result = await self.initialize_precision_improvement()
             if not init_result["success"]:
                 return init_result
 
-            # 2. 問題分析
+            # 2.0 問題分析
             analysis_result = await self.analyze_precision_issues()
             if not analysis_result["success"]:
                 return analysis_result
 
-            # 3. 改善実装
+            # 3.0 改善実装
             implementation_result = await self.implement_precision_improvements()
             if not implementation_result["success"]:
                 return implementation_result
 
-            # 4. 改善効果検証
+            # 4.0 改善効果検証
             verification_result = await self.verify_improvements()
             if not verification_result["success"]:
                 return verification_result
 
-            # 5. 最終レポート
+            # 5.0 最終レポート
             final_report = {
                 "success": True,
                 "project_summary": {
@@ -786,7 +785,7 @@ async def demo_elders_guild_precision_improvement():
             print(f"   問題特定: {summary['issues_identified']}件")
             print(f"   重要問題: {summary['critical_issues']}件")
             print(f"   実装アクション: {summary['actions_implemented']}件")
-            print(f"   最終スコア: {summary['final_score']:.3f}")
+            print(f"   最終スコア: {summary['final_score']:0.3f}")
             print(f"   認証状況: {summary['certification_status']}")
 
             # 改善効果
@@ -808,10 +807,8 @@ async def demo_elders_guild_precision_improvement():
                     "sage_improvements"
                 ].items():
                     print(
-                        (
-                            f"f"   {sage_name}: {sage_improvement['score']:.3f} ("
-                            f"{sage_improvement['passed_tests']}/{sage_improvement['total_tests']})""
-                        )
+                        f"   {sage_name}: {sage_improvement['score']:.3f} ("
+                        f"{sage_improvement['passed_tests']}/{sage_improvement['total_tests']})"
                     )
 
             # 統計情報
@@ -831,7 +828,7 @@ async def demo_elders_guild_precision_improvement():
         print(f"   改善戦略: {status['strategy']}")
         print(f"   特定問題: {status['identified_issues']}")
         print(f"   改善アクション: {status['improvement_actions']}")
-        print(f"   稼働時間: {status['uptime']:.1f}秒")
+        print(f"   稼働時間: {status['uptime']:0.1f}秒")
 
         print("\n🎉 エルダーズギルド精度向上デモ完了")
         print("✅ 全ての精度向上プロセスが正常に実行されました")

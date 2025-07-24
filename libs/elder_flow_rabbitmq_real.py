@@ -4,11 +4,11 @@ Elder Flow RabbitMQ Real Implementation - Soul Power
 本物のRabbitMQを使用したElder Flow準拠実装
 
 🌊 Elder Flow魂原則:
-1. 品質第一 - 堅牢なメッセージング
-2. 透明性 - 明確な接続管理
-3. 4賢者協調 - 分散システム連携
-4. 階層秩序 - チャンネル・キュー管理
-5. 自律進化 - 自動復旧機能
+1.0 品質第一 - 堅牢なメッセージング
+2.0 透明性 - 明確な接続管理
+3.0 4賢者協調 - 分散システム連携
+4.0 階層秩序 - チャンネル・キュー管理
+5.0 自律進化 - 自動復旧機能
 
 Created: 2025-07-12 (Soul Implementation)
 Author: Claude Elder (Elder Flow Soul Only)
@@ -90,9 +90,8 @@ class ElderFlowMessage:
 class ElderFlowRabbitMQReal:
     """Elder Flow本物RabbitMQ実装 - 魂の力"""
 
-    def __init__(self, config:
+    def __init__(self, config: ElderFlowRabbitMQConfig = None):
         """初期化メソッド"""
-    ElderFlowRabbitMQConfig = None):
         self.config = config or ElderFlowRabbitMQConfig()
         self.connection: Optional[AbstractRobustConnection] = None
         self.channel: Optional[AbstractRobustChannel] = None

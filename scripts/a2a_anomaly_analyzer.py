@@ -36,7 +36,7 @@ class A2AAnomalyAnalyzer:
         print("🔍 異常パターン10件の詳細分析を開始...")
 
         # データベースから通信データを取得
-        conn = sqlite3.connect(self.a2a_db_path)
+        conn = sqlite3connect(self.a2a_db_path)
         cursor = conn.cursor()
 
         # 全通信データを取得
@@ -475,7 +475,7 @@ def main():
     print(f"総通信数: {analysis_result['total_communications']:,}")
     print(f"異常パターン検出: {analysis_result['anomalies_detected']}件")
     print(f"重要度レベル: {analysis_result['severity_assessment']['level'].upper()}")
-    print(f"重要度スコア: {analysis_result['severity_assessment']['score']:.3f}")
+    print(f"重要度スコア: {analysis_result['severity_assessment']['score']:0.3f}")
 
     # 異常パターンの詳細
     print("\n🔍 異常パターン詳細")
@@ -483,7 +483,7 @@ def main():
     for i, anomaly in enumerate(analysis_result["anomaly_details"][:5], 1):
         print(f"{i}. {anomaly['source_agent']} -> {anomaly['target_agent']}")
         print(f"   時刻: {anomaly['timestamp']}")
-        print(f"   スコア: {anomaly['anomaly_score']:.3f}")
+        print(f"   スコア: {anomaly['anomaly_score']:0.3f}")
         print(f"   ステータス: {anomaly['status']}")
         if anomaly["error_message"]:
             print(f"   エラー: {anomaly['error_message'][:50]}...")

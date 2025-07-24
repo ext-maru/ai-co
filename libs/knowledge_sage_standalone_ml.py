@@ -617,7 +617,7 @@ class KnowledgeSageStandaloneML:
             if model_name == "category_classifier" and "confusion_matrix" in model_metrics:
                 cm = np.array(model_metrics["confusion_matrix"])
                 
-                # Calculate per-class metrics
+                # Calculate per-class metrics:
                 n_classes = cm.shape[0]
                 if n_classes > 0:
                     precision = np.zeros(n_classes)

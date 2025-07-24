@@ -220,7 +220,7 @@ class IncidentSageQualityBridge:
                 severity='high',
                 category='quality_score_low',
                 file_path=file_path,
-                description=f'Quality score critically low: {quality_score:.1f}/100',
+                description=f'Quality score critically low: {quality_score:0.1f}/100',
                 quality_score=quality_score,
                 violations=[{'type': 'quality', 'issues': issues}],
                 suggested_actions=[

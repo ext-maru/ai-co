@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Coverage Enhancement Knight - Test Coverage Improvement Specialist
+"📊" Coverage Enhancement Knight - Test Coverage Improvement Specialist
 Automatically improves test coverage during idle system periods
 """
 
@@ -445,7 +445,7 @@ class Test{target.function_name.title()}:
 
             if improvement.success:
                 self.logger.info(
-                    f"✅ Completed {target.function_name} (+{coverage_gain:.1f}% coverage)"
+                    f"✅ Completed {target.function_name} (+{coverage_gain:0.1f}% coverage)"
                 )
             else:
                 self.logger.warning(
@@ -635,24 +635,24 @@ class Test{target.function_name.title()}:
 🛡️ {self.knight_name} Activity Report
 {'='*50}
 
-📊 Performance Metrics:
+"📊" Performance Metrics:
    • Completed Improvements: {status['completed_improvements']}
    • Failed Attempts: {status['failed_attempts']}
-   • Total Coverage Gain: {status['total_coverage_gain']:.2f}%
+   • Total Coverage Gain: {status['total_coverage_gain']:0.2f}%
    • Targets in Queue: {status['targets_in_queue']}
 
 🎯 Current Status:
    • Active: {'✅' if status['is_active'] else '❌'}
    • System Idle: {'✅' if status['system_idle'] else '❌'}
-   • Idle Duration: {status['idle_duration']:.1f}s
+   • Idle Duration: {status['idle_duration']:0.1f}s
    • Current Task: {status['current_task']['function_name'] if status['current_task'] else 'None'}
 
-📈 Recent Improvements:
+"📈" Recent Improvements:
 """
 
         for improvement in self.completed_improvements[-5:]:  # Last 5
-            report += f"   • {improvement.target.function_name} (+{improvement.coverage_gain:.1f}%)\n" \
-                "   • {improvement.target.function_name} (+{improvement.coverage_gain:.1f}%)\n"
+            report += f"   • {improvement.target.function_name} (+{improvement.coverage_gain:0.1f}%)\n" \
+                "   • {improvement.target.function_name} (+{improvement.coverage_gain:0.1f}%)\n"
 
         return report
 

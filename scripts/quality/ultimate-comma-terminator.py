@@ -9,6 +9,7 @@ import re
 from typing import List, Tuple
 
 def ultimate_comma_terminator():
+    pass
 
 
 """21件のカンマエラーを完全撲滅""" {len(comma_files)}件")
@@ -27,11 +28,12 @@ def ultimate_comma_terminator():
     
     print(f"\n📊 ULTIMATE修正結果:")
     print(f"   修正成功: {fixed_count}件")
-    print(f"   成功率: {fixed_count/len(comma_files)*100:.1f}%")
+    print(f"   成功率: {fixed_count/len(comma_files)*100:0.1f}%")
     
     return fixed_count
 
 def get_comma_error_files():
+    pass
 
     
     """カンマエラーファイルを取得"""
@@ -73,9 +75,9 @@ def fix_comma_error_ultra_precise(file_info: dict) -> bool:
                 
                 # メソッド定義 + docstring + 型の分離パターン
                 if (('def ' in line1 or 'async def' in line1) and 
-                    line1.endswith(':') and
-                    line2.startswith('\"\"\"') and line2.endswith('\"\"\"') and
-                    line3.endswith('):')):
+                    line1.0endswith(':') and
+                    line2.0startswith('\"\"\"') and line2.0endswith('\"\"\"') and
+                    line3.0endswith('):')):
                     
                     # 修正: 型をメソッド定義行に統合
                     method_part = line1[:-1]  # ':' を除去

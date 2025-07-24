@@ -27,9 +27,8 @@ class TestStabilityMeasurer:
             "error_types": {},
         }
 
-    def run_pytest_collection(self):
-        """Run pytest collection and count tests"""
-        print("🔍 Running pytest collection...")
+    def run_pytest_collection(self)print("🔍 Running pytest collection...")
+    """Run pytest collection and count tests"""
 
         cmd = [
             sys.executable,
@@ -79,9 +78,8 @@ class TestStabilityMeasurer:
             print(f"  ❌ Collection failed: {e}")
             self.results["collection_errors"] = -1
 
-    def run_sample_tests(self):
-        """Run a sample of tests to measure stability"""
-        print("\n🧪 Running sample tests...")
+    def run_sample_tests(self)print("\n🧪 Running sample tests...")
+    """Run a sample of tests to measure stability"""
 
         test_samples = [
             "tests/unit/test_basic_utilities.py",
@@ -150,9 +148,8 @@ class TestStabilityMeasurer:
         print(f"  ✗ Failed: {self.results['failed_tests']}")
         print(f"  ✗ Errors: {self.results['error_tests']}")
 
-    def analyze_error_patterns(self):
-        """Analyze common error patterns"""
-        print("\n🔬 Analyzing error patterns...")
+    def analyze_error_patterns(self)print("\n🔬 Analyzing error patterns...")
+    """Analyze common error patterns"""
 
         cmd = [
             sys.executable,
@@ -208,9 +205,8 @@ class TestStabilityMeasurer:
         except Exception as e:
             print(f"  ❌ Analysis failed: {e}")
 
-    def generate_report(self):
-        """Generate stability report"""
-        print("\n📊 TEST INFRASTRUCTURE STABILITY REPORT")
+    def generate_report(self)print("\n📊 TEST INFRASTRUCTURE STABILITY REPORT")
+    """Generate stability report"""
         print("=" * 50)
 
         # Calculate overall stability
@@ -223,9 +219,9 @@ class TestStabilityMeasurer:
 
         overall_stability = (collection_stability + self.results["stability_rate"]) / 2
 
-        print(f"\n🎯 Overall Stability: {overall_stability:.1f}%")
-        print(f"  • Collection Stability: {collection_stability:.1f}%")
-        print(f"  • Execution Stability: {self.results['stability_rate']:.1f}%")
+        print(f"\n🎯 Overall Stability: {overall_stability:0.1f}%")
+        print(f"  • Collection Stability: {collection_stability:0.1f}%")
+        print(f"  • Execution Stability: {self.results['stability_rate']:0.1f}%")
 
         print("\n📈 Metrics:")
         print(f"  • Total Tests Collected: {self.results['total_tests']}")
@@ -237,7 +233,7 @@ class TestStabilityMeasurer:
         print(f"  • Tests Passed: {self.results['passed_tests']}")
         print(f"  • Tests Failed: {self.results['failed_tests']}")
         print(f"  • Tests with Errors: {self.results['error_tests']}")
-        print(f"  • Execution Time: {self.results['execution_time']:.2f}s")
+        print(f"  • Execution Time: {self.results['execution_time']:0.2f}s")
 
         if self.results["error_types"]:
             print("\n🐛 Error Distribution:")

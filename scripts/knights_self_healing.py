@@ -638,21 +638,21 @@ class IncidentKnightsSelfHealing:
         logger.info("⚔️ インシデント騎士団 自己修復システム起動")
         logger.info(f"📋 Auto-fix: {self.auto_fix}, Batch mode: {self.batch_mode}")
 
-        # 1. Python ファイルをスキャン
+        # 1.0 Python ファイルをスキャン
         python_files = self._find_python_files()
         logger.info(f"📁 {len(python_files)} 個のPythonファイルを発見")
 
-        # 2. 各ファイルをチェック
+        # 2.0 各ファイルをチェック
         for file_path in python_files:
             await self._check_file(file_path)
 
-        # 3. 環境変数チェック
+        # 3.0 環境変数チェック
         await self._check_environment_variables()
 
-        # 4. 依存関係チェック
+        # 4.0 依存関係チェック
         await self._check_dependencies()
 
-        # 5. レポート生成
+        # 5.0 レポート生成
         report = self._generate_report()
 
         logger.info(f"🎯 スキャン完了: {len(self.issues_found)}個の問題を発見")
@@ -1141,8 +1141,8 @@ async def main():
         print("=" * 60)
         print(f"🔍 発見された問題: {report['issues_found']}件")
         print(f"✅ 修正された問題: {report['issues_fixed']}件")
-        print(f"📊 修正率: {report['fix_rate']*100:.1f}%")
-        print(f"⏱️ 実行時間: {report['duration_seconds']:.1f}秒")
+        print(f"📊 修正率: {report['fix_rate']*100:0.1f}%")
+        print(f"⏱️ 実行時間: {report['duration_seconds']:0.1f}秒")
         print("=" * 60)
 
 

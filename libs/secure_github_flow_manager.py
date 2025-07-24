@@ -1031,6 +1031,7 @@ def create_secure_github_context(
 
 
 if __name__ == "__main__":
+    pass
 
     async def test_secure_github_manager():
         """テスト実行"""

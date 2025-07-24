@@ -21,9 +21,8 @@ print(f"GITHUB_REPOSITORY: {os.getenv('GITHUB_REPOSITORY', 'ext-maru/ai-co')}")
 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
 
 
-async def test_auto_issue_processor():
-    """自動イシュー処理の総合テスト"""
-    print("\n🚀 自動イシュー処理テスト開始...\n")
+async def test_auto_issue_processor()print("\n🚀 自動イシュー処理テスト開始...\n")
+"""自動イシュー処理の総合テスト"""
     
     try:
         processor = AutoIssueProcessor()
@@ -32,7 +31,7 @@ async def test_auto_issue_processor():
         print(f"❌ 初期化エラー: {e}")
         return
     
-    # 1. スキャンモードテスト
+    # 1.0 スキャンモードテスト
     print("\n📊 Step 1: スキャンモードテスト")
     print("-" * 50)
     
@@ -45,7 +44,7 @@ async def test_auto_issue_processor():
             print("\n処理可能なイシュー:")
             for issue in scan_result.get('issues', []):
                 print(f"  - #{issue['number']}: {issue['title']}")
-                print(f"    優先度: {issue['priority']}, 複雑度: {issue['complexity']:.2f}")
+                print(f"    優先度: {issue['priority']}, 複雑度: {issue['complexity']:0.2f}")
         else:
             print("ℹ️ 処理可能なイシューがありません")
             return
@@ -53,7 +52,7 @@ async def test_auto_issue_processor():
         print(f"❌ スキャンエラー: {scan_result.get('message', 'Unknown error')}")
         return
     
-    # 2. ドライランテスト（最初のイシュー）
+    # 2.0 ドライランテスト（最初のイシュー）
     if scan_result.get('issues'):
         first_issue = scan_result['issues'][0]
         
@@ -70,13 +69,13 @@ async def test_auto_issue_processor():
             print(f"✅ ドライラン成功:")
             print(f"  - タイトル: {issue_info['title']}")
             print(f"  - 優先度: {issue_info['priority']}")
-            print(f"  - 複雑度: {issue_info['complexity']:.2f}")
+            print(f"  - 複雑度: {issue_info['complexity']:0.2f}")
             print(f"  - 処理可能: {'✅' if issue_info['processable'] else '❌'}")
-            print(f"  - 評価要因: {json.dumps(issue_info['factors'], indent=4, ensure_ascii=False)}")
+            print(f"  - 評価要因: {json.dumps(issue_info['factors'], indent}")
         else:
             print(f"❌ ドライランエラー: {dry_run_result}")
     
-    # 3. 実際の処理テスト（実行するかユーザーに確認）
+    # 3.0 実際の処理テスト（実行するかユーザーに確認）
     print("\n⚠️ Step 3: 実際の処理（PR作成）")
     print("-" * 50)
     print("実際にPRを作成しますか？")

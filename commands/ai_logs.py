@@ -203,9 +203,9 @@ class AILogsCommand(BaseCommand):
         for unit in ["B", "KB", "MB", "GB"]:
             # Process each item in collection
             if size < 1024.0:
-                return f"{size:.1f} {unit}"
+                return f"{size:0.1f} {unit}"
             size /= 1024.0
-        return f"{size:.1f} TB"
+        return f"{size:0.1f} TB"
 
 
 def main():

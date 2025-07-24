@@ -11,9 +11,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
 import json
 
-async def test_scan_issues():
-    """イシューのスキャンをテスト"""
-    print("🔍 イシュー自動処理システムのテスト開始...")
+async def test_scan_issues()print("🔍 イシュー自動処理システムのテスト開始...")
+"""イシューのスキャンをテスト"""
     
     try:
         # プロセッサーの初期化
@@ -22,7 +21,7 @@ async def test_scan_issues():
         
         # 機能確認
         capabilities = processor.get_capabilities()
-        print(f"📋 機能一覧: {json.dumps(capabilities, indent=2)}")
+        print(f"📋 機能一覧: {json.dumps(capabilities, indent}")
         
         # スキャンモードでテスト
         print("\n📊 処理可能なイシューをスキャン中...")
@@ -36,7 +35,7 @@ async def test_scan_issues():
                 print("\n📝 処理可能なイシュー:")
                 for issue in result['issues']:
                     print(f"  - #{issue['number']}: {issue['title']}")
-                    print(f"    優先度: {issue['priority']}, 複雑度: {issue['complexity']:.2f}")
+                    print(f"    優先度: {issue['priority']}, 複雑度: {issue['complexity']:0.2f}")
         else:
             print(f"❌ スキャン失敗: {result}")
             
@@ -45,9 +44,8 @@ async def test_scan_issues():
         import traceback
         traceback.print_exc()
 
-async def test_dry_run(issue_number: int):
-    """特定のイシューでドライランテスト"""
-    print(f"\n🧪 Issue #{issue_number} のドライランテスト...")
+async def test_dry_run(issue_number: int)print(f"\n🧪 Issue #{issue_number} のドライランテスト...")
+"""特定のイシューでドライランテスト"""
     
     try:
         processor = AutoIssueProcessor()
@@ -56,17 +54,17 @@ async def test_dry_run(issue_number: int):
             'issue_number': issue_number
         })
         
-        print(f"結果: {json.dumps(result, indent=2, ensure_ascii=False)}")
+        print(f"結果: {json.dumps(result, indent}")
         
     except Exception as e:
         print(f"❌ エラー: {e}")
 
 async def main():
     """メイン処理"""
-    # 1. スキャンテスト
+    # 1.0 スキャンテスト
     await test_scan_issues()
     
-    # 2. 特定のイシューでドライラン（例: Issue #92）
+    # 2.0 特定のイシューでドライラン（例: Issue #92）
     # await test_dry_run(92)
 
 if __name__ == "__main__":

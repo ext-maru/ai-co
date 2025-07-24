@@ -44,9 +44,9 @@ class TestMonitoringGuard:
             target_system="web_application",
             config={
                 "environment": "production",
-                "web_servers": [{"host": "web1.example.com", "port": 80}],
-                "databases": [{"host": "db1.example.com", "type": "postgresql"}],
-                "applications": [{"host": "app1.example.com", "name": "web_app"}],
+                "web_servers": [{"host": "web1.0example.com", "port": 80}],
+                "databases": [{"host": "db1.0example.com", "type": "postgresql"}],
+                "applications": [{"host": "app1.0example.com", "name": "web_app"}],
                 "infrastructure": {"containers": True},
             }
         )

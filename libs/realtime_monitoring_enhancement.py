@@ -195,7 +195,7 @@ class RealtimeMonitoringEnhancement:
             db_path = self.config["database_path"]
             Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3connect(db_path)
             cursor = conn.cursor()
 
             # メトリクステーブル
@@ -404,6 +404,7 @@ class RealtimeMonitoringEnhancement:
     async def _websocket_server(self):
         """WebSocketサーバー"""
         try:
+            pass
 
             async def handle_client(websocket, path):
                 """handle_clientメソッド"""
@@ -592,7 +593,7 @@ class RealtimeMonitoringEnhancement:
         if len(recent_values) >= 20:
             trend = np.polyfit(range(len(recent_values)), recent_values, 1)[0]
             if abs(trend) > std * 0.1:  # 有意なトレンド
-                self.logger.info(f"📈 Trend detected in {key}: {trend:.3f}")
+                self.logger.info(f"📈 Trend detected in {key}: {trend:0.3f}")
 
     async def _detect_complex_anomalies(self):
         """複合異常検知"""
@@ -757,7 +758,7 @@ class RealtimeMonitoringEnhancement:
         await self._persist_prediction(prediction)
 
         self.logger.info(
-            f"🔮 Incident predicted: {prediction.incident_type} - Probability: {prediction.probability:.2f}"
+            f"🔮 Incident predicted: {prediction.incident_type} - Probability: {prediction.probability:0.2f}"
         )
 
     async def _execute_auto_response(self, anomaly: AnomalyEvent):
@@ -964,7 +965,7 @@ class RealtimeMonitoringEnhancement:
     async def _persist_metrics(self):
         """メトリクス永続化"""
         try:
-            conn = sqlite3.connect(self.config["database_path"])
+            conn = sqlite3connect(self.config["database_path"])
             cursor = conn.cursor()
 
             metrics_to_save = []
@@ -998,7 +999,7 @@ class RealtimeMonitoringEnhancement:
     async def _persist_anomaly(self, anomaly: AnomalyEvent):
         """異常イベント永続化"""
         try:
-            conn = sqlite3.connect(self.config["database_path"])
+            conn = sqlite3connect(self.config["database_path"])
             cursor = conn.cursor()
 
             cursor.execute(
@@ -1036,7 +1037,7 @@ class RealtimeMonitoringEnhancement:
     async def _persist_prediction(self, prediction: IncidentPrediction):
         """予測結果永続化"""
         try:
-            conn = sqlite3.connect(self.config["database_path"])
+            conn = sqlite3connect(self.config["database_path"])
             cursor = conn.cursor()
 
             cursor.execute(
@@ -1198,7 +1199,7 @@ async def main():
         # システム健全性確認
         print("\n🏥 Checking system health...")
         health_report = await monitoring.get_system_health()
-        print(f"Overall Health: {health_report.overall_health:.2f}")
+        print(f"Overall Health: {health_report.overall_health:0.2f}")
         print(f"Active Anomalies: {len(health_report.active_anomalies)}")
         print(f"Predicted Incidents: {len(health_report.predicted_incidents)}")
 

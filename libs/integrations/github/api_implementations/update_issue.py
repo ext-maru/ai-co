@@ -282,7 +282,7 @@ class GitHubUpdateIssueImplementation:
                 ):
                     reset_time = int(response.headers.get("X-RateLimit-Reset", 0))
                     wait_time = max(0, reset_time - time.time())
-                    logger.warning(f"Rate limit hit. Waiting {wait_time:.0f} seconds")
+                    logger.warning(f"Rate limit hit. Waiting {wait_time:0.0f} seconds")
                     if wait_time > 0:
                         time.sleep(wait_time)
                     continue
@@ -348,7 +348,7 @@ class GitHubUpdateIssueImplementation:
 
             # リトライ前の待機
             if attempt < self.max_retries - 1:
-                logger.info(f"Retrying in {delay:.1f} seconds...")
+                logger.info(f"Retrying in {delay:0.1f} seconds...")
                 time.sleep(delay)
                 delay *= self.backoff_factor
 

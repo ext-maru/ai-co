@@ -484,6 +484,7 @@ class RabbitMQFourSagesController:
 rabbitmq_four_sages_controller = RabbitMQFourSagesController()
 
 if __name__ == "__main__":
+    pass
 
     async def test_rabbitmq_four_sages():
         """test_rabbitmq_four_sagesテストメソッド"""

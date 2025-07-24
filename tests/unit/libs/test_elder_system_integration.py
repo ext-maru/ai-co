@@ -502,20 +502,20 @@ class TestIntegrationScenarios:
         }
         
         with patch.object(integration.sages_coordinator, 'initialize_sages', return_value=mock_sages_result):
-            # 1. システム初期化
+            # 1.0 システム初期化
             init_result = await integration.process_request({
                 "type": "initialize_elder_system"
             })
             assert init_result["success"] is True
             
-            # 2. システム状態確認
+            # 2.0 システム状態確認
             status_result = await integration.process_request({
                 "type": "get_system_status"
             })
             assert status_result["success"] is True
             assert status_result["system_metrics"]["total_components"] >= 4
             
-            # 3. エルダー協調
+            # 3.0 エルダー協調
             with patch.object(integration.sages_coordinator, 'process_request', return_value={"success": True}), \
                  patch.object(integration.a2a_core, 'process_request', return_value={"success": True}):
                 
@@ -527,7 +527,7 @@ class TestIntegrationScenarios:
                 })
                 assert coordination_result["success"] is True
             
-            # 4. 健全性チェック
+            # 4.0 健全性チェック
             health_result = await integration.process_request({
                 "type": "full_system_health_check"
             })

@@ -76,10 +76,10 @@ class HealthChecker:
             health_issues = []
 
             if cpu_percent > self.config["MAX_CPU_PERCENT"]:
-                health_issues.append(f"高CPU使用率: {cpu_percent:.1f}%")
+                health_issues.append(f"高CPU使用率: {cpu_percent:0.1f}%")
 
             if memory_percent > self.config["MAX_MEMORY_PERCENT"]:
-                health_issues.append(f"高メモリ使用率: {memory_percent:.1f}%")
+                health_issues.append(f"高メモリ使用率: {memory_percent:0.1f}%")
 
             if not is_running:
                 health_issues.append("プロセス応答なし")

@@ -135,9 +135,8 @@ class BaseSoul(ABC):
     真のA2A通信、個別魂の個性、自律学習機能を提供。
     """
 
-    def __init__(self, identity:
-        """初期化メソッド"""
-    SoulIdentity):
+    def __init__(self, identitySoulIdentity):
+    """初期化メソッド"""
         self.identity = identity
         self.state = SoulState.DORMANT
         self.process: Optional[mp.Process] = None
@@ -528,10 +527,8 @@ class BaseSoul(ABC):
         """学習サイクル処理（各魂で実装）"""
         pass
 
-    def __del__(self):
-        """デストラクタ"""
-        if hasattr(self, "process") and self.process and self.process.is_alive():
-            self.ascend_soul()
+    def __del__(self)if hasattr(self, "process") and self.process and self.process.is_alive()self.ascend_soul()
+    """デストラクタ"""
 
         if hasattr(self, "memory") and self.memory:
             self._save_soul_memory()

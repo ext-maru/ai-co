@@ -135,7 +135,7 @@ def eternalize_elder_spells():
         },
         {
             "spell_name": "AI_Company_Unified_Standards_2025",
-            "file_path": kb_path / "AI_COMPANY_UNIFIED_STANDARDS_2025.md",
+            "file_path": kb_path / "AI_COMPANY_UNIFIED_STANDARDS_2025.0md",
             "spell_type": "standards",
             "magic_school": "elder_magic",
             "power_level": 10,
@@ -170,9 +170,9 @@ def eternalize_elder_spells():
 - インシデント発生の未然防止
 
 ### 実施方法
-1. コード実装前にインシデント賢者を召喚
-2. 潜在的リスクの分析を依頼
-3. 推奨事項を受け取ってから実装開始
+1.0 コード実装前にインシデント賢者を召喚
+2.0 潜在的リスクの分析を依頼
+3.0 推奨事項を受け取ってから実装開始
 
 ### 違反時の対応
 - インシデント賢者からの自動警告
@@ -204,10 +204,10 @@ def eternalize_elder_spells():
 - 上位者への敬意と下位者への配慮
 
 ## 実践方法
-1. TDDによる品質保証
-2. 4賢者システムによる自律的品質管理
-3. エルダー評議会による継続的監視
-4. エルダーサーバントによる実行
+1.0 TDDによる品質保証
+2.0 4賢者システムによる自律的品質管理
+3.0 エルダー評議会による継続的監視
+4.0 エルダーサーバントによる実行
 
 この理念はElders Guild存続の根幹である。""",
             "spell_type": "philosophy",

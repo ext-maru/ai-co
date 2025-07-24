@@ -14,6 +14,7 @@ from python_a2a import A2AServer, Message, TextContent, MessageRole, run_server
 
 # === A2Aエージェント実装 ===
 class MicroElderAgent(A2AServer):
+    pass
 
 
 """最小限のElderエージェント"""
@@ -22,6 +23,7 @@ class MicroElderAgent(A2AServer):
         self.status = "active"
     
     def handle_message(self, message):
+        pass
 
         """A2Aメッセージ処理""" {user_text}
 🧠 Processing with Elder wisdom...
@@ -47,6 +49,7 @@ class ChatRequest(BaseModel):
     message: str
 
 class ChatResponse(BaseModel):
+    pass
 
 
 """ChatRequestクラス""" str
@@ -67,6 +70,7 @@ async def root():
 
 @app.get("/health")
 async def health():
+    pass
 
     """healthメソッド""" True,
         "agent_active": agent is not None,
@@ -101,16 +105,18 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 def run_a2a_in_thread():
+    pass
 
 
 """A2Aサーバーを別スレッドで実行"""
-        print("🤖 Starting A2A server on port 5001...")
+        print("🤖 Starting A2A server on port 5001.0..")
         agent = MicroElderAgent()
         run_server(agent, host="0.0.0.0", port=5001)
     except Exception as e:
         print(f"❌ A2A server error: {e}")
 
 def main():
+    pass
 
 
 """メイン実行関数"""//localhost:8000")

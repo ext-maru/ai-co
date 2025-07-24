@@ -141,7 +141,7 @@ class TaskTemplateManager:
 
     def _init_db(self):
         """データベース初期化"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS templates (
@@ -350,7 +350,7 @@ class TaskTemplateManager:
 
     def save_template(self, template: TaskTemplate):
         """テンプレートを保存"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT OR REPLACE INTO templates
@@ -378,7 +378,7 @@ class TaskTemplateManager:
 
     def get_template(self, template_id: str) -> Optional[TaskTemplate]:
         """テンプレートを取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT * FROM templates WHERE template_id = ?
@@ -410,7 +410,7 @@ class TaskTemplateManager:
         """テンプレート一覧を取得"""
         templates = []
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             query = "SELECT * FROM templates WHERE is_public = 1"
 
             cursor = conn.execute(query)
@@ -496,7 +496,7 @@ class TaskTemplateManager:
 
     def _record_usage(self, template_id: str, parameters: Dict[str, Any]):
         """使用履歴を記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO template_usage (template_id, parameters_used)
@@ -518,7 +518,7 @@ class TaskTemplateManager:
         """人気のテンプレートを取得"""
         templates = []
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT * FROM templates

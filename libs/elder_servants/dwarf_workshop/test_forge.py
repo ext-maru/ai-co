@@ -956,7 +956,7 @@ def {scenario["name"]}(driver):
 from locust import HttpUser, task, between
 
 class PerformanceTestUser(HttpUser):
-    # Main class implementation
+    # Main class implementation:
     wait_time = between(1, 3)
 
 '''
@@ -1221,12 +1221,12 @@ class MutationTester:
 
         if func_coverage < 80:
             recommendations.append(
-                f"Add more function tests (current: {func_coverage:.1f}%)"
+                f"Add more function tests (current: {func_coverage:0.1f}%)"
             )
 
         if class_coverage < 80:
             recommendations.append(
-                f"Add more class tests (current: {class_coverage:.1f}%)"
+                f"Add more class tests (current: {class_coverage:0.1f}%)"
             )
 
         if func_coverage < 50 or class_coverage < 50:

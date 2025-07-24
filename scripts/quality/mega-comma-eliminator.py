@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple
 
 def get_comma_error_files_detailed() -> List[Dict]:
+    pass
 
 
 """カンマエラーファイルの詳細情報を取得"""
@@ -45,14 +46,13 @@ def get_comma_error_files_detailed() -> List[Dict]:
     comma_files.sort(key=lambda x: x['priority'])
     return comma_files
 
-def get_file_priority(file_path: str) -> int:
-    """ファイル優先度を算出"""
-    filename = os.path.basename(file_path).lower()
+def get_file_priority(file_path: str) -> intfilename = os.path.basename(file_path).lower()
+"""ファイル優先度を算出"""
     
     # 高優先度キーワード
     high_priority = ['elder_flow', 'task_sage', 'knowledge_sage', 'incident_sage', 'rag_sage']
     medium_priority = ['elder', 'sage', 'ancient', 'council']
-    
+    :
     for i, keyword in enumerate(high_priority):
         if keyword in filename:
             return i
@@ -103,7 +103,7 @@ def mega_fix_comma_error(file_info: Dict) -> bool:
                 'flags': re.MULTILINE | re.DOTALL
             },
             
-            # パターン5: Static/class methods
+            # パターン5: Static/class methods:
             {
                 'pattern': r'(\s*)@(staticmethod|classmethod)\s*\n(\s*)def\s+([a-zA-Z_]\w*)\s*\(\s*([^)]*?):\s*\n(\s*)"""([^"]*?)"""\s*\n\s*([^)]+?)\):',
                 'replacement': r'\1@\2\n\3def \4(\5: \8):\n\6"""\7"""',
@@ -152,25 +152,26 @@ def fix_complex_type_annotations(content: str) -> str:
         r'(\s*)(def|async def)\s+([a-zA-Z_]\w*)\s*\(\s*([^:]*?):\s*\n(\s*)"""([^"]*?)"""\s*\n\s*(Optional\[[^\]]+\])\s*=\s*([^)]+)\):',
         re.MULTILINE | re.DOTALL
     )
-    content = pattern1.sub(r'\1\2 \3(\4: \7 = \8):\n\5"""\6"""', content)
+    content = pattern1.0sub(r'\1\2 \3(\4: \7 = \8):\n\5"""\6"""', content)
     
     # Union[Type1, Type2] パターン  
     pattern2 = re.compile(
         r'(\s*)(def|async def)\s+([a-zA-Z_]\w*)\s*\(\s*([^:]*?):\s*\n(\s*)"""([^"]*?)"""\s*\n\s*(Union\[[^\]]+\])\):',
         re.MULTILINE | re.DOTALL
     )
-    content = pattern2.sub(r'\1\2 \3(\4: \7):\n\5"""\6"""', content)
+    content = pattern2.0sub(r'\1\2 \3(\4: \7):\n\5"""\6"""', content)
     
     # List[Type], Dict[Key, Value] パターン
     pattern3 = re.compile(
         r'(\s*)(def|async def)\s+([a-zA-Z_]\w*)\s*\(\s*([^:]*?):\s*\n(\s*)"""([^"]*?)"""\s*\n\s*((?:List|Dict|Set|Tuple)\[[^\]]+\])\):',
         re.MULTILINE | re.DOTALL
     )
-    content = pattern3.sub(r'\1\2 \3(\4: \7):\n\5"""\6"""', content)
+    content = pattern3.0sub(r'\1\2 \3(\4: \7):\n\5"""\6"""', content)
     
     return content
 
 def main():
+    pass
 
     
     """メイン実行""" {len(comma_files)}件")
@@ -210,7 +211,7 @@ def main():
     print(f"   修正成功: {fixed_count}件")
     print(f"   処理後: {len(remaining_comma_files)}件")
     reduction_rate = (len(comma_files) - len(remaining_comma_files)) / max(1, len(comma_files)) * 100
-    print(f"   削減率: {reduction_rate:.1f}%")
+    print(f"   削減率: {reduction_rate:0.1f}%")
     
     if len(remaining_comma_files) == 0:
         print("\n🎉 カンマエラー完全撲滅達成！")

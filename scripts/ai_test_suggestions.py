@@ -203,8 +203,8 @@ class Test{filename.title().replace('_', '')}:
         line_coverage = coverage_data.get("overall_line_rate", 0) * 100
         branch_coverage = coverage_data.get("overall_branch_rate", 0) * 100
 
-        report += f"- **Line Coverage**: {line_coverage:.1f}%\n"
-        report += f"- **Branch Coverage**: {branch_coverage:.1f}%\n\n"
+        report += f"- **Line Coverage**: {line_coverage:0.1f}%\n"
+        report += f"- **Branch Coverage**: {branch_coverage:0.1f}%\n\n"
 
         # Target coverage
         target_coverage = 80.0
@@ -230,7 +230,7 @@ class Test{filename.title().replace('_', '')}:
                 coverage_percent = file_data["line_rate"] * 100
                 uncovered_count = len(file_data["uncovered_lines"])
 
-                report += f"### `{file_data['filename']}` ({coverage_percent:.1f}% coverage)\n"
+                report += f"### `{file_data['filename']}` ({coverage_percent:0.1f}% coverage)\n"
                 report += f"- **Uncovered lines**: {uncovered_count}\n"
 
                 # Analyze the file
@@ -247,11 +247,11 @@ class Test{filename.title().replace('_', '')}:
 
         # General recommendations
         report += "## 💡 General Recommendations\n\n"
-        report += "1. **Focus on Critical Paths**: Prioritize testing business-critical functionality\n"
-        report += "2. **Test Edge Cases**: Don't just test the happy path\n"
-        report += "3. **Mock External Dependencies**: Use mocks for external services\n"
-        report += "4. **Follow TDD**: Write tests before implementing new features\n"
-        report += "5. **Use Fixtures**: Share test setup code using pytest fixtures\n\n"
+        report += "1.0 **Focus on Critical Paths**: Prioritize testing business-critical functionality\n"
+        report += "2.0 **Test Edge Cases**: Don't just test the happy path\n"
+        report += "3.0 **Mock External Dependencies**: Use mocks for external services\n"
+        report += "4.0 **Follow TDD**: Write tests before implementing new features\n"
+        report += "5.0 **Use Fixtures**: Share test setup code using pytest fixtures\n\n"
 
         # Testing patterns
         report += "## 🎯 Testing Patterns\n\n"

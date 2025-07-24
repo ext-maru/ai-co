@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Analysis Magic 簡略テストスイート
+"📊" Analysis Magic 簡略テストスイート
 ===================================
 
 Analysis Magic（分析魔法）の基本機能テスト。
@@ -566,7 +566,7 @@ async def run_all_tests():
     print(f"Total Tests: {total_tests}")
     print(f"Passed: {passed_tests}")
     print(f"Failed: {total_tests - passed_tests}")
-    print(f"Success Rate: {success_rate:.1f}%")
+    print(f"Success Rate: {success_rate:0.1f}%")
     
     return success_rate >= 80.0, test_results
 

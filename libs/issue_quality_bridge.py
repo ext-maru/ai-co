@@ -123,10 +123,10 @@ This issue follows Elder Guild Issue Creation Standards (Tier 1-3):
 
 ## ⚡ IMMEDIATE ACTIONS REQUIRED
 
-1. **Remove all TODO/FIXME comments**
-2. **Complete all temporary implementations**
-3. **Implement proper solutions**
-4. **Add comprehensive tests**
+1.0 **Remove all TODO/FIXME comments**
+2.0 **Complete all temporary implementations**
+3.0 **Implement proper solutions**
+4.0 **Add comprehensive tests**
 
 ## 🏛️ Elder Guild Iron Will Protocol
 
@@ -482,7 +482,7 @@ This issue addresses critical security concerns under Elder Guild Security Proto
         quality_score = analysis.get('quality_score', 0)
         
         # 基本品質基準
-        criteria.append(f"Quality score improved to at least 70/100 (current: {quality_score:.1f})")
+        criteria.append(f"Quality score improved to at least 70/100 (current: {quality_score:0.1f})")
         
         # Iron Will遵守
         if not analysis.get('iron_will_compliance', True):
@@ -570,9 +570,9 @@ This issue addresses critical security concerns under Elder Guild Security Proto
         if base_hours < 2:
             return f"{int(base_hours * 60)} minutes"
         elif base_hours < 8:
-            return f"{base_hours:.1f} hours"
+            return f"{base_hours:0.1f} hours"
         else:
-            return f"{base_hours/8:.1f} days"
+            return f"{base_hours/8:0.1f} days"
             
     def _generate_business_value(self, analysis: Dict) -> str:
         """ビジネス価値生成"""

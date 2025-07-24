@@ -40,18 +40,18 @@ def fix_common_syntax_errors(file_path: str) -> bool:
         original_content = content
         lines = content.splitlines()
         
-        # 1. 壊れたf-stringを修正
+        # 1.0 壊れたf-stringを修正
         content = re.sub(r'f"([^"]*)"([^"]*)"', r'f"\1\2"', content)
         content = re.sub(r"f'([^']*)'([^']*)'", r"f'\1\2'", content)
         
-        # 2. continue文の不正使用を修正（ループ外）
+        # 2.0 continue文の不正使用を修正（ループ外）
         content = re.sub(r'\s+continue\s*#\s*Early return.*\n', '\n', content)
         
-        # 3. 壊れた引用符を修正
+        # 3.0 壊れた引用符を修正
         content = re.sub(r'f"f"([^"]*)"', r'f"\1"', content)
         content = re.sub(r'"([^"]*)"([^"]*)"([^"]*)"', r'"\1\2\3"', content)
         
-        # 4. インデントエラー（docstringの位置）
+        # 4.0 インデントエラー（docstringの位置）
         lines = content.splitlines()
         for i, line in enumerate(lines):
             # docstringが間違った位置にある場合
@@ -65,7 +65,7 @@ def fix_common_syntax_errors(file_path: str) -> bool:
         
         content = '\n'.join(lines)
         
-        # 5. 未閉じの括弧を検出・修正
+        # 5.0 未閉じの括弧を検出・修正
         open_parens = content.count('(') - content.count(')')
         open_brackets = content.count('[') - content.count(']')
         open_braces = content.count('{') - content.count('}')

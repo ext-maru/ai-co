@@ -5,7 +5,7 @@ Predictive Evolution System - 予測進化システム
 
 4賢者との連携:
 📚 ナレッジ賢者: 過去の進化パターンから学習・予測モデル精度向上
-🔍 RAG賢者: 類似状況検索・コンテキスト応じた予測戦略選択
+"🔍" RAG賢者: 類似状況検索・コンテキスト応じた予測戦略選択
 📋 タスク賢者: 予測に基づく事前準備・リソース配分最適化
 🚨 インシデント賢者: 予測外れリスク管理・over-optimization防止
 """
@@ -1715,7 +1715,7 @@ class PredictionValidator:
 
                     calibration_data.append(
                         {
-                            "confidence_range": f"{bin_start:.1f}-{bin_end:.1f}",
+                            "confidence_range": f"{bin_start:0.1f}-{bin_end:0.1f}",
                             "predicted_confidence": (bin_start + bin_end) / 2,
                             "actual_accuracy": bin_accuracy["accuracy_score"],
                             "sample_count": len(bin_predictions),

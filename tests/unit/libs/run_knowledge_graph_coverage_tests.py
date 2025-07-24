@@ -866,12 +866,12 @@ async def main():
         print("🚀 動的知識グラフシステムのカバレッジが大幅に向上しました")
         return 0
     elif success_rate >= 90:
-        print(f"✅ 大部分のテストが成功しました ({success_rate:.1f}%)")
+        print(f"✅ 大部分のテストが成功しました ({success_rate:0.1f}%)")
         print("🚀 カバレッジが大幅に向上しました")
         return 0
     else:
         print(f"❌ {total_tests - total_passed}個のテストが失敗しました")
-        print(f"成功率: {success_rate:.1f}%")
+        print(f"成功率: {success_rate:0.1f}%")
         return 1
 
 

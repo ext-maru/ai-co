@@ -84,9 +84,8 @@ class BugLearningCase:
 class DatabaseManager:
     """PostgreSQL with pgvector database manager"""
     
-    def __init__(self, connection_params:
+    def __init__(self, connection_params: Dict[str, str]):
         """初期化メソッド"""
-    Dict[str, str]):
         self.connection_params = connection_params
         self.connection = None
         
@@ -242,9 +241,8 @@ class DatabaseManager:
 class EmbeddingGenerator:
     """OpenAI embedding generator for semantic search"""
     
-    def __init__(self, api_key:
+    def __init__(self, api_key: Optional[str] = None):
         """初期化メソッド"""
-    Optional[str] = None):
         if OPENAI_AVAILABLE and api_key:
             self.client = OpenAI(api_key=api_key)
             self.model = "text-embedding-3-small"
@@ -264,7 +262,7 @@ class EmbeddingGenerator:
             # Convert hash to float values
             dummy_embedding = []
             for i in range(0, len(hash_hex), 2):
-                val = int(hash_hex[i:i+2], 16) / 255.0
+                val = int(hash_hex[i:i+2], 16) / 255
                 dummy_embedding.append(val)
             # Pad to 1536 dimensions
             while len(dummy_embedding) < 1536:
@@ -285,7 +283,7 @@ class EmbeddingGenerator:
         except Exception as e:
             logger.error(f"❌ Failed to generate embedding: {e}")
             # Return zero vector as fallback
-            return [0.0] * 1536
+            return [0] * 1536
 
 class CodeQualityAnalyzer:
     """Advanced code quality analyzer with Elder's wisdom"""
@@ -400,9 +398,9 @@ class CodeQualityAnalyzer:
             logger.error(f"❌ Syntax error in code: {e}")
             return CodeAnalysisResult(
                 file_path=file_path,
-                quality_score=0.0,
+                quality_score=0,
                 complexity_score=100,
-                maintainability_index=0.0,
+                maintainability_index=0,
                 issues=[{'type': 'syntax_error', 'message': str(e), 'severity': 10}],
                 suggestions=[],
                 bug_risks=[],
@@ -440,10 +438,10 @@ class CodeQualityAnalyzer:
             lines = code.split('\n')
             non_empty_lines = [line for line in lines if line.strip()]
             if not non_empty_lines:
-                return 0.0
+                return 0
                 
             # Basic heuristics
-            score = 100.0
+            score = 100
             
             # Penalize long functions
             avg_function_length = len(non_empty_lines) / max(1, code.count('def '))
@@ -463,13 +461,13 @@ class CodeQualityAnalyzer:
             elif complexity_score > 5:
                 score -= 15
                 
-            return max(0.0, min(100.0, score))
+            return max(0, min(100, score))
             
         try:
             mi = metrics.mi_visit(code, True)
-            return mi if mi else 0.0
+            return mi if mi else 0
         except:
-            return 0.0
+            return 0
             
     def _detect_issues(self, code: str) -> List[Dict[str, Any]]:
         """Detect code issues and anti-patterns"""
@@ -604,7 +602,7 @@ class CodeQualityAnalyzer:
     def _calculate_quality_score(self, complexity: int, maintainability: float, 
                                 issues: List[Dict], iron_will: bool, tdd: bool) -> float:
         """Calculate overall quality score (0-100)"""
-        base_score = 100.0
+        base_score = 100
         
         # Complexity penalty
         if complexity > 15:
@@ -634,14 +632,13 @@ class CodeQualityAnalyzer:
         if tdd:
             base_score += 10
             
-        return max(0.0, min(100.0, base_score))
+        return max(0, min(100, base_score))
 
 class SmartCodingAssistant:
     """AI-powered coding assistant with learning capabilities"""
     
-    def __init__(self, db_manager:
+    def __init__(self, db_manager: DatabaseManager, embedding_generator: EmbeddingGenerator):
         """初期化メソッド"""
-    DatabaseManager, embedding_generator: EmbeddingGenerator):
         self.db = db_manager
         self.embedder = embedding_generator
         self.analyzer = CodeQualityAnalyzer()
@@ -788,9 +785,8 @@ class SmartCodingAssistant:
 class EldersCodeQualityEngine:
     """Main engine class for Elders Guild Code Quality System"""
     
-    def __init__(self, db_params:
+    def __init__(self, db_params: Dict[str, str], openai_api_key: Optional[str] = None):
         """初期化メソッド"""
-    Dict[str, str], openai_api_key: Optional[str] = None):
         self.db = DatabaseManager(db_params)
         self.embedder = EmbeddingGenerator(openai_api_key)
         self.assistant = None

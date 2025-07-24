@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 Search Magic Module
+"🔍" Search Magic Module
 =====================
 
 Ancient Elder - Search Magic (探索魔法)

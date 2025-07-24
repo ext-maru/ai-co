@@ -62,7 +62,7 @@ class FourSagesMCPCLI:
                 print(f"   タイプ: {item['type']}")
                 print(f"   内容: {item['content'][:100]}...")
                 if "similarity" in item:
-                    print(f"   類似度: {item['similarity']:.3f}")
+                    print(f"   類似度: {item['similarity']:0.3f}")
 
             if result["pattern_analysis"]:
                 print(f"\n📊 パターン分析:")
@@ -164,12 +164,12 @@ class FourSagesMCPCLI:
                 print(f"\n{i+1}. {item['title']}")
                 print(f"   内容: {item['content'][:100]}...")
                 if "similarity" in item:
-                    print(f"   類似度: {item['similarity']:.3f}")
+                    print(f"   類似度: {item['similarity']:0.3f}")
 
             if result["relevance_analysis"]:
                 print(f"\n📊 関連性分析:")
                 print(
-                    f"   平均関連度: {result['relevance_analysis']['average_relevance']:.3f}"
+                    f"   平均関連度: {result['relevance_analysis']['average_relevance']:0.3f}"
                 )
                 print(
                     f"   カバレッジ: {result['relevance_analysis']['query_coverage']}"
@@ -227,7 +227,7 @@ class FourSagesMCPCLI:
                     f"   参加賢者: {len(result['consensus_result']['participating_sages'])}"
                 )
                 print(
-                    f"   信頼度: {result['consensus_result']['confidence_score']:.2f}"
+                    f"   信頼度: {result['consensus_result']['confidence_score']:0.2f}"
                 )
                 print(
                     f"   最終推奨: {result['consensus_result']['final_recommendation']}"
@@ -267,7 +267,7 @@ class FourSagesMCPCLI:
                 basic = mcp_stats["basic_stats"]
                 print(f"   総文書数: {basic['total_documents']}")
                 print(f"   文書タイプ: {basic['unique_types']}")
-                print(f"   平均文字数: {basic['avg_content_length']:.0f}")
+                print(f"   平均文字数: {basic['avg_content_length']:0.0f}")
 
         # MCP健康状態
         if status.get("mcp_health"):

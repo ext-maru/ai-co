@@ -49,7 +49,7 @@ class AILearningInterface:
             # アプローチ提案
             if best_match.get("summary"):
                 learning_data["suggested_approach"] = (
-                    f"類似タスク（類似度{best_match['similarity_score']:.1%}）"
+                    f"類似タスク（類似度{best_match['similarity_score']:0.1%}）"
                     f"の成功例: {best_match['summary']}"
                 )
 

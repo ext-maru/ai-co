@@ -49,7 +49,7 @@ class TestRAGSageMemoryFix(unittest.TestCase):
         self.assertIsNotNone(sage)
         self.assertTrue(sage.is_initialized)
         # メモリ増加量が50MB未満であることを確認
-        self.assertLess(mem_increase, 50, f"メモリ増加量が大きすぎます: {mem_increase:.2f}MB")
+        self.assertLess(mem_increase, 50, f"メモリ増加量が大きすぎます: {mem_increase:0.2f}MB")
 
     def test_lazy_database_initialization(self):
         """遅延データベース初期化のテスト"""
@@ -89,7 +89,7 @@ class TestRAGSageMemoryFix(unittest.TestCase):
         # アサーション
         self.assertEqual(len(results), 10)
         # 検索でのメモリ増加が10MB未満
-        self.assertLess(mem_increase, 10, f"検索時のメモリ増加が大きすぎます: {mem_increase:.2f}MB")
+        self.assertLess(mem_increase, 10, f"検索時のメモリ増加が大きすぎます: {mem_increase:0.2f}MB")
 
     def test_cache_size_limitation(self):
         """キャッシュサイズ制限のテスト"""
@@ -165,7 +165,7 @@ class TestRAGSageMemoryFix(unittest.TestCase):
 
         # アサーション
         self.assertEqual(indexed, 1)
-        self.assertLess(mem_increase, 20, f"インデックス時のメモリ増加が大きすぎます: {mem_increase:.2f}MB")
+        self.assertLess(mem_increase, 20, f"インデックス時のメモリ増加が大きすぎます: {mem_increase:0.2f}MB")
 
     def test_streaming_file_processing(self):
         """ストリーミングファイル処理のテスト"""
@@ -188,7 +188,7 @@ class TestRAGSageMemoryFix(unittest.TestCase):
         mem_increase = mem_after - mem_before
 
         # メモリ増加が最小限であることを確認
-        self.assertLess(mem_increase, 10, f"ストリーミング処理のメモリ増加が大きすぎます: {mem_increase:.2f}MB")
+        self.assertLess(mem_increase, 10, f"ストリーミング処理のメモリ増加が大きすぎます: {mem_increase:0.2f}MB")
 
     def test_consultation_memory_efficiency(self):
         """相談機能のメモリ効率テスト"""
@@ -213,7 +213,7 @@ class TestRAGSageMemoryFix(unittest.TestCase):
 
         # アサーション
         self.assertEqual(result["status"], "success")
-        self.assertLess(mem_increase, 5, f"相談時のメモリ増加が大きすぎます: {mem_increase:.2f}MB")
+        self.assertLess(mem_increase, 5, f"相談時のメモリ増加が大きすぎます: {mem_increase:0.2f}MB")
 
     def test_connection_pooling(self):
         """コネクションプーリングのテスト"""

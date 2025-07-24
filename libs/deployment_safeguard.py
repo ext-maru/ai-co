@@ -4,10 +4,10 @@
 デプロイメントセーフガードシステム - 重要ファイルの消失防止
 
 デプロイやスクリプト実行時に重要ファイルを保護:
-1. Pre-deployment validation
-2. Critical file locking
-3. Rollback preparation
-4. Post-deployment verification
+1.0 Pre-deployment validation
+2.0 Critical file locking
+3.0 Rollback preparation
+4.0 Post-deployment verification
 """
 
 import contextlib
@@ -68,19 +68,19 @@ class DeploymentSafeguard:
         """デプロイメント保護コンテキスト"""
         logger.info(f"🛡️ デプロイメント保護開始: {operation_name}")
 
-        # 1. Pre-deployment checks
+        # 1.0 Pre-deployment checks
         self._pre_deployment_checks()
 
-        # 2. Create safety snapshot
+        # 2.0 Create safety snapshot
         snapshot_id = self._create_safety_snapshot(operation_name)
 
-        # 3. Lock critical files
+        # 3.0 Lock critical files
         self._lock_critical_files()
 
         try:
             yield self
 
-            # 4. Post-deployment verification
+            # 4.0 Post-deployment verification
             self._post_deployment_verification()
 
             logger.info(f"✅ デプロイメント保護完了: {operation_name}")
@@ -88,12 +88,12 @@ class DeploymentSafeguard:
         except Exception as e:
             logger.error(f"❌ デプロイメント中にエラー: {e}")
 
-            # 5. Emergency rollback
+            # 5.0 Emergency rollback
             self._emergency_rollback(snapshot_id)
             raise
 
         finally:
-            # 6. Unlock files
+            # 6.0 Unlock files
             self._unlock_critical_files()
 
     def _pre_deployment_checks(self):
@@ -138,9 +138,9 @@ class DeploymentSafeguard:
             disk_usage = shutil.disk_usage(self.project_root)
             free_gb = disk_usage.free / (1024**3)
             if free_gb < 1.0:
-                checks.append(f"🚨 ディスク容量不足: {free_gb:.1f}GB")
+                checks.append(f"🚨 ディスク容量不足: {free_gb:0.1f}GB")
             else:
-                checks.append(f"✅ ディスク容量: {free_gb:.1f}GB利用可能")
+                checks.append(f"✅ ディスク容量: {free_gb:0.1f}GB利用可能")
 
         except Exception as e:
             checks.append(f"⚠️ ディスク容量確認失敗: {e}")

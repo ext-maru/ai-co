@@ -20,7 +20,7 @@ from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass, asdict
 from pathlib import Path
 import psycopg2
-from psycopg2.extras import RealDictCursor
+from psycopg2extras import RealDictCursor
 import matplotlib.pyplot as plt
 import networkx as nx
 from sklearn.decomposition import PCA
@@ -43,7 +43,7 @@ class ElderNode:
     sage_type: Optional[str] = None  # knowledge, task, incident, rag
     position: Tuple[float, float, float] = (0, 0, 0)
     knowledge_vector: Optional[List[float]] = None
-    activity_score: float = 0.0
+    activity_score: float = 0
     connection_strength: Dict[str, float] = None
 
     def __post_init__(self):
@@ -61,7 +61,7 @@ class KnowledgeFlow:
     knowledge_type: str
     strength: float
     timestamp: datetime
-    vector_similarity: float = 0.0
+    vector_similarity: float = 0
     content_summary: str = ""
 
 
@@ -247,7 +247,7 @@ class ElderTreeVectorNetwork:
         """階層関係の定義"""
         connections = [
             # Grand Elder → Claude Elder
-            ("grand_elder_maru", "claude_elder", "hierarchical", 1.0),
+            ("grand_elder_maru", "claude_elder", "hierarchical", 1),
             # Claude Elder → 4 Sages
             ("claude_elder", "knowledge_sage", "hierarchical", 0.9),
             ("claude_elder", "task_sage", "hierarchical", 0.9),
@@ -294,7 +294,7 @@ class ElderTreeVectorNetwork:
                 colors.append(self.elder_hierarchy[node.rank]["color"])
                 sizes.append(self.elder_hierarchy[node.rank]["size"])
                 texts.append(
-                    f"{node.name}<br>Rank: {node.rank}<br>Activity: {node.activity_score:.2f}"
+                    f"{node.name}<br>Rank: {node.rank}<br>Activity: {node.activity_score:0.2f}"
                 )
 
             # 3D散布図作成
@@ -450,7 +450,7 @@ class ElderTreeVectorNetwork:
         try:
             optimizations = []
 
-            # 1. 階層間の知識流通最適化
+            # 1 階層間の知識流通最適化
             for node_id, node in self.nodes.items():
                 if node.rank in ["sage", "council"]:
                     # 下位階層への知識配布強化
@@ -475,7 +475,7 @@ class ElderTreeVectorNetwork:
                                 }
                             )
 
-            # 2. 知識の重複除去
+            # 2 知識の重複除去
             duplicate_paths = self._find_duplicate_knowledge_paths()
             for path in duplicate_paths:
                 optimizations.append(
@@ -487,7 +487,7 @@ class ElderTreeVectorNetwork:
                     }
                 )
 
-            # 3. 知識ハブの最適化
+            # 3 知識ハブの最適化
             knowledge_hubs = self._identify_knowledge_hubs()
             for hub in knowledge_hubs:
                 if hub["load_score"] > 0.8:  # 過負荷
@@ -500,7 +500,7 @@ class ElderTreeVectorNetwork:
                         }
                     )
 
-            # 4. 最適化実行
+            # 4 最適化実行
             applied_optimizations = []
             for opt in optimizations:
                 if await self._apply_optimization(opt):
@@ -632,18 +632,18 @@ class ElderTreeVectorNetwork:
         target_level = self.elder_hierarchy[target_node.rank]["level"]
         level_diff = abs(source_level - target_level)
 
-        base_strength = max(0.5, 1.0 - (level_diff * 0.1))
+        base_strength = max(0.5, 1 - (level_diff * 0.1))
 
         # 専門性の一致による調整
         if source_node.sage_type == target_node.sage_type:
             base_strength += 0.2
 
-        return min(1.0, base_strength)
+        return min(1, base_strength)
 
     def _calculate_network_health(self) -> float:
         """ネットワーク健全性の計算"""
         if not self.nodes:
-            return 0.0
+            return 0
 
         # 接続率
         total_possible_connections = len(self.nodes) * (len(self.nodes) - 1)
@@ -668,7 +668,7 @@ class ElderTreeVectorNetwork:
             rank_counts[node.rank] = rank_counts.get(node.rank, 0) + 1
 
         balance_score = (
-            1.0
+            1
             - np.std(list(rank_counts.values())) / np.mean(list(rank_counts.values()))
             if rank_counts
             else 0
@@ -700,7 +700,7 @@ class ElderTreeVectorNetwork:
 
         activity_factor = (source_activity + target_activity) / 2
 
-        return min(1.0, base_strength * (1 + activity_factor * 0.2))
+        return min(1, base_strength * (1 + activity_factor * 0.2))
 
     def _find_duplicate_knowledge_paths(self) -> List[Dict]:
         """重複知識パスの発見"""
@@ -714,7 +714,7 @@ class ElderTreeVectorNetwork:
         for node_id, node in self.nodes.items():
             # 接続数による負荷スコア
             connection_count = len(node.connection_strength)
-            load_score = connection_count / 10.0  # 正規化
+            load_score = connection_count / 10  # 正規化
 
             if load_score > 0.3:  # 閾値以上
                 hubs.append(
@@ -759,10 +759,10 @@ class ElderTreeVectorNetwork:
     def _calculate_improvement_estimate(self, optimizations: List[Dict]) -> float:
         """改善推定値の計算"""
         if not optimizations:
-            return 0.0
+            return 0
 
         # 最適化の効果を合計
-        total_improvement = 0.0
+        total_improvement = 0
         for opt in optimizations:
             if opt["type"] == "strengthen_connection":
                 total_improvement += opt["improvement"]
@@ -779,7 +779,7 @@ class ElderTreeVectorNetwork:
     def _calculate_activity_trend(self, activity_history: List[Dict]) -> float:
         """活動トレンドの計算"""
         if not activity_history:
-            return 0.0
+            return 0
 
         # 実際のトレンド計算
         # 時系列データから活動の増減トレンドを算出
@@ -793,7 +793,7 @@ class ElderTreeVectorNetwork:
                 activities.append(entry["interaction_count"])
 
         if len(activities) < 2:
-            return 0.0
+            return 0
 
         # 線形回帰でトレンドを計算
         x = np.arange(len(activities))
@@ -813,13 +813,13 @@ class ElderTreeVectorNetwork:
     def _calculate_knowledge_growth(self, activity_history: List[Dict]) -> float:
         """知識成長の計算"""
         if not activity_history:
-            return 0.0
+            return 0
 
         # 実際の知識成長率を計算
         knowledge_indicators = []
 
         for entry in activity_history:
-            score = 0.0
+            score = 0
 
             # 新規知識の追加
             if "new_knowledge_added" in entry:
@@ -844,7 +844,7 @@ class ElderTreeVectorNetwork:
             knowledge_indicators.append(score)
 
         if not knowledge_indicators:
-            return 0.0
+            return 0
 
         # 成長率を計算
         avg_growth = np.mean(knowledge_indicators)
@@ -859,20 +859,20 @@ class ElderTreeVectorNetwork:
         growth_rate = avg_growth * 0.3 + max_growth * 0.2 + recent_growth * 0.5
 
         # 0-1の範囲に正規化
-        return min(1.0, growth_rate / 10.0)
+        return min(1, growth_rate / 10)
 
     def _analyze_interaction_patterns(self, activity_history: List[Dict]) -> Dict:
         """相互作用パターンの分析"""
         return {
             "primary_interactions": [],
             "secondary_interactions": [],
-            "interaction_frequency": 0.0,
+            "interaction_frequency": 0,
         }
 
     def _calculate_efficiency_score(self, activity_history: List[Dict]) -> float:
         """効率スコアの計算"""
         if not activity_history:
-            return 0.0
+            return 0
 
         # 実際の効率スコアを計算
         efficiency_metrics = []
@@ -889,7 +889,7 @@ class ElderTreeVectorNetwork:
             if "avg_response_time" in entry and "target_response_time" in entry:
                 if entry["target_response_time"] > 0:
                     response_efficiency = min(
-                        1.0, entry["target_response_time"] / entry["avg_response_time"]
+                        1, entry["target_response_time"] / entry["avg_response_time"]
                     )
                     efficiency_metrics.append(response_efficiency)
 
@@ -900,14 +900,14 @@ class ElderTreeVectorNetwork:
                 if util <= 0.5:
                     resource_efficiency = util * 2
                 elif util <= 0.8:
-                    resource_efficiency = 1.0
+                    resource_efficiency = 1
                 else:
-                    resource_efficiency = 1.0 - (util - 0.8) * 2
+                    resource_efficiency = 1 - (util - 0.8) * 2
                 efficiency_metrics.append(max(0, resource_efficiency))
 
             # エラー率（逆指標）
             if "error_rate" in entry:
-                error_efficiency = 1.0 - min(1.0, entry["error_rate"])
+                error_efficiency = 1 - min(1, entry["error_rate"])
                 efficiency_metrics.append(error_efficiency)
 
         if not efficiency_metrics:

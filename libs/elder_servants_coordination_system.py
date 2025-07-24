@@ -170,19 +170,19 @@ class ElderServantsCoordinationSystem:
 
         self.logger.info(f"⚔️ Deploying coordinated servants - Session: {session_id}")
 
-        # 1. 既存Test Guardian Knightと連携
+        # 1.0 既存Test Guardian Knightと連携
         await self._coordinate_with_test_guardian(report)
 
-        # 2. Coverage Enhancement Knightを配備
+        # 2.0 Coverage Enhancement Knightを配備
         await self._deploy_coverage_enhancement_knight(report, target_coverage)
 
-        # 3. 支援Dwarf Workshopを配備
+        # 3.0 支援Dwarf Workshopを配備
         await self._deploy_support_dwarfs(report)
 
-        # 4. 監視Elfを配備
+        # 4.0 監視Elfを配備
         await self._deploy_monitoring_elfs(report)
 
-        # 5. 統合実行
+        # 5.0 統合実行
         await self._execute_coordinated_operation(report)
 
         report.finished_at = datetime.now()
@@ -306,6 +306,7 @@ Coordinated Coverage Enhancement - Elder Servant Hierarchical Version
 Converted from independent work to proper Elder Servant coordination
 
 This replaces the independent unified_coverage_assault.py with proper hierarchy:
+    pass
 Elder approval → Servant coordination → Council reporting
 """
 
@@ -317,19 +318,19 @@ class CoordinatedCoverageEnhancement:
         self.coordination_system = ElderServantsCoordinationSystem()
 
     async def enhance_coverage_hierarchically(self, target_coverage=60.0):
-        # 1. Elder approval first
+        # 1.0 Elder approval first
         approval = await self.coordination_system.request_elder_approval(
             "Coverage enhancement through coordinated servants",
             ["test_guardian", "coverage_knight", "support_dwarfs"]
         )
 
         if approval["approved"]:
-            # 2. Deploy coordinated servants
+            # 2.0 Deploy coordinated servants
             report = await self.coordination_system.deploy_coordinated_servants(
                 approval, target_coverage
             )
 
-            # 3. Report to Elder Council
+            # 3.0 Report to Elder Council
             await self.coordination_system.report_to_elder_council(report)
 
             return report

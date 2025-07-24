@@ -154,7 +154,7 @@ class ElderCouncilAutoDecision:
         print("👥 Elder Council メンバー活性化:")
         for member_id, member in self.council_members.items():
             member.last_active = datetime.now()
-            print(f"   🧙‍♂️ {member.name} - 知恵レベル: {member.wisdom_level:.1f}%")
+            print(f"   🧙‍♂️ {member.name} - 知恵レベル: {member.wisdom_level:0.1f}%")
 
         # 自律意思決定ループ開始
         threads = [
@@ -310,7 +310,7 @@ class ElderCouncilAutoDecision:
             decision_needs.append(
                 {
                     "title": "システム効率最適化プロトコル",
-                    "description": f"システム効率が{context.system_metrics['system_efficiency']:.1f}%に低下。最適化が必要",
+                    "description": f"システム効率が{context.system_metrics['system_efficiency']:0.1f}%に低下。最適化が必要",
                     "type": DecisionType.OPTIMIZATION,
                     "urgency": DecisionUrgency.HIGH,
                 }
@@ -321,7 +321,7 @@ class ElderCouncilAutoDecision:
             decision_needs.append(
                 {
                     "title": "エラー率改善戦略",
-                    "description": f"エラー率が{context.system_metrics['error_rate']:.1f}%に上昇。対策が必要",
+                    "description": f"エラー率が{context.system_metrics['error_rate']:0.1f}%に上昇。対策が必要",
                     "type": DecisionType.OPERATIONAL,
                     "urgency": DecisionUrgency.MEDIUM,
                 }
@@ -332,7 +332,7 @@ class ElderCouncilAutoDecision:
             decision_needs.append(
                 {
                     "title": "ストレージ容量管理計画",
-                    "description": f"ストレージ使用率が{context.resource_status['storage_usage']:.1f}%。容量管理が必要",
+                    "description": f"ストレージ使用率が{context.resource_status['storage_usage']:0.1f}%。容量管理が必要",
                     "type": DecisionType.RESOURCE,
                     "urgency": DecisionUrgency.MEDIUM,
                 }
@@ -343,7 +343,7 @@ class ElderCouncilAutoDecision:
             decision_needs.append(
                 {
                     "title": "AI学習システム進化計画",
-                    "description": f"学習進捗が{context.system_metrics['learning_progress']:.1f}%。次段階への進化を検討",
+                    "description": f"学習進捗が{context.system_metrics['learning_progress']:0.1f}%。次段階への進化を検討",
                     "type": DecisionType.EVOLUTION,
                     "urgency": DecisionUrgency.LOW,
                 }
@@ -410,7 +410,7 @@ class ElderCouncilAutoDecision:
             confidence_scores.append(vote_confidence)
 
             print(
-                f"     {member.name}: {vote_decision} (信頼度: {vote_confidence:.2f})"
+                f"     {member.name}: {vote_decision} (信頼度: {vote_confidence:0.2f})"
             )
 
         # 投票結果の集計
@@ -436,7 +436,7 @@ class ElderCouncilAutoDecision:
             decision.implementation_plan = self._generate_implementation_plan(decision)
 
             print(
-                f"   ⚖️ 最終決定: {final_decision} (信頼度: {decision.confidence_score:.2f})"
+                f"   ⚖️ 最終決定: {final_decision} (信頼度: {decision.confidence_score:0.2f})"
             )
         else:
             decision.status = "pending"  # 再審議が必要
@@ -617,17 +617,17 @@ def main():
         print("=" * 50)
         status = council_system.get_council_status()
 
-        print(f"🧙‍♂️ Council知恵レベル: {status['council_wisdom_level']:.1f}%")
+        print(f"🧙‍♂️ Council知恵レベル: {status['council_wisdom_level']:0.1f}%")
         print(f"📋 保留中の決定: {status['pending_decisions']}件")
         print(f"✅ 直近24時間の決定: {status['recent_decisions']}件")
-        print(f"🎯 平均信頼度: {status['average_confidence']:.2f}")
-        print(f"⚡ 決定効率: {status['decision_efficiency']:.2f}")
+        print(f"🎯 平均信頼度: {status['average_confidence']:0.2f}")
+        print(f"⚡ 決定効率: {status['decision_efficiency']:0.2f}")
 
         print(f"\n👥 Council メンバー:")
         for member_id, member_data in status["council_members"].items():
             print(
                 (
-                    f"🧙‍♂️ {member_data['name']}: {member_data['wisdom_level']:.1f}% (重み: {member_data['decision_weight']})"
+                    f"🧙‍♂️ {member_data['name']}: {member_data['wisdom_level']:0.1f}% (重み: {member_data['decision_weight']})"
                 )
             )
 

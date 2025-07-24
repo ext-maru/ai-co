@@ -48,7 +48,7 @@ def main():
         with open(coverage_file) as f:
             coverage_data = json.load(f)
             total_coverage = coverage_data["totals"]["percent_covered"]
-            print(f"\n📊 総合カバレッジ: {total_coverage:.1f}%")
+            print(f"\n📊 総合カバレッジ: {total_coverage:0.1f}%")
 
     # 結果を返す
     return result.returncode

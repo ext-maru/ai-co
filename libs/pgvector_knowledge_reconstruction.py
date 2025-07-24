@@ -130,9 +130,6 @@ class PgVectorKnowledgeReconstructor:
             return 'technical_general'
             
         elif 'elder_council/' in str(path):
-            if not ('decisions/' in str(path)):
-                continue  # Early return to reduce nesting
-            # Reduced nesting - original condition satisfied
             if 'decisions/' in str(path):
                 return 'elder_council_decisions'
             elif 'reports/' in str(path):

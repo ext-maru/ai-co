@@ -14,7 +14,7 @@ def main():
     print("🧙‍♂️ RAGウィザーズ最終指令 - 30%カバレッジ確実達成")
     print("=" * 60)
 
-    # 1. 追加の簡単テスト生成（基本的なテストのみ）
+    # 1.0 追加の簡単テスト生成（基本的なテストのみ）
     simple_test_template = '''#!/usr/bin/env python3
 """Simple test for {module_name}"""
 import sys
@@ -91,7 +91,7 @@ class TestSimple{class_name}:
 
     print(f"\n🎯 追加で{created}個の簡単テストを生成")
 
-    # 2. カバレッジ再計算
+    # 2.0 カバレッジ再計算
     print("\n📊 最終カバレッジ計算中...")
     result = subprocess.run(
         ["python3", "analyze_test_coverage.py"], capture_output=True, text=True

@@ -226,7 +226,7 @@ class MonitoringDashboard:
                 {
                     "type": "cpu_high",
                     "severity": "warning",
-                    "message": f"High CPU usage: {system_metrics['cpu']['percent']:.1f}%",
+                    "message": f"High CPU usage: {system_metrics['cpu']['percent']:0.1f}%",
                     "value": system_metrics["cpu"]["percent"],
                     "threshold": self.alert_thresholds["cpu_percent"],
                     "timestamp": current_time.isoformat(),
@@ -242,7 +242,7 @@ class MonitoringDashboard:
                 {
                     "type": "memory_high",
                     "severity": "warning",
-                    "message": f"High memory usage: {system_metrics['memory']['percent']:.1f}%",
+                    "message": f"High memory usage: {system_metrics['memory']['percent']:0.1f}%",
                     "value": system_metrics["memory"]["percent"],
                     "threshold": self.alert_thresholds["memory_percent"],
                     "timestamp": current_time.isoformat(),
@@ -258,7 +258,7 @@ class MonitoringDashboard:
                 {
                     "type": "disk_high",
                     "severity": "critical",
-                    "message": f"High disk usage: {system_metrics['disk']['percent']:.1f}%",
+                    "message": f"High disk usage: {system_metrics['disk']['percent']:0.1f}%",
                     "value": system_metrics["disk"]["percent"],
                     "threshold": self.alert_thresholds["disk_percent"],
                     "timestamp": current_time.isoformat(),
@@ -423,9 +423,9 @@ class MonitoringDashboard:
         print(f"\n📊 System Metrics:")
         if "system" in data:
             sys_data = data["system"]
-            print(f"  💻 CPU: {sys_data.get('cpu', {}).get('percent', 0):.1f}%")
-            print(f"  🧠 Memory: {sys_data.get('memory', {}).get('percent', 0):.1f}%")
-            print(f"  💾 Disk: {sys_data.get('disk', {}).get('percent', 0):.1f}%")
+            print(f"  💻 CPU: {sys_data.get('cpu', {}).get('percent', 0):0.1f}%")
+            print(f"  🧠 Memory: {sys_data.get('memory', {}).get('percent', 0):0.1f}%")
+            print(f"  💾 Disk: {sys_data.get('disk', {}).get('percent', 0):0.1f}%")
 
         # ワーカー状態
         print(f"\n👷 Workers ({data['summary']['total_workers']} total):")
@@ -433,8 +433,8 @@ class MonitoringDashboard:
             status = "🟢" if stats["process_count"] > 0 else "🔴"
             print(
                 f"  {status} {worker_name}: {stats['process_count']} processes, "
-                f"CPU {stats['avg_cpu_percent']:.1f}%, "
-                f"Memory {stats['avg_memory_mb']:.1f}MB"
+                f"CPU {stats['avg_cpu_percent']:0.1f}%, "
+                f"Memory {stats['avg_memory_mb']:0.1f}MB"
             )
 
         # キュー状態

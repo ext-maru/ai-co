@@ -369,11 +369,11 @@ async def generate_test_report(test_summary: Dict[str, Any]) -> str:
     # 実行サマリー
     exec_info = test_summary["test_execution"]
     report_lines.append("## Execution Summary")
-    report_lines.append(f"- **Execution Time**: {exec_info['execution_time_seconds']:.2f} seconds")
+    report_lines.append(f"- **Execution Time**: {exec_info['execution_time_seconds']:0.2f} seconds")
     report_lines.append(f"- **Total Tests**: {exec_info['total_tests']}")
     report_lines.append(f"- **Successful**: {exec_info['successful_tests']}")
     report_lines.append(f"- **Failed**: {exec_info['failed_tests']}")
-    report_lines.append(f"- **Success Rate**: {exec_info['success_rate']:.1f}%")
+    report_lines.append(f"- **Success Rate**: {exec_info['success_rate']:0.1f}%")
     report_lines.append(f"- **Iron Will Compliance**: {'✅ PASS' if test_summary['iron_will_compliance'] else '❌ FAIL'}")
     report_lines.append("")
     

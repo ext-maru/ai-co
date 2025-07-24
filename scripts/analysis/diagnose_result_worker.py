@@ -17,14 +17,13 @@ import pika
 from libs.ai_command_helper import AICommandHelper
 
 
-def diagnose_result_worker():
-    """ResultWorkerの詳細診断"""
-    print("🔍 ResultWorker詳細診断")
+def diagnose_result_worker()print("🔍 ResultWorker詳細診断")
+"""ResultWorkerの詳細診断"""
     print("=" * 60)
     print(f"実行時刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 60)
 
-    # 1. プロセス詳細確認
+    # 1.0 プロセス詳細確認
     print("\n📌 ResultWorkerプロセス詳細:")
     result = subprocess.run(["ps", "aux"], capture_output=True, text=True)
     if "result_worker.py" in result.stdout:
@@ -39,7 +38,7 @@ def diagnose_result_worker():
                 print(f"実行時間: {parts[9]}")
                 print(f"コマンド: {' '.join(parts[10:])}")
 
-    # 2. キュー詳細確認
+    # 2.0 キュー詳細確認
     print("\n📌 キュー詳細確認:")
     try:
         result = subprocess.run(
@@ -70,7 +69,7 @@ def diagnose_result_worker():
     except Exception as e:
         print(f"キュー確認エラー: {e}")
 
-    # 3. 最新のResultWorkerログ詳細
+    # 3.0 最新のResultWorkerログ詳細
     print("\n📌 ResultWorkerログ詳細（最新30行）:")
     log_path = Path("/home/aicompany/ai_co/logs/result_worker.log")
     if log_path.exists():
@@ -92,7 +91,7 @@ def diagnose_result_worker():
                 for msg in processed[-5:]:
                     print(f"  {msg.strip()}")
 
-    # 4. Slack設定確認
+    # 4.0 Slack設定確認
     print("\n📌 Slack設定詳細:")
     config_path = Path("/home/aicompany/ai_co/config/slack.conf")
     if config_path.exists():
@@ -117,9 +116,9 @@ def diagnose_result_worker():
                         continue  # Early return to reduce nesting
                     # Reduced nesting - original condition satisfied
                     if "DEFAULT_CHANNEL=" in line:
-                        print(f"  デフォルトチャンネル: {line.split('=')[1].strip()}")
+                        print(f"  デフォルトチャンネル: {line.split('}")
 
-    # 5. 滞留メッセージのサンプル取得
+    # 5.0 滞留メッセージのサンプル取得
     print("\n📌 滞留メッセージのサンプル取得:")
     try:
         # RabbitMQに接続してメッセージを確認（取り出さない）
@@ -152,7 +151,7 @@ def diagnose_result_worker():
     except Exception as e:
         print(f"  RabbitMQ接続エラー: {e}")
 
-    # 6. 推奨アクション
+    # 6.0 推奨アクション
     print("\n📌 診断結果と推奨アクション:")
     issues = []
 
@@ -178,9 +177,9 @@ def diagnose_result_worker():
             print(f"  {i}. {issue}")
 
         print("\n🔧 推奨修正:")
-        print("1. ResultWorkerの再起動")
-        print("2. Slack設定の確認")
-        print("3. エラーログの詳細確認")
+        print("1.0 ResultWorkerの再起動")
+        print("2.0 Slack設定の確認")
+        print("3.0 エラーログの詳細確認")
     else:
         print("✅ 大きな問題は検出されませんでした")
         print("📈 パフォーマンス改善の余地があります")

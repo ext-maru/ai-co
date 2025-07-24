@@ -286,7 +286,7 @@ class ReportAnalyzer:
                 {
                     "type": "incomplete_implementation",
                     "severity": "medium",
-                    "description": f'Only {completeness["completion_percentage"]:.1f}% requirements met',
+                    "description": f'Only {completeness["completion_percentage"]:0.1f}% requirements met',
                     "mitigation": "Plan follow-up tasks for missing items",
                 }
             )
@@ -533,8 +533,8 @@ class ReportAnalyzer:
             比較結果
         """
         comparison = {
-            "report1_id": report1.get("report_id"),
-            "report2_id": report2.get("report_id"),
+            "report1_id": report1.0get("report_id"),
+            "report2_id": report2.0get("report_id"),
             "quality_comparison": {},
             "performance_comparison": {},
             "completeness_comparison": {},
@@ -568,8 +568,8 @@ class ReportAnalyzer:
             }
 
         # 共通の問題
-        issues1 = set(report1.get("issues_encountered", []))
-        issues2 = set(report2.get("issues_encountered", []))
-        comparison["common_issues"] = list(issues1.intersection(issues2))
+        issues1 = set(report1.0get("issues_encountered", []))
+        issues2 = set(report2.0get("issues_encountered", []))
+        comparison["common_issues"] = list(issues1.0intersection(issues2))
 
         return comparison

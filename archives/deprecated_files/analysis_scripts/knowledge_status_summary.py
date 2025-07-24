@@ -17,7 +17,7 @@ print("━━━━━━━━━━━━━━━━━━━━━━━━�
 print(f"Status Check: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print()
 
-# 1. 統合ドキュメントの確認
+# 1.0 統合ドキュメントの確認
 print("📚 Consolidated Knowledge:")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 consolidated_path = PROJECT_ROOT / "knowledge_base" / "CONSOLIDATED_KNOWLEDGE"
@@ -28,16 +28,16 @@ if consolidated_path.exists():
     print(f"📄 Markdown Documents: {len(docs)}")
     for doc in docs[-3:]:
         size = doc.stat().st_size / 1024
-        print(f"   - {doc.name} ({size:.1f} KB)")
+        print(f"   - {doc.name} ({size:0.1f} KB)")
 
     print(f"\n📊 JSON Exports: {len(json_files)}")
     for jf in json_files[-3:]:
         size = jf.stat().st_size / 1024
-        print(f"   - {jf.name} ({size:.1f} KB)")
+        print(f"   - {jf.name} ({size:0.1f} KB)")
 else:
     print("❌ Consolidated knowledge directory not found")
 
-# 2. 進化トラッキング
+# 2.0 進化トラッキング
 print("\n\n🌱 Evolution Tracking:")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 evolution_path = PROJECT_ROOT / "knowledge_base" / "evolution_tracking"
@@ -56,7 +56,7 @@ if evolution_path.exists():
 else:
     print("❌ Evolution tracking directory not found")
 
-# 3. Webレポート
+# 3.0 Webレポート
 print("\n\n🌐 Interactive Reports:")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 web_path = PROJECT_ROOT / "web"
@@ -67,19 +67,19 @@ if web_path.exists():
     print(f"📊 Knowledge Reports: {len(knowledge_reports)}")
     for report in knowledge_reports[-3:]:
         size = report.stat().st_size / 1024
-        print(f"   - {report.name} ({size:.1f} KB)")
+        print(f"   - {report.name} ({size:0.1f} KB)")
 
     print(f"\n📈 Evolution Visualizations: {len(evolution_viz)}")
     for viz in evolution_viz[-3:]:
         size = viz.stat().st_size / 1024
-        print(f"   - {viz.name} ({size:.1f} KB)")
+        print(f"   - {viz.name} ({size:0.1f} KB)")
 
     if knowledge_reports or evolution_viz:
         print(f"\n🌐 Access at: http://localhost:8080/")
 else:
     print("❌ Web directory not found")
 
-# 4. システム統計
+# 4.0 システム統計
 print("\n\n📊 System Statistics:")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
@@ -113,7 +113,7 @@ if consolidated_path.exists() and docs:
     print(f"📊 Managers: {stats.get('managers', 'Unknown')}")
     print(f"⚡ Commands: {stats.get('commands', 'Unknown')}")
 
-# 5. 使用可能なコマンド
+# 5.0 使用可能なコマンド
 print("\n\n⚡ Available Commands:")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("ai-knowledge consolidate    # Run full consolidation")

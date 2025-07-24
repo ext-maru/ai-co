@@ -241,7 +241,7 @@ if __name__ == "__main__":
         self.generation_history.append(result)
 
         self.logger.info(
-            f"✅ Generation completed: {result.file_count} files in {generation_time:.2f}s"
+            f"✅ Generation completed: {result.file_count} files in {generation_time:0.2f}s"
         )
 
         return result
@@ -757,8 +757,8 @@ async def demo_parallel_generator():
     print(f"   Success: {result.success}")
     print(f"   Files Created: {result.file_count}")
     print(f"   Total Lines: {result.total_lines}")
-    print(f"   Generation Time: {result.generation_time:.3f}s")
-    print(f"   Files/Second: {result.file_count / result.generation_time:.1f}")
+    print(f"   Generation Time: {result.generation_time:0.3f}s")
+    print(f"   Files/Second: {result.file_count / result.generation_time:0.1f}")
 
     if result.errors:
         print(f"   Errors: {len(result.errors)}")
@@ -769,7 +769,7 @@ async def demo_parallel_generator():
     stats = generator.get_performance_stats()
     print(f"\n📊 Performance Stats:")
     print(f"   Total Files: {stats['total_files']}")
-    print(f"   Avg Files/Second: {stats['avg_files_per_second']:.1f}")
+    print(f"   Avg Files/Second: {stats['avg_files_per_second']:0.1f}")
 
     print(f"\n📂 Created Files:")
     for file_path in result.created_files:

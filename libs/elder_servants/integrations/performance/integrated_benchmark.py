@@ -1,5 +1,5 @@
 """
-📊 Elder Servants統合パフォーマンステストベンチマーク
+"📊" Elder Servants統合パフォーマンステストベンチマーク
 Phase 3 Week 1完了: 3システム統合性能測定
 
 キャッシュ・非同期最適化・軽量プロキシの総合パフォーマンス評価
@@ -84,9 +84,8 @@ class BenchmarkResults:
 class IntegratedPerformanceBenchmark:
     """統合パフォーマンスベンチマーク"""
 
-    def __init__(self, config:
+    def __init__(self, config: BenchmarkConfig = None):
         """初期化メソッド"""
-    BenchmarkConfig = None):
         self.config = config or BenchmarkConfig()
         self.logger = logging.getLogger("elder_servants.integrated_benchmark")
 
@@ -290,7 +289,7 @@ class IntegratedPerformanceBenchmark:
             try:
                 start_time = time.time()
                 # 50%の確率で同じキーを使用（キャッシュヒット狙い）
-                cache_key = f"test_key_{secrets.randbelow(10) if secrets.randbelow(2) == 0 else worker_id}"
+                cache_key = f"test_key_{secrets.randbelow(10) if secrets.randbelow(2) else secrets.randbelow(100)}"
                 await self._execute_cache_request(cache_key)
                 response_time = (time.time() - start_time) * 1000
                 response_times.append(response_time)
@@ -535,7 +534,7 @@ class IntegratedPerformanceBenchmark:
 
     async def _execute_integrated_request(self, worker_id: int, request_num: int):
         """統合リクエスト実行"""
-        # 1. キャッシュ確認
+        # 1.0 キャッシュ確認
         cache_key = f"integrated_{worker_id}_{request_num % 10}"  # 10種類のキーでキャッシュヒット率向上
 
         cached_result = await self.cache_manager.get_quality_check_cache(
@@ -545,10 +544,10 @@ class IntegratedPerformanceBenchmark:
         if cached_result:
             return cached_result
 
-        # 2. キャッシュミス - 非同期最適化で処理
+        # 2.0 キャッシュミス - 非同期最適化で処理
         async def integrated_task():
             """integrated_taskメソッド"""
-            # 3. プロキシ経由でサービス呼び出し
+            # 3.0 プロキシ経由でサービス呼び出し
             proxy_request = ProxyRequest(
                 request_id=f"integrated_{worker_id}_{request_num}",
                 target_service="integrated_service",
@@ -758,11 +757,11 @@ class IntegratedPerformanceBenchmark:
             report_lines.extend(
                 [
                     f"### {test_name}",
-                    f"- 平均応答時間: {result.average_response_time_ms:.2f}ms",
-                    f"- スループット: {result.throughput_rps:.2f} RPS",
-                    f"- エラー率: {result.error_rate_percent:.2f}%",
-                    f"- ピークメモリ: {result.peak_memory_mb:.2f}MB",
-                    f"- 平均CPU: {result.average_cpu_percent:.2f}%",
+                    f"- 平均応答時間: {result.average_response_time_ms:0.2f}ms",
+                    f"- スループット: {result.throughput_rps:0.2f} RPS",
+                    f"- エラー率: {result.error_rate_percent:0.2f}%",
+                    f"- ピークメモリ: {result.peak_memory_mb:0.2f}MB",
+                    f"- 平均CPU: {result.average_cpu_percent:0.2f}%",
                     "",
                 ]
             )
@@ -779,10 +778,10 @@ class IntegratedPerformanceBenchmark:
                 report_lines.extend(
                     [
                         f"### {test_name} vs Baseline",
-                        f"- 応答時間改善: {improvement['response_time_improvement']:.1f}%",
-                        f"- スループット改善: {improvement['throughput_improvement']:.1f}%",
-                        f"- メモリ変化: {improvement['memory_change']:+.1f}MB",
-                        f"- CPU変化: {improvement['cpu_change']:+.1f}%",
+                        f"- 応答時間改善: {improvement['response_time_improvement']:0.1f}%",
+                        f"- スループット改善: {improvement['throughput_improvement']:0.1f}%",
+                        f"- メモリ変化: {improvement['memory_change']:+0.1f}MB",
+                        f"- CPU変化: {improvement['cpu_change']:+0.1f}%",
                         "",
                     ]
                 )
@@ -793,7 +792,7 @@ class IntegratedPerformanceBenchmark:
             report_lines.extend(
                 [
                     "## 🎯 総合評価",
-                    f"**最大パフォーマンス改善: {overall_improvement:.1f}%**",
+                    f"**最大パフォーマンス改善: {overall_improvement:0.1f}%**",
                     "",
                 ]
             )
@@ -870,7 +869,7 @@ if __name__ == "__main__":
             # Process each item in collection
             if hasattr(result, "average_response_time_ms"):
                 print(
-                    f"{test_name}: {result.average_response_time_ms:.2f}ms avg, {result.throughput_rps:.2f} RPS"
+                    f"{test_name}: {result.average_response_time_ms:0.2f}ms avg, {result.throughput_rps:0.2f} RPS"
                 )
 
     asyncio.run(main())

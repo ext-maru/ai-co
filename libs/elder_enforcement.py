@@ -236,15 +236,15 @@ class ElderTreeEnforcement:
         """違反の検出"""
         violations = []
 
-        # 1. プロセススキャン
+        # 1.0 プロセススキャン
         process_violations = await self._scan_processes()
         violations.extend(process_violations)
 
-        # 2. ファイルスキャン
+        # 2.0 ファイルスキャン
         file_violations = await self._scan_files()
         violations.extend(file_violations)
 
-        # 3. ポートスキャン
+        # 3.0 ポートスキャン
         port_violations = await self._scan_ports()
         violations.extend(port_violations)
 
@@ -358,7 +358,7 @@ class ElderTreeEnforcement:
                 # 猶予期間内 - 再警告
                 self.logger.warning(
                     f"Grace period remaining for {process_name}: "
-                    f"{self.enforcement_config['grace_period'] - elapsed:.0f}s"
+                    f"{self.enforcement_config['grace_period'] - elapsed:0.0f}s"
                 )
         else:
             # 初回警告
@@ -438,8 +438,8 @@ Command: {' '.join(process_info.get('cmdline', []))}
    with the Elder Soul system.
 
 🔧 To fix this violation:
-   1. Register with Elder Soul: elder-tree-soul register {process_name}
-   2. Or modify your code to use the Elder Soul framework
+   1.0 Register with Elder Soul: elder-tree-soul register {process_name}
+   2.0 Or modify your code to use the Elder Soul framework
 
 ⏰ Grace period: {self.enforcement_config['grace_period']} seconds
    After this period, the process will be automatically terminated.
@@ -471,9 +471,9 @@ Your process has been terminated because it violated Elder Soul policies.
    - Enables dynamic scaling and fault tolerance
 
 🔧 How to fix:
-   1. Use the Elder Soul framework for all new roles
-   2. Register existing processes: elder-tree-soul register <name>
-   3. Follow the Elder Soul development guidelines
+   1.0 Use the Elder Soul framework for all new roles
+   2.0 Register existing processes: elder-tree-soul register <name>
+   3.0 Follow the Elder Soul development guidelines
 
 💡 Example:
    # Register a new agent
@@ -834,9 +834,9 @@ Port: {agent.port}
    - Hierarchical management
 
 📚 Next steps:
-   1. Start your agent: elder-tree-soul start {agent.agent_id}
-   2. Check status: elder-tree-soul status
-   3. Monitor logs: elder-tree-soul logs {agent.agent_id}
+   1.0 Start your agent: elder-tree-soul start {agent.agent_id}
+   2.0 Check status: elder-tree-soul status
+   3.0 Monitor logs: elder-tree-soul logs {agent.agent_id}
 
 🌲 Welcome to the Elder Soul ecosystem!
 """

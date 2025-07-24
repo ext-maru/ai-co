@@ -28,9 +28,8 @@ logger = logging.getLogger(__name__)
 class AIShellCommand(BaseCommand):
     """AI対話シェル（REPL）コマンド"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        super().__init__(name="ai-shell", description="AI対話シェル（REPL）", version="2.0.0")
+    def __init__(self)super().__init__(name="ai-shell", description="AI対話シェル（REPL）", version="2.0.0")
+    """初期化メソッド"""
         self.session_history = []
         self.variables = {}
         self.elders = None
@@ -204,9 +203,8 @@ class AIShellCommand(BaseCommand):
         if getattr(args, "monitor_commands", False):
             self._start_performance_monitor()
 
-    def _run_interactive_shell(self, args) -> CommandResult:
-        """インタラクティブシェル実行"""
-        print("🤖 Elders Guild Shell v2.0.0")
+    def _run_interactive_shell(self, args) -> CommandResultprint("🤖 Elders Guild Shell v2.0.0")
+    """インタラクティブシェル実行"""
         print("エルダーズ統合対話環境へようこそ")
         print("'help' でコマンド一覧、'exit' で終了")
         print("-" * 50)
@@ -271,7 +269,7 @@ class AIShellCommand(BaseCommand):
             message_lines.append("実行結果:")
             message_lines.append(result["output"])
             if args.verbose:
-                message_lines.append(f"実行時間: {result.get('execution_time', 0):.3f}秒")
+                message_lines.append(f"実行時間: {result.get('execution_time', 0):0.3f}秒")
         else:
             message_lines.append(f"エラー: {result.get('error', 'Unknown error')}")
             if "suggestions" in result:
@@ -418,9 +416,8 @@ class AIShellCommand(BaseCommand):
             # Handle specific exception case
             return CommandResult(success=False, message=f"エルダーセッションエラー: {str(e)}")
 
-    def _execute_ai_command(self, command: str) -> Dict[str, Any]:
-        """AIコマンド実行"""
-        start_time = time.time()
+    def _execute_ai_command(self, command: str) -> Dict[str, Any]start_time = time.time()
+    """AIコマンド実行"""
 
         try:
             # 変数展開
@@ -486,14 +483,13 @@ class AIShellCommand(BaseCommand):
                 "execution_time": time.time() - start_time,
             }
 
-    def _execute_shell_command(self, command: str, args):
-        """シェルコマンド実行"""
-        result = self._execute_ai_command(command)
+    def _execute_shell_command(self, command: str, args)result = self._execute_ai_command(command)
+    """シェルコマンド実行"""
 
         if result["success"]:
             print(f"✓ {result['output']}")
             if args.verbose:
-                print(f"  実行時間: {result.get('execution_time', 0):.3f}秒")
+                print(f"  実行時間: {result.get('execution_time', 0):0.3f}秒")
         else:
             print(f"✗ エラー: {result.get('error', 'Unknown error')}")
             if "suggestions" in result:
@@ -515,9 +511,8 @@ class AIShellCommand(BaseCommand):
     def _setup_auto_completion(self):
         """自動補完設定"""
 
-        def completer(text, state):
-            """completerメソッド"""
-            options = [cmd for cmd in self.ai_commands if cmd.startswith(text)]
+        def completer(text, state)options = [cmd for cmd in self.ai_commands if cmd.startswith(text)]
+    """completerメソッド"""
             if state < len(options):
                 return options[state]
             else:
@@ -526,9 +521,8 @@ class AIShellCommand(BaseCommand):
         readline.set_completer(completer)
         readline.parse_and_bind("tab: complete")
 
-    def _load_history(self):
-        """履歴読み込み"""
-        if self.history_file.exists():
+    def _load_history(self)if self.history_file.exists():
+    """履歴読み込み"""
             try:
                 readline.read_history_file(str(self.history_file))
             except Exception as e:
@@ -544,9 +538,8 @@ class AIShellCommand(BaseCommand):
             # Handle specific exception case
             logger.warning(f"Failed to save history: {e}")
 
-    def _print_help(self):
-        """ヘルプ表示"""
-        print("\\n利用可能なコマンド:")
+    def _print_help(self)print("\\n利用可能なコマンド:")
+    """ヘルプ表示"""
         for cmd in self.ai_commands:
             # Process each item in collection
             print(f"  {cmd}")
@@ -558,9 +551,8 @@ class AIShellCommand(BaseCommand):
         print("  vars        - 変数一覧を表示")
         print("  exit, quit  - シェルを終了")
 
-    def _print_history(self):
-        """履歴表示"""
-        print("\\nコマンド履歴:")
+    def _print_history(self)print("\\nコマンド履歴:")
+    """履歴表示"""
         for i, cmd in enumerate(self.session_history[-10:], 1):
             # Process each item in collection
             print(f"  {i}. {cmd}")
@@ -588,9 +580,8 @@ class AIShellCommand(BaseCommand):
             else:
                 print(f"変数 '{var_name}' は定義されていません")
 
-    def _expand_variables(self, command: str) -> str:
-        """変数展開"""
-        for name, value in self.variables.items():
+    def _expand_variables(self, command: str) -> strfor name, value in self.variables.items():
+    """変数展開"""
             # Process each item in collection
             command = command.replace(f"${name}", value)
         return command
@@ -663,13 +654,11 @@ AI Shell ヘルプ
 
     # その他のヘルパーメソッド（簡略化）
 
-    def _run_debug_mode(self, args) -> CommandResult:
-        """デバッグモード実行"""
-        return self._execute_with_debug(args.command, args.debug_level)
+    def _run_debug_mode(self, args) -> CommandResultreturn self._execute_with_debug(args.command, args.debug_level)
+    """デバッグモード実行"""
 
-    def _execute_with_debug(self, command: str, debug_level: str) -> CommandResult:
-        """デバッグ付きコマンド実行"""
-        result = self._execute_ai_command(command)
+    def _execute_with_debug(self, command: str, debug_level: str) -> CommandResultresult = self._execute_ai_command(command)
+    """デバッグ付きコマンド実行"""
         debug_info = {
             "execution_time": result.get("execution_time", 0),
             "memory_usage": "50MB",  # 簡略化
@@ -678,7 +667,7 @@ AI Shell ヘルプ
 
         message = result.get("output", result.get("error", ""))
         if debug_level == "verbose":
-            message += f"\\n\\nデバッグ情報: {json.dumps(debug_info, indent=2)}"
+            message += f"\\n\\nデバッグ情報: {json.dumps(debug_info, indent}"
 
         return CommandResult(success=result["success"], message=message)
 
@@ -726,13 +715,11 @@ AI Shell ヘルプ
             # Handle specific exception case
             return CommandResult(success=False, message=f"セッション読み込みエラー: {str(e)}")
 
-    def _run_performance_mode(self, args) -> CommandResult:
-        """パフォーマンスモード実行"""
-        return self._run_interactive_shell(args)
+    def _run_performance_mode(self, args) -> CommandResultreturn self._run_interactive_shell(args)
+    """パフォーマンスモード実行"""
 
-    def _print_elder_help(self):
-        """エルダーヘルプ表示"""
-        print("\\nエルダー専用コマンド:")
+    def _print_elder_help(self)print("\\nエルダー専用コマンド:")
+    """エルダーヘルプ表示"""
         print("  elder status     - エルダーズステータス")
         print("  elder session    - 協調セッション開始")
         print("  elder consensus  - コンセンサス形成")

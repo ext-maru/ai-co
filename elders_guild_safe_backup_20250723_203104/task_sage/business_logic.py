@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class TaskProcessor:
+    pass
 
 
 """
@@ -164,9 +165,8 @@ class TaskProcessor:
             logger.error(f"Failed to create task: {e}")
             raise
     
-    async def _get_task(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク取得"""
-        task_id = data.get("task_id")
+    async def _get_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
+    """タスク取得""":
         if not task_id:
             raise ValueError("task_id is required")
         
@@ -197,9 +197,8 @@ class TaskProcessor:
             }
         }
     
-    async def _update_task(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク更新"""
-        task_id = data.get("task_id")
+    async def _update_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
+    """タスク更新""":
         if not task_id:
             raise ValueError("task_id is required")
         
@@ -262,9 +261,8 @@ class TaskProcessor:
             "message": f"タスク '{task.title}' を更新しました"
         }
     
-    async def _delete_task(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク削除"""
-        task_id = data.get("task_id")
+    async def _delete_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
+    """タスク削除""":
         if not task_id:
             raise ValueError("task_id is required")
         
@@ -353,9 +351,8 @@ class TaskProcessor:
             }
         }
     
-    async def _search_tasks(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク検索"""
-        query = data.get("query", "").lower().strip()
+    async def _search_tasks(self, data: Dict[str, Any]) -> Dict[str, Any]query = data.get("query", "").lower().strip()
+    """タスク検索""":
         if not query:
             raise ValueError("Search query is required")
         
@@ -395,11 +392,10 @@ class TaskProcessor:
     
     # === 工数見積もり・分析機能 ===
     
-    async def _estimate_effort(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """工数見積もり"""
-        task_id = data.get("task_id")
+    async def _estimate_effort(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
+    """工数見積もり"""
         complexity_factors = data.get("complexity_factors", {})
-        
+        :
         if task_id:
             task = self.tasks.get(task_id)
             if not task:
@@ -458,11 +454,10 @@ class TaskProcessor:
             }
         }
     
-    async def _resolve_dependencies(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク依存関係解決（トポロジカルソート）"""
-        task_ids = data.get("task_ids", [])
+    async def _resolve_dependencies(self, data: Dict[str, Any]) -> Dict[str, Any]task_ids = data.get("task_ids", [])
+    """タスク依存関係解決（トポロジカルソート）"""
         
-        # 指定されたタスクIDがない場合は全タスクを対象
+        # 指定されたタスクIDがない場合は全タスクを対象:
         if not task_ids:
             target_tasks = list(self.tasks.values())
         else:
@@ -569,9 +564,8 @@ class TaskProcessor:
             logger.error(f"Failed to create project: {e}")
             raise
     
-    async def _get_project(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """プロジェクト取得"""
-        project_id = data.get("project_id")
+    async def _get_project(self, data: Dict[str, Any]) -> Dict[str, Any]project_id = data.get("project_id")
+    """プロジェクト取得""":
         if not project_id:
             raise ValueError("project_id is required")
         
@@ -694,11 +688,10 @@ class TaskProcessor:
             }
         }
     
-    async def _get_task_progress(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク進捗レポート"""
-        project_id = data.get("project_id")
+    async def _get_task_progress(self, data: Dict[str, Any]) -> Dict[str, Any]project_id = data.get("project_id")
+    """タスク進捗レポート"""
         
-        # 対象タスク決定
+        # 対象タスク決定:
         if project_id:
             target_tasks = [t for t in self.tasks.values() if t.project_id == project_id]
         else:
@@ -749,6 +742,7 @@ class TaskProcessor:
 # === 初期化・テスト支援 ===
 
 async def main():
+    pass
 
             """TaskProcessor動作テスト""" "Task Sage A2A変換",
         "description": "Knowledge Sageパターンを適用してTask SageをA2A対応",

@@ -56,9 +56,8 @@ class ElderFlowCLI:
 
         return parser
 
-    async def execute_command(self, args):
-        """executeコマンド実行"""
-        print(f"🌊 Elder Flow executing: {args.request}")
+    async def execute_command(self, args)print(f"🌊 Elder Flow executing: {args.request}")
+    """executeコマンド実行"""
         print("=" * 80)
 
         # 出力ディレクトリ設定
@@ -80,9 +79,8 @@ class ElderFlowCLI:
 
         return result
 
-    def wisdom_command(self, args):
-        """wisdomコマンド実行"""
-        print("🧙‍♂️ Elder Flow Wisdom - 4賢者の英知")
+    def wisdom_command(self, args)print("🧙‍♂️ Elder Flow Wisdom - 4賢者の英知")
+    """wisdomコマンド実行"""
         print("=" * 60)
 
         if args.sage:
@@ -94,9 +92,8 @@ class ElderFlowCLI:
                 print(f"\n{self._get_sage_icon(sage)} {sage.title()} Sage:")
                 self._display_sage_wisdom(sage)
 
-    def status_command(self, args):
-        """statusコマンド実行"""
-        print("📊 Elder Flow System Status")
+    def status_command(self, args)print("📊 Elder Flow System Status")
+    """statusコマンド実行"""
         print("=" * 50)
 
         # システム状態
@@ -113,9 +110,8 @@ class ElderFlowCLI:
         print(f"  🚨 インシデント賢者: {len(self.elder_flow.incident_sage.incident_history)}インシデント")
         print(f"  🔍 RAG賢者: {len(self.elder_flow.rag_sage.implementation_patterns)}パターン")
 
-    def history_command(self, args):
-        """historyコマンド実行"""
-        print(f"📋 Elder Flow Execution History (最新{args.limit}件)")
+    def history_command(self, args)print(f"📋 Elder Flow Execution History (最新{args.limit}件)")
+    """historyコマンド実行"""
         print("=" * 70)
 
         recent_history = self.session_history[-args.limit:]
@@ -126,14 +122,13 @@ class ElderFlowCLI:
 
             print(f"\n{i}. {session['timestamp']}")
             print(f"   📝 Request: {session['request'][:50]}...")
-            print(f"   ⚡ 効率: {execution_results.get('parallel_efficiency', 0):.1f}%")
+            print(f"   ⚡ 効率: {execution_results.get('parallel_efficiency', 0):0.1f}%")
             print(f"   🎯 成功率: {(execution_results.get('completed'," \
-                " 0) / max(execution_results.get('total_tasks', 1), 1)) * 100:.1f}%")
+                " 0) / max(execution_results.get('total_tasks', 1), 1)) * 100:0.1f}%")
             print(f"   🧙‍♂️ 英知レベル: {result['wisdom_evolution']['wisdom_level']}")
 
-    def dashboard_command(self, args):
-        """dashboardコマンド実行"""
-        print("📊 Elder Flow Real-time Dashboard")
+    def dashboard_command(self, args)print("📊 Elder Flow Real-time Dashboard")
+    """dashboardコマンド実行"""
         print("=" * 80)
         print("🌊 リアルタイム監視システム起動中...")
         print("\n📈 監視項目:")
@@ -153,22 +148,21 @@ class ElderFlowCLI:
         except KeyboardInterrupt:
             print("\n📊 ダッシュボード終了")
 
-    def _display_execution_result(self, result):
-        """実行結果表示"""
-        print("\n📊 実行結果:")
+    def _display_execution_result(self, result)print("\n📊 実行結果:")
+    """実行結果表示"""
         print("-" * 50)
 
         session_info = result["session_info"]
         execution_results = result["execution_results"]
         sages_contributions = result["sages_contributions"]
 
-        print(f"⚡ 実行時間: {session_info['total_time']:.2f}秒")
-        print(f"📊 並列効率: {execution_results.get('parallel_efficiency', 0):.1f}%")
+        print(f"⚡ 実行時間: {session_info['total_time']:0.2f}秒")
+        print(f"📊 並列効率: {execution_results.get('parallel_efficiency', 0):0.1f}%")
         print(f"🎯 成功率: {
             (execution_results.get('completed',
             0) / max(execution_results.get('total_tasks',
             1),
-            1)) * 100:.1f
+            1)) * 100:0.1f
         }%")
 
         print(f"\n🧙‍♂️ 4賢者の貢献:")
@@ -197,9 +191,8 @@ class ElderFlowCLI:
         }
         return icons.get(sage_name, '🧙‍♂️')
 
-async def main():
-    """メイン実行"""
-    cli = ElderFlowCLI()
+async def main()cli = ElderFlowCLI()
+"""メイン実行"""
     parser = cli.create_parser()
     args = parser.parse_args()
 

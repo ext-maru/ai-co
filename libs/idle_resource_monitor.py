@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 Idle Resource Monitor - System Resource and Activity Detection
+"🔍" Idle Resource Monitor - System Resource and Activity Detection
 Monitors system resources and detects idle periods for automated tasks
 """
 
@@ -197,8 +197,8 @@ class IdleResourceMonitor:
                 if self.current_idle_period.duration_seconds >= min_duration:
                     self.idle_periods.append(self.current_idle_period)
                     self.logger.info(
-                        f"🔴 Idle period ended: {self.current_idle_period.duration_seconds:.1f}s "
-                        f"(confidence: {self.current_idle_period.confidence:.2f})"
+                        f"🔴 Idle period ended: {self.current_idle_period.duration_seconds:0.1f}s "
+                        f"(confidence: {self.current_idle_period.confidence:0.2f})"
                     )
 
                     # Notify about idle period
@@ -424,14 +424,14 @@ def main():
             status = monitor.get_current_idle_status()
             if status["is_idle"]:
                 print(
-                    f"🟢 IDLE - Duration: {status['duration']:.1f}s, "
-                    f"Confidence: {status['confidence']:.2f}"
+                    f"🟢 IDLE - Duration: {status['duration']:0.1f}s, "
+                    f"Confidence: {status['confidence']:0.2f}"
                 )
             else:
                 metrics = status["current_metrics"]
                 print(
-                    f"🔴 BUSY - CPU: {metrics['cpu_percent']:.1f}%, "
-                    f"Memory: {metrics['memory_percent']:.1f}%"
+                    f"🔴 BUSY - CPU: {metrics['cpu_percent']:0.1f}%, "
+                    f"Memory: {metrics['memory_percent']:0.1f}%"
                 )
 
     except KeyboardInterrupt:
@@ -445,8 +445,8 @@ def main():
             total_idle_time = sum(p.duration_seconds for p in idle_periods)
             print(f"\n📊 Summary:")
             print(f"   Idle periods detected: {len(idle_periods)}")
-            print(f"   Total idle time: {total_idle_time:.1f}s")
-            print(f"   Average idle duration: {total_idle_time/len(idle_periods):.1f}s")
+            print(f"   Total idle time: {total_idle_time:0.1f}s")
+            print(f"   Average idle duration: {total_idle_time/len(idle_periods):0.1f}s")
 
 
 if __name__ == "__main__":

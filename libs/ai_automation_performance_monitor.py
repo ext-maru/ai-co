@@ -93,9 +93,8 @@ class AlertRule:
 class AIAutomationPerformanceMonitor:
     """AI自動化パフォーマンス監視システム"""
 
-    def __init__(self, config:
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         """初期化メソッド"""
-    Optional[Dict[str, Any]] = None):
         self.config = {
             "collection_interval": 30,  # 30秒間隔
             "retention_days": 30,
@@ -148,7 +147,7 @@ class AIAutomationPerformanceMonitor:
     def _init_database(self):
         """データベース初期化"""
         self.db_path.parent.mkdir(exist_ok=True)
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         cursor = conn.cursor()
 
         # メトリクステーブル
@@ -503,7 +502,7 @@ class AIAutomationPerformanceMonitor:
     async def _save_metric_to_db(self, metric: PerformanceMetric):
         """メトリクスをデータベースに保存"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -646,7 +645,7 @@ class AIAutomationPerformanceMonitor:
     async def _save_alert_to_db(self, alert_data: Dict[str, Any]):
         """アラートをデータベースに保存"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -737,7 +736,7 @@ class AIAutomationPerformanceMonitor:
 
         # データベース更新
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -813,7 +812,7 @@ class AIAutomationPerformanceMonitor:
 
         # データベースに保存
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -907,7 +906,7 @@ class AIAutomationPerformanceMonitor:
         week_ago = datetime.now() - timedelta(days=7)
 
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -932,8 +931,8 @@ class AIAutomationPerformanceMonitor:
                 efficiency_trend = self._calculate_trend_slope(efficiency_scores)
 
                 logger.info(
-                    f"📈 Performance Trends: Health={health_trend:.3f}, " \
-                        "Efficiency={efficiency_trend:.3f}"
+                    f"📈 Performance Trends: Health={health_trend:0.3f}, " \
+                        "Efficiency={efficiency_trend:0.3f}"
                 )
 
         except Exception as e:
@@ -1172,7 +1171,7 @@ class AIAutomationPerformanceMonitor:
         report_id = f"performance_report_{int(datetime.now().timestamp())}"
 
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # メトリクス統計
@@ -1267,7 +1266,7 @@ class AIAutomationPerformanceMonitor:
     ):
         """レポート履歴保存"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -1307,6 +1306,7 @@ class AIAutomationPerformanceMonitor:
 
 # デモ実行
 if __name__ == "__main__":
+    pass
 
     async def demo():
         """demoメソッド"""
@@ -1321,7 +1321,7 @@ if __name__ == "__main__":
         print("✅ Performance monitor initialized")
 
         # テストメトリクス追加
-        print("\n1. Adding test metrics...")
+        print("\n1.0 Adding test metrics...")
         test_metrics = [
             PerformanceMetric(
                 "four_sages.consensus_rate",
@@ -1350,23 +1350,23 @@ if __name__ == "__main__":
             print(f"  📊 Recorded: {metric.metric_name} = {metric.value}")
 
         # 状態確認
-        print("\n2. Checking system status...")
+        print("\n2.0 Checking system status...")
         status = monitor.get_current_status()
-        print(f"  🏥 System Health Score: {status['system_health_score']:.3f}")
-        print(f"  ⚡ Automation Efficiency: {status['automation_efficiency']:.3f}")
+        print(f"  🏥 System Health Score: {status['system_health_score']:0.3f}")
+        print(f"  ⚡ Automation Efficiency: {status['automation_efficiency']:0.3f}")
         print(f"  📋 Metrics in Buffer: {status['metrics_in_buffer']}")
 
         # パフォーマンスレポート生成
-        print("\n3. Generating performance report...")
+        print("\n3.0 Generating performance report...")
         report = await monitor.generate_performance_report(hours=1)
         print(f"  📊 Report ID: {report['report_id']}")
         print(
             f"  📈 Metrics Statistics: {len(report['metrics_statistics'])} metric types"
         )
-        print(f"  🎯 System Health: {report['system_health']['current_score']:.3f}")
+        print(f"  🎯 System Health: {report['system_health']['current_score']:0.3f}")
 
         # ダッシュボードデータ生成
-        print("\n4. Generating dashboard data...")
+        print("\n4.0 Generating dashboard data...")
         dashboard = await monitor._generate_dashboard_data()
         print(f"  📊 Dashboard updated at: {dashboard['timestamp']}")
         print(

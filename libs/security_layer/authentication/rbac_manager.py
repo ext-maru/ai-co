@@ -81,12 +81,11 @@ class Role:
     restrictions: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-    def has_permission(self, permission_name: str) -> bool:
-        """権限チェック"""
-        return any(p.name == permission_name for p in self.permissions)
+    def has_permission(self, permission_name: str) -> boolreturn any(p.name == permission_name for p in self.permissions)
+    """権限チェック"""
 
 
-@dataclass
+@dataclass:
 class UserRole:
     """ユーザーロール"""
 

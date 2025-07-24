@@ -58,8 +58,8 @@ if Path("coverage.json").exists():
     with open("coverage.json") as f:
         data = json.load(f)
         coverage = data["totals"]["percent_covered"]
-        print(f"✨ 達成カバレッジ: {coverage:.1f}%")
+        print(f"✨ 達成カバレッジ: {coverage:0.1f}%")
         if coverage >= 60:
             print("🎉 目標達成！")
         else:
-            print(f"📈 目標まで: {60 - coverage:.1f}%")
+            print(f"📈 目標まで: {60 - coverage:0.1f}%")

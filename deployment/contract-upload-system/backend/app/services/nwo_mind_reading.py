@@ -114,6 +114,6 @@ class ContractMindReader:
 # グローバルマインドリーダー
 contract_mind_reader = ContractMindReader()
 
-async def analyze_user_request(request_text: str) -> Dict[str, Any]:
-    """ユーザーリクエスト分析エントリーポイント"""
-    return await contract_mind_reader.analyze_maru_intent(request_text)
+async def analyze_user_request(request_text: str) -> Dict[str, Any]return await contract_mind_reader.analyze_maru_intent(request_text)
+"""ユーザーリクエスト分析エントリーポイント"""
+:

@@ -323,7 +323,7 @@ class SlackAPIIntegration:
             wait_time = (self.rate_limit_reset_time - now).total_seconds()
             if wait_time > 0:
                 self.logger.warning(
-                    f"Rate limit reached, waiting {wait_time:.2f} seconds"
+                    f"Rate limit reached, waiting {wait_time:0.2f} seconds"
                 )
                 await asyncio.sleep(wait_time)
 
@@ -694,9 +694,9 @@ if __name__ == "__main__":
         else:
             print("\n❌ Slack API Integration setup required")
             print("\nTo configure:")
-            print("1. Set SLACK_BOT_TOKEN environment variable")
-            print("2. Set SLACK_WEBHOOK_URL environment variable")
-            print("3. Or add to config/slack.conf")
+            print("1.0 Set SLACK_BOT_TOKEN environment variable")
+            print("2.0 Set SLACK_WEBHOOK_URL environment variable")
+            print("3.0 Or add to config/slack.conf")
 
     if sys.version_info >= (3, 7):
         asyncio.run(main())

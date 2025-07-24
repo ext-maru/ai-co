@@ -37,9 +37,8 @@ class TaskPriority(Enum):
 
 class Project:
     """プロジェクト"""
-    def __init__(self, project_id:
+    def __init__(self, project_id: str, name: str, description: str):
         """初期化メソッド"""
-    str, name: str, description: str):
         self.project_id = project_id
         self.name = name
         self.description = description
@@ -52,10 +51,9 @@ class Project:
 
 class Task:
     """タスク"""
-    def __init__(self, task_id:
-        """初期化メソッド"""
-    str, project_id: str, title: str,
+    def __init__(self, task_id: str, project_id: str, title: str,
                  priority: TaskPriority = TaskPriority.MEDIUM):
+        """初期化メソッド"""
         self.task_id = task_id
         self.project_id = project_id
         self.title = title
@@ -705,7 +703,7 @@ class TaskSageProcess(ElderProcessBase):
 
         project.progress = (completed_tasks / total_tasks) * 100
 
-        self.logger.info(f"Project {project.name} progress: {project.progress:.1f}%")
+        self.logger.info(f"Project {project.name} progress: {project.progress:0.1f}%")
 
         # フェーズ自動更新
         if project.progress == 100 and project.phase != ProjectPhase.MAINTENANCE:
@@ -743,7 +741,7 @@ class TaskSageProcess(ElderProcessBase):
 
         # リソース逼迫の警告
         if usage > 0.9:
-            self.logger.warning(f"Resource {resource_id} is at {usage*100:.1f}% capacity")
+            self.logger.warning(f"Resource {resource_id} is at {usage*100:0.1f}% capacity")
 
     async def _execute_assigned_task(self, task_data: Dict[str, Any]):
         """割り当てられたタスクの実行"""

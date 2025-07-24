@@ -152,7 +152,7 @@ def main():
     """メイン処理"""
     print_header()
 
-    # 1. pre-commit確認とインストール
+    # 1.0 pre-commit確認とインストール
     if not check_pre_commit_installed():
         if not install_pre_commit():
             print(
@@ -160,21 +160,21 @@ def main():
             )
             return 1
 
-    # 2. フックインストール
+    # 2.0 フックインストール
     if not install_hooks():
         return 1
 
-    # 3. gitignore更新
+    # 3.0 gitignore更新
     create_gitignore_entries()
 
-    # 4. 初回チェック（オプション）
+    # 4.0 初回チェック（オプション）
     response = input(
         f"\n{Colors.YELLOW}初回チェックを実行しますか？ (y/N): {Colors.ENDC}"
     )
     if response.lower() == "y":
         run_initial_check()
 
-    # 5. 使用ガイド表示
+    # 5.0 使用ガイド表示
     display_usage_guide()
 
     print(

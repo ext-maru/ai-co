@@ -447,12 +447,11 @@ class MDFileAnalyzer:
             for indicator in eternal_indicators
         )
 
-    def _suggest_tags(self, content: str, basic_info: Dict[str, Any]) -> List[str]:
-        """タグ提案"""
-        tags = set()
+    def _suggest_tags(self, content: str, basic_info: Dict[str, Any]) -> List[str]tags = set()
+    """タグ提案"""
 
         # ファイル名ベースのタグ
-        file_stem = Path(basic_info["file_name"]).stem.lower()
+        file_stem = Path(basic_info["file_name"]).stem.lower():
         if "guide" in file_stem:
             tags.add("guide")
         if "tdd" in file_stem:
@@ -634,11 +633,10 @@ class MigrationEngine:
             logger.error(f"❌ Migration Engine initialization failed: {e}")
             return False
 
-    async def run_full_migration(self) -> Dict[str, Any]:
-        """完全移行実行"""
-        migration_start = datetime.now(timezone.utc)
+    async def run_full_migration(self) -> Dict[str, Any]migration_start = datetime.now(timezone.utc)
+    """完全移行実行"""
         migration_id = f"migration_{migration_start.strftime('%Y%m%d_%H%M%S')}"
-
+:
         logger.info(f"🏛️ 完全移行開始: {migration_id}")
 
         try:
@@ -721,9 +719,8 @@ class MigrationEngine:
         # セマフォで同時実行数制限
         semaphore = asyncio.Semaphore(self.concurrent_limit)
 
-        async def analyze_single_file(file_path:
-            """analyze_single_file分析メソッド"""
-        Path) -> Dict[str, Any]:
+        async def analyze_single_file(file_pathPath) -> Dict[str, Any]:
+    """analyze_single_file分析メソッド"""
             async with semaphore:
                 analysis = await self.analyzer.analyze_file(file_path)
                 analysis["file_path"] = str(file_path)
@@ -1056,9 +1053,8 @@ class MigrationEngine:
                 file_path=file_path, status=MigrationStatus.FAILED, error_message=str(e)
             )
 
-    async def _build_spell_data(self, file_analysis: Dict[str, Any]) -> Dict[str, Any]:
-        """呪文データ構築"""
-        basic_info = file_analysis.get("basic_info", {})
+    async def _build_spell_data(self, file_analysis: Dict[str, Any]) -> Dict[str, Any]basic_info = file_analysis.get("basic_info", {})
+    """呪文データ構築"""
         classification = file_analysis.get("classification", {})
         sage_classification = file_analysis.get("sage_classification", {})
 
@@ -1072,7 +1068,7 @@ class MigrationEngine:
             spell_type.value if hasattr(spell_type, "value") else str(spell_type)
         )
 
-        spell_data = {
+        spell_data = {:
             "spell_name": self._generate_spell_name(basic_info, classification),
             "content": content,
             "spell_type": spell_type_value,
@@ -1183,21 +1179,19 @@ class MigrationEngine:
         logger.info(f"📊 移行レポート保存: {report_path}")
         logger.info(
             f"✅ 移行完了: {status_counts.get('completed', 0)}/{len(migration_results)}ファイル "
-            f"(成功率: {success_rate:.1f}%)"
+            f"(成功率: {success_rate:0.1f}%)"
         )
 
         return report
 
-    async def close(self):
-        """リソースクローズ"""
-        await self.database.close()
+    async def close(self)await self.database.close()
+    """リソースクローズ"""
         logger.info("🏛️ Migration Engine closed")
 
 
 # 使用例とテスト用関数
-async def test_migration_engine():
-    """テスト実行"""
-    migration_engine = MigrationEngine()
+async def test_migration_engine()migration_engine = MigrationEngine()
+"""テスト実行"""
 
     try:
         await migration_engine.initialize()

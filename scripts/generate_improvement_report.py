@@ -217,8 +217,8 @@ class ImprovementReportGenerator:
 
 ### 🏆 改善スコア
 - **改善前**: 71.43% (Grade: C)
-- **改善後**: {self._calculate_final_score():.2f}% (Grade: {self._calculate_grade()})
-- **改善率**: +{self._calculate_improvement_rate():.2f}%
+- **改善後**: {self._calculate_final_score():0.2f}% (Grade: {self._calculate_grade()})
+- **改善率**: +{self._calculate_improvement_rate():0.2f}%
 
 ---
 
@@ -233,7 +233,7 @@ class ImprovementReportGenerator:
                 report += f"""- **システム状態**: {fs.get('integration_status', 'unknown')}
 - **アクティブ賢者数**: {fs.get('active_sages', 0)}/4
 - **テストカバレッジ**: {fs.get('test_coverage', 0)}% (改善前: 0%)
-- **連携成功率**: {fs.get('collaboration_success_rate', 0):.1f}%
+- **連携成功率**: {fs.get('collaboration_success_rate', 0):0.1f}%
 - **メッセージスループット**: {fs.get('message_throughput', 0)} messages
 - **知識グラフサイズ**: {fs.get('knowledge_graph_size', 0)} nodes
 """
@@ -260,7 +260,7 @@ class ImprovementReportGenerator:
             kb = self.current_metrics["knowledge_base"]
             if "error" not in kb:
                 report += f"""- **インデックスサイズ**: {kb.get('index_size', 0)} documents
-- **平均検索時間**: {kb.get('average_search_time_ms', 0):.2f}ms
+- **平均検索時間**: {kb.get('average_search_time_ms', 0):0.2f}ms
 - **検索機能**: {', '.join(kb.get('search_features', []))}
 - **キャッシュ**: {'有効' if kb.get('cache_enabled') else '無効'}
 - **インデックス最適化**: {'完了' if kb.get('index_optimized') else '未実施'}
@@ -271,8 +271,8 @@ class ImprovementReportGenerator:
                     report += f"""
 ### 最適化統計
 - **総ターム数**: {opt.get('total_terms', 0):,}
-- **インデックスサイズ**: {opt.get('index_size', 0) / 1024 / 1024:.1f}MB
-- **構築時間**: {opt.get('build_time', 0):.2f}秒
+- **インデックスサイズ**: {opt.get('index_size', 0) / 1024 / 1024:0.1f}MB
+- **構築時間**: {opt.get('build_time', 0):0.2f}秒
 """
             else:
                 report += f"- ❌ 測定エラー: {kb['error']}\n"
@@ -296,10 +296,10 @@ class ImprovementReportGenerator:
         if "system_performance" in self.current_metrics:
             sp = self.current_metrics["system_performance"]
             if "error" not in sp:
-                report += f"""- **稼働時間**: {sp.get('uptime_hours', 0):.2f}時間
-- **CPU使用率**: {sp.get('cpu_usage', 0):.1f}%
-- **メモリ使用量**: {sp.get('memory_usage_mb', 0):.1f}MB
-- **キャッシュヒット率**: {sp.get('cache_hit_rate', 0):.1f}%
+                report += f"""- **稼働時間**: {sp.get('uptime_hours', 0):0.2f}時間
+- **CPU使用率**: {sp.get('cpu_usage', 0):0.1f}%
+- **メモリ使用量**: {sp.get('memory_usage_mb', 0):0.1f}MB
+- **キャッシュヒット率**: {sp.get('cache_hit_rate', 0):0.1f}%
 - **最適化実行回数**: {sp.get('optimizations_performed', 0)}
 """
 
@@ -310,7 +310,7 @@ class ImprovementReportGenerator:
 - **総タスク数**: {tp.get('total_tasks', 0)}
 - **完了タスク**: {tp.get('completed_tasks', 0)}
 - **失敗タスク**: {tp.get('failed_tasks', 0)}
-- **平均実行時間**: {tp.get('average_time', 0):.3f}秒
+- **平均実行時間**: {tp.get('average_time', 0):0.3f}秒
 """
             else:
                 report += f"- ❌ 測定エラー: {sp['error']}\n"
@@ -329,9 +329,9 @@ class ImprovementReportGenerator:
 ## 🎯 総括
 
 ### 達成事項
-1. **4賢者システム**: 部分稼働 → 完全稼働
-2. **知識ベース**: 基本検索 → 高度な検索機能
-3. **システムパフォーマンス**: 未最適化 → 完全最適化
+1.0 **4賢者システム**: 部分稼働 → 完全稼働
+2.0 **知識ベース**: 基本検索 → 高度な検索機能
+3.0 **システムパフォーマンス**: 未最適化 → 完全最適化
 
 ### 改善効果
 - 検索速度: **10倍以上高速化**
@@ -339,9 +339,9 @@ class ImprovementReportGenerator:
 - 機能拡張性: **プラグイン対応**
 
 ### 次のステップ
-1. 本番環境でのパフォーマンステスト
-2. ユーザーフィードバックの収集
-3. 継続的な最適化
+1.0 本番環境でのパフォーマンステスト
+2.0 ユーザーフィードバックの収集
+3.0 継続的な最適化
 
 ---
 

@@ -123,12 +123,15 @@ class TestAiderIntegrationUnit:
 diff --git a/auth.py b/auth.py
 @@ -1,5 +1,10 @@
  def authenticate(user, password):
+     pass
 -    return True
 +    if not user or not password:
+    pass
 +        raise ValueError("User and password required")
 +    return validate_credentials(user, password)
 +
 +def validate_credentials(user, password):
+    pass
 +    # Actual validation logic
 +    return True
 """
@@ -204,7 +207,7 @@ def calculate(x, y):
     async def test_create_elder_commit(self, aider_integration, mock_git_keeper):
         """Test Elder commit creation"""
         # Setup
-        files = ["file1.py", "file2.py"]
+        files = ["file1.0py", "file2.0py"]
         message = "feat: add new feature"
 
         # Execute
@@ -227,7 +230,7 @@ def calculate(x, y):
     ):
         """Test Elder commit creation with git failure"""
         # Setup
-        files = ["file1.py"]
+        files = ["file1.0py"]
         message = "feat: add feature"
         mock_git_keeper.git_add.return_value = {
             "success": False,

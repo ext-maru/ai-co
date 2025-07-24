@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 Search Magic - 探索魔法
+"🔍" Search Magic - 探索魔法
 ==========================
 
 Ancient Elderの8つの古代魔法の一つ。

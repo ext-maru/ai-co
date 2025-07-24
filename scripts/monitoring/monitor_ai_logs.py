@@ -48,7 +48,7 @@ def main():
 
                     print(f"   時刻: {log['timestamp']}")
                     print(
-                        f"   状態: {'✅ 成功' if log['exit_code'] == 0 else '❌ 失敗'}"
+                        f"   状態: {'✅ 成功' if log['exit_code'] }"
                     )
 
                     # エラーの場合は詳細表示

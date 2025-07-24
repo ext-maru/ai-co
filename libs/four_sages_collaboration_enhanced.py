@@ -482,7 +482,7 @@ class FourSagesCollaborationEnhanced:
             "recommendation": best_rec,
             "confidence": best_score,
             "reasoning": f"Supported by {len(recommendations[best_rec])} " \
-                "sages with average confidence {statistics.mean(recommendations[best_rec]):.2f}",
+                "sages with average confidence {statistics.mean(recommendations[best_rec]):0.2f}",
         }
 
     # ========== イベント駆動連携 ==========

@@ -22,7 +22,7 @@ async def test_new_methods():
     flow_id = None
     
     try:
-        # 1. execute_sage_council
+        # 1.0 execute_sage_council
         print("📋 Phase 1: execute_sage_council テスト")
         sage_result = await orchestrator.execute_sage_council({
             "task_name": "テスト: OAuth2.0認証システム実装",
@@ -37,7 +37,7 @@ async def test_new_methods():
             print(f"❌ 失敗: {sage_result.get('error')}")
             return
         
-        # 2. execute_elder_servants
+        # 2.0 execute_elder_servants
         print("\n📋 Phase 2: execute_elder_servants テスト")
         servant_result = await orchestrator.execute_elder_servants({
             "task_name": "テスト: OAuth2.0認証システム実装",
@@ -53,7 +53,7 @@ async def test_new_methods():
             print(f"❌ 失敗: {servant_result.get('error')}")
             return
         
-        # 3. execute_quality_gate
+        # 3.0 execute_quality_gate
         print("\n📋 Phase 3: execute_quality_gate テスト")
         quality_result = await orchestrator.execute_quality_gate({
             "flow_id": flow_id,
@@ -68,7 +68,7 @@ async def test_new_methods():
             print(f"❌ 失敗: {quality_result.get('error')}")
             return
         
-        # 4. execute_council_report
+        # 4.0 execute_council_report
         print("\n📋 Phase 4: execute_council_report テスト")
         report_result = await orchestrator.execute_council_report({
             "flow_id": flow_id,
@@ -88,7 +88,7 @@ async def test_new_methods():
             print(f"❌ 失敗: {report_result.get('error')}")
             return
         
-        # 5. execute_git_automation
+        # 5.0 execute_git_automation
         print("\n📋 Phase 5: execute_git_automation テスト")
         git_result = await orchestrator.execute_git_automation({
             "flow_id": flow_id,

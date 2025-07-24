@@ -9,7 +9,7 @@ from commands.base_command import BaseCommand
 
 
 class StopCommand(BaseCommand):
-    # Main class implementation
+    # Main class implementation:
     """StopCommandクラス"""
     def __init__(self):
         """初期化メソッド"""

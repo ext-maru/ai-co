@@ -42,9 +42,8 @@ class TestGitHubSecurityManager:
     - Audit logging
     """
     
-    def setup_method(self):
-        """Setup test fixtures"""
-        self.security_manager = GitHubSecurityManager()
+    def setup_method(self)self.security_manager = GitHubSecurityManager()
+    """Setup test fixtures"""
         self.test_token = "ghp_test1234567890abcdefghijklmnopqrstuvwx"
         self.test_data = {
             "repo_name": "test-repo",
@@ -226,9 +225,8 @@ class TestGitHubSecurityManager:
         for attempt in self.security_manager.failed_auth_attempts[identifier]:
             assert (datetime.now() - attempt).seconds < 5
     
-    def test_ssl_context_creation(self):
-        """Test secure SSL context creation"""
-        context = self.security_manager.create_secure_ssl_context()
+    def test_ssl_context_creation(self)context = self.security_manager.create_secure_ssl_context()
+    """Test secure SSL context creation"""
         
         assert context.check_hostname is True
         assert context.verify_mode == 1  # CERT_REQUIRED
@@ -244,7 +242,7 @@ class TestGitHubSecurityManager:
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEA...
         -----END RSA PRIVATE KEY-----
-        JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4 \
+        JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.0eyJzdWIiOiIxMjM0NTY3ODkwIn0.0dozjgNryP4 \
             J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U
         """
         
@@ -262,9 +260,8 @@ class TestGitHubSecurityManager:
         """Test secure decorator for sync functions"""
         
         @self.security_manager.secure_decorator(require_auth=True, rate_limit=10)
-        def test_function(self, test_input:
-            """test_functionテストメソッド"""
-        str):
+        def test_function(self, test_input: str):
+        """test_functionテストメソッド"""
             return f"Processed: {test_input}"
         
         # Create mock object with token
@@ -289,10 +286,8 @@ class TestGitHubSecurityManager:
         """Test secure decorator for async functions"""
         
         @self.security_manager.secure_decorator(require_auth=True, rate_limit=10)
-        async def test_async_function(self, test_input:
-            """test_async_functionテストメソッド"""
-        str):
-            await asyncio.sleep(0.01)
+        async def test_async_function(self, test_input: str)await asyncio.sleep(0.01)
+    """test_async_functionテストメソッド"""
             return f"Processed: {test_input}"
         
         # Create mock object with token
@@ -307,9 +302,8 @@ class TestGitHubSecurityManager:
         with pytest.raises(SecurityViolationError):
             await test_async_function(mock_self, test_input="<script>alert('xss')</script>")
     
-    def test_security_headers(self):
-        """Test security headers generation"""
-        headers = self.security_manager.get_security_headers()
+    def test_security_headers(self)headers = self.security_manager.get_security_headers()
+    """Test security headers generation"""
         
         assert headers["X-Content-Type-Options"] == "nosniff"
         assert headers["X-Frame-Options"] == "DENY"
@@ -338,9 +332,8 @@ class TestGitHubSecurityManager:
         # Verify audit log directory was created
         assert mock_mkdir.called or mock_exists.called
     
-    def test_get_security_manager_singleton(self):
-        """Test singleton pattern for security manager"""
-        manager1 = get_security_manager()
+    def test_get_security_manager_singleton(self)manager1 = get_security_manager()
+    """Test singleton pattern for security manager"""
         manager2 = get_security_manager()
         
         assert manager1 is manager2
@@ -373,15 +366,14 @@ class TestIntegration:
     """Integration tests for security system"""
     
     @pytest.mark.asyncio
-    async def test_full_security_workflow(self):
-        """Test complete security workflow"""
-        security_manager = GitHubSecurityManager()
+    async def test_full_security_workflow(self)security_manager = GitHubSecurityManager()
+    """Test complete security workflow"""
         
-        # 1. Encrypt token
+        # 1.0 Encrypt token
         token = "ghp_test1234567890abcdefghijklmnopqrstuvwx"
         encrypted_token = security_manager.encrypt_token(token)
         
-        # 2. Create request with signature
+        # 2.0 Create request with signature
         method = "POST"
         url = "https://api.github.com/repos"
         body_data = {
@@ -389,28 +381,28 @@ class TestIntegration:
             "description": "Test repository"
         }
         
-        # 3. Validate and sanitize input
+        # 3.0 Validate and sanitize input
         sanitized_data = security_manager.validate_and_sanitize_input(body_data, "repo_data")
         body = json.dumps(sanitized_data)
         
-        # 4. Generate signature
+        # 4.0 Generate signature
         signature = security_manager.generate_request_signature(method, url, body)
         
-        # 5. Check rate limit
+        # 5.0 Check rate limit
         assert security_manager.check_rate_limit("test_user", limit=100)
         
-        # 6. Verify signature
+        # 6.0 Verify signature
         assert security_manager.verify_request_signature(signature, method, url, body)
         
-        # 7. Get security headers
+        # 7.0 Get security headers
         headers = security_manager.get_security_headers()
         assert len(headers) > 0
         
-        # 8. Decrypt token for use
+        # 8.0 Decrypt token for use
         decrypted_token = security_manager.decrypt_token(encrypted_token)
         assert decrypted_token == token
         
-        # 9. Create SSL context
+        # 9.0 Create SSL context
         ssl_context = security_manager.create_secure_ssl_context()
         assert ssl_context is not None
 

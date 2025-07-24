@@ -17,10 +17,8 @@ logger = logging.getLogger(__name__)
 
 class GitHubIntegrationManager:
     """GitHubIntegrationManager - 管理システムクラス"""
-    def __init__(self, repo_url:
-        """初期化メソッド"""
-    str = None, token: str = None):
-        self.repo_url = repo_url or self._get_repo_url()
+    def __init__(self, repo_url: str = None, token: str = None)self.repo_url = repo_url or self._get_repo_url()
+    """初期化メソッド"""
         self.token = token or os.getenv("GITHUB_TOKEN")
         self.api_base = "https://api.github.com"
 
@@ -187,11 +185,9 @@ class GitHubIntegrationManager:
         return analysis
 
     # 以下、既存のメソッドは変更なし...
-    def _extract_imports(self, content:
-        """extract_imports（内部メソッド）"""
-    str) -> set:
-        imports = set()
-        lines = content.split("\n")
+    def _extract_imports(self, contentstr) -> setimports = set()
+    """extract_imports（内部メソッド）"""
+        lines = content.split("\n"):
         for line in lines:
             line = line.strip()
             if line.startswith("import "):
@@ -224,9 +220,8 @@ class GitHubIntegrationManager:
             logger.error(f"コミットエラー: {e}")
             return False
 
-    def _analyze_changes(self, files:
-        """analyze_changes（内部メソッド）"""
-    List[str]) -> Dict[str, List[str]]:
+    def _analyze_changes(self, filesList[str]) -> Dict[str, List[str]]:
+    """analyze_changes（内部メソッド）"""
         categories = {
             "workers": [],
             "libs": [],
@@ -247,9 +242,8 @@ class GitHubIntegrationManager:
                 categories["other"].append(Path(file).name)
         return categories
 
-    def get_code_context_for_ai(self, relevant_paths:
-        """code_context_for_ai取得メソッド"""
-    List[str]) -> str:
+    def get_code_context_for_ai(self, relevant_pathsList[str]) -> str:
+    """code_context_for_ai取得メソッド"""
         context = "【関連コード情報】\n\n"
         for path in relevant_paths:
             content = self.get_file_content(path)
@@ -264,13 +258,11 @@ class GitHubIntegrationManager:
         context += f"- 依存関係: {', '.join(analysis['dependencies'][:10])}\n"
         return context
 
-    def _extract_important_parts(self, content:
-        """extract_important_parts（内部メソッド）"""
-    str, max_lines: int = 50) -> str:
-        lines = content.split("\n")
+    def _extract_important_parts(self, contentstr, max_lines: int = 50) -> strlines = content.split("\n")
+    """extract_important_parts（内部メソッド）"""
         important_lines = []
         in_class = False
-        in_function = False
+        in_function = False:
         for i, line in enumerate(lines):
             if line.strip().startswith("class "):
                 in_class = True
@@ -289,9 +281,8 @@ class GitHubIntegrationManager:
                 break
         return "\n".join(important_lines[:max_lines])
 
-    def get_recent_commits(self, limit:
-        """recent_commits取得メソッド"""
-    int = 10) -> List[Dict]:
+    def get_recent_commits(self, limitint = 10) -> List[Dict]:
+    """recent_commits取得メソッド"""
         if not self.api_repo_url:
             return []
         url = f"{self.api_repo_url}/commits"

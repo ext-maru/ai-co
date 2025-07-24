@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 Conflict Analyzer
+"🔍" Conflict Analyzer
 コンフリクト分析エンジン
 
 機能:
@@ -531,7 +531,7 @@ async def example_usage():
     print(f"手動対応必要: {len(result.manual_required_files)}")
     print(f"全体リスク: {result.overall_risk_level.value}")
     print(f"推定解決時間: {result.estimated_resolution_time}分")
-    print(f"安全性スコア: {result.safety_score:.2f}")
+    print(f"安全性スコア: {result.safety_score:0.2f}")
 
 
 if __name__ == "__main__":

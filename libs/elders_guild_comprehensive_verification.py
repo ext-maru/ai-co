@@ -9,15 +9,15 @@ Elders Guild Comprehensive Verification System
 📚 ナレッジ賢者: 知識精度検証・学習品質向上
 📋 タスク賢者: 統合処理検証・効率性測定
 🚨 インシデント賢者: 品質保証・問題解決
-🔍 RAG賢者: 検索精度・情報統合検証
+"🔍" RAG賢者: 検索精度・情報統合検証
 
 🎯 エルダーフロー:
-1. 4賢者会議による統合検証
-2. PostgreSQL MCP精度測定
-3. pgvector検索精度95%以上実証
-4. A2A通信品質保証
-5. 全Phase統合パフォーマンス測定
-6. エルダーズギルド最終認証
+1.0 4賢者会議による統合検証
+2.0 PostgreSQL MCP精度測定
+3.0 pgvector検索精度95%以上実証
+4.0 A2A通信品質保証
+5.0 全Phase統合パフォーマンス測定
+6.0 エルダーズギルド最終認証
 """
 
 import sys
@@ -164,15 +164,15 @@ class FourSagesCouncilVerifier:
             self.logger.info("📚 ナレッジ賢者検証開始")
             verification_results = []
 
-            # 1. 知識検索精度テスト
+            # 1.0 知識検索精度テスト
             search_precision_result = await self._test_knowledge_search_precision()
             verification_results.append(search_precision_result)
 
-            # 2. 知識整合性テスト
+            # 2.0 知識整合性テスト
             consistency_result = await self._test_knowledge_consistency()
             verification_results.append(consistency_result)
 
-            # 3. MCP統合信頼性テスト
+            # 3.0 MCP統合信頼性テスト
             integration_result = await self._test_mcp_integration_reliability()
             verification_results.append(integration_result)
 
@@ -193,7 +193,7 @@ class FourSagesCouncilVerifier:
             )
 
             self.logger.info(
-                f"📚 ナレッジ賢者検証完了 (総合スコア: {overall_score:.3f})"
+                f"📚 ナレッジ賢者検証完了 (総合スコア: {overall_score:0.3f})"
             )
             return report
 
@@ -460,11 +460,11 @@ class FourSagesCouncilVerifier:
             self.logger.info("📋 タスク賢者検証開始")
             verification_results = []
 
-            # 1. タスク管理精度テスト
+            # 1.0 タスク管理精度テスト
             task_accuracy_result = await self._test_task_management_accuracy()
             verification_results.append(task_accuracy_result)
 
-            # 2. 統合処理性能テスト
+            # 2.0 統合処理性能テスト
             integration_performance_result = await self._test_integration_performance()
             verification_results.append(integration_performance_result)
 
@@ -482,7 +482,7 @@ class FourSagesCouncilVerifier:
                 timestamp=datetime.now(),
             )
 
-            self.logger.info(f"📋 タスク賢者検証完了 (総合スコア: {overall_score:.3f})")
+            self.logger.info(f"📋 タスク賢者検証完了 (総合スコア: {overall_score:0.3f})")
             return report
 
         except Exception as e:
@@ -651,11 +651,11 @@ class FourSagesCouncilVerifier:
             self.logger.info("🚨 インシデント賢者検証開始")
             verification_results = []
 
-            # 1. インシデント検知精度テスト
+            # 1.0 インシデント検知精度テスト
             incident_detection_result = await self._test_incident_detection_accuracy()
             verification_results.append(incident_detection_result)
 
-            # 2. 品質保証テスト
+            # 2.0 品質保証テスト
             quality_assurance_result = await self._test_quality_assurance()
             verification_results.append(quality_assurance_result)
 
@@ -676,7 +676,7 @@ class FourSagesCouncilVerifier:
             )
 
             self.logger.info(
-                f"🚨 インシデント賢者検証完了 (総合スコア: {overall_score:.3f})"
+                f"🚨 インシデント賢者検証完了 (総合スコア: {overall_score:0.3f})"
             )
             return report
 
@@ -831,11 +831,11 @@ class FourSagesCouncilVerifier:
             self.logger.info("🔍 RAG賢者検証開始")
             verification_results = []
 
-            # 1. RAG検索精度テスト
+            # 1.0 RAG検索精度テスト
             rag_precision_result = await self._test_rag_search_precision()
             verification_results.append(rag_precision_result)
 
-            # 2. 情報統合品質テスト
+            # 2.0 情報統合品質テスト
             integration_quality_result = (
                 await self._test_information_integration_quality()
             )
@@ -855,7 +855,7 @@ class FourSagesCouncilVerifier:
                 timestamp=datetime.now(),
             )
 
-            self.logger.info(f"🔍 RAG賢者検証完了 (総合スコア: {overall_score:.3f})")
+            self.logger.info(f"🔍 RAG賢者検証完了 (総合スコア: {overall_score:0.3f})")
             return report
 
         except Exception as e:
@@ -1053,7 +1053,7 @@ class FourSagesCouncilVerifier:
             }
 
             self.logger.info(
-                f"🏛️ エルダーズギルド包括的検証完了 (総合スコア: {overall_score:.3f})"
+                f"🏛️ エルダーズギルド包括的検証完了 (総合スコア: {overall_score:0.3f})"
             )
             return final_report
 
@@ -1150,14 +1150,14 @@ async def demo_elders_guild_comprehensive_verification():
 
         if verification_result["success"]:
             print("✅ 包括的検証完了")
-            print(f"   総合スコア: {verification_result['overall_score']:.3f}")
+            print(f"   総合スコア: {verification_result['overall_score']:0.3f}")
             print(f"   認証状況: {verification_result['certification_status']}")
 
             # 4賢者個別結果
             print(f"\n🧙‍♂️ 4賢者個別検証結果:")
             for sage_report in verification_result["sage_reports"]:
                 print(
-                    f"   {sage_report['sage_name']}: {sage_report['overall_score']:.3f}"
+                    f"   {sage_report['sage_name']}: {sage_report['overall_score']:0.3f}"
                 )
 
             # 統計情報
@@ -1166,12 +1166,12 @@ async def demo_elders_guild_comprehensive_verification():
             print(f"   総テスト数: {stats['total_tests']}")
             print(f"   合格テスト: {stats['passed_tests']}")
             print(f"   失敗テスト: {stats['failed_tests']}")
-            print(f"   平均精度: {stats['avg_accuracy']:.3f}")
+            print(f"   平均精度: {stats['avg_accuracy']:0.3f}")
 
             # 統合結果
             integration = verification_result["integration_result"]
             print(f"\n🔗 統合検証:")
-            print(f"   統合スコア: {integration['overall_integration_score']:.3f}")
+            print(f"   統合スコア: {integration['overall_integration_score']:0.3f}")
             print(f"   統合テスト: {'✅' if integration['passed'] else '❌'}")
 
         else:
@@ -1181,7 +1181,7 @@ async def demo_elders_guild_comprehensive_verification():
         print(f"\n📋 検証サマリー:")
         summary = verifier.get_verification_summary()
         print(f"   検証レベル: {summary['verification_level']}")
-        print(f"   稼働時間: {summary['uptime']:.1f}秒")
+        print(f"   稼働時間: {summary['uptime']:0.1f}秒")
 
         print("\n🎉 エルダーズギルド包括的検証デモ完了")
         print("✅ 全ての検証プロセスが正常に実行されました")

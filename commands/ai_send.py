@@ -12,7 +12,7 @@ from commands.base_command import BaseCommand
 
 
 class SendCommand(BaseCommand):
-    # Main class implementation
+    # Main class implementation:
     """SendCommandクラス"""
     def __init__(self):
         """初期化メソッド"""

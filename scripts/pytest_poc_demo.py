@@ -40,7 +40,7 @@ async def demo_existing_framework():
         result = await runner.run_service_tests(services)
         print(f"✅ 実行完了")
         print(f"  - サービス数: {len(result.get('services', {}))}")
-        print(f"  - 実行時間: {result.get('summary', {}).get('duration', 0):.2f}秒")
+        print(f"  - 実行時間: {result.get('summary', {}).get('duration', 0):0.2f}秒")
     except Exception as e:
         print(f"❌ エラー: {e}")
 
@@ -72,7 +72,7 @@ async def demo_pytest_framework():
         result = await compat.run_service_tests(services)
         print(f"✅ 実行完了（互換性レイヤー経由）")
         print(f"  - サービス数: {len(result.get('services', {}))}")
-        print(f"  - 実行時間: {result.get('summary', {}).get('duration', 0):.2f}秒")
+        print(f"  - 実行時間: {result.get('summary', {}).get('duration', 0):0.2f}秒")
 
         # pytest特有の機能
         print("\n📋 pytest特有の機能:")
@@ -134,9 +134,9 @@ def show_migration_plan():
         print(f"  {week}: {task}")
 
     print("\n🎯 次のステップ:")
-    print("  1. requirements-poc.txtから依存関係をインストール")
-    print("  2. pytest tests/test_pytest_integration_poc.py を実行")
-    print("  3. HTMLレポートを確認（pytest --html=report.html）")
+    print("  1.0 requirements-poc.txtから依存関係をインストール")
+    print("  2.0 pytest tests/test_pytest_integration_poc.py を実行")
+    print("  3.0 HTMLレポートを確認（pytest --html=report.html）")
 
 
 async def main():

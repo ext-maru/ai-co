@@ -63,7 +63,7 @@ class IntegratedQualityDaemon(OptimizedQualityDaemon):
                     await self._handle_quality_gate_failure(quality_gate_result)
             
             cycle_time = time.time() - cycle_start
-            logger.info(f"✅ Enhanced monitoring cycle completed in {cycle_time:.2f}s")
+            logger.info(f"✅ Enhanced monitoring cycle completed in {cycle_time:0.2f}s")
             
         except Exception as e:
             logger.error(f"❌ Enhanced monitoring cycle failed: {e}")
@@ -94,7 +94,7 @@ class IntegratedQualityDaemon(OptimizedQualityDaemon):
         """Log quality gate enforcement results"""
         logger.info("🏛️ Elder Guild Quality Gate Results:")
         logger.info(f"   Gate Status: {'✅ PASSED' if result['gate_passed'] else '❌ FAILED'}")
-        logger.info(f"   Average Score: {result['average_quality_score']:.1f}/100")
+        logger.info(f"   Average Score: {result['average_quality_score']:0.1f}/100")
         logger.info(f"   Files Analyzed: {result['files_analyzed']}")
         logger.info(f"   Files Failed: {result['files_failed']}")
         logger.info(f"   Critical Violations: {result['critical_violations']}")
@@ -122,7 +122,7 @@ class IntegratedQualityDaemon(OptimizedQualityDaemon):
                 score = file_result['result']['quality_score']
                 violations = len(file_result['result']['violations'])
                 
-                logger.warning(f"❌ {file_path}: {score:.1f}/100 ({violations} violations)")
+                logger.warning(f"❌ {file_path}: {score:0.1f}/100 ({violations} violations)")
                 
                 # Log critical violations in detail
                 for violation in file_result['result']['violations']:

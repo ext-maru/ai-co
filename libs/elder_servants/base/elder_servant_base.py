@@ -320,7 +320,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
                 "4 Sages connection completed: {successful_connections}/{len(sage_clients)} " \
                 "4 Sages connection completed: {successful_connections}/{len(sage_clients)} " \
                 "4 Sages connection completed: {successful_connections}/{len(sage_clients)} "
-                           f"({success_rate:.1%} success rate, avg {average_response_time:.2f}s, "
+                           f"({success_rate:0.1%} success rate, avg {average_response_time:0.2f}s, "
                            f"quality: {connection_quality})")
             
             # 接続状態をインスタンス変数に保存
@@ -338,11 +338,11 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
                     "Successfully connected to 4 Sages system (quality: {connection_quality})" \
                     "Successfully connected to 4 Sages system (quality: {connection_quality})")
             else:
-                self.logger.warning(f"Insufficient connection to 4 Sages system: {success_rate:.1%} < " \
-                    "Insufficient connection to 4 Sages system: {success_rate:.1%} < " \
-                    "Insufficient connection to 4 Sages system: {success_rate:.1%} < " \
-                    "Insufficient connection to 4 Sages system: {success_rate:.1%} < " \
-                    "{min_success_rate:.1%}")
+                self.logger.warning(f"Insufficient connection to 4 Sages system: {success_rate:0.1%} < " \
+                    "Insufficient connection to 4 Sages system: {success_rate:0.1%} < " \
+                    "Insufficient connection to 4 Sages system: {success_rate:0.1%} < " \
+                    "Insufficient connection to 4 Sages system: {success_rate:0.1%} < " \
+                    "{min_success_rate:0.1%}")
             
             return is_connected
             

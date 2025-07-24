@@ -43,9 +43,8 @@ class CommitUrgency(Enum):
 class SageConsultationResult:
     """4賢者相談結果"""
 
-    def __init__(self, sage_name:
+    def __init__(self, sage_name: str, approval: bool, advice: str, risk_score: float):
         """初期化メソッド"""
-    str, approval: bool, advice: str, risk_score: float):
         self.sage_name = sage_name
         self.approval = approval
         self.advice = advice
@@ -270,21 +269,21 @@ class LightningCommitSystem:
         start_time = time.time()
 
         try:
-            # 1. 超高速相談（3秒以内）
+            # 1.0 超高速相談（3秒以内）
             sage_results = await self.harmony_engine.lightning_consultation(context)
 
-            # 2. リスク評価
+            # 2.0 リスク評価
             if not self._quick_risk_assessment(sage_results):
                 logger.warning("⚠️ Lightning: リスク高のため中断")
                 return False
 
-            # 3. 即座コミット実行
+            # 3.0 即座コミット実行
             success = self._execute_git_commit(message, bypass_hooks=True)
 
             elapsed = time.time() - start_time
-            logger.info(f"⚡ Lightning Commit完了: {elapsed:.1f}秒")
+            logger.info(f"⚡ Lightning Commit完了: {elapsed:0.1f}秒")
 
-            # 4. 事後レポート（非同期）
+            # 4.0 事後レポート（非同期）
             asyncio.create_task(self._post_lightning_report(context, sage_results))
 
             return success
@@ -299,24 +298,24 @@ class LightningCommitSystem:
         start_time = time.time()
 
         try:
-            # 1. 4賢者並列相談（30秒以内）
+            # 1.0 4賢者並列相談（30秒以内）
             sage_results = await self.harmony_engine.council_consultation(context)
 
-            # 2. 合意形成
+            # 2.0 合意形成
             decision = self._make_council_decision(sage_results)
             if not decision.approved:
                 logger.warning(f"⚠️ Council: 承認されず - {decision.reasoning}")
                 return False
 
-            # 3. Council用コミット実行（pre-commit軽量化）
+            # 3.0 Council用コミット実行（pre-commit軽量化）
             success = self._execute_git_commit(
                 message, bypass_hooks=True
             )  # 一時的にバイパス
 
             elapsed = time.time() - start_time
-            logger.info(f"🏛️ Council Commit完了: {elapsed:.1f}秒")
+            logger.info(f"🏛️ Council Commit完了: {elapsed:0.1f}秒")
 
-            # 4. 事後レポート（非同期）
+            # 4.0 事後レポート（非同期）
             asyncio.create_task(
                 self._post_council_report(context, sage_results, decision)
             )
@@ -333,21 +332,21 @@ class LightningCommitSystem:
         start_time = time.time()
 
         try:
-            # 1. 4賢者詳細相談（時間制限なし）
+            # 1.0 4賢者詳細相談（時間制限なし）
             sage_results = await self.harmony_engine.grand_consultation(context)
 
-            # 2. 厳格な品質評価
+            # 2.0 厳格な品質評価
             if not self._grand_quality_assessment(sage_results, context):
                 logger.warning("⚠️ Grand: 品質基準に達していません")
                 return False
 
-            # 3. Grand用コミット実行（pre-commit完全実行）
+            # 3.0 Grand用コミット実行（pre-commit完全実行）
             success = self._execute_git_commit(message, bypass_hooks=False)
 
             elapsed = time.time() - start_time
-            logger.info(f"👑 Grand Commit完了: {elapsed:.1f}秒")
+            logger.info(f"👑 Grand Commit完了: {elapsed:0.1f}秒")
 
-            # 4. 事後レポート（非同期）
+            # 4.0 事後レポート（非同期）
             asyncio.create_task(self._post_grand_report(context, sage_results))
 
             return success
@@ -374,7 +373,7 @@ class LightningCommitSystem:
         # 平均リスクスコアチェック
         avg_risk = sum(r.risk_score for r in sage_results) / len(sage_results)
         if avg_risk > 0.6:  # Grand は更に厳格
-            logger.warning(f"⚠️ Grand: 高リスク {avg_risk:.2f}")
+            logger.warning(f"⚠️ Grand: 高リスク {avg_risk:0.2f}")
             return False
 
         # 複雑度チェック
@@ -616,7 +615,7 @@ async def main():
     sage_results = await lightning_system.harmony_engine.lightning_consultation(context)
     for result in sage_results:
         logger.info(
-            f"🧙‍♂️ {result.sage_name}: {result.advice} (リスク: {result.risk_score:.2f})"
+            f"🧙‍♂️ {result.sage_name}: {result.advice} (リスク: {result.risk_score:0.2f})"
         )
 
 

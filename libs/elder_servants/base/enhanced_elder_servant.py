@@ -5,14 +5,14 @@
 Elder Tree分散AIアーキテクチャの中核を成す32専門AIサーバント用の
 統合基底クラス。以下の機能を統合実装：
 
-1. EldersLegacy品質基準とメトリクス
-2. BaseSoul A2A通信とプロセス管理  
-3. 4賢者システム連携インターフェース
-4. インシデント騎士団予防的デバッグ
-5. 分散処理・負荷分散・ヘルスチェック
-6. Iron Will品質ゲート自動検証
-7. 継続学習・自動進化システム
-8. リアルタイム監視・メトリクス収集
+1.0 EldersLegacy品質基準とメトリクス
+2.0 BaseSoul A2A通信とプロセス管理  
+3.0 4賢者システム連携インターフェース
+4.0 インシデント騎士団予防的デバッグ
+5.0 分散処理・負荷分散・ヘルスチェック
+6.0 Iron Will品質ゲート自動検証
+7.0 継続学習・自動進化システム
+8.0 リアルタイム監視・メトリクス収集
 
 Author: Claude Elder
 Created: 2025-07-22
@@ -333,28 +333,28 @@ class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
         統合リクエスト処理 - Elder Tree分散処理対応
         
         処理フロー:
-        1. 予防的品質チェック (インシデント騎士団)
-        2. 4賢者事前相談 (必要に応じて)
-        3. タスク実行
-        4. 品質ゲート検証
-        5. 学習・適応
-        6. メトリクス更新
+        1.0 予防的品質チェック (インシデント騎士団)
+        2.0 4賢者事前相談 (必要に応じて)
+        3.0 タスク実行
+        4.0 品質ゲート検証
+        5.0 学習・適応
+        6.0 メトリクス更新
         """
         self.soul_state = SoulState.PROCESSING
         start_time = time.time()
         task_id = str(uuid.uuid4())
         
         try:
-            # 1. 予防的品質チェック
+            # 1.0 予防的品質チェック
             if not await self._preventive_quality_check(request):
                 raise ValueError("Preventive quality check failed")
             
-            # 2. 4賢者事前相談 (複雑タスクの場合)
+            # 2.0 4賢者事前相談 (複雑タスクの場合)
             if await self._requires_sage_consultation(request):
                 sage_advice = await self._consult_sages(request)
                 self.logger.info(f"Sage consultation completed: {sage_advice}")
             
-            # 3. タスク実行
+            # 3.0 タスク実行
             self.current_tasks[task_id] = {
                 "request": request,
                 "start_time": datetime.now(),
@@ -363,7 +363,7 @@ class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
             
             response = await self._execute_specialized_task(request)
             
-            # 4. 品質ゲート検証
+            # 4.0 品質ゲート検証
             quality_result = await self._validate_quality_gates(response)
             if not quality_result.passed:
                 # 自動修復試行
@@ -372,11 +372,11 @@ class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
                 else:
                     raise ValueError(f"Quality gate validation failed: {quality_result.issues}")
             
-            # 5. 学習・適応
+            # 5.0 学習・適応
             if self.learning_config.enabled:
                 await self._learn_from_execution(request, response, True)
             
-            # 6. メトリクス更新
+            # 6.0 メトリクス更新
             execution_time_ms = (time.time() - start_time) * 1000
             await self._update_metrics(execution_time_ms, True, quality_result.score)
             

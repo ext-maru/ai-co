@@ -107,9 +107,8 @@ class DialogOnlyWorker:
             traceback.print_exc()
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
-    def start(self):
-        """startメソッド"""
-        if not self.connect():
+    def start(self)if not self.connect():
+    """startメソッド"""
             return
 
         self.channel.basic_qos(prefetch_count=1)

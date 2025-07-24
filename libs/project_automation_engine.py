@@ -142,7 +142,7 @@ class ProjectAutomationEngine:
             "commands_executed": [],
         }
 
-        # 1. ファイル自動作成
+        # 1.0 ファイル自動作成
         if "auto_create_files" in phase_rules:
             for file_path in phase_rules["auto_create_files"]:
                 self._create_project_file(
@@ -150,7 +150,7 @@ class ProjectAutomationEngine:
                 )
                 results["files_created"].append(file_path)
 
-        # 2. コマンド自動実行
+        # 2.0 コマンド自動実行
         if execute_commands and "auto_commands" in phase_rules:
             for command in phase_rules["auto_commands"]:
                 try:
@@ -167,7 +167,7 @@ class ProjectAutomationEngine:
                         {"command": command, "success": False, "error": str(e)}
                     )
 
-        # 3. チェックリスト自動生成
+        # 3.0 チェックリスト自動生成
         checklist_updates = self._generate_checklist_updates(template_name, phase_key)
         if checklist_updates:
             results["checklist_updated"] = checklist_updates
@@ -224,38 +224,38 @@ class ProjectAutomationEngine:
         templates = {
             "requirement_template": """# 要件定義書
 
-## 1. プロジェクト概要
+## 1.0 プロジェクト概要
 - プロジェクト名:
 - 目的:
 - 対象ユーザー:
 
-## 2. 機能要件
+## 2.0 機能要件
 ### 2.1 必須機能
 - [ ]
 
 ### 2.2 希望機能
 - [ ]
 
-## 3. 非機能要件
+## 3.0 非機能要件
 ### 3.1 パフォーマンス
 -
 
 ### 3.2 セキュリティ
 -
 
-## 4. 制約事項
+## 4.0 制約事項
 -
 
-## 5. 受け入れ条件
+## 5.0 受け入れ条件
 - [ ]
 """,
             "architecture_template": """# アーキテクチャ設計書
 
-## 1. システム概要
+## 1.0 システム概要
 - アーキテクチャパターン:
 - 主要技術:
 
-## 2. システム構成
+## 2.0 システム構成
 ### 2.1 フロントエンド
 - フレームワーク:
 - 言語:
@@ -268,12 +268,12 @@ class ProjectAutomationEngine:
 - DBMS:
 - 設計方針:
 
-## 3. API設計
+## 3.0 API設計
 ### 3.1 エンドポイント
 - GET /api/
 - POST /api/
 
-## 4. デプロイメント
+## 4.0 デプロイメント
 - インフラ:
 - CI/CD:
 """,

@@ -695,8 +695,7 @@ def _register_github_automation_tasks(self):
     #                     for file in files[:3]:  # 最大3ファイルまでチェック
     #                         if file.filename.endswith('.py'):
     #                             patch_content = file.patch or ''
-        #                             if any(keyword in \
-        patch_content.upper() for keyword in ['TODO', 'FIXME', '# TODO', '# FIXME']):
+    #                             if any(keyword in patch_content.upper() for keyword in ['TODO', 'FIXME', '# TODO', '# FIXME']):
     #                                 quality_issues.append(f"Iron Will違反: {file.filename}にTODOコメントが残存")
     #                             if 'pass' in patch_content and patch_content.count('pass') > 2:
     #                                 quality_issues.append(f"不完全実装: {file.filename}にスタブ実装が多数存在")

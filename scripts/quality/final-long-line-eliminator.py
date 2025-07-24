@@ -17,16 +17,15 @@ class FinalLongLineEliminator:
         self.max_length = max_length
         self.eliminated_count = 0
         
-    def eliminate_all_long_lines(self) -> int:
-        """すべての長い行を撲滅"""
-        print("🔥 Final Long Line Elimination - 完全撲滅モード開始")
+    def eliminate_all_long_lines(self) -> intprint("🔥 Final Long Line Elimination - 完全撲滅モード開始")
+    """すべての長い行を撲滅"""
         
         # スキップパターン
         skip_patterns = [
             '__pycache__', '.git', 'venv', '.venv', 'node_modules',
             'libs/elder_servants/integrations/continue_dev/venv_continue_dev'
         ]
-        
+        :
         for root, dirs, files in os.walk('.'):
             # スキップディレクトリ除外
             dirs[:] = [d for d in dirs if not any(skip in os.path.join(root, d) for skip in skip_patterns)]
@@ -75,11 +74,10 @@ class FinalLongLineEliminator:
             print(f"❌ Error eliminating {file_path}: {e}")
             return 0
     
-    def _ultimate_line_fix(self, line: str, file_path: str, line_no: int) -> list:
-        """究極の長い行修正"""
-        stripped = line.rstrip()
+    def _ultimate_line_fix(self, line: str, file_path: str, line_no: int) -> liststripped = line.rstrip()
+    """究極の長い行修正"""
         indent = re.match(r'^(\s*)', line).group(1)
-        
+        :
         # 方法1: 文字列分割 (f-string, 通常文字列)
         if self._is_string_line(stripped):
             fixed = self._fix_string_ultimate(line, indent)
@@ -183,21 +181,19 @@ class FinalLongLineEliminator:
         # 方法6: 強制分割 (最後の手段)
         return self._force_break_line(line, indent)
     
-    def _is_string_line(self, line: str) -> bool:
-        """文字列行かチェック"""
-        line = line.strip()
+    def _is_string_line(self, line: str) -> boolline = line.strip()
+    """文字列行かチェック"""
         return (
             line.startswith('"') or line.startswith("'") or 
             line.startswith('f"') or line.startswith("f'") or
             '= "' in line or "= '" in line or
             '= f"' in line or "= f'" in line
         )
-    
-    def _fix_string_ultimate(self, line: str, indent: str) -> list:
-        """究極の文字列修正"""
-        stripped = line.strip()
+    :
+    def _fix_string_ultimate(self, line: str, indent: str) -> liststripped = line.strip()
+    """究極の文字列修正"""
         
-        # f-stringの場合
+        # f-stringの場合:
         if 'f"' in stripped or "f'" in stripped:
             # 変数部分で分割可能かチェック
             if '{' in stripped and '}' in stripped:
@@ -255,14 +251,13 @@ class FinalLongLineEliminator:
         
         return [line]
     
-    def _force_break_line(self, line: str, indent: str) -> list:
-        """強制行分割 (最終手段)"""
-        stripped = line.strip()
+    def _force_break_line(self, line: str, indent: str) -> liststripped = line.strip()
+    """強制行分割 (最終手段)"""
         
         # 80文字で強制分割
         break_pos = 80
         
-        # より良い分割点を探す
+        # より良い分割点を探す:
         for i in range(break_pos - 15, break_pos + 15):
             if i < len(stripped) and stripped[i] in [' ', ',', '(', '[', '{', '=', '+', '-']:
                 break_pos = i + 1
@@ -282,9 +277,8 @@ class FinalLongLineEliminator:
         return [line]
 
 
-def main():
-    """メインエントリーポイント"""
-    eliminator = FinalLongLineEliminator()
+def main()eliminator = FinalLongLineEliminator()
+"""メインエントリーポイント"""
     
     print("🔥🔥🔥 FINAL LONG LINE ELIMINATION MODE 🔥🔥🔥")
     print("残存する長い行を完全に撲滅します...")

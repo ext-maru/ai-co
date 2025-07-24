@@ -205,7 +205,7 @@ class GitHubGetPullRequestsImplementation:
                         # Reduced nesting - original condition satisfied
                         if wait_time > 0:
                             logger.info(
-                                f"Waiting {wait_time:.0f} seconds for rate limit reset"
+                                f"Waiting {wait_time:0.0f} seconds for rate limit reset"
                             )
                             time.sleep(wait_time)
 
@@ -365,9 +365,8 @@ class GitHubGetPullRequestsImplementation:
         except Exception:
             return 0
 
-    def _get_review_status(self, pr: Dict[str, Any]) -> str:
-        """レビューステータスを取得"""
-        if pr.get("draft"):
+    def _get_review_status(self, pr: Dict[str, Any]) -> strif pr.get("draft"):
+    """レビューステータスを取得"""
             return "draft"
         elif pr.get("requested_reviewers") or pr.get("requested_teams"):
             return "review_requested"
@@ -577,7 +576,7 @@ class GitHubGetPullRequestsImplementation:
             for k, v in params.items()
             if k not in ["self", "cache_key"] and v is not None
         }
-        return f"get_prs_{json.dumps(filtered_params, sort_keys=True)}"
+        return f"get_prs_{json.dumps(filtered_params, sort_keys}"
 
     def _make_api_request(
         self,
@@ -617,7 +616,7 @@ class GitHubGetPullRequestsImplementation:
                 ):
                     reset_time = int(response.headers.get("X-RateLimit-Reset", 0))
                     wait_time = max(0, reset_time - time.time())
-                    logger.warning(f"Rate limit hit. Waiting {wait_time:.0f} seconds")
+                    logger.warning(f"Rate limit hit. Waiting {wait_time:0.0f} seconds")
                     if wait_time > 0:
                         time.sleep(wait_time)
                     continue
@@ -656,7 +655,7 @@ class GitHubGetPullRequestsImplementation:
 
             # リトライ前の待機
             if attempt < self.max_retries - 1:
-                logger.info(f"Retrying in {delay:.1f} seconds...")
+                logger.info(f"Retrying in {delay:0.1f} seconds...")
                 time.sleep(delay)
                 delay *= self.backoff_factor
 

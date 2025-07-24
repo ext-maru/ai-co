@@ -150,16 +150,16 @@ if __name__ == "__main__":
 タイムアウト対策完了！
 
 使用方法:
-1. 既存のSelfEvolutionManagerに以下のインポートを追加:
+1.0 既存のSelfEvolutionManagerに以下のインポートを追加:
    from libs.self_evolution_manager_optimized import OptimizedSelfEvolutionManager
 
-2. auto_place_fileメソッドの先頭に以下を追加:
+2.0 auto_place_fileメソッドの先頭に以下を追加:
    # タイムアウト対策
    if len(source_content) > 50000:  # 50KB以上
        optimized = OptimizedSelfEvolutionManager()
        return optimized.auto_place_file_chunked(source_content, suggested_filename, task_id)
 
-3. または、既存のメソッドを完全に置き換える場合:
+3.0 または、既存のメソッドを完全に置き換える場合:
    - auto_place_fileをauto_place_file_originalにリネーム
    - auto_place_file_with_timeoutをauto_place_fileとして使用
 """

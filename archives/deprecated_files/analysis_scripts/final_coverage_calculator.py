@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 最終カバレッジ計算機
+"📊" 最終カバレッジ計算機
 Elders Guild超高速実行フェーズの成果測定
 """
 
@@ -76,11 +76,11 @@ def generate_final_report():
 """
 
     for component, contribution in results["coverage_estimates"].items():
-        report += f"- **{component.replace('_', ' ').title()}**: +{contribution:.1f}%\n"
+        report += f"- **{component.replace('_', ' ').title()}**: +{contribution:0.1f}%\n"
 
     report += f"""
 ### 📊 総計
-- **推定カバレッジ向上**: +{results['total_estimated_coverage']:.1f}%
+- **推定カバレッジ向上**: +{results['total_estimated_coverage']:0.1f}%
 - **新規テスト作成**: {results['total_new_tests']}個
 - **品質スコア**: 95%以上維持
 
@@ -134,8 +134,8 @@ def generate_final_report():
 
 ### 35%カバレッジ達成確認
 - **ベースライン**: 推定20-25%
-- **今回貢献**: +{results['total_estimated_coverage']:.1f}%
-- **予想最終値**: {25 + results['total_estimated_coverage']:.1f}%
+- **今回貢献**: +{results['total_estimated_coverage']:0.1f}%
+- **予想最終値**: {25 + results['total_estimated_coverage']:0.1f}%
 - **目標達成**: {'✅ 達成' if 25 + results['total_estimated_coverage'] >= 35 else '🔄 継続中'}
 
 ### Day 5準備完了度
@@ -154,14 +154,14 @@ def generate_final_report():
 ### Elders Guild史上最高効率
 - **時間短縮**: 8時間→6時間 (25%効率向上)
 - **テスト増加**: {results['total_new_tests']}個の新規テスト
-- **カバレッジ向上**: +{results['total_estimated_coverage']:.1f}%の大幅改善
+- **カバレッジ向上**: +{results['total_estimated_coverage']:0.1f}%の大幅改善
 
 ## 🔮 次のフェーズ提案
 
 ### Day 5への最適準備
-1. **40%カバレッジ挑戦**: 更なる高みへ
-2. **エルフ森システム**: 依存関係最適化の完全展開
-3. **RAGウィザーズ**: 情報探索支援の強化
+1.0 **40%カバレッジ挑戦**: 更なる高みへ
+2.0 **エルフ森システム**: 依存関係最適化の完全展開
+3.0 **RAGウィザーズ**: 情報探索支援の強化
 
 ### 継続的改善
 - インシデント騎士団による自動問題解決の継続展開
@@ -193,8 +193,8 @@ Day 5の40%達成準備も完了し、継続的品質向上と
         f.write(report)
 
     print("🏆 Elders Guild 超高速実行フェーズ完了!")
-    print(f"📊 推定カバレッジ向上: +{results['total_estimated_coverage']:.1f}%")
-    print(f"🎯 予想最終カバレッジ: {25 + results['total_estimated_coverage']:.1f}%")
+    print(f"📊 推定カバレッジ向上: +{results['total_estimated_coverage']:0.1f}%")
+    print(f"🎯 予想最終カバレッジ: {25 + results['total_estimated_coverage']:0.1f}%")
     print(f"📋 最終レポート: {report_file}")
 
     return {

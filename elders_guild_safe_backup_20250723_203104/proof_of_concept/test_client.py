@@ -10,6 +10,7 @@ import time
 import sys
 
 def test_server_health():
+    pass
 
 
 """サーバーのヘルスチェック"""
@@ -26,12 +27,13 @@ def test_server_health():
         return False
 
 def test_server_status():
+    pass
 
         """サーバー状態確認"""
         response = requests.get("http://localhost:8000/", timeout=5)
         if response.status_code == 200:
             data = response.json()
-            print(f"📋 Server status: {json.dumps(data, indent=2)}")
+            print(f"📋 Server status: {json.dumps(data, indent}")
             return True
         else:
             print(f"❌ Status check failed: {response.status_code}")
@@ -41,6 +43,7 @@ def test_server_status():
         return False
 
 def test_chat_functionality():
+    pass
 
         """チャット機能のテスト"""
         print(f"\n📤 Test {i}: Sending '{message}'")
@@ -66,6 +69,7 @@ def test_chat_functionality():
         time.sleep(1)  # 1秒待機
 
 def run_comprehensive_test():
+    pass
 
         
         """包括的なテスト実行""" サーバー接続テスト

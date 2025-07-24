@@ -108,7 +108,7 @@ class MemoryManager:
             self.logger.info(
                 "Starting memory cleanup",
                 current_mb=current_usage,
-                usage_percent=f"{usage_percent:.1f}%",
+                usage_percent=f"{usage_percent:0.1f}%",
                 tracked_objects=len(self.tracked_objects),
             )
 
@@ -121,7 +121,7 @@ class MemoryManager:
 
             self.logger.info(
                 "Memory cleanup completed",
-                freed_mb=f"{freed_mb:.1f}MB",
+                freed_mb=f"{freed_mb:0.1f}MB",
                 collected_objects=collected,
                 new_usage_mb=new_usage,
             )
@@ -288,7 +288,7 @@ class TaskPhaseManager:
         """デプロイフェーズ"""
         return {
             "status": "completed",
-            "deployed_version": f"v1.0.{context.iteration}",
+            "deployed_version": f"v1.0.0{context.iteration}",
             "deployment_url": f"https://deploy.example.com/{context.task_id}",
         }
 
@@ -662,7 +662,7 @@ class AsyncPMWorker(AsyncBaseWorker):
         base_stats = {
             "memory": {
                 "usage_mb": self.memory_manager.get_memory_usage(),
-                "usage_percent": f"{self.memory_manager.get_memory_percent():.1f}%",
+                "usage_percent": f"{self.memory_manager.get_memory_percent():0.1f}%",
                 "max_mb": self.memory_manager.max_memory_mb,
             },
             "tasks": {

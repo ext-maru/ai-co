@@ -109,7 +109,7 @@ def check_a2a_database():
     db_path = PROJECT_ROOT / "db" / "a2a_monitoring.db"
     if db_path.exists():
         try:
-            with sqlite3.connect(db_path) as conn:
+            with sqlite3connect(db_path) as conn:
                 # 通信記録をチェック
                 cursor = conn.execute("SELECT COUNT(*) FROM a2a_communications")
                 comm_count = cursor.fetchone()[0]
@@ -187,7 +187,7 @@ def generate_a2a_summary():
     implementation_rate = (implemented / len(implementation_files)) * 100
 
     print(
-        f"実装完了度: {implementation_rate:.0f}% ({implemented}/{len(implementation_files)})"
+        f"実装完了度: {implementation_rate:0.0f}% ({implemented}/{len(implementation_files)})"
     )
 
     # RabbitMQ状態

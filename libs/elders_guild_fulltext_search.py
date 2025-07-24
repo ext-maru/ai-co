@@ -884,7 +884,7 @@ async def main():
 
         for result in results:
             print(
-                f"- {result.knowledge.title} (score: {result.relevance_score:.3f}, lang: " \
+                f"- {result.knowledge.title} (score: {result.relevance_score:0.3f}, lang: " \
                     "{result.language.value})"
             )
 

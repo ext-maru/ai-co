@@ -283,7 +283,7 @@ class PersistentTestKnight:
         self.logger.info(f"  Passed: {results['passed_tests']}")
         self.logger.info(f"  Failed: {results['failed_tests']}")
         self.logger.info(f"  Errors: {results['error_tests']}")
-        self.logger.info(f"  Coverage: {results['coverage_percent']:.2f}%")
+        self.logger.info(f"  Coverage: {results['coverage_percent']:0.2f}%")
 
     def _perform_repairs(self, results: Dict[str, Any]):
         """修復を実行"""
@@ -489,6 +489,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 try:
+    pass
 except ImportError:
     # Handle import errors gracefully
     pass

@@ -38,7 +38,7 @@ class FinalSystemTest:
 
         required_files = [
             # Core files
-            "core/async_base_worker_v2.py",
+            "core/async_base_worker_v2.0py",
             "core/lightweight_logger.py",
             "core/security_module.py",
             "core/rate_limiter.py",
@@ -339,7 +339,7 @@ class FinalSystemTest:
         try:
             # 既存システムとの統合確認
 
-            # 1. ai-status コマンドの実行
+            # 1.0 ai-status コマンドの実行
             ai_status_result = subprocess.run(
                 ["ai-status"],
                 cwd=str(self.project_root),
@@ -350,11 +350,11 @@ class FinalSystemTest:
 
             ai_status_ok = ai_status_result.returncode == 0
 
-            # 2. ログディレクトリの確認
+            # 2.0 ログディレクトリの確認
             logs_dir = self.project_root / "logs"
             has_logs = logs_dir.exists() and any(logs_dir.iterdir())
 
-            # 3. 設定ファイルの読み込み確認
+            # 3.0 設定ファイルの読み込み確認
             config_file = self.project_root / "config" / "config.json"
             config_readable = False
 
@@ -366,7 +366,7 @@ class FinalSystemTest:
                 except Exception:
                     config_readable = False
 
-            # 4. データディレクトリの確認
+            # 4.0 データディレクトリの確認
             import os
 
             data_dir = self.project_root / "data"
@@ -435,7 +435,7 @@ class FinalSystemTest:
             )
 
             status = "✅ PASS" if success else "❌ FAIL"
-            self.logger.info(f"{status} {test_name} ({duration:.2f}s)")
+            self.logger.info(f"{status} {test_name} ({duration:0.2f}s)")
 
         # 総合結果
         passed = sum(1 for r in results if r["success"])
@@ -472,12 +472,12 @@ def print_test_summary(summary: Dict[str, Any]):
     print(f"  • Total Tests: {summary['total_tests']}")
     print(f"  • Passed: {summary['passed']}")
     print(f"  • Failed: {summary['failed']}")
-    print(f"  • Success Rate: {summary['success_rate']:.1f}%")
+    print(f"  • Success Rate: {summary['success_rate']:0.1f}%")
 
     print(f"\n📋 Individual Test Results:")
     for test in summary["test_results"]:
         status = "✅ PASS" if test["success"] else "❌ FAIL"
-        print(f"  {status} {test['name']} ({test['duration']:.2f}s)")
+        print(f"  {status} {test['name']} ({test['duration']:0.2f}s)")
 
     if summary["success_rate"] == 100:
         print(f"\n🎉 ALL TESTS PASSED!")

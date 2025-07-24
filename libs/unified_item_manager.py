@@ -4,9 +4,9 @@ Unified Item Manager - 統一アイテム管理システム
 既存の3つのインベントリシステムを統合し、データ整合性を確保
 
 統合対象:
-1. WeaponSharingSystem (weapon_sharing_system.py)
-2. Knight Equipment (knight_brigade.py)
-3. Dwarf Workshop Inventory (dwarf_workshop.py)
+1.0 WeaponSharingSystem (weapon_sharing_system.py)
+2.0 Knight Equipment (knight_brigade.py)
+3.0 Dwarf Workshop Inventory (dwarf_workshop.py)
 
 安全性原則:
 - 既存システムを削除せず並行稼働
@@ -208,9 +208,8 @@ class LegacySystemConnector:
 class UnifiedItemManager:
     """統一アイテム管理システム - Elder Council承認済み設計"""
 
-    def __init__(self, data_file:
+    def __init__(self, data_file: str = "data/unified_inventory.json"):
         """初期化メソッド"""
-    str = "data/unified_inventory.json"):
         self.data_file = data_file
         self.items: Dict[str, ItemInfo] = {}
         self.allocations: Dict[str, AllocationRecord] = {}

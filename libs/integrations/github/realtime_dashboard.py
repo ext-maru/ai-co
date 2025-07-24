@@ -76,7 +76,7 @@ class RealtimeDashboard:
     def get_current_metrics(self) -> Dict[str, Any]:
         """現在のメトリクスを取得"""
         try:
-            with sqlite3.connect(self.metrics_db.db_path) as conn:
+            with sqlite3connect(self.metrics_db.db_path) as conn:
                 cursor = conn.cursor()
                 
                 # 過去24時間の処理統計
@@ -417,7 +417,7 @@ DASHBOARD_HTML_TEMPLATE = """
     <div class="dashboard-grid">
         <!-- Summary Stats -->
         <div class="card">
-            <h3>📊 処理統計 (24時間)</h3>
+            <h3>"📊" 処理統計 (24時間)</h3>
             <div class="metric">
                 <span>総処理数</span>
                 <span class="metric-value info" id="total-processed">-</span>
@@ -491,7 +491,7 @@ DASHBOARD_HTML_TEMPLATE = """
         
         <!-- Hourly Performance -->
         <div class="card">
-            <h3>📈 時間別パフォーマンス</h3>
+            <h3>"📈" 時間別パフォーマンス</h3>
             <div class="chart-container">
                 <canvas id="hourlyChart"></canvas>
             </div>

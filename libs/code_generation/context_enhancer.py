@@ -17,11 +17,10 @@ logger = logging.getLogger(__name__)
 class SimilarImplementation:
     """類似実装データ"""
     
-    def __init__(self, file_path:
-        """初期化メソッド"""
-    str, similarity_score: float, 
+    def __init__(self, file_path: str, similarity_score: float, 
                  patterns: Dict[str, Any], code_snippet: str = "", 
                  usage_example: str = ""):
+        """初期化メソッド"""
         self.file_path = file_path
         self.similarity_score = similarity_score
         self.patterns = patterns
@@ -128,37 +127,37 @@ class ContextEnhancer:
         # パターンベースの強化
         patterns = self.pattern_engine.get_patterns_for_context()
         
-        # 1. インポートの強化
+        # 1.0 インポートの強化
         enhanced_context["enhanced_imports"] = self._enhance_imports(context, patterns)
         
-        # 2. コーディングスタイルの適用
+        # 2.0 コーディングスタイルの適用
         enhanced_context["style_guide"] = self._apply_coding_style(patterns)
         
-        # 3. エラーハンドリングの強化
+        # 3.0 エラーハンドリングの強化
         enhanced_context["error_handling_guide"] = self._enhance_error_handling(context, patterns)
         
-        # 4. ロギングパターンの適用
+        # 4.0 ロギングパターンの適用
         enhanced_context["logging_guide"] = self._apply_logging_patterns(patterns)
         
-        # 5. 命名規則の適用
+        # 5.0 命名規則の適用
         enhanced_context["naming_guide"] = self._apply_naming_conventions(context, patterns)
         
-        # 6. プロジェクト固有のコンテキスト
+        # 6.0 プロジェクト固有のコンテキスト
         enhanced_context["project_context"] = await self._add_project_specific_context(
             context,
             patterns
         )
         
-        # 7. 類似実装の提案
+        # 7.0 類似実装の提案
         enhanced_context["similar_implementations"] = await self._suggest_similar_implementations(context)
         
-        # 8. 品質改善提案
+        # 8.0 品質改善提案
         enhanced_context["quality_improvements"] = self._generate_quality_improvements(
             context,
             patterns
         )
         
-        # 9. テストガイダンス（テスト生成時）
+        # 9.0 テストガイダンス（テスト生成時）
         if context.get("template_type") == "test":
             enhanced_context["test_guidance"] = self._provide_test_guidance(context, patterns)
         

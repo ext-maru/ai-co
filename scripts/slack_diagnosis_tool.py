@@ -23,21 +23,19 @@ from core import get_config
 LOG_FILE = PROJECT_ROOT / "slack_diagnosis.log"
 
 
-def log(message):
-    """詳細ログ出力"""
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+def log(message)timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+"""詳細ログ出力"""
     log_message = f"[{timestamp}] {message}"
     print(log_message)
     with open(LOG_FILE, "a") as f:
         f.write(log_message + "\n")
 
 
-def diagnose_slack():
-    """Slack連携の診断"""
-    log("=== Slack PM-AI 診断開始 ===")
+def diagnose_slack()log("=== Slack PM-AI 診断開始 ===")
+"""Slack連携の診断"""
 
-    # 1. 設定読み込み
-    log("1. 設定読み込み")
+    # 1.0 設定読み込み
+    log("1.0 設定読み込み")
     try:
         config = get_config()
         bot_token = config.get("slack.bot_token", "")
@@ -60,8 +58,8 @@ def diagnose_slack():
         log(f"  ❌ 設定読み込みエラー: {str(e)}")
         return
 
-    # 2. Bot認証テスト
-    log("\n2. Bot認証テスト")
+    # 2.0 Bot認証テスト
+    log("\n2.0 Bot認証テスト")
     headers = {
         "Authorization": f"Bearer {bot_token}",
         "Content-Type": "application/json",
@@ -76,7 +74,7 @@ def diagnose_slack():
         log(f"  Response Headers: {dict(response.headers)}")
 
         data = response.json()
-        log(f"  Response Body: {json.dumps(data, indent=2)}")
+        log(f"  Response Body: {json.dumps(data, indent}")
 
         if data.get("ok"):
             bot_user_id = data.get("user_id")
@@ -92,8 +90,8 @@ def diagnose_slack():
         log(f"  ❌ API呼び出しエラー: {str(e)}")
         return
 
-    # 3. チャンネル情報取得
-    log("\n3. チャンネル情報取得")
+    # 3.0 チャンネル情報取得
+    log("\n3.0 チャンネル情報取得")
     try:
         url = "https://slack.com/api/conversations.info"
         params = {"channel": channel_id}
@@ -104,7 +102,7 @@ def diagnose_slack():
         log(f"  HTTP Status: {response.status_code}")
 
         data = response.json()
-        log(f"  Response: {json.dumps(data, indent=2)}")
+        log(f"  Response: {json.dumps(data, indent}")
 
         if data.get("ok"):
             channel_info = data.get("channel", {})
@@ -120,8 +118,8 @@ def diagnose_slack():
     except Exception as e:
         log(f"  ❌ チャンネル情報取得エラー: {str(e)}")
 
-    # 4. メッセージ履歴取得
-    log("\n4. メッセージ履歴取得（過去5分）")
+    # 4.0 メッセージ履歴取得
+    log("\n4.0 メッセージ履歴取得（過去5分）")
     try:
         oldest_timestamp = (datetime.now() - timedelta(minutes=5)).timestamp()
 
@@ -133,7 +131,7 @@ def diagnose_slack():
             "limit": 100,
         }
         log(f"  API呼び出し: {url}")
-        log(f"  パラメータ: {json.dumps(params, indent=2)}")
+        log(f"  パラメータ: {json.dumps(params, indent}")
 
         response = requests.get(url, headers=headers, params=params)
         log(f"  HTTP Status: {response.status_code}")
@@ -170,14 +168,14 @@ def diagnose_slack():
     except Exception as e:
         log(f"  ❌ メッセージ取得エラー: {str(e)}")
 
-    # 5. データベース確認
-    log("\n5. データベース確認")
+    # 5.0 データベース確認
+    log("\n5.0 データベース確認")
     db_path = PROJECT_ROOT / "db" / "slack_messages.db"
 
     if db_path.exists():
         log(f"  ✅ DBファイル存在: {db_path}")
         try:
-            with sqlite3.connect(db_path) as conn:
+            with sqlite3connect(db_path) as conn:
                 cursor = conn.execute("SELECT COUNT(*) FROM processed_messages")
                 count = cursor.fetchone()[0]
                 log(f"  処理済みメッセージ数: {count}")
@@ -201,8 +199,8 @@ def diagnose_slack():
     else:
         log(f"  ⚠️  DBファイルが存在しません: {db_path}")
 
-    # 6. ワーカープロセス確認
-    log("\n6. ワーカープロセス確認")
+    # 6.0 ワーカープロセス確認
+    log("\n6.0 ワーカープロセス確認")
     import subprocess
 
     try:
@@ -228,9 +226,8 @@ def diagnose_slack():
     log(f"詳細ログ: {LOG_FILE}")
 
 
-def continuous_monitor():
-    """継続的な監視モード"""
-    log("\n=== 継続監視モード開始 ===")
+def continuous_monitor()log("\n=== 継続監視モード開始 ===")
+"""継続的な監視モード"""
     log("Ctrl+Cで停止")
 
     config = get_config()

@@ -92,8 +92,8 @@ def main():
     final_status = balancer.get_current_status()
     print(f"\n📈 最終状況:")
     print(f"   総ワーカー数: {final_status['metrics']['total_workers']}")
-    print(f"   システム負荷: {final_status['metrics']['system_load']:.1f}%")
-    print(f"   平均メモリ: {final_status['metrics']['avg_memory']:.1f}MB")
+    print(f"   システム負荷: {final_status['metrics']['system_load']:0.1f}%")
+    print(f"   平均メモリ: {final_status['metrics']['avg_memory']:0.1f}MB")
 
 
 if __name__ == "__main__":

@@ -207,12 +207,12 @@ class RateLimitManager:
 
         if usage_ratio <= self.CRITICAL_THRESHOLD:
             logger.critical(
-                f"CRITICAL: Rate limit for {endpoint} at {limit_info.usage_percentage:.1f}% "
+                f"CRITICAL: Rate limit for {endpoint} at {limit_info.usage_percentage:0.1f}% "
                 f"({limit_info.remaining}/{limit_info.limit} remaining)"
             )
         elif usage_ratio <= self.WARNING_THRESHOLD:
             logger.warning(
-                f"WARNING: Rate limit for {endpoint} at {limit_info.usage_percentage:.1f}% "
+                f"WARNING: Rate limit for {endpoint} at {limit_info.usage_percentage:0.1f}% "
                 f"({limit_info.remaining}/{limit_info.limit} remaining)"
             )
 
@@ -238,7 +238,7 @@ class RateLimitManager:
                 if limit_info.is_exhausted:
                     wait_time = limit_info.time_until_reset
                     logger.warning(
-                        f"Rate limit exhausted for {endpoint}. Wait {wait_time:.0f}s"
+                        f"Rate limit exhausted for {endpoint}. Wait {wait_time:0.0f}s"
                     )
                     self.statistics["rate_limit_hits"] += 1
                     return True, wait_time
@@ -274,7 +274,7 @@ class RateLimitManager:
         should_wait, wait_time = self.should_throttle(endpoint)
 
         if should_wait and wait_time > 0:
-            logger.info(f"Throttling request: waiting {wait_time:.2f}s")
+            logger.info(f"Throttling request: waiting {wait_time:0.2f}s")
             time.sleep(wait_time)
 
             with self._lock:

@@ -507,7 +507,7 @@ class DemandPredictorAI:
         self.prediction_history.append(prediction)
 
         self.logger.info(
-            f"✅ Prediction: {predicted_value:.3f} (confidence: {confidence:.2f})"
+            f"✅ Prediction: {predicted_value:0.3f} (confidence: {confidence:0.2f})"
         )
 
         return prediction
@@ -802,7 +802,7 @@ class DemandPredictorAI:
             avg_ai_demand = sum(p.predicted_value for p in ai_predictions) / len(
                 ai_predictions
             )
-            insights.append(f"AI/ML分野の平均需要予測: {avg_ai_demand:.2f}")
+            insights.append(f"AI/ML分野の平均需要予測: {avg_ai_demand:0.2f}")
 
         return insights
 
@@ -816,7 +816,7 @@ class DemandPredictorAI:
         high_demand = [p for p in predictions if p.predicted_value > 0.8]
         for pred in high_demand[:3]:
             recommendations.append(
-                f"{pred.target}への投資を強く推奨（予測需要: {pred.predicted_value:.2f}）"
+                f"{pred.target}への投資を強く推奨（予測需要: {pred.predicted_value:0.2f}）"
             )
 
         # パターンベース推奨
@@ -955,7 +955,7 @@ async def demo_demand_predictor():
     # モデル訓練
     print("\n🎓 Training model...")
     training_result = await predictor.train_model(training_data)
-    print(f"Training completed: R² = {training_result['performance']['r2_score']:.3f}")
+    print(f"Training completed: R² = {training_result['performance']['r2_score']:0.3f}")
 
     # 需要予測
     print("\n🔮 Making predictions...")
@@ -970,8 +970,8 @@ async def demo_demand_predictor():
     }
 
     prediction = await predictor.predict_demand(test_features)
-    print(f"AI Demand Prediction: {prediction.predicted_value:.3f}")
-    print(f"Confidence: {prediction.confidence:.3f}")
+    print(f"AI Demand Prediction: {prediction.predicted_value:0.3f}")
+    print(f"Confidence: {prediction.confidence:0.3f}")
     print(f"Trend: {prediction.trend_direction}")
 
     # パターン分析
@@ -979,7 +979,7 @@ async def demo_demand_predictor():
     patterns = await predictor.analyze_patterns()
     print(f"Found {len(patterns)} patterns:")
     for pattern in patterns[:3]:
-        print(f"  - {pattern.pattern_name}: {pattern.correlation_strength:.2f}")
+        print(f"  - {pattern.pattern_name}: {pattern.correlation_strength:0.2f}")
 
     # 予測レポート生成
     print("\n📈 Generating forecast report...")
@@ -987,9 +987,9 @@ async def demo_demand_predictor():
 
     print(f"📊 Forecast Summary:")
     print(f"   Predictions: {len(forecast.predictions)}")
-    print(f"   Confidence: {forecast.confidence_level:.2f}")
+    print(f"   Confidence: {forecast.confidence_level:0.2f}")
     print(
-        f"   Top Technology: {max(forecast.predictions, key=lambda p: p.predicted_value).target}"
+        f"   Top Technology: {max(forecast.predictions, key=lambda x: x['value'])['technology']}"
     )
     print(f"   Market Insights: {len(forecast.market_insights)}")
     print(f"   Recommendations: {len(forecast.recommendations)}")

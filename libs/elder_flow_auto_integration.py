@@ -78,9 +78,8 @@ class AutoIntegrationConfig:
 class TaskAnalyzer:
     """タスク分析器"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger(__name__)
+    def __init__(self)self.logger = logging.getLogger(__name__)
+    """初期化メソッド"""
 
         # タスクタイプ検出パターン
         self.task_patterns = {
@@ -205,10 +204,8 @@ class TaskAnalyzer:
 class ElderFlowAutoIntegration:
     """Elder Flow自動統合システム"""
 
-    def __init__(self, config:
-        """初期化メソッド"""
-    AutoIntegrationConfig = None):
-        self.config = config or AutoIntegrationConfig()
+    def __init__(self, config: AutoIntegrationConfig = None)self.config = config or AutoIntegrationConfig()
+    """初期化メソッド"""
         self.analyzer = TaskAnalyzer()
         self.logger = logging.getLogger(__name__)
 
@@ -217,9 +214,8 @@ class ElderFlowAutoIntegration:
 
         self.logger.info("Elder Flow Auto Integration System initialized")
 
-    async def should_apply_elder_flow(self, description: str) -> Tuple[bool, Dict]:
-        """Elder Flow適用判定"""
-        analysis = self.analyzer.analyze_task(description)
+    async def should_apply_elder_flow(self, description: str) -> Tuple[bool, Dict]analysis = self.analyzer.analyze_task(description)
+    """Elder Flow適用判定"""
 
         # 自動適用条件チェック
         should_apply = (
@@ -228,7 +224,7 @@ class ElderFlowAutoIntegration:
             and analysis["elder_flow_recommended"]
         )
 
-        decision = {
+        decision = {:
             "should_apply": should_apply,
             "analysis": analysis,
             "reason": self._get_decision_reason(should_apply, analysis),
@@ -239,12 +235,12 @@ class ElderFlowAutoIntegration:
     def _get_decision_reason(self, should_apply: bool, analysis: Dict) -> str:
         """判定理由取得"""
         if should_apply:
-            return f"Elder Flow適用: {analysis['task_type'].value} (信頼度: {analysis['confidence']:.2f})"
+            return f"Elder Flow適用: {analysis['task_type'].value} (信頼度: {analysis['confidence']:0.2f})"
         else:
             reasons = []
             if analysis["confidence"] < self.config.auto_apply_threshold:
                 reasons.append(
-                    f"信頼度不足 ({analysis['confidence']:.2f} < {self.config.auto_apply_threshold})"
+                    f"信頼度不足 ({analysis['confidence']:0.2f} < {self.config.auto_apply_threshold})"
                 )
             if analysis["task_type"] not in self.config.auto_apply_task_types:
                 reasons.append(f"対象外タスクタイプ ({analysis['task_type'].value})")
@@ -308,14 +304,13 @@ class ElderFlowAutoIntegration:
             self.logger.error(f"Elder Flow auto-execution failed: {str(e)}")
             return {"applied": False, "error": str(e), "decision": decision}
 
-    def get_execution_statistics(self) -> Dict:
-        """実行統計取得"""
-        total_executions = len(self.execution_history)
+    def get_execution_statistics(self) -> Dicttotal_executions = len(self.execution_history)
+    """実行統計取得"""
         successful_executions = sum(
             1 for record in self.execution_history if record["success"]
         )
 
-        task_types = {}
+        task_types = {}:
         for record in self.execution_history:
             task_type = record["decision"]["analysis"]["task_type"].value
             task_types[task_type] = task_types.get(task_type, 0) + 1
@@ -347,17 +342,15 @@ async def auto_elder_flow(
     return await auto_integration.auto_execute_if_applicable(description, force_apply)
 
 
-async def should_use_elder_flow(description: str) -> Tuple[bool, Dict]:
-    """Elder Flow使用判定"""
-    return await auto_integration.should_apply_elder_flow(description)
+async def should_use_elder_flow(description: str) -> Tuple[bool, Dict]return await auto_integration.should_apply_elder_flow(description)
+"""Elder Flow使用判定"""
 
 
-def get_auto_integration_stats() -> Dict:
-    """自動統合統計取得"""
-    return auto_integration.get_execution_statistics()
+def get_auto_integration_stats() -> Dictreturn auto_integration.get_execution_statistics()
+"""自動統合統計取得"""
 
 
-# Claude Integration Function
+# Claude Integration Function:
 async def claude_auto_elder_flow(user_request: str) -> Optional[Dict]:
     """
     クロードエルダー用自動Elder Flow判定・実行
@@ -386,10 +379,10 @@ async def claude_auto_elder_flow(user_request: str) -> Optional[Dict]:
 
 # Example usage
 if __name__ == "__main__":
+    pass
 
-    async def main():
-        """mainメソッド"""
-        print("🔮 Elder Flow Auto Integration Test")
+    async def main()print("🔮 Elder Flow Auto Integration Test")
+    """mainメソッド"""
 
         # テストケース
         test_cases = [
@@ -409,7 +402,7 @@ if __name__ == "__main__":
             print(
                 (
                     f"f"📊 Analysis: {decision['analysis']['task_type'].value} (confidence: "
-                    f"{decision['analysis']['confidence']:.2f})""
+                    f"{decision['analysis']['confidence']:0.2f})""
                 )
             )
 

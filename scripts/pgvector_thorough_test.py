@@ -40,7 +40,7 @@ async def thorough_test():
     )
 
     try:
-        # 1. 拡張機能の確認
+        # 1.0 拡張機能の確認
         print("1️⃣ pgvector拡張機能の確認")
         extensions = await conn.fetch(
             """
@@ -58,7 +58,7 @@ async def thorough_test():
             print("❌ pgvectorがインストールされていません")
             return False
 
-        # 2. テーブル構造の確認
+        # 2.0 テーブル構造の確認
         print("\n2️⃣ テーブル構造の確認")
         columns = await conn.fetch(
             """
@@ -81,7 +81,7 @@ async def thorough_test():
         else:
             print("❌ vectorカラムが見つかりません")
 
-        # 3. インデックスの確認
+        # 3.0 インデックスの確認
         print("\n3️⃣ インデックスの確認")
         indexes = await conn.fetch(
             """
@@ -101,7 +101,7 @@ async def thorough_test():
             elif "hnsw" in idx["indexdef"]:
                 print("    ✅ HNSW インデックス")
 
-        # 4. 既存データの確認
+        # 4.0 既存データの確認
         print("\n4️⃣ 既存データの確認")
         count = await conn.fetchval(
             "SELECT COUNT(*) FROM knowledge_base.vector_documents"
@@ -112,7 +112,7 @@ async def thorough_test():
         await conn.execute("TRUNCATE knowledge_base.vector_documents")
         print("既存データをクリアしました")
 
-        # 5. 多様なテストデータの投入
+        # 5.0 多様なテストデータの投入
         print("\n5️⃣ 多様なテストデータの投入")
         test_data = [
             # エルダーズギルド関連
@@ -155,9 +155,9 @@ async def thorough_test():
             print(f"  ✅ {i+1}/{len(test_data)} 完了")
 
         elapsed = time.time() - start_time
-        print(f"投入時間: {elapsed:.2f}秒")
+        print(f"投入時間: {elapsed:0.2f}秒")
 
-        # 6. 様々なクエリでの検索テスト
+        # 6.0 様々なクエリでの検索テスト
         print("\n6️⃣ 様々なクエリでの検索テスト")
 
         test_queries = [
@@ -197,14 +197,14 @@ async def thorough_test():
             )
             search_time = time.time() - start_time
 
-            print(f"  Embedding生成: {embedding_time:.3f}秒")
-            print(f"  検索実行: {search_time:.3f}秒")
+            print(f"  Embedding生成: {embedding_time:0.3f}秒")
+            print(f"  検索実行: {search_time:0.3f}秒")
             print("  結果:")
             for j, row in enumerate(results):
-                print(f"    {j+1}. {row['title']} (類似度: {row['similarity']:.4f})")
+                print(f"    {j+1}. {row['title']} (類似度: {row['similarity']:0.4f})")
                 print(f"       {row['content'][:50]}...")
 
-        # 7. ベクトル演算の確認
+        # 7.0 ベクトル演算の確認
         print("\n7️⃣ ベクトル演算の確認")
 
         # コサイン類似度の手動計算と比較
@@ -231,13 +231,13 @@ async def thorough_test():
             """
             )
 
-            print(f"自己類似度: {self_similarity:.6f} (期待値: 1.0)")
+            print(f"自己類似度: {self_similarity:0.6f} (期待値: 1.0)")
             if abs(self_similarity - 1.0) < 0.0001:
                 print("✅ ベクトル演算が正しく動作しています")
             else:
                 print("❌ ベクトル演算に問題があります")
 
-        # 8. パフォーマンステスト
+        # 8.0 パフォーマンステスト
         print("\n8️⃣ パフォーマンステスト")
 
         # 100回の検索を実行
@@ -260,7 +260,7 @@ async def thorough_test():
             total_time += time.time() - start_time
 
         avg_time = total_time / iterations
-        print(f"平均検索時間: {avg_time*1000:.2f}ms ({iterations}回の平均)")
+        print(f"平均検索時間: {avg_time*1000:0.2f}ms ({iterations}回の平均)")
 
         if avg_time < 0.01:  # 10ms以下
             print("✅ 優秀なパフォーマンス")
@@ -269,7 +269,7 @@ async def thorough_test():
         else:
             print("❌ パフォーマンスに問題があります")
 
-        # 9. 総合判定
+        # 9.0 総合判定
         print("\n=" * 80)
         print("🏁 検証結果サマリー")
         print("=" * 80)

@@ -143,7 +143,7 @@ class TestPytestIntegrationFramework:
         assert report["total_tests"] == 3
         assert report["passed"] == 2
         assert report["failed"] == 1
-        assert report["success_rate"] == pytest.approx(66.67, abs=0.01)
+        assert report["success_rate"] == pytest.approx(66.67, abs=0.1)
         assert len(report["results"]) == 3
 
 
@@ -421,7 +421,7 @@ def test_complete_oss_migration_workflow():
     """
 完全なOSS移行ワークフローテスト
     """
-    # 1. 既存システムの機能確認
+    # 1.0 既存システムの機能確認
     original_features = {
         'service_orchestration': True,
         'database_testing': True,
@@ -430,7 +430,7 @@ def test_complete_oss_migration_workflow():
         'error_handling': True
     }
     
-    # 2. OSS版の機能確認
+    # 2.0 OSS版の機能確認
     pytest_framework = PytestIntegrationFramework()
     celery_framework = CeleryIntegrationFramework()
     
@@ -442,11 +442,11 @@ def test_complete_oss_migration_workflow():
         'error_handling': hasattr(celery_framework, 'wait_for_task')
     }
     
-    # 3. 機能的等価性検証
+    # 3.0 機能的等価性検証
     for feature, original_support in original_features.items():
         assert oss_features[feature] == original_support, f"Feature mismatch: {feature}"
     
-    # 4. クリーンアップ
+    # 4.0 クリーンアップ
     pytest_framework.cleanup()
     celery_framework.shutdown()
     

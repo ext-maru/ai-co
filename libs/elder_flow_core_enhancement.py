@@ -98,7 +98,7 @@ class ElderFlowCoreEnhancement:
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # フロー実行テーブル
@@ -243,7 +243,7 @@ class ElderFlowCoreEnhancement:
 
     async def _record_execution_start(self, execution: FlowExecution):
         """実行開始記録"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -282,7 +282,7 @@ class ElderFlowCoreEnhancement:
         """フェーズ遷移記録"""
         self.logger.info(f"🔄 フェーズ遷移: {from_phase.value} → {to_phase.value}")
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # 前フェーズ終了
@@ -329,7 +329,7 @@ class ElderFlowCoreEnhancement:
         """賢者推奨記録"""
         self.logger.info(f"🧙‍♂️ {sage_name}からの推奨記録")
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # 現在の推奨を取得
@@ -376,7 +376,7 @@ class ElderFlowCoreEnhancement:
         """違反記録"""
         self.logger.warning(f"⚠️ 違反検出: {violation_type} ({severity})")
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -407,7 +407,7 @@ class ElderFlowCoreEnhancement:
         """違反修正記録"""
         self.logger.info(f"✅ 違反修正: ID {violation_id}")
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -447,7 +447,7 @@ class ElderFlowCoreEnhancement:
             f"({'PASS' if passed else 'FAIL'})"
         )
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -474,7 +474,7 @@ class ElderFlowCoreEnhancement:
 
         self.logger.info(f"🏁 Elder Flow実行完了: {execution_id} - {status.value}")
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # 開始時刻取得
@@ -517,7 +517,7 @@ class ElderFlowCoreEnhancement:
 
     async def _update_global_metrics(self):
         """グローバルメトリクス更新"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # 統計取得
@@ -584,7 +584,7 @@ class ElderFlowCoreEnhancement:
 
     async def generate_execution_report(self, execution_id: str) -> str:
         """実行レポート生成"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # 実行情報取得
@@ -650,8 +650,8 @@ class ElderFlowCoreEnhancement:
 - **ステータス**: {execution[4]}
 - **開始時刻**: {execution[5]}
 - **終了時刻**: {execution[6] or 'N/A'}
-- **実行時間**: {execution[7] or 0:.2f}秒
-- **品質スコア**: {execution[8] or 0:.2f}/100
+- **実行時間**: {execution[7] or 0:0.2f}秒
+- **品質スコア**: {execution[8] or 0:0.2f}/100
 
 ### 🔄 フェーズ進行
 """
@@ -699,7 +699,7 @@ class ElderFlowCoreEnhancement:
 
     async def get_execution_history(self, limit: int = 10) -> List[Dict[str, Any]]:
         """実行履歴取得"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -732,7 +732,7 @@ class ElderFlowCoreEnhancement:
 
     async def monitor_active_flows(self) -> List[Dict[str, Any]]:
         """アクティブフロー監視"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(

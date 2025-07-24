@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Analysis Magic - 分析魔法
+"📊" Analysis Magic - 分析魔法
 ============================
 
 Ancient Elderの8つの古代魔法の一つ。
@@ -101,6 +101,7 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 
 @dataclass
 class AnalysisMetadata:
+    pass
 
     """分析メタデータのデータクラス""" str
     analysis_type: str
@@ -113,6 +114,7 @@ class AnalysisMetadata:
 
 @dataclass
 class StatisticalResult:
+    pass
 
 
 
@@ -126,6 +128,7 @@ class StatisticalResult:
 
 @dataclass
 class InsightResult:
+    pass
 
 
 
@@ -138,6 +141,7 @@ class InsightResult:
 
 
 class AnalysisMagic(AncientMagic):
+    pass
 
 
 
@@ -1206,11 +1210,11 @@ class AnalysisMagic(AncientMagic):
                                     # col1の残差
                                     X_with_const = sm.add_constant(X_control)
                                     model1 = sm.OLS(y1, X_with_const).fit()
-                                    residuals1 = model1.resid
+                                    residuals1 = model1.0resid
                                     
                                     # col2の残差
                                     model2 = sm.OLS(y2, X_with_const).fit()
-                                    residuals2 = model2.resid
+                                    residuals2 = model2.0resid
                                     
                                     # 残差間の相関
                                     partial_corr, _ = pearsonr(residuals1, residuals2)
@@ -1570,7 +1574,7 @@ class AnalysisMagic(AncientMagic):
                         skew_direction = "right" if skewness > 0 else "left"
                         insights.append({
                             "type": "statistical",
-                            "description": f"{col} shows significant {skew_direction} skewness (skewness: {skewness:.2f})",
+                            "description": f"{col} shows significant {skew_direction} skewness (skewness: {skewness:0.2f})",
                             "confidence": min(0.9, abs(skewness) / 3),
                             "variable": col,
                             "metric": "skewness",
@@ -1582,7 +1586,7 @@ class AnalysisMagic(AncientMagic):
                         kurt_type = "heavy-tailed" if kurtosis > 0 else "light-tailed"
                         insights.append({
                             "type": "statistical",
-                            "description": f"{col} has {kurt_type} distribution (kurtosis: {kurtosis:.2f})",
+                            "description": f"{col} has {kurt_type} distribution (kurtosis: {kurtosis:0.2f})",
                             "confidence": min(0.9, abs(kurtosis) / 5),
                             "variable": col,
                             "metric": "kurtosis", 
@@ -1605,7 +1609,7 @@ class AnalysisMagic(AncientMagic):
                                 
                                 insights.append({
                                     "type": "correlation",
-                                    "description": f"{col1} and {col2} show {corr_strength} {corr_direction} correlation (r = {corr_val:.3f})",
+                                    "description": f"{col1} and {col2} show {corr_strength} {corr_direction} correlation (r = {corr_val:0.3f})",
                                     "confidence": min(0.95, abs(corr_val)),
                                     "variables": [col1, col2],
                                     "correlation": corr_val,
@@ -1624,7 +1628,7 @@ class AnalysisMagic(AncientMagic):
                     if outlier_percentage > 5:  # 5%以上が外れ値
                         insights.append({
                             "type": "outlier",
-                            "description": f"{col} contains {outlier_percentage:.1f}% outliers ({outliers} out of {len(col_data)} values)",
+                            "description": f"{col} contains {outlier_percentage:0.1f}% outliers ({outliers} out of {len(col_data)} values)",
                             "confidence": min(0.9, outlier_percentage / 20),
                             "variable": col,
                             "outlier_count": int(outliers),
@@ -1646,7 +1650,7 @@ class AnalysisMagic(AncientMagic):
                             
                             insights.append({
                                 "type": "trend",
-                                "description": f"{col} shows a {trend_direction} trend over time (R² = {r_value**2:.3f})",
+                                "description": f"{col} shows a {trend_direction} trend over time (R² = {r_value**2:0.3f})",
                                 "confidence": min(0.95, trend_strength),
                                 "variable": col,
                                 "trend_direction": trend_direction,
@@ -2070,14 +2074,14 @@ class AnalysisMagic(AncientMagic):
                             "type": "missing_values",
                             "severity": "high",
                             "column": col,
-                            "description": f"Column {col} has {missing_percentage:.1f}% missing values"
+                            "description": f"Column {col} has {missing_percentage:0.1f}% missing values"
                         })
                     elif missing_percentage > 20:
                         issues_detected.append({
                             "type": "missing_values", 
                             "severity": "medium",
                             "column": col,
-                            "description": f"Column {col} has {missing_percentage:.1f}% missing values"
+                            "description": f"Column {col} has {missing_percentage:0.1f}% missing values"
                         })
                 
                 completeness_score = 1 - (total_missing / total_cells)
@@ -2143,7 +2147,7 @@ class AnalysisMagic(AncientMagic):
                                 "type": "outliers",
                                 "severity": "high" if outlier_percentage > 20 else "medium",
                                 "column": col,
-                                "description": f"Column {col} has {outlier_percentage:.1f}% outliers"
+                                "description": f"Column {col} has {outlier_percentage:0.1f}% outliers"
                             })
                 
                 total_numeric_values = sum(len(df[col].dropna()) for col in numeric_cols)
@@ -2544,9 +2548,8 @@ class AnalysisMagic(AncientMagic):
             }
     
     # ヘルパーメソッド
-    def _interpret_correlation_strength(self, correlation: float) -> str:
-        """相関の強度を解釈"""
-        abs_corr = abs(correlation)
+    def _interpret_correlation_strength(self, correlation: float) -> strabs_corr = abs(correlation)
+    """相関の強度を解釈""":
         if abs_corr >= 0.7:
             return "strong"
         elif abs_corr >= 0.5:
@@ -2561,7 +2564,7 @@ class AnalysisMagic(AncientMagic):
         report_lines = [
             "# Comprehensive Data Analysis Report",
             f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            f"**Execution Time:** {summary['execution_time']:.2f} seconds",
+            f"**Execution Time:** {summary['execution_time']:0.2f} seconds",
             "",
             "## Executive Summary",
             f"- Total modules executed: {summary['total_modules']}",

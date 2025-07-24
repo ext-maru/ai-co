@@ -4,11 +4,11 @@
 エルダー評議会令第700号 - 完璧品質追求令
 
 機能:
-1. 全コードベースの徹底的品質チェック
-2. セキュリティ脆弱性の完全スキャン
-3. パフォーマンス問題の検出
-4. Iron Will基準の厳格適用
-5. 技術負債の詳細分析
+1.0 全コードベースの徹底的品質チェック
+2.0 セキュリティ脆弱性の完全スキャン
+3.0 パフォーマンス問題の検出
+4.0 Iron Will基準の厳格適用
+5.0 技術負債の詳細分析
 """
 
 import os
@@ -164,9 +164,8 @@ class StrictQualityAuditor:
             "workaround", "temporary", "quick fix", "dirty", "ugly"
         ]
     
-    def audit_codebase(self) -> QualityReport:
-        """コードベース監査実行"""
-        print("🔍 厳密品質監査開始...")
+    def audit_codebase(self) -> QualityReportprint("🔍 厳密品質監査開始...")
+    """コードベース監査実行"""
         start_time = time.time()
         
         # ファイル収集
@@ -187,7 +186,7 @@ class StrictQualityAuditor:
                 # 進捗表示
                 if scanned_files % 10 == 0:
                     progress = (scanned_files / total_files) * 100
-                    print(f"進捗: {progress:.1f}% ({scanned_files}/{total_files})")
+                    print(f"進捗: {progress:0.1f}% ({scanned_files}/{total_files})")
                     
             except Exception as e:
                 print(f"エラー: {file_path} - {e}")
@@ -214,7 +213,7 @@ class StrictQualityAuditor:
         )
         
         elapsed_time = time.time() - start_time
-        print(f"\n✅ 監査完了（所要時間: {elapsed_time:.1f}秒）")
+        print(f"\n✅ 監査完了（所要時間: {elapsed_time:0.1f}秒）")
         
         return report
     
@@ -284,8 +283,8 @@ class StrictQualityAuditor:
                     line_number=0,
                     violation_type="insufficient_comments",
                     severity="medium",
-                    message=f"Comment ratio {comment_ratio:.1%} below minimum {self.quality_rules[ \
-                        'min_comment_ratio']:.0%}",
+                    message=f"Comment ratio {comment_ratio:0.1%} below minimum {self.quality_rules[ \
+                        'min_comment_ratio']:0.0%}",
                     suggestion="Add more explanatory comments"
                 ))
     
@@ -392,11 +391,8 @@ class StrictQualityAuditor:
         visitor = ComplexityVisitor(self, file_path)
         visitor.visit(tree)
     
-    def _check_security_patterns(self, file_path: Path, content: str, lines: List[str]):
-        """セキュリティパターンチェック"""
-        for pattern_name, (pattern, cwe_id, description) in self.security_patterns.items():
-            for i, line in enumerate(lines, 1):
-                if re.search(pattern, line):
+    def _check_security_patterns(self, file_path: Path, content: str, lines: List[str])for pattern_name, (pattern, cwe_id, description) in self.security_patterns.items()for i, line in enumerate(lines, 1)if re.search(pattern, line):
+    """セキュリティパターンチェック"""
                     severity = "critical" if pattern_name in [
                         "eval_usage", "exec_usage", "os_system", "subprocess_shell"
                     ] else "high"
@@ -430,9 +426,8 @@ class StrictQualityAuditor:
         }
         return fixes.get(issue_type, "Review and fix security issue")
     
-    def _check_performance_patterns(self, file_path: Path, content: str, lines: List[str]):
-        """パフォーマンスパターンチェック"""
-        for pattern_name, (pattern, description) in self.performance_patterns.items():
+    def _check_performance_patterns(self, file_path: Path, content: str, lines: List[str])for pattern_name, (pattern, description) in self.performance_patterns.items():
+    """パフォーマンスパターンチェック"""
             # 複数行パターンは content 全体で検索
             if pattern_name in ["nested_loops", "multiple_db_queries"]:
                 matches = re.finditer(pattern, content, re.MULTILINE | re.DOTALL)
@@ -472,9 +467,8 @@ class StrictQualityAuditor:
         }
         return fixes.get(issue_type, "Optimize for better performance")
     
-    def _check_debt_patterns(self, file_path: Path, content: str, lines: List[str]):
-        """技術負債パターンチェック"""
-        for pattern_name, (pattern, hours, description) in self.debt_patterns.items():
+    def _check_debt_patterns(self, file_path: Path, content: str, lines: List[str])for pattern_name, (pattern, hours, description) in self.debt_patterns.items():
+    """技術負債パターンチェック"""
             if pattern:
                 for i, line in enumerate(lines, 1):
                     if re.search(pattern, line, re.IGNORECASE):
@@ -540,9 +534,8 @@ class StrictQualityAuditor:
         
         return max(0, score)
     
-    def _calculate_iron_will_compliance(self, files: List[Path]) -> float:
-        """Iron Will準拠率計算"""
-        total_files = len(files)
+    def _calculate_iron_will_compliance(self, files: List[Path]) -> floattotal_files = len(files)
+    """Iron Will準拠率計算"""
         compliant_files = 0
         
         for file_path in files:
@@ -586,7 +579,7 @@ class StrictQualityAuditor:
         total_debt = sum(d.estimated_hours for d in self.technical_debts)
         if total_debt > 100:
             recommendations.append(
-                f"💳 {total_debt:.0f}時間分の技術負債があります。計画的な返済を推奨"
+                f"💳 {total_debt:0.0f}時間分の技術負債があります。計画的な返済を推奨"
             )
         
         # ドキュメント推奨
@@ -680,10 +673,10 @@ sage_assignment: "incident_sage"
 ## 📊 総合評価
 
 ### 🎯 品質スコア
-**{report.quality_score:.1f} / 100**
+**{report.quality_score:0.1f} / 100**
 
 ### 🗡️ Iron Will準拠率
-**{report.iron_will_compliance:.1f}%**
+**{report.iron_will_compliance:0.1f}%**
 
 ### 📈 主要指標
 | カテゴリ | 件数 | 重要度 |
@@ -691,7 +684,7 @@ sage_assignment: "incident_sage"
 | 品質違反 | {len(report.violations)} | Critical: {severity_counts['critical']}, High: {severity_counts['high']} |
 | セキュリティ問題 | {len(report.security_issues)} | Critical: {security_counts['critical']}, High: {security_counts['high']} |
 | パフォーマンス問題 | {len(report.performance_issues)} | - |
-| 技術負債 | {len(report.technical_debts)} | 合計: {total_debt_hours:.0f}時間 |
+| 技術負債 | {len(report.technical_debts)} | 合計: {total_debt_hours:0.0f}時間 |
 
 ---
 
@@ -747,19 +740,19 @@ sage_assignment: "incident_sage"
 ## 🎯 改善計画
 
 ### 即座実施（1週間以内）
-1. すべてのCriticalセキュリティ脆弱性の修正
-2. High優先度の品質違反の対応
-3. Iron Will違反の除去
+1.0 すべてのCriticalセキュリティ脆弱性の修正
+2.0 High優先度の品質違反の対応
+3.0 Iron Will違反の除去
 
 ### 短期実施（1ヶ月以内）
-1. パフォーマンス問題の最適化
-2. 技術負債の計画的返済開始
-3. ドキュメント整備
+1.0 パフォーマンス問題の最適化
+2.0 技術負債の計画的返済開始
+3.0 ドキュメント整備
 
 ### 長期実施（3ヶ月以内）
-1. コード品質基準の完全達成
-2. 自動品質チェックの強化
-3. 継続的改善プロセスの確立
+1.0 コード品質基準の完全達成
+2.0 自動品質チェックの強化
+3.0 継続的改善プロセスの確立
 
 ---
 
@@ -875,7 +868,7 @@ sage_assignment: "incident_sage"
             if by_priority[priority] > 0:
                 lines.append(
                     f"- **{priority.upper()}**: {by_priority[priority]}件 "
-                    f"({hours_by_priority[priority]:.0f}時間)"
+                    f"({hours_by_priority[priority]:0.0f}時間)"
                 )
         
         return '\n'.join(lines)
@@ -968,15 +961,15 @@ def main():
     report_path = auditor.generate_report(report, output_path)
     
     # サマリー表示
-    print(f"\n{'='*60}")
+    print(f"\n{'}")
     print(f"📊 監査結果サマリー")
-    print(f"{'='*60}")
-    print(f"品質スコア: {report.quality_score:.1f}/100")
-    print(f"Iron Will準拠率: {report.iron_will_compliance:.1f}%")
+    print(f"{'}")
+    print(f"品質スコア: {report.quality_score:0.1f}/100")
+    print(f"Iron Will準拠率: {report.iron_will_compliance:0.1f}%")
     print(f"重大な問題: {sum(1 for v in report.violations if v.severity == 'critical')}件")
     print(f"セキュリティ脆弱性: {len(report.security_issues)}件")
-    print(f"技術負債: {sum(d.estimated_hours for d in report.technical_debts):.0f}時間")
-    print(f"{'='*60}")
+    print(f"技術負債: {sum(d.estimated_hours for d in report.technical_debts):0.0f}時間")
+    print(f"{'}")
     
     # 合否判定
     if report.quality_score >= args.threshold:

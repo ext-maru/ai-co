@@ -102,7 +102,7 @@ class DataAnalyzer:
         if missing_data.sum() > 0:
             print(f"\nMissing Data:")
             for col, count in missing_data[missing_data > 0].items():
-                print(f"  {col}: {count} ({missing_percent[col]:.1f}%)")
+                print(f"  {col}: {count} ({missing_percent[col]:0.1f}%)")
 
     def identify_patterns_and_anomalies(self):
         """Identify patterns and anomalies in the data."""
@@ -135,7 +135,7 @@ class DataAnalyzer:
             print(f"\nStrong Correlations (>0.7):")
             for corr in strong_correlations:
                 print(
-                    f"  {corr['columns'][0]} ↔ {corr['columns'][1]}: {corr['correlation']:.3f}"
+                    f"  {corr['columns'][0]} ↔ {corr['columns'][1]}: {corr['correlation']:0.3f}"
                 )
 
         # Outlier detection using IQR and Isolation Forest
@@ -183,7 +183,7 @@ class DataAnalyzer:
             print(f"\nOutliers Detected:")
             for col, info in outliers.items():
                 print(
-                    f"  {col}: {info['count']} outliers ({info['percentage']:.1f}%) - {info['method']}"
+                    f"  {col}: {info['count']} outliers ({info['percentage']:0.1f}%) - {info['method']}"
                 )
 
         # Pattern detection in categorical data
@@ -209,7 +209,7 @@ class DataAnalyzer:
                 print(f"\nCategorical Patterns:")
                 for col, pattern in cat_patterns.items():
                     print(
-                        f"  {col}: {pattern['type']} - {pattern['dominant_category']} ({pattern['percentage']:.1f}%)"
+                        f"  {col}: {pattern['type']} - {pattern['dominant_category']} ({pattern['percentage']:0.1f}%)"
                     )
 
         self.analysis_results["patterns"] = patterns
@@ -223,7 +223,7 @@ class DataAnalyzer:
         plt.style.use("seaborn-v0_8")
         fig_count = 0
 
-        # 1. Data Overview
+        # 1.0 Data Overview
         fig, axes = plt.subplots(2, 2, figsize=(15, 10))
         fig.suptitle("Data Overview", fontsize=16, fontweight="bold")
 
@@ -270,7 +270,7 @@ class DataAnalyzer:
         plt.close()
         fig_count += 1
 
-        # 2. Numeric columns analysis
+        # 2.0 Numeric columns analysis
         if self.numeric_columns:
             n_numeric = len(self.numeric_columns)
             if n_numeric > 1:
@@ -331,7 +331,7 @@ class DataAnalyzer:
             plt.close()
             fig_count += 1
 
-        # 3. Categorical columns analysis
+        # 3.0 Categorical columns analysis
         if self.categorical_columns:
             n_cat = len(self.categorical_columns)
             n_cols = min(2, n_cat)
@@ -376,7 +376,7 @@ class DataAnalyzer:
             plt.close()
             fig_count += 1
 
-        # 4. Outliers visualization
+        # 4.0 Outliers visualization
         if self.numeric_columns:
             n_cols = min(3, len(self.numeric_columns))
             n_rows = (len(self.numeric_columns) + n_cols - 1) // n_cols
@@ -435,7 +435,7 @@ class DataAnalyzer:
                 {
                     "category": "Data Quality",
                     "priority": "High",
-                    "insight": f"Dataset has {missing_pct:.1f}% missing values",
+                    "insight": f"Dataset has {missing_pct:0.1f}% missing values",
                     "action": "Consider data imputation strategies or investigate data collection process",
                 }
             )
@@ -510,7 +510,7 @@ class DataAnalyzer:
                 {
                     "category": "Performance",
                     "priority": "Low",
-                    "insight": f"Large memory usage: {memory_mb:.1f} MB",
+                    "insight": f"Large memory usage: {memory_mb:0.1f} MB",
                     "action": "Consider data type optimization or chunked processing",
                 }
             )
@@ -531,9 +531,9 @@ class DataAnalyzer:
 ## Dataset Overview
 - **File:** {self.csv_path}
 - **Dimensions:** {self.data.shape[0]} rows × {self.data.shape[1]} columns
-- **Memory Usage:** {self.data.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB
+- **Memory Usage:** {self.data.memory_usage(deep=True).sum() / 1024 / 1024:0.1f} MB
 - **Missing Values:** {self.data.isnull().sum().sum()} ({( \
-    self.data.isnull().sum().sum() / (self.data.shape[0] * self.data.shape[1]) * 100):.1f}%)
+    self.data.isnull().sum().sum() / (self.data.shape[0] * self.data.shape[1]) * 100):0.1f}%)
 - **Duplicate Rows:** {self.data.duplicated().sum()}
 
 ## Column Types
@@ -570,7 +570,7 @@ class DataAnalyzer:
             if correlations:
                 report += "### Strong Correlations (>0.7)\n"
                 for corr in correlations:
-                    report += f"- {corr['columns'][0]} ↔ {corr['columns'][1]}: {corr['correlation']:.3f}\n"
+                    report += f"- {corr['columns'][0]} ↔ {corr['columns'][1]}: {corr['correlation']:0.3f}\n"
                 report += "\n"
 
         # Outliers
@@ -580,7 +580,7 @@ class DataAnalyzer:
                 report += "### Outliers Detected\n"
                 for col, info in outliers.items():
                     report += f"- **{col}:** {info['count']} " \
-                        "outliers ({info['percentage']:.1f}%) using {info['method']}\n"
+                        "outliers ({info['percentage']:0.1f}%) using {info['method']}\n"
                 report += "\n"
 
         # Categorical patterns
@@ -590,7 +590,7 @@ class DataAnalyzer:
                 report += "### Categorical Patterns\n"
                 for col, pattern in patterns.items():
                     report += f"- **{col}:** {pattern['type']} - {pattern['dominant_category']} " \
-                        "dominates ({pattern['percentage']:.1f}%)\n"
+                        "dominates ({pattern['percentage']:0.1f}%)\n"
                 report += "\n"
 
         # Visualizations

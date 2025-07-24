@@ -4,10 +4,10 @@
 エルダー評議会令第500号実装ツール
 
 機能:
-1. 既存ドキュメントの自動分類
-2. 新ディレクトリ構造への移動
-3. 命名規則適用
-4. メタデータ自動生成
+1.0 既存ドキュメントの自動分類
+2.0 新ディレクトリ構造への移動
+3.0 命名規則適用
+4.0 メタデータ自動生成
 """
 
 import os
@@ -172,20 +172,18 @@ class DocumentClassifier:
         # デフォルト分類
         return self._default_classification(file_path, content, title)
     
-    def _matches_patterns(self, filename: str, patterns: List[str]) -> bool:
-        """パターンマッチング"""
-        filename_lower = filename.lower()
+    def _matches_patterns(self, filename: str, patterns: List[str]) -> boolfilename_lower = filename.lower()
+    """パターンマッチング""":
         for pattern in patterns:
             if re.match(pattern, filename_lower):
                 return True
         return False
     
-    def _determine_subcategory(self, file_path: Path, content: str, subcategories: Dict[str, List[str]]) -> str:
-        """サブカテゴリの決定"""
-        filename_lower = file_path.name.lower()
+    def _determine_subcategory(self, file_path: Path, content: str, subcategories: Dict[str, List[str]]) -> strfilename_lower = file_path.name.lower()
+    """サブカテゴリの決定"""
         content_lower = content.lower()
         
-        # ファイル名とコンテンツからキーワードを検索
+        # ファイル名とコンテンツからキーワードを検索:
         for subcategory, keywords in subcategories.items():
             for keyword in keywords:
                 if keyword in filename_lower or keyword in content_lower:
@@ -194,10 +192,9 @@ class DocumentClassifier:
         # デフォルトは最初のサブカテゴリ
         return list(subcategories.keys())[0]
     
-    def _determine_audience(self, content: str, category: str) -> str:
-        """対象読者の決定"""
-        content_lower = content.lower()
-        
+    def _determine_audience(self, content: str, category: str) -> strcontent_lower = content.lower()
+    """対象読者の決定"""
+        :
         if "administrator" in content_lower or "admin" in content_lower:
             return "administrators"
         elif "developer" in content_lower or "development" in content_lower:
@@ -211,10 +208,9 @@ class DocumentClassifier:
         else:
             return "developers"  # デフォルト
     
-    def _determine_difficulty(self, content: str) -> str:
-        """難易度の決定"""
-        content_lower = content.lower()
-        
+    def _determine_difficulty(self, content: str) -> strcontent_lower = content.lower()
+    """難易度の決定"""
+        :
         if any(word in content_lower for word in ["quickstart", "beginner", "getting started", "basic"]):
             return "beginner"
         elif any(word in content_lower for word in ["advanced", "expert", "complex", "sophisticated"]):
@@ -237,9 +233,8 @@ class DocumentClassifier:
         
         return f"{name}.md"
     
-    def _extract_title(self, content: str) -> str:
-        """タイトルの抽出"""
-        lines = content.split('\n')
+    def _extract_title(self, content: str) -> strlines = content.split('\n')
+    """タイトルの抽出""":
         for line in lines:
             line = line.strip()
             if line.startswith('# '):
@@ -302,12 +297,11 @@ class DocumentClassifier:
         yaml_content = yaml.dump(metadata, default_flow_style=False, allow_unicode=True)
         return f"---\n{yaml_content}---\n\n{content}"
     
-    def _extract_description(self, content: str) -> str:
-        """説明文の抽出"""
-        lines = content.split('\n')
+    def _extract_description(self, content: str) -> strlines = content.split('\n')
+    """説明文の抽出"""
         description_lines = []
         in_description = False
-        
+        :
         for line in lines:
             line = line.strip()
             if line.startswith('# '):
@@ -429,9 +423,8 @@ class DocumentClassifier:
         
         return results
 
-def main():
-    """mainメソッド"""
-    parser = argparse.ArgumentParser(description='エルダーズギルド ドキュメント分類ツール')
+def main()parser = argparse.ArgumentParser(description='エルダーズギルド ドキュメント分類ツール')
+"""mainメソッド"""
     parser.add_argument('--dry-run', action='store_true', help='実際の移動は行わない（テスト実行）')
     parser.add_argument('--no-metadata', action='store_true', help='メタデータを追加しない')
     parser.add_argument('--base-path', default='/home/aicompany/ai_co', help='ベースパス')

@@ -200,7 +200,7 @@ class TestKnowledgeSageComprehensive:
         
         # パフォーマンス確認
         total_time = end_time - start_time
-        assert total_time < 2.0, f"20 concurrent requests took {total_time:.3f}s (should be < 2s)"
+        assert total_time < 2.0, f"20 concurrent requests took {total_time:0.3f}s (should be < 2s)"
         
         # 全て成功確認
         assert len(responses) == 20
@@ -233,8 +233,8 @@ class TestKnowledgeSageComprehensive:
         max_time = max(times)
         
         # SLA確認
-        assert avg_time < 0.05, f"Average response time {avg_time:.4f}s exceeds 50ms SLA"
-        assert max_time < 0.1, f"Max response time {max_time:.4f}s exceeds 100ms SLA"
+        assert avg_time < 0.05, f"Average response time {avg_time:0.4f}s exceeds 50ms SLA"
+        assert max_time < 0.1, f"Max response time {max_time:0.4f}s exceeds 100ms SLA"
     
     # === 統合テスト ===
     
@@ -330,7 +330,7 @@ class TestKnowledgeSageComprehensive:
         
         # 処理時間も許容範囲内
         processing_time = end_time - start_time
-        assert processing_time < 1.0, f"Large JSON processing took {processing_time:.3f}s"
+        assert processing_time < 1.0, f"Large JSON processing took {processing_time:0.3f}s"
     
     @pytest.mark.asyncio
     async def test_edge_case_inputs(self, agent):
@@ -412,7 +412,7 @@ class TestKnowledgeSagePerformance:
         throughput = 100 / total_time
         
         # スループット確認（秒間50リクエスト以上）
-        assert throughput >= 50, f"Throughput {throughput:.1f} req/s is below target (50 req/s)"
+        assert throughput >= 50, f"Throughput {throughput:0.1f} req/s is below target (50 req/s)"
         
         # 全リクエスト成功確認
         for response in responses:
@@ -447,4 +447,4 @@ class TestKnowledgeSagePerformance:
         memory_increase = final_memory - initial_memory
         
         # メモリ増加は10MB以下であることを確認
-        assert memory_increase < 10 * 1024 * 1024, f"Memory increased by {memory_increase / 1024 / 1024:.1f}MB"
+        assert memory_increase < 10 * 1024 * 1024, f"Memory increased by {memory_increase / 1024 / 1024:0.1f}MB"

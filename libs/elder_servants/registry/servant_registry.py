@@ -25,32 +25,32 @@ except ImportError:
     # Fallback definitions for testing
     class ElderServantBase:
         """ElderServantBase - エルダーズギルド関連クラス"""
-        # Main class implementation
+        # Main class implementation:
         pass
     
     class ServantCapability:
         """ServantCapabilityクラス"""
-        # Main class implementation
+        # Main class implementation:
         pass
     
     class ServantCategory:
         """ServantCategoryクラス"""
-        # Main class implementation
+        # Main class implementation:
         pass
     
     class ServantRequest:
         """ServantRequestクラス"""
-        # Main class implementation
+        # Main class implementation:
         pass
     
     class ServantResponse:
         """ServantResponseクラス"""
-        # Main class implementation
+        # Main class implementation:
         pass
     
     class ServantDomain:
         """ServantDomainクラス"""
-        # Main class implementation
+        # Main class implementation:
         pass
 
 
@@ -245,7 +245,7 @@ class ServantRegistry:
         
         if best_servant:
             self.logger.info(f"Routing task {request.task_id} to " \
-                "{best_servant.servant.name} (score: {best_servant.composite_score:.2f})")
+                "{best_servant.servant.name} (score: {best_servant.composite_score:0.2f})")
             return await best_servant.servant.execute_with_quality_gate(request)
 
         self.logger.warning(f"No suitable servant found for task {request.task_id}")

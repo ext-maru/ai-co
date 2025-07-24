@@ -37,27 +37,27 @@ class PerformanceBenchmark:
         print("🚀 Starting Elder Servants + OSS Tools Performance Benchmark")
         print("=" * 60)
 
-        # 1. Baseline measurements (Elder only)
+        # 1.0 Baseline measurements (Elder only)
         print("\n📊 Phase 1: Baseline Elder Servants Performance")
         baseline_results = await self._measure_baseline_performance()
 
-        # 2. Continue.dev integration measurements
+        # 2.0 Continue.dev integration measurements
         print("\n🔌 Phase 2: Continue.dev Integration Performance")
         continue_results = await self._measure_continue_integration_performance()
 
-        # 3. Aider integration measurements
+        # 3.0 Aider integration measurements
         print("\n🔧 Phase 3: Aider Integration Performance")
         aider_results = await self._measure_aider_integration_performance()
 
-        # 4. Combined integration measurements
+        # 4.0 Combined integration measurements
         print("\n🎯 Phase 4: Combined Integration Performance")
         combined_results = await self._measure_combined_integration_performance()
 
-        # 5. Quality comparison
+        # 5.0 Quality comparison
         print("\n🗡️ Phase 5: Quality Comparison")
         quality_results = await self._measure_quality_improvements()
 
-        # 6. Analysis and summary
+        # 6.0 Analysis and summary
         print("\n📈 Phase 6: Performance Analysis")
         analysis = self._analyze_results(
             {
@@ -422,11 +422,11 @@ def another_function() -> None:
 
         if performance_improvement > 0:
             recommendations.append(
-                f"✅ Integration provides {performance_improvement:.1f}% performance improvement"
+                f"✅ Integration provides {performance_improvement:0.1f}% performance improvement"
             )
         else:
             recommendations.append(
-                f"⚠️ Integration adds {abs(performance_improvement):.1f}% overhead - " \
+                f"⚠️ Integration adds {abs(performance_improvement):0.1f}% overhead - " \
                     "consider optimization"
             )
 
@@ -507,23 +507,23 @@ def another_function() -> None:
             # Performance gains
             perf = analysis["performance_gains"]
             f.write("## ⚡ Performance Analysis\n\n")
-            f.write(f"- **Baseline Performance**: {perf['baseline_total_ms']:.1f}ms\n")
+            f.write(f"- **Baseline Performance**: {perf['baseline_total_ms']:0.1f}ms\n")
             f.write(
-                f"- **Integrated Performance**: {perf['integrated_total_ms']:.1f}ms\n"
+                f"- **Integrated Performance**: {perf['integrated_total_ms']:0.1f}ms\n"
             )
             f.write(
-                f"- **Performance Change**: {perf['improvement_percentage']:+.1f}%\n"
+                f"- **Performance Change**: {perf['improvement_percentage']:+0.1f}%\n"
             )
-            f.write(f"- **Speed Multiplier**: {perf['speed_multiplier']:.2f}x\n\n")
+            f.write(f"- **Speed Multiplier**: {perf['speed_multiplier']:0.2f}x\n\n")
 
             # Quality improvements
             qual = analysis["quality_improvements"]
             f.write("## 🗡️ Quality Analysis\n\n")
             f.write(
-                f"- **Average Quality Improvement**: +{qual['average_quality_gain']:.1f}%\n"
+                f"- **Average Quality Improvement**: +{qual['average_quality_gain']:0.1f}%\n"
             )
             f.write(
-                f"- **Iron Will Compliance Rate**: {qual['iron_will_compliance']:.1f}%\n"
+                f"- **Iron Will Compliance Rate**: {qual['iron_will_compliance']:0.1f}%\n"
             )
             f.write(f"- **Scenarios Tested**: {qual['scenarios_tested']}\n\n")
 
@@ -557,10 +557,10 @@ async def main():
     print(f"\n🎉 Benchmark completed!")
     print(f"📊 Overall verdict: {results['summary']['overall_verdict']}")
     print(
-        f"⚡ Performance change: {results['performance_gains']['improvement_percentage']:+.1f}%"
+        f"⚡ Performance change: {results['performance_gains']['improvement_percentage']:+0.1f}%"
     )
     print(
-        f"🗡️ Quality improvement: +{results['quality_improvements']['average_quality_gain']:.1f}%"
+        f"🗡️ Quality improvement: +{results['quality_improvements']['average_quality_gain']:0.1f}%"
     )
 
 

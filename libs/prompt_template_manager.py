@@ -64,7 +64,7 @@ class PromptTemplateManager(BaseManager):
 
     def _init_database(self):
         """データベース初期化"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS prompt_templates (
@@ -121,12 +121,12 @@ Relevant Past Tasks:
 {% endif %}
 
 Instructions:
-1. Understand the user's request completely
-2. Implement a complete solution
-3. Use FileSystem tools to create all necessary files
-4. Ensure the code is immediately executable
-5. Include error handling and logging
-6. Follow Elders Guild coding standards
+1.0 Understand the user's request completely
+2.0 Implement a complete solution
+3.0 Use FileSystem tools to create all necessary files
+4.0 Ensure the code is immediately executable
+5.0 Include error handling and logging
+6.0 Follow Elders Guild coding standards
 
 {{ additional_instructions }}
 
@@ -191,12 +191,12 @@ Project Structure:
 {{ project_structure }}
 
 Instructions:
-1. Analyze the files and determine appropriate placement
-2. Follow Elders Guild's file organization rules
-3. Create necessary directories
-4. Move files to their correct locations
-5. Update any import paths if needed
-6. Commit changes to Git with appropriate messages
+1.0 Analyze the files and determine appropriate placement
+2.0 Follow Elders Guild's file organization rules
+3.0 Create necessary directories
+4.0 Move files to their correct locations
+5.0 Update any import paths if needed
+6.0 Commit changes to Git with appropriate messages
 
 Git Flow Rules:
 - Work on auto/{{ task_id }} branch
@@ -230,11 +230,11 @@ Context:
 {{ context }}
 
 Instructions:
-1. Maintain conversation continuity
-2. Ask clarifying questions when needed
-3. Provide helpful and accurate responses
-4. Remember previous context
-5. Guide the user towards actionable outcomes
+1.0 Maintain conversation continuity
+2.0 Ask clarifying questions when needed
+3.0 Provide helpful and accurate responses
+4.0 Remember previous context
+5.0 Guide the user towards actionable outcomes
 
 {{ additional_instructions }}""",
                     "variables": [
@@ -260,11 +260,11 @@ Recent Channel Context:
 {{ channel_context }}
 
 Instructions:
-1. Determine if this message requires Elders Guild action
-2. Extract the user's intent clearly
-3. Route to appropriate worker if action needed
-4. Respond professionally and helpfully
-5. Use appropriate Slack formatting
+1.0 Determine if this message requires Elders Guild action
+2.0 Extract the user's intent clearly
+3.0 Route to appropriate worker if action needed
+4.0 Respond professionally and helpfully
+5.0 Use appropriate Slack formatting
 
 Response Format:
 - Be concise and clear
@@ -310,7 +310,7 @@ Response Format:
                 f"{worker_type}:{template_name}:{template_content}".encode()
             ).hexdigest()
 
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # 既存のアクティブなテンプレートを非アクティブ化
                 conn.execute(
                     """
@@ -359,7 +359,7 @@ Response Format:
                 )
                 return True
 
-        except sqlite3.IntegrityError:
+        except sqlite3IntegrityError:
             self.logger.warning(f"Template already exists with same content")
             return False
         except Exception as e:
@@ -382,7 +382,7 @@ Response Format:
     ) -> Optional[Dict[str, Any]]:
         """テンプレートを取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 if version:
@@ -534,7 +534,7 @@ Response Format:
     ):
         """プロンプト生成履歴を記録"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO prompt_history
@@ -570,7 +570,7 @@ Response Format:
     ) -> bool:
         """テンプレートを特定バージョンにロールバック"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # 現在のアクティブを非アクティブ化
                 conn.execute(
                     """
@@ -607,7 +607,7 @@ Response Format:
     def list_templates(self, worker_type: Optional[str] = None) -> List[Dict[str, Any]]:
         """テンプレート一覧を取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 if worker_type:
                     query = """
                         SELECT worker_type, template_name, version, description,
@@ -651,7 +651,7 @@ Response Format:
     ) -> List[Dict[str, Any]]:
         """テンプレートの使用履歴を取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
@@ -684,7 +684,7 @@ Response Format:
     def evaluate_prompt_performance(self, task_id: str, score: float) -> bool:
         """プロンプトのパフォーマンスを評価"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     UPDATE prompt_history

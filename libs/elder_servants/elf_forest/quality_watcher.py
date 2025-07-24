@@ -598,7 +598,7 @@ class QualityWatcher(ElfServant):
                 {
                     "type": "high_error_rate",
                     "severity": "critical",
-                    "message": f"Error rate {error_rate*100:.1f}% exceeds 5% threshold",
+                    "message": f"Error rate {error_rate*100:0.1f}% exceeds 5% threshold",
                 }
             )
 
@@ -1152,11 +1152,11 @@ class QualityWatcher(ElfServant):
         try:
             score = 0.0
 
-            # 1. 基本成功（30%）
+            # 1.0 基本成功（30%）
             if result.get("status") == "success":
                 score += 30.0
 
-            # 2. 品質メトリクス（25%）
+            # 2.0 品質メトリクス（25%）
             quality_metrics = result.get("quality_metrics", {})
             if quality_metrics:
                 maintainability = quality_metrics.get("maintainability_index", 0)
@@ -1167,7 +1167,7 @@ class QualityWatcher(ElfServant):
                 elif maintainability >= 50:
                     score += 10.0
 
-            # 3. コードスメル検出（20%）
+            # 3.0 コードスメル検出（20%）
             code_smells = result.get("code_smells", [])
             major_smells = len([s for s in code_smells if s.get("severity") == "major"])
             if major_smells == 0:
@@ -1177,14 +1177,14 @@ class QualityWatcher(ElfServant):
             elif major_smells <= 5:
                 score += 5.0
 
-            # 4. 改善提案品質（15%）
+            # 4.0 改善提案品質（15%）
             suggestions = result.get("suggestions", [])
             if len(suggestions) >= 3:
                 score += 15.0
             elif len(suggestions) >= 1:
                 score += 10.0
 
-            # 5. Iron Will基準準拠（10%）
+            # 5.0 Iron Will基準準拠（10%）
             meets_iron_will = result.get("meets_iron_will", False)
             if meets_iron_will:
                 score += 10.0

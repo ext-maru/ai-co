@@ -13,9 +13,8 @@ import pika
 LOG_DIR = Path("/home/aicompany/ai_co/logs")
 
 
-def log_connection_status(status, details=""):
-    """Log connection status with timestamp"""
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+def log_connection_status(status, details="")timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+"""Log connection status with timestamp"""
     log_file = LOG_DIR / "rabbitmq_connection_monitor.log"
 
     with open(log_file, "a") as f:
@@ -94,9 +93,8 @@ def check_port_listening():
         return False, f"Port check error: {str(e)}"
 
 
-def monitor_connections(duration_seconds=300, interval=10):
-    """Monitor connections for a specified duration"""
-    print(f"🔍 Monitoring RabbitMQ connections for {duration_seconds} seconds...")
+def monitor_connections(duration_seconds=300, interval=10)print(f"🔍 Monitoring RabbitMQ connections for {duration_seconds} seconds...")
+"""Monitor connections for a specified duration"""
     print(f"   Checking every {interval} seconds")
     print("=" * 60)
 
@@ -134,7 +132,7 @@ def monitor_connections(duration_seconds=300, interval=10):
     summary = f"Monitoring complete. Checks: {
         check_count},
         Failures: {failure_count},
-        Success rate: {success_rate:.1f
+        Success rate: {success_rate:0.1f
     }%"
 
     print("\n" + "=" * 60)

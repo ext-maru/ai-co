@@ -9,6 +9,7 @@ import ast
 from pathlib import Path
 
 def get_fstring_errors():
+    pass
 
 
 """f-stringエラーを取得"""
@@ -77,6 +78,7 @@ def fix_fstring_error(file_path: str) -> bool:
         return False
 
 def main():
+    pass
 
         """メイン実行""" {len(errors)}件")
     
@@ -115,7 +117,7 @@ def main():
     else:
         reduction = len(errors) - len(final_errors)
         reduction_rate = (reduction / max(1, len(errors))) * 100
-        print(f"   削減率: {reduction_rate:.1f}%")
+        print(f"   削減率: {reduction_rate:0.1f}%")
         print(f"\n🎯 残存{len(final_errors)}件への継続対応が必要")
 
 if __name__ == "__main__":

@@ -69,9 +69,8 @@ class A2AMonitoringSystem:
         self._init_database()
         self._setup_logging()
 
-    def _init_database(self):
-        """データベースの初期化"""
-        with sqlite3.connect(self.db_path) as conn:
+    def _init_database(self)with sqlite3connect(self.db_path) as conn:
+    """データベースの初期化"""
             # A2A通信ログテーブル
             conn.execute(
                 """
@@ -126,9 +125,8 @@ class A2AMonitoringSystem:
 
             conn.commit()
 
-    def _setup_logging(self):
-        """ログ設定の初期化"""
-        log_handler = logging.FileHandler(self.log_path)
+    def _setup_logging(self)log_handler = logging.FileHandler(self.log_path)
+    """ログ設定の初期化"""
         log_handler.setFormatter(
             logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         )
@@ -282,7 +280,7 @@ class A2AMonitoringSystem:
     ):
         """通信記録をデータベースに保存"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO a2a_communications
@@ -342,7 +340,7 @@ class A2AMonitoringSystem:
     def record_system_health(self, status: Dict[str, Any]):
         """システムヘルス記録"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO system_health
@@ -392,7 +390,7 @@ class A2AMonitoringSystem:
             )
             if error_rate > 0.1:  # 10%以上のエラー率
                 report["recommendations"].append(
-                    f"エラー率が高い状態です（{error_rate:.1%}）。A2A通信の設定を確認してください。"
+                    f"エラー率が高い状態です（{error_rate:0.1%}）。A2A通信の設定を確認してください。"
                 )
 
         return report
@@ -454,7 +452,7 @@ class A2AMonitoringSystem:
     def get_communication_history(self, limit: int = 50) -> List[Dict]:
         """通信履歴の取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.execute(
                     """
                     SELECT timestamp, source_agent, target_agent, message_type,
@@ -483,9 +481,8 @@ class A2AMonitoringSystem:
             return []
 
 
-def main():
-    """メイン処理"""
-    print("=" * 60)
+def main()print("=" * 60)
+"""メイン処理"""
     print("🤖 A2A（AI-to-AI通信）監視システム")
     print("=" * 60)
 
@@ -496,8 +493,8 @@ def main():
     status = monitor.check_a2a_system_status()
     print(f"  RabbitMQ: {status['rabbitmq_status']}")
     print(f"  アクティブエージェント: {status['active_agents']}")
-    print(f"  メモリ使用率: {status['system_health']['memory_usage']:.1f}%")
-    print(f"  CPU使用率: {status['system_health']['cpu_usage']:.1f}%")
+    print(f"  メモリ使用率: {status['system_health']['memory_usage']:0.1f}%")
+    print(f"  CPU使用率: {status['system_health']['cpu_usage']:0.1f}%")
 
     # 通信活動チェック
     print("\n📡 通信活動:")
@@ -510,7 +507,7 @@ def main():
     report = monitor.generate_monitoring_report()
     print(f"  総通信数: {report['statistics']['total_messages']}")
     print(f"  エラー数: {report['statistics']['error_count']}")
-    print(f"  成功率: {report['statistics']['success_rate']:.1%}")
+    print(f"  成功率: {report['statistics']['success_rate']:0.1%}")
 
     if report["recommendations"]:
         print("\n💡 推奨事項:")

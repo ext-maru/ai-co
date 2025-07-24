@@ -61,7 +61,7 @@ AI Command Executorは、AIとユーザー間のコマンド実行を完全自�
 
 ## 🚀 クイックスタート
 
-### 1. 通常の起動（推奨）
+### 1.0 通常の起動（推奨）
 ```bash
 # Elders Guild全体を起動（Command Executorも自動起動）
 ai-start
@@ -70,7 +70,7 @@ ai-start
 ai-status
 ```
 
-### 2. 問題が発生した場合
+### 2.0 問題が発生した場合
 ```bash
 # 完全修復プログラムを実行
 cd /home/aicompany/ai_co
@@ -80,7 +80,7 @@ python3 fix_executor_complete.py
 python3 scripts/diagnose_command_executor.py
 ```
 
-### 3. AIからのコマンド作成
+### 3.0 AIからのコマンド作成
 ```python
 from libs.ai_command_helper import AICommandHelper
 
@@ -111,12 +111,12 @@ helper.create_bash_command(bash_content, "complex_task")
 python3 scripts/diagnose_command_executor.py
 
 # 診断内容
-1. プロセス状態確認
-2. ディレクトリ構造チェック
-3. ログ分析
-4. tmuxセッション確認
-5. 実行テスト
-6. 自動修正
+1.0 プロセス状態確認
+2.0 ディレクトリ構造チェック
+3.0 ログ分析
+4.0 tmuxセッション確認
+5.0 実行テスト
+6.0 自動修正
 ```
 
 ### Watchdog監視
@@ -142,16 +142,16 @@ tmux new-session -d -s executor_watchdog 'python3 workers/executor_watchdog.py'
 python3 scripts/setup_executor_persistence.py
 
 # 設定方法
-1. crontab（推奨）
-2. systemd
-3. tmux + .bashrc
+1.0 crontab（推奨）
+2.0 systemd
+3.0 tmux + .bashrc
 ```
 
 ## 📊 トラブルシューティング
 
 ### よくある問題と解決方法
 
-#### 1. コマンドが実行されない
+#### 1.0 コマンドが実行されない
 
 ```bash
 # 診断実行
@@ -162,7 +162,7 @@ ls -la /home/aicompany/ai_co/ai_commands/pending/
 ps aux | grep command_executor
 ```
 
-#### 2. プロセスが停止している
+#### 2.0 プロセスが停止している
 
 ```bash
 # 健全性チェックと自動修復
@@ -172,7 +172,7 @@ ps aux | grep command_executor
 python3 fix_executor_complete.py
 ```
 
-#### 3. ログが出力されない
+#### 3.0 ログが出力されない
 
 ```bash
 # ディレクトリ権限確認
@@ -208,7 +208,7 @@ find . -name "*.log" -mtime +30 -delete
 
 ## 🎯 ベストプラクティス
 
-### 1. エラーハンドリング
+### 1.0 エラーハンドリング
 
 ```python
 # コマンド作成時の完全なエラーハンドリング
@@ -225,7 +225,7 @@ except Exception as e:
     slack.send_message(f"❌ Error creating command: {str(e)}")
 ```
 
-### 2. 実行の監視
+### 2.0 実行の監視
 
 ```python
 # タイムアウト付き実行監視
@@ -243,7 +243,7 @@ else:
     slack.send_message(f"⏱️ Command timeout: {cmd_id}")
 ```
 
-### 3. リソース管理
+### 3.0 リソース管理
 
 ```python
 # 大量のコマンドを実行する場合
@@ -329,7 +329,7 @@ ai-cmd-executor test     # テスト実行
 )
 
 # 統合版ファイルを作成
-integrated_file = kb_dir / "AI_Command_Executor_Complete_KB_v2.1.md"
+integrated_file = kb_dir / "AI_Command_Executor_Complete_KB_v2.1.0md"
 with open(integrated_file, "w", encoding="utf-8") as f:
     f.write(integrated_content)
 
@@ -342,20 +342,20 @@ index_content = f"""# Elders Guild Knowledge Base Index
 
 ## 📚 Command Executor関連
 
-1. **[AI_Command_Executor_Complete_KB_v2.1.md](AI_Command_Executor_Complete_KB_v2.1.md)**
+1.0 **[AI_Command_Executor_Complete_KB_v2.1.0md](AI_Command_Executor_Complete_KB_v2.1.0md)**
    - 統合版ナレッジベース（最新・推奨）
    - 基本機能 + 修復・監視システム
 
-2. **[AI_Command_Executor_Knowledge_v1.1.md](AI_Command_Executor_Knowledge_v1.1.md)**
+2.0 **[AI_Command_Executor_Knowledge_v1.1.0md](AI_Command_Executor_Knowledge_v1.1.0md)**
    - 基本機能のナレッジベース
 
-3. **[Command_Executor_Repair_System_v2.0.md](Command_Executor_Repair_System_v2.0.md)**
+3.0 **[Command_Executor_Repair_System_v2.0.0md](Command_Executor_Repair_System_v2.0.0md)**
    - 修復・監視システムの詳細
 
 ## 🔧 その他のナレッジベース
 
-- [AI_Company_Core_Knowledge_v5.1.md](AI_Company_Core_Knowledge_v5.1.md)
-- [Error_Intelligence_System_Design_v1.0.md](Error_Intelligence_System_Design_v1.0.md)
+- [AI_Company_Core_Knowledge_v5.1.0md](AI_Company_Core_Knowledge_v5.1.0md)
+- [Error_Intelligence_System_Design_v1.0.0md](Error_Intelligence_System_Design_v1.0.0md)
 - [KB_GitCommitBestPractices.md](KB_GitCommitBestPractices.md)
 """
 

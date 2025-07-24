@@ -234,7 +234,7 @@ echo "✅ Pre-receive validation passed"
     def validate_pre_commit(self) -> bool:
         """pre-commit時の検証"""
         try:
-            # 1. ファイル数チェック
+            # 1.0 ファイル数チェック
             result = subprocess.run(
                 ["git", "diff", "--cached", "--name-only"],
                 capture_output=True,
@@ -260,7 +260,7 @@ echo "✅ Pre-receive validation passed"
                 print(f"   現在: {len(staged_files)}個のファイル")
                 return False
 
-            # 2. 禁止ファイルチェック
+            # 2.0 禁止ファイルチェック
             for file in staged_files:
                 for forbidden_pattern in self.config["forbidden_files"]:
                     if self._matches_pattern(file, forbidden_pattern):
@@ -270,7 +270,7 @@ echo "✅ Pre-receive validation passed"
                         print(f"❌ 禁止されたファイル: {file}")
                         return False
 
-            # 3. テストファイルの存在チェック
+            # 3.0 テストファイルの存在チェック
             if self.config["require_tests"]:
                 if not self._has_test_files(staged_files):
                     print("⚠️  テストファイルが含まれていません")
@@ -285,7 +285,7 @@ echo "✅ Pre-receive validation passed"
     def validate_pre_push(self, branch: str, remote: str) -> bool:
         """pre-push時の検証"""
         try:
-            # 1. 保護ブランチチェック
+            # 1.0 保護ブランチチェック
             if branch in self.config["protected_branches"]:
                 self.log_violation(
                     "PROTECTED_BRANCH_PUSH",
@@ -299,7 +299,7 @@ echo "✅ Pre-receive validation passed"
                 )
                 return False
 
-            # 2. 禁止ブランチチェック
+            # 2.0 禁止ブランチチェック
             if branch in self.config["forbidden_branches"]:
                 self.log_violation(
                     "FORBIDDEN_BRANCH_PUSH", f"Push to forbidden branch: {branch}"
@@ -312,7 +312,7 @@ echo "✅ Pre-receive validation passed"
                 )
                 return False
 
-            # 3. ブランチ命名規則チェック
+            # 3.0 ブランチ命名規則チェック
             if not self._is_valid_branch_name(branch):
                 self.log_violation(
                     "INVALID_BRANCH_NAME", f"Invalid branch name: {branch}"
@@ -323,7 +323,7 @@ echo "✅ Pre-receive validation passed"
                 )
                 return False
 
-            # 4. エルダー承認チェック
+            # 4.0 エルダー承認チェック
             if self._requires_elder_approval(branch):
                 if not self._has_elder_approval():
                     self.log_violation(
@@ -343,7 +343,7 @@ echo "✅ Pre-receive validation passed"
     def validate_commit_msg(self, message: str) -> bool:
         """commit-msg時の検証"""
         try:
-            # 1. Conventional Commits形式チェック
+            # 1.0 Conventional Commits形式チェック
             if self.config["require_conventional_commits"]:
                 if not self._is_conventional_commit(message):
                     self.log_violation(
@@ -357,7 +357,7 @@ echo "✅ Pre-receive validation passed"
                     print("   例: feat(auth): add user login functionality")
                     return False
 
-            # 2. メッセージ長チェック
+            # 2.0 メッセージ長チェック
             lines = message.split("\n")
             if len(lines[0]) > 72:
                 self.log_violation(
@@ -367,7 +367,7 @@ echo "✅ Pre-receive validation passed"
                 print("❌ コミットメッセージの1行目が長すぎます（72文字以内）")
                 return False
 
-            # 3. 禁止文字列チェック
+            # 3.0 禁止文字列チェック
             forbidden_words = ["password", "secret", "token", "key", "private"]
             for word in forbidden_words:
                 if word.lower() in message.lower():
@@ -392,7 +392,7 @@ echo "✅ Pre-receive validation passed"
             # ブランチ名を抽出
             branch_name = ref_name.split("/")[-1]
 
-            # 1. 保護ブランチの強制削除チェック
+            # 1.0 保護ブランチの強制削除チェック
             if (
                 old_rev != "0000000000000000000000000000000000000000"
                 and new_rev == "0000000000000000000000000000000000000000"
@@ -408,7 +408,7 @@ echo "✅ Pre-receive validation passed"
                     )
                     return False
 
-            # 2. 4賢者による最終検証
+            # 2.0 4賢者による最終検証
             if self.config["four_sages_validation"]:
                 if not self._four_sages_final_validation(old_rev, new_rev, branch_name):
                     self.log_violation(

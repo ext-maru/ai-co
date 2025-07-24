@@ -106,7 +106,7 @@ class GitHubFlowProtectionSystem:
         issues = []
 
         try:
-            # 1. 禁止ブランチの存在チェック
+            # 1.0 禁止ブランチの存在チェック
             result = self.run_git("branch -a")
             if result.returncode == 0:
                 branches = result.stdout
@@ -114,7 +114,7 @@ class GitHubFlowProtectionSystem:
                     if forbidden_branch in branches:
                         issues.append(f"禁止ブランチ '{forbidden_branch}' が存在します")
 
-            # 2. 保護されるべきブランチの存在チェック
+            # 2.0 保護されるべきブランチの存在チェック
             for protected_branch in self.config["protected_branches"]:
                 result = self.run_git(
                     f"show-ref --verify --quiet refs/heads/{protected_branch}"
@@ -122,7 +122,7 @@ class GitHubFlowProtectionSystem:
                 if result.returncode != 0:
                     issues.append(f"保護ブランチ '{protected_branch}' が存在しません")
 
-            # 3. 未コミットの重要な変更チェック
+            # 3.0 未コミットの重要な変更チェック
             result = self.run_git("status --porcelain")
             if result.returncode == 0 and result.stdout.strip():
                 staged_files = []
@@ -142,7 +142,7 @@ class GitHubFlowProtectionSystem:
                         f"未ステージングの変更があります: {', '.join(unstaged_files)}"
                     )
 
-            # 4. リモートとの同期状態チェック
+            # 4.0 リモートとの同期状態チェック
             result = self.run_git("fetch --dry-run")
             if result.returncode == 0 and result.stderr:
                 issues.append("リモートとの同期が必要です")
@@ -188,7 +188,7 @@ class GitHubFlowProtectionSystem:
         try:
             self.logger.info("ブランチ競合の修正を開始")
 
-            # 1. 現在のブランチを確認
+            # 1.0 現在のブランチを確認
             current_branch_result = self.run_git("branch --show-current")
             if current_branch_result.returncode != 0:
                 self.logger.error("現在のブランチを取得できません")
@@ -197,7 +197,7 @@ class GitHubFlowProtectionSystem:
             current_branch = current_branch_result.stdout.strip()
             self.logger.info(f"現在のブランチ: {current_branch}")
 
-            # 2. mainブランチの存在確認
+            # 2.0 mainブランチの存在確認
             main_exists = (
                 self.run_git("show-ref --verify --quiet refs/heads/main").returncode
                 == 0
@@ -211,7 +211,7 @@ class GitHubFlowProtectionSystem:
                 self.logger.error("mainもmasterも存在しません")
                 return False
 
-            # 3. masterブランチが存在する場合の処理
+            # 3.0 masterブランチが存在する場合の処理
             if master_exists:
                 if main_exists:
                     # 両方存在する場合: masterを削除（安全確認後）
@@ -260,7 +260,7 @@ class GitHubFlowProtectionSystem:
                         self.logger.error(f"ブランチ改名に失敗: {rename_result.stderr}")
                         return False
 
-            # 4. mainブランチの保護設定
+            # 4.0 mainブランチの保護設定
             return self.apply_branch_protection()
 
         except Exception as e:
@@ -361,7 +361,7 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
             all_approved = all(sage["approved"] for sage in validation_result.values())
 
             self.logger.info(
-                f"4賢者検証結果: 承認={all_approved}, 信頼度={total_confidence:.2f}"
+                f"4賢者検証結果: 承認={all_approved}, 信頼度={total_confidence:0.2f}"
             )
 
             return all_approved and total_confidence >= 0.8, validation_result
@@ -376,22 +376,22 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
         confidence = 0.0
 
         try:
-            # 1. 計画の妥当性チェック
+            # 1.0 計画の妥当性チェック
             is_valid, repo_issues = self.validate_repository_state()
             if not is_valid:
                 issues.extend(repo_issues)
             else:
                 confidence += 0.3
 
-            # 2. 実行順序の最適性チェック
+            # 2.0 実行順序の最適性チェック
             if self.config["elder_approval_required"]:
                 confidence += 0.2
 
-            # 3. 優先順位の妥当性チェック
+            # 3.0 優先順位の妥当性チェック
             if self.config["four_sages_validation"]:
                 confidence += 0.2
 
-            # 4. 進捗管理の適切性チェック
+            # 4.0 進捗管理の適切性チェック
             if self.config["monitoring_enabled"]:
                 confidence += 0.3
 
@@ -412,15 +412,15 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
         confidence = 0.0
 
         try:
-            # 1. リスク評価
+            # 1.0 リスク評価
             if self.config["auto_backup_enabled"]:
                 confidence += 0.3
 
-            # 2. 緊急時対応準備
+            # 2.0 緊急時対応準備
             if self.config["emergency_contacts"]:
                 confidence += 0.2
 
-            # 3. 保護設定の妥当性
+            # 3.0 保護設定の妥当性
             protection_rules = self.config["protection_rules"]
             if protection_rules["allow_force_pushes"] == False:
                 confidence += 0.2
@@ -446,19 +446,19 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
         confidence = 0.0
 
         try:
-            # 1. ベストプラクティスチェック
+            # 1.0 ベストプラクティスチェック
             if "main" in self.config["protected_branches"]:
                 confidence += 0.3
 
-            # 2. 学習機能の評価
+            # 2.0 学習機能の評価
             if self.config_file.exists():
                 confidence += 0.2
 
-            # 3. 知識の蓄積状況
+            # 3.0 知識の蓄積状況
             if self.log_file.exists():
                 confidence += 0.2
 
-            # 4. 継続的改善の仕組み
+            # 4.0 継続的改善の仕組み
             if self.config["monitoring_enabled"]:
                 confidence += 0.3
 
@@ -479,19 +479,19 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
         confidence = 0.0
 
         try:
-            # 1. 検索精度の評価
+            # 1.0 検索精度の評価
             if self.config["four_sages_validation"]:
                 confidence += 0.3
 
-            # 2. 知識統合の品質
+            # 2.0 知識統合の品質
             if len(self.config["protection_rules"]) >= 6:
                 confidence += 0.3
 
-            # 3. 最適解の導出
+            # 3.0 最適解の導出
             if self.config["elder_approval_required"]:
                 confidence += 0.2
 
-            # 4. 情報の関連性
+            # 4.0 情報の関連性
             if self.config["monitoring_enabled"]:
                 confidence += 0.2
 
@@ -511,22 +511,22 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
         try:
             self.logger.critical("緊急復旧モードを開始")
 
-            # 1. まずバックアップを作成
+            # 1.0 まずバックアップを作成
             if not self.create_backup():
                 self.logger.error("緊急時バックアップの作成に失敗")
                 return False
 
-            # 2. ブランチ競合の修正
+            # 2.0 ブランチ競合の修正
             if not self.fix_branch_conflicts():
                 self.logger.error("ブランチ競合の修正に失敗")
                 return False
 
-            # 3. 保護設定の適用
+            # 3.0 保護設定の適用
             if not self.apply_branch_protection():
                 self.logger.error("保護設定の適用に失敗")
                 return False
 
-            # 4. 4賢者による検証
+            # 4.0 4賢者による検証
             is_valid, validation_result = self.four_sages_validation()
             if not is_valid:
                 self.logger.error(f"4賢者検証に失敗: {validation_result}")
@@ -544,28 +544,28 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
         try:
             self.logger.info("GitHub Flow保護システムを開始")
 
-            # 1. 初期検証
+            # 1.0 初期検証
             is_valid, issues = self.validate_repository_state()
             if not is_valid:
                 self.logger.warning(f"リポジトリに問題が検出されました: {issues}")
 
-                # 2. 自動修正を試行
+                # 2.0 自動修正を試行
                 if not self.emergency_recovery():
                     self.logger.error("自動修正に失敗しました")
                     return False
 
-            # 3. 保護設定の適用
+            # 3.0 保護設定の適用
             if not self.apply_branch_protection():
                 self.logger.error("保護設定の適用に失敗")
                 return False
 
-            # 4. 4賢者による最終検証
+            # 4.0 4賢者による最終検証
             is_approved, validation_result = self.four_sages_validation()
             if not is_approved:
                 self.logger.error(f"4賢者による検証に失敗: {validation_result}")
                 return False
 
-            # 5. 設定の保存
+            # 5.0 設定の保存
             self.save_config()
 
             self.logger.info("✅ GitHub Flow保護システムが正常に完了しました")

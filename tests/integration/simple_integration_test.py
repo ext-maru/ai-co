@@ -22,9 +22,8 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 
 
-def test_security_module_basic():
-    """セキュリティモジュールの基本テスト"""
-    print("🔒 セキュリティモジュール基本テスト...")
+def test_security_module_basic()print("🔒 セキュリティモジュール基本テスト...")
+"""セキュリティモジュールの基本テスト"""
 
     try:
         from core.security_module import InputSanitizer
@@ -66,9 +65,8 @@ def test_security_module_basic():
         return False
 
 
-async def test_async_execution_basic():
-    """非同期実行の基本テスト"""
-    print("⚡ 非同期実行基本テスト...")
+async def test_async_execution_basic()print("⚡ 非同期実行基本テスト...")
+"""非同期実行の基本テスト"""
 
     try:
         # 簡単な非同期タスクの実行
@@ -88,7 +86,7 @@ async def test_async_execution_basic():
         assert total_time < 0.3, f"並列実行が効いていない: {total_time}s"
         assert len(results) == 5, "全てのタスクが完了していない"
 
-        print(f"  ✅ 並列実行: 5タスクを{total_time:.3f}秒で完了")
+        print(f"  ✅ 並列実行: 5タスクを{total_time:0.3f}秒で完了")
 
         return True
 
@@ -97,9 +95,8 @@ async def test_async_execution_basic():
         return False
 
 
-def test_file_operations():
-    """ファイル操作テスト"""
-    print("📁 ファイル操作テスト...")
+def test_file_operations()print("📁 ファイル操作テスト...")
+"""ファイル操作テスト"""
 
     try:
         # 一時ディレクトリでのテスト
@@ -137,9 +134,8 @@ def test_file_operations():
         return False
 
 
-def test_local_rate_limiting():
-    """ローカルレート制限テスト"""
-    print("⏱️ ローカルレート制限テスト...")
+def test_local_rate_limiting()print("⏱️ ローカルレート制限テスト...")
+"""ローカルレート制限テスト"""
 
     try:
         # 簡単なレート制限実装
@@ -149,9 +145,8 @@ def test_local_rate_limiting():
                 self.period = period
                 self.calls = []
 
-            def check_rate_limit(self):
-            """SimpleRateLimiterクラス"""
-                now = time.time()
+            def check_rate_limit(self)now = time.time()
+    """SimpleRateLimiterクラス"""
                 # 古い呼び出しを削除
                 self.calls = [call for call in self.calls if call > now - self.period]
 
@@ -182,9 +177,8 @@ def test_local_rate_limiting():
         return False
 
 
-def test_basic_caching():
-    """基本キャッシュテスト"""
-    print("🗄️ 基本キャッシュテスト...")
+def test_basic_caching()print("🗄️ 基本キャッシュテスト...")
+"""基本キャッシュテスト"""
 
     try:
         # シンプルなメモリキャッシュ実装
@@ -233,9 +227,8 @@ def test_basic_caching():
         return False
 
 
-def test_basic_metrics():
-    """基本メトリクステスト"""
-    print("📊 基本メトリクステスト...")
+def test_basic_metrics()print("📊 基本メトリクステスト...")
+"""基本メトリクステスト"""
 
     try:
         # シンプルなメトリクス収集
@@ -290,14 +283,13 @@ def test_basic_metrics():
         return False
 
 
-async def test_system_workflow():
-    """システムワークフローテスト"""
-    print("🔄 システムワークフローテスト...")
+async def test_system_workflow()print("🔄 システムワークフローテスト...")
+"""システムワークフローテスト"""
 
     try:
         # 簡単なタスク処理ワークフローのシミュレーション
 
-        # 1. タスクデータ
+        # 1.0 タスクデータ
         task = {
             "id": "workflow_test_001",
             "type": "code_generation",
@@ -306,7 +298,7 @@ async def test_system_workflow():
             "timestamp": time.time(),
         }
 
-        # 2. 入力検証
+        # 2.0 入力検証
         from core.security_module import InputSanitizer
 
         sanitizer = InputSanitizer()
@@ -315,7 +307,7 @@ async def test_system_workflow():
         assert clean_task["id"] == task["id"]
         print(f"  ✅ 入力検証: タスクID {clean_task['id']}")
 
-        # 3. 非同期処理シミュレーション
+        # 3.0 非同期処理シミュレーション
         async def process_task(task_data):
             """process_taskを処理"""
             # 処理時間のシミュレーション
@@ -335,14 +327,14 @@ async def test_system_workflow():
 
         assert result["status"] == "completed"
         assert result["task_id"] == task["id"]
-        print(f"  ✅ タスク処理: {processing_time:.3f}秒で完了")
+        print(f"  ✅ タスク処理: {processing_time:0.3f}秒で完了")
 
-        # 4. 結果検証
+        # 4.0 結果検証
         assert "files_created" in result
         assert len(result["files_created"]) == 2
         print(f"  ✅ 結果生成: {len(result['files_created'])} ファイル作成")
 
-        # 5. 統計更新
+        # 5.0 統計更新
         metrics = {
             "tasks_completed": 1,
             "total_processing_time": processing_time,
@@ -358,9 +350,8 @@ async def test_system_workflow():
         return False
 
 
-async def main():
-    """統合テストのメイン実行"""
-    print("🚀 Elders Guild シンプル統合テスト開始")
+async def main()print("🚀 Elders Guild シンプル統合テスト開始")
+"""統合テストのメイン実行"""
     print("=" * 60)
 
     test_results = []
@@ -407,7 +398,7 @@ async def main():
     print(f"\n📈 テスト統計:")
     print(f"  成功: {passed}件")
     print(f"  失敗: {failed}件")
-    print(f"  成功率: {passed / len(test_results) * 100:.1f}%")
+    print(f"  成功率: {passed / len(test_results) * 100:0.1f}%")
 
     if failed == 0:
         print("\n🎉 全てのテストが成功しました！")

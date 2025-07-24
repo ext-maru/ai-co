@@ -302,12 +302,12 @@ except Exception as e:
 
         if coverage_assessment["target_met"]:
             coverage_assessment["details"].append(
-                f"🎯 TARGET ACHIEVED: {best_coverage:.1f}% meets 66.7% target"
+                f"🎯 TARGET ACHIEVED: {best_coverage:0.1f}% meets 66.7% target"
             )
         else:
             gap = 66.7 - best_coverage
             coverage_assessment["details"].append(
-                f"📈 PROGRESS: {best_coverage:.1f}% coverage, {gap:.1f}% to target"
+                f"📈 PROGRESS: {best_coverage:0.1f}% coverage, {gap:0.1f}% to target"
             )
 
         # Assess infrastructure support
@@ -421,7 +421,7 @@ except Exception as e:
         if not coverage.get("target_met", False):
             gap = 66.7 - coverage.get("current_coverage", 0)
             recommendations.append(
-                f"Increase coverage by {gap:.1f}% to meet 66.7% strategic target"
+                f"Increase coverage by {gap:0.1f}% to meet 66.7% strategic target"
             )
 
         # Check component-specific issues
@@ -509,7 +509,7 @@ except Exception as e:
         print("\n🔗 Integration Status:")
         integration = report["integration_status"]
         print(
-            f"   Overall: {integration['overall_status'].upper()} ({integration['health_percentage']:.1f}%)"
+            f"   Overall: {integration['overall_status'].upper()} ({integration['health_percentage']:0.1f}%)"
         )
         print(
             f"   Components: {integration['operational_components']}/{integration['total_components']} operational"
@@ -519,13 +519,13 @@ except Exception as e:
         coverage = report["week4_achievements"]["coverage_target"]
         target_icon = "🎯" if coverage["target_met"] else "📈"
         print(f"   {target_icon} Target: {coverage['target_percentage']}%")
-        print(f"   Current: {coverage['current_coverage']:.1f}%")
+        print(f"   Current: {coverage['current_coverage']:0.1f}%")
         print(f"   Status: {'ACHIEVED' if coverage['target_met'] else 'IN PROGRESS'}")
 
         print("\n🏗️ System Readiness:")
         readiness = report["system_readiness"]
         print(f"   Status: {readiness['overall_status'].upper()}")
-        print(f"   Readiness: {readiness['readiness_percentage']:.1f}%")
+        print(f"   Readiness: {readiness['readiness_percentage']:0.1f}%")
         print(f"   Message: {readiness['readiness_message']}")
 
         if report["recommendations"]:

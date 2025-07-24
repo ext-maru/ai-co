@@ -363,9 +363,8 @@ class PMWorker:
         health_thread.start()
         logger.info(f"🏥 ヘルスチェック監視スレッド開始 (間隔: {self.health_check_interval}秒)")
 
-    def start(self):
-        """startメソッド"""
-        self.start_scaling_monitor()
+    def start(self)self.start_scaling_monitor()
+    """startメソッド"""
         self.start_health_monitor()
         if not self.connect():
             return

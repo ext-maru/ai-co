@@ -414,7 +414,7 @@ if __name__ == "__main__":
     print(f"\nパイプラインメトリクス:")
     print(f"  - 処理数: {metrics['pipeline']['processed_count']}")
     print(f"  - エラー数: {metrics['pipeline']['error_count']}")
-    print(f"  - スループット: {metrics['pipeline']['throughput']:.2f} items/sec")
+    print(f"  - スループット: {metrics['pipeline']['throughput']:0.2f} items/sec")
 
     # パイプライン停止
     pipeline.stop()

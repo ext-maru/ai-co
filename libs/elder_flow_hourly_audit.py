@@ -287,7 +287,7 @@ class HourlyAuditSystem:
             wait_seconds = (next_time - datetime.now()).total_seconds()
 
             if wait_seconds > 0:
-                logger.info(f"次の監査まで{wait_seconds:.0f}秒待機: {next_task.value}")
+                logger.info(f"次の監査まで{wait_seconds:0.0f}秒待機: {next_task.value}")
                 self.stop_event.wait(wait_seconds)
 
     def _execute_scheduled_task(self, audit_type: AuditType) -> Optional[AuditTask]:
@@ -346,13 +346,13 @@ class HourlyAuditSystem:
             "coverage_metrics": {},
         }
 
-        # 1. コードベースをスキャン
+        # 1.0 コードベースをスキャン
         codebase_results = self._scan_codebase()
         metrics["total_files_scanned"] = codebase_results["files_scanned"]
         metrics["violations_found"] = codebase_results["violations_found"]
         findings.extend(codebase_results.get("findings", []))
 
-        # 2. テストカバレッジをチェック
+        # 2.0 テストカバレッジをチェック
         coverage_results = self._check_test_coverage()
         metrics["coverage_metrics"] = coverage_results
 
@@ -365,11 +365,11 @@ class HourlyAuditSystem:
                 }
             )
 
-        # 3. 依存関係をチェック
+        # 3.0 依存関係をチェック
         dependency_results = self._check_dependencies()
         findings.extend(dependency_results.get("vulnerabilities", []))
 
-        # 4. プロセス遵守をチェック
+        # 4.0 プロセス遵守をチェック
         process_results = self._check_process_compliance()
         findings.extend(process_results.get("violations", []))
 
@@ -408,7 +408,7 @@ class HourlyAuditSystem:
                     {
                         "type": "long_standing_violation",
                         "severity": "high",
-                        "description": f"{violation['violation_type']}が{age_hours:.0f}時間未解決",
+                        "description": f"{violation['violation_type']}が{age_hours:0.0f}時間未解決",
                         "violation_id": violation["id"],
                     }
                 )
@@ -417,7 +417,7 @@ class HourlyAuditSystem:
                     {
                         "type": "aging_violation",
                         "severity": "medium",
-                        "description": f"{violation['violation_type']}が{age_hours:.0f}時間経過",
+                        "description": f"{violation['violation_type']}が{age_hours:0.0f}時間経過",
                         "violation_id": violation["id"],
                     }
                 )
@@ -665,7 +665,7 @@ class HourlyAuditSystem:
 - 実施監査数: {len(recent_audits)}
 - 合格監査: {passed_audits}/{len(recent_audits)}
 - 検出された問題: {total_findings}件
-- 全体コンプライアンス率: {compliance.overall_compliance_rate:.1f}%
+- 全体コンプライアンス率: {compliance.overall_compliance_rate:0.1f}%
 - ステータス: {'コンプライアント' if compliance.is_compliant else '要改善'}
 """
         return summary.strip()
@@ -794,7 +794,7 @@ class HourlyAuditSystem:
 
     <div class="section">
         <h2>コンプライアンスメトリクス</h2>
-        <p>全体コンプライアンス率: {report.compliance_metrics.overall_compliance_rate:.1f}%</p>
+        <p>全体コンプライアンス率: {report.compliance_metrics.overall_compliance_rate:0.1f}%</p>
         <p>ステータス: {'✅ コンプライアント' if report.compliance_metrics.is_compliant else '❌ 要改善'}</p>
     </div>
 

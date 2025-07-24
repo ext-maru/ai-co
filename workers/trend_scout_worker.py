@@ -646,7 +646,7 @@ class TrendScoutWorker:
         top_source = max(self.config["enabled_sources"],
                         key=lambda s: len([t for t in trends if t.source == s]))
 
-        return f"Analyzed {total} trends with average score {avg_score:.2f}. " \
+        return f"Analyzed {total} trends with average score {avg_score:0.2f}. " \
                f"Primary source: {top_source.value}. " \
                f"Key focus areas: AI/ML, web frameworks, and developer tools."
 
@@ -678,7 +678,7 @@ async def demo_trend_scout():
     for trend in reddit_trends[:2]:
         # Process each item in collection
         print(f"  💬 {trend.title}")
-        print(f"     Score: {trend.score:.2f}, Comments: {trend.discussions}")
+        print(f"     Score: {trend.score:0.2f}, Comments: {trend.discussions}")
 
     # 完全レポート生成
     print("\n📄 Generating comprehensive report...")

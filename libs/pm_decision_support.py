@@ -154,7 +154,7 @@ class PMDecisionSupport(BaseManager):
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 意思決定推奨テーブル
             conn.execute(
                 """
@@ -260,7 +260,7 @@ class PMDecisionSupport(BaseManager):
     def _load_historical_data(self):
         """過去データの読み込み"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # 意思決定履歴を読み込み
                 cursor = conn.execute(
                     """
@@ -331,7 +331,7 @@ class PMDecisionSupport(BaseManager):
                 "analysis_timestamp": datetime.now().isoformat(),
             }
 
-            logger.info(f"✅ プロジェクト状況分析完了: スコア{overall_score:.2f}")
+            logger.info(f"✅ プロジェクト状況分析完了: スコア{overall_score:0.2f}")
             return analysis
 
         except Exception as e:
@@ -476,24 +476,24 @@ class PMDecisionSupport(BaseManager):
         """推奨事項テキストの生成"""
         templates = {
             DecisionType.RESOURCE_ALLOCATION: [
-                "リソース配分の最適化を行い、効率性を{efficiency_improvement:.1f}%向上させることを推奨します。",
-                "チーム間のリソース再配分により、タイムライン遵守率を{timeline_improvement:.1f}%改善できます。",
-                "外部リソースの活用により、プロジェクト完了率を{completion_improvement:.1f}%向上させることが可能です。",
+                "リソース配分の最適化を行い、効率性を{efficiency_improvement:0.1f}%向上させることを推奨します。",
+                "チーム間のリソース再配分により、タイムライン遵守率を{timeline_improvement:0.1f}%改善できます。",
+                "外部リソースの活用により、プロジェクト完了率を{completion_improvement:0.1f}%向上させることが可能です。",
             ],
             DecisionType.TASK_PRIORITIZATION: [
-                "高優先度タスクの見直しにより、品質スコアを{quality_improvement:.1f}%向上させることを推奨します。",
-                "クリティカルパスの最適化により、完了率を{completion_improvement:.1f}%改善できます。",
+                "高優先度タスクの見直しにより、品質スコアを{quality_improvement:0.1f}%向上させることを推奨します。",
+                "クリティカルパスの最適化により、完了率を{completion_improvement:0.1f}%改善できます。",
                 "依存関係の解析に基づくタスク優先度の調整が必要です。",
             ],
             DecisionType.QUALITY_GATE: [
-                "品質ゲートの強化により、欠陥率を{defect_reduction:.1f}%削減することを推奨します。",
-                "レビュープロセスの改善により、手戻り率を{rework_reduction:.1f}%削減できます。",
-                "自動化テストの導入により、品質スコアを{quality_improvement:.1f}%向上させることが可能です。",
+                "品質ゲートの強化により、欠陥率を{defect_reduction:0.1f}%削減することを推奨します。",
+                "レビュープロセスの改善により、手戻り率を{rework_reduction:0.1f}%削減できます。",
+                "自動化テストの導入により、品質スコアを{quality_improvement:0.1f}%向上させることが可能です。",
             ],
             DecisionType.TIMELINE_ADJUSTMENT: [
-                "スケジュール調整により、タイムライン遵守率を{timeline_improvement:.1f}%改善することを推奨します。",
+                "スケジュール調整により、タイムライン遵守率を{timeline_improvement:0.1f}%改善することを推奨します。",
                 "マイルストーンの見直しにより、プロジェクト完了の確実性を向上させることができます。",
-                "バッファ時間の追加により、リスクを{risk_reduction:.1f}%削減できます。",
+                "バッファ時間の追加により、リスクを{risk_reduction:0.1f}%削減できます。",
             ],
         }
 
@@ -527,12 +527,12 @@ class PMDecisionSupport(BaseManager):
                 if metric_name in ["defect_rate", "rework_rate"]:
                     if value > threshold:
                         reasoning_parts.append(
-                            f"{metric_name}が{value:.1f}%でしきい値{threshold:.1f}%を超過"
+                            f"{metric_name}が{value:0.1f}%でしきい値{threshold:0.1f}%を超過"
                         )
                 else:
                     if value < threshold:
                         reasoning_parts.append(
-                            f"{metric_name}が{value:.1f}%でしきい値{threshold:.1f}%を下回る"
+                            f"{metric_name}が{value:0.1f}%でしきい値{threshold:0.1f}%を下回る"
                         )
 
         # トレンドベースの理由
@@ -739,7 +739,7 @@ class PMDecisionSupport(BaseManager):
     def _get_historical_success_rate(self, decision_type: DecisionType) -> float:
         """過去の意思決定成功率を取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.execute(
                     """
                     SELECT AVG(success_rating)
@@ -813,7 +813,7 @@ class PMDecisionSupport(BaseManager):
     def _save_recommendation(self, recommendation: DecisionRecommendation):
         """推奨事項をデータベースに保存"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO decision_recommendations
@@ -865,7 +865,7 @@ class PMDecisionSupport(BaseManager):
     def _get_historical_metrics(self, project_id: str) -> List[ProjectMetrics]:
         """過去のメトリクスデータを取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.execute(
                     """
                     SELECT project_id, completion_rate, quality_score, timeline_adherence,
@@ -1042,7 +1042,7 @@ class PMDecisionSupport(BaseManager):
     ):
         """意思決定の結果を記録"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # project_idを取得
                 cursor = conn.execute(
                     """
@@ -1095,7 +1095,7 @@ class PMDecisionSupport(BaseManager):
     def get_decision_dashboard(self, project_id: str) -> Dict[str, Any]:
         """意思決定ダッシュボード情報を取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # 現在の推奨事項
                 cursor = conn.execute(
                     """
@@ -1178,7 +1178,7 @@ if __name__ == "__main__":
     # プロジェクト状況分析
     print(f"\n📊 プロジェクト状況分析: {test_project_id}")
     analysis = pm_support.analyze_project_status(test_project_id)
-    print(f"総合スコア: {analysis.get('overall_score', 0):.2f}")
+    print(f"総合スコア: {analysis.get('overall_score', 0):0.2f}")
     print(f"健康状態: {analysis.get('health_status', 'unknown')}")
     print(f"リスク数: {len(analysis.get('risks', []))}")
     print(f"機会数: {len(analysis.get('opportunities', []))}")
@@ -1193,7 +1193,7 @@ if __name__ == "__main__":
         print(f"  緊急度: {rec.urgency.value}")
         print(f"  信頼度: {rec.confidence.value}")
         print(f"  推奨: {rec.recommendation}")
-        print(f"  影響度: {rec.estimated_impact:+.2f}")
+        print(f"  影響度: {rec.estimated_impact:+0.2f}")
 
         if rec.risks:
             print(f"  リスク: {rec.risks[0]}")
@@ -1211,7 +1211,7 @@ if __name__ == "__main__":
     print(f"  過去の意思決定統計: {len(stats)}タイプ")
     for decision_type, stat in stats.items():
         print(
-            f"    {decision_type}: {stat['count']}件 (平均評価: {stat['avg_rating']:.1f}/5)"
+            f"    {decision_type}: {stat['count']}件 (平均評価: {stat['avg_rating']:0.1f}/5)"
         )
 
     # 意思決定結果記録のテスト

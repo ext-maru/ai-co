@@ -199,12 +199,12 @@ class EitmsUnifiedDatabase:
         """初期化メソッド"""
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._connection: Optional[sqlite3.Connection] = None
+        self._connection: Optional[sqlite3Connection] = None
         
     async def initialize(self):
         """データベース初期化"""
-        self._connection = sqlite3.connect(str(self.db_path))
-        self._connection.row_factory = sqlite3.Row
+        self._connection = sqlite3connect(str(self.db_path))
+        self._connection.row_factory = sqlite3Row
         
         await self._create_tables()
         logger.info(f"🏛️ EITMS統一データベース初期化完了: {self.db_path}")

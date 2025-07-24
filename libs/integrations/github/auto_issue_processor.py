@@ -665,8 +665,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
                     
                     # 指数バックオフで待機
                     await asyncio.sleep(retry_delay)
-                    logger.info(f"Retrying issue #{issue.number} processing (attempt {attempt + " \
-                        "1}/{max_retries})")
+                    logger.info(f"Retrying issue #{issue.number} processing (attempt {attempt + 1}/{max_retries})")
                     
                 else:
                     # 最終失敗を記録
@@ -689,8 +688,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
             # 既存のPRをチェック
             existing_pr = await self._check_existing_pr_for_issue(issue.number)
             if existing_pr:
-                logger.info(f"PR already exists for issue #{issue.number}: PR #{existing_pr[" \
-                    "PR already exists for issue #{issue.number}: PR #{existing_pr["number']}")
+                logger.info(f"PR already exists for issue #{issue.number}: PR #{existing_pr['number']}")
                 
                 # 再オープンされたIssueの場合、特別な処理
                 reopened_info = await self.reopened_tracker.check_if_reopened(issue.number)
@@ -832,7 +830,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
                         comment_text += "\n"
 
                     comment_text += f"📊 **処理情報:**\n"
-                    comment_text += f"- 複雑度スコア: {complexity.score:.2f}\n"
+                    comment_text += f"- 複雑度スコア: {complexity.score:0.2f}\n"
                     comment_text += f"- 処理基準: 複雑度 < 0.7 かつ 優先度 Medium/Low\n"
 
                     issue.create_comment(comment_text)

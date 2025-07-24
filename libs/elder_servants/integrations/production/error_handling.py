@@ -724,9 +724,8 @@ def error_recovery(
 ):
     """エラー復旧デコレータ"""
 
-    def decorator(func:
+    def decorator(func: Callable):
         """decoratorメソッド"""
-    Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             """wrapperメソッド"""
@@ -767,9 +766,8 @@ def circuit_breaker_protected(failure_threshold: int = 5, timeout_duration: int 
     """サーキットブレーカー保護デコレータ"""
     circuit_breaker = CircuitBreaker(failure_threshold, timeout_duration)
 
-    def decorator(func:
+    def decorator(func: Callable):
         """decoratorメソッド"""
-    Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             """wrapperメソッド"""

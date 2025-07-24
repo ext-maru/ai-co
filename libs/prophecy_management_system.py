@@ -219,7 +219,7 @@ class ProphecyVersionControl:
         major, minor, patch = int(parts[0]), int(parts[1]), int(parts[2])
 
         # マイナーバージョンアップ
-        return f"{major}.{minor + 1}.0"
+        return f"{major}.{minor + 1}0.0"
 
     def get_latest_version(self, prophecy_name: str) -> str:
         """最新バージョン取得"""
@@ -602,7 +602,7 @@ class ProphecyManagementSystem:
 
         template = self.templates[template_id]
 
-        # 1. カスタマイズ検証
+        # 1.0 カスタマイズ検証
         validation_result = template.validate_customizations(customizations)
         if not validation_result["valid"]:
             return {
@@ -610,19 +610,19 @@ class ProphecyManagementSystem:
                 "details": validation_result,
             }
 
-        # 2. 予言書生成
+        # 2.0 予言書生成
         prophecy_data = template.generate_prophecy(customizations)
 
-        # 3. 品質・リスク評価
+        # 3.0 品質・リスク評価
         assessments = self.conduct_comprehensive_assessment(prophecy_data)
 
-        # 4. ガバナンス審査
+        # 4.0 ガバナンス審査
         approval_result = self.governance_system.review_prophecy_creation(
             prophecy_data, assessments
         )
 
         if approval_result["approved"]:
-            # 5. 予言書登録
+            # 5.0 予言書登録
             prophecy_name = prophecy_data["prophecy_name"]
             self.managed_prophecies[prophecy_name] = {
                 "prophecy_data": prophecy_data,
@@ -631,7 +631,7 @@ class ProphecyManagementSystem:
                 "created_at": datetime.now().isoformat(),
             }
 
-            # 6. 初期バージョン作成
+            # 6.0 初期バージョン作成
             self.version_control.create_version(
                 prophecy_name, prophecy_data, {"type": "initial_creation"}
             )

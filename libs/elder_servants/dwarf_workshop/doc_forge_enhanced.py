@@ -172,18 +172,18 @@ class DocForgeEnhanced(DocForge):
         
         # 目次
         doc_parts.append("## 📋 目次")
-        doc_parts.append("1. [概要](#概要)")
-        doc_parts.append("2. [ビジネス要件](#ビジネス要件)")
-        doc_parts.append("3. [システム構成要素](#システム構成要素)")
-        doc_parts.append("4. [エンティティ関係図](#エンティティ関係図)")
-        doc_parts.append("5. [ビジネスルール](#ビジネスルール)")
-        doc_parts.append("6. [技術的考慮事項](#技術的考慮事項)")
-        doc_parts.append("7. [実装ガイドライン](#実装ガイドライン)")
-        doc_parts.append("8. [品質保証計画](#品質保証計画)")
-        doc_parts.append("9. [リスク分析と対策](#リスク分析と対策)")
+        doc_parts.append("1.0 [概要](#概要)")
+        doc_parts.append("2.0 [ビジネス要件](#ビジネス要件)")
+        doc_parts.append("3.0 [システム構成要素](#システム構成要素)")
+        doc_parts.append("4.0 [エンティティ関係図](#エンティティ関係図)")
+        doc_parts.append("5.0 [ビジネスルール](#ビジネスルール)")
+        doc_parts.append("6.0 [技術的考慮事項](#技術的考慮事項)")
+        doc_parts.append("7.0 [実装ガイドライン](#実装ガイドライン)")
+        doc_parts.append("8.0 [品質保証計画](#品質保証計画)")
+        doc_parts.append("9.0 [リスク分析と対策](#リスク分析と対策)")
         doc_parts.append("")
         
-        # 1. 概要
+        # 1.0 概要
         doc_parts.append("## 概要")
         entities = analysis_results.get("entities", [])
         main_entities = [e.name for e in entities[:5]]  # 主要な5つのエンティティ
@@ -192,7 +192,7 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("本設計書では、ビジネス要件から技術実装まで、システム開発に必要なすべての要素を定義します。")
         doc_parts.append("")
         
-        # 2. ビジネス要件
+        # 2.0 ビジネス要件
         doc_parts.append("## ビジネス要件")
         
         # 2.1 主要エンティティ
@@ -203,7 +203,7 @@ class DocForgeEnhanced(DocForge):
             doc_parts.append(f"- **説明**: {self._generate_entity_description(entity)}")
             if entity.attributes:
                 doc_parts.append(f"- **属性**: {', '.join(entity.attributes)}")
-            doc_parts.append(f"- **信頼度**: {entity.confidence:.1%}")
+            doc_parts.append(f"- **信頼度**: {entity.confidence:0.1%}")
             doc_parts.append("")
         
         # 2.2 ステークホルダー要件
@@ -216,7 +216,7 @@ class DocForgeEnhanced(DocForge):
                 doc_parts.append(f"- システムを通じて{self._generate_actor_goals(actor.name)}")
                 doc_parts.append("")
         
-        # 3. システム構成要素
+        # 3.0 システム構成要素
         doc_parts.append("## システム構成要素")
         
         # 3.1 アーキテクチャ概要
@@ -226,7 +226,7 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("```")
         doc_parts.append("")
         
-        # 4. エンティティ関係図
+        # 4.0 エンティティ関係図
         doc_parts.append("## エンティティ関係図")
         relationships = analysis_results.get("relationships", [])
         
@@ -276,20 +276,20 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("```")
         doc_parts.append("")
         
-        # 5. ビジネスルール
+        # 5.0 ビジネスルール
         doc_parts.append("## ビジネスルール")
         business_rules = analysis_results.get("business_rules", [])
         
         for i, rule in enumerate(business_rules, 1):
             # Process each item in collection
-            doc_parts.append(f"### 5.{i} {rule.entity}関連ルール")
+            doc_parts.append(f"### 5.0{i} {rule.entity}関連ルール")
             doc_parts.append(f"**条件**: {rule.condition}")
             doc_parts.append(f"**アクション**: {rule.action}")
             doc_parts.append(f"**優先度**: {rule.priority}")
             doc_parts.append(f"**実装要件**: {self._generate_rule_implementation(rule)}")
             doc_parts.append("")
         
-        # 6. 技術的考慮事項
+        # 6.0 技術的考慮事項
         doc_parts.append("## 技術的考慮事項")
         implicit_needs = analysis_results.get("implicit_needs", [])
         
@@ -302,7 +302,7 @@ class DocForgeEnhanced(DocForge):
         
         for category, needs in needs_by_category.items():
             # Process each item in collection
-            doc_parts.append(f"### 6.{len(needs_by_category)} {self._translate_category(category)}")
+            doc_parts.append(f"### 6.0{len(needs_by_category)} {self._translate_category(category)}")
             for need in needs:
                 # Process each item in collection
                 doc_parts.append(f"#### {need.description}")
@@ -311,23 +311,23 @@ class DocForgeEnhanced(DocForge):
                 doc_parts.append(f"- **実装指針**: {self._generate_implementation_guidance(need)}")
                 doc_parts.append("")
         
-        # 7. 実装ガイドライン
+        # 7.0 実装ガイドライン
         doc_parts.append("## 実装ガイドライン")
         
         doc_parts.append("### 7.1 開発フェーズ")
-        doc_parts.append("1. **フェーズ1: 基盤構築**")
+        doc_parts.append("1.0 **フェーズ1: 基盤構築**")
         doc_parts.append("   - データモデルの実装")
         doc_parts.append("   - 基本的なCRUD操作")
         doc_parts.append("   - 認証・認可システム")
         doc_parts.append("")
         
-        doc_parts.append("2. **フェーズ2: コア機能**")
+        doc_parts.append("2.0 **フェーズ2: コア機能**")
         for rule in business_rules[:3]:
             # Process each item in collection
             doc_parts.append(f"   - {rule.action}の実装")
         doc_parts.append("")
         
-        doc_parts.append("3. **フェーズ3: 統合・最適化**")
+        doc_parts.append("3.0 **フェーズ3: 統合・最適化**")
         for need in implicit_needs[:3]:
             # Process each item in collection
             doc_parts.append(f"   - {need.description}の実装")
@@ -341,7 +341,7 @@ class DocForgeEnhanced(DocForge):
             doc_parts.append(f"- **{layer}**: {', '.join(technologies)}")
         doc_parts.append("")
         
-        # 8. 品質保証計画
+        # 8.0 品質保証計画
         doc_parts.append("## 品質保証計画")
         doc_parts.append("### 8.1 テスト戦略")
         doc_parts.append("- **単体テスト**: 各エンティティの基本操作（カバレッジ95%以上）")
@@ -355,7 +355,7 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("- **応答時間**: 95%のリクエストが2秒以内")
         doc_parts.append("")
         
-        # 9. リスク分析と対策
+        # 9.0 リスク分析と対策
         doc_parts.append("## リスク分析と対策")
         doc_parts.append("| リスク | 影響度 | 発生確率 | 対策 |")
         doc_parts.append("|--------|--------|----------|------|")
@@ -376,7 +376,7 @@ class DocForgeEnhanced(DocForge):
         
         metadata = analysis_results.get("metadata", {})
         doc_parts.append("### B. 分析メタデータ")
-        doc_parts.append(f"- **分析信頼度**: {metadata.get('confidence', 0):.1%}")
+        doc_parts.append(f"- **分析信頼度**: {metadata.get('confidence', 0):0.1%}")
         doc_parts.append(f"- **検出エンティティ数**: {len(entities)}")
         doc_parts.append(f"- **検出関係性数**: {len(relationships)}")
         doc_parts.append(f"- **検出ビジネスルール数**: {len(business_rules)}")
@@ -397,7 +397,7 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("")
         
         # アーキテクチャ概要
-        doc_parts.append("## 1. アーキテクチャ概要")
+        doc_parts.append("## 1.0 アーキテクチャ概要")
         implicit_needs = analysis_results.get("implicit_needs", [])
         
         # マイクロサービス vs モノリス判定

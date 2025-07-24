@@ -106,7 +106,7 @@ class RAGSageSoul(BaseSoul):
         """データベースの初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             # ドキュメントテーブル
             conn.execute('''
@@ -281,7 +281,7 @@ class RAGSageSoul(BaseSoul):
     
     async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]:
         """全文検索を実行"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             # SQLクエリ構築
             where_conditions = ["content LIKE ? OR title LIKE ?"]
@@ -367,7 +367,7 @@ class RAGSageSoul(BaseSoul):
     
     async def _exact_search(self, query: SearchQuery) -> List[SearchResult]:
         """完全一致検索を実行"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             sql = """
                 SELECT id, content, source, title, category, tags, author,
@@ -410,7 +410,7 @@ class RAGSageSoul(BaseSoul):
         start_time = time.time()
         
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # ドキュメント挿入/更新
                 sql = """
@@ -493,7 +493,7 @@ class RAGSageSoul(BaseSoul):
     
     async def get_index_info(self) -> Index:
         """インデックス情報を取得"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             # ドキュメント数取得
             cursor = conn.execute("SELECT COUNT(*) FROM documents")
@@ -520,7 +520,7 @@ class RAGSageSoul(BaseSoul):
         before_size = self.db_path.stat().st_size if self.db_path.exists() else 0
         
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # VACUUM実行（SQLiteの最適化）
                 conn.execute("VACUUM")
@@ -677,7 +677,7 @@ class RAGSageSoul(BaseSoul):
     
     async def _increment_access_count(self, document_id: str) -> None:
         """ドキュメントのアクセス数を増加"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             conn.execute(
                 "UPDATE documents SET access_count = access_count + 1 WHERE id = ?",
@@ -689,7 +689,7 @@ class RAGSageSoul(BaseSoul):
     
     async def _save_search_history(self, query: SearchQuery, results: SearchResults) -> None:
         """検索履歴を保存"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         try:
             conn.execute("""
                 INSERT INTO search_history 

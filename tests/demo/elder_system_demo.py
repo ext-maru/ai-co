@@ -242,26 +242,26 @@ async def test_complete_workflow():
     print("-" * 40)
 
     try:
-        # 1. 認証システムの初期化
+        # 1.0 認証システムの初期化
         auth_system = create_demo_auth_system()
 
-        # 2. Claude Elderとして認証
+        # 2.0 Claude Elderとして認証
         auth_request = AuthRequest(username="claude_elder", password="claude_password")
         result, session, user = auth_system.authenticate(auth_request)
 
         if result == AuthResult.SUCCESS:
             print(f"✅ Step 1: Authenticated as {user.username}")
 
-            # 3. 各ワーカーの機能を段階的に実行
+            # 3.0 各ワーカーの機能を段階的に実行
             print("✅ Step 2: Creating task context...")
 
-            # 4. 統合された監査ログの確認
+            # 4.0 統合された監査ログの確認
             print("✅ Step 3: Audit logging active")
 
-            # 5. 権限チェック
+            # 5.0 権限チェック
             print("✅ Step 4: Permission checks passed")
 
-            # 6. 完了
+            # 6.0 完了
             print("✅ Step 5: Workflow completed successfully")
 
         else:

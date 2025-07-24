@@ -260,7 +260,7 @@ class ElderFlowErrorHandler:
 
                         if attempt < config.max_attempts - 1:
                             delay = config.get_delay(attempt)
-                            self.logger.info(f"Retrying in {delay:.2f} seconds...")
+                            self.logger.info(f"Retrying in {delay:0.2f} seconds...")
                             await asyncio.sleep(delay)
                         else:
                             self.logger.error(

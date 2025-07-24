@@ -205,7 +205,7 @@ class ElderFlowSoulIntegration:
             task.total_duration = (task.completed_at - start_time).total_seconds()
 
             self.logger.info(
-                f"✅ Soul Enhanced Elder Flow completed: {task_id} in {task.total_duration:.2f}s"
+                f"✅ Soul Enhanced Elder Flow completed: {task_id} in {task.total_duration:0.2f}s"
             )
 
             return task_id
@@ -631,9 +631,9 @@ async def demo_soul_enhanced_elder_flow():
     status = await get_soul_enhanced_flow_status(task_id)
     if status:
         print(
-            f"📊 Completion Rate: {status['soul_results_summary']['completion_rate']:.1%}"
+            f"📊 Completion Rate: {status['soul_results_summary']['completion_rate']:0.1%}"
         )
-        print(f"⏱️  Duration: {status['total_duration']:.2f}s")
+        print(f"⏱️  Duration: {status['total_duration']:0.2f}s")
 
     # セッション解散
     integration = await get_elder_flow_soul_integration()

@@ -45,10 +45,8 @@ class TDDViolationType:
 class TDDCycleTracker:
     """TDDサイクル実行トラッカー"""
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        self.project_root = project_root or Path.cwd()
+    def __init__(self, project_root: Optional[Path] = None)self.project_root = project_root or Path.cwd()
+    """初期化メソッド"""
         self.logger = logging.getLogger("TDDCycleTracker")
         
         # Gitコミット履歴からTDDサイクルを追跡
@@ -106,10 +104,9 @@ class TDDCycleTracker:
                 "cycle_compliance_rate": 0.0
             }
             
-    def _get_git_commits(self, file_path: str, time_window: timedelta) -> List[Dict[str, Any]]:
-        """指定ファイルのGitコミット履歴を取得"""
-        since_date = (datetime.now() - time_window).strftime('%Y-%m-%d')
-        
+    def _get_git_commits(self, file_path: str, time_window: timedelta) -> List[Dict[str, Any]]since_date = (datetime.now() - time_window).strftime('%Y-%m-%d')
+    """指定ファイルのGitコミット履歴を取得"""
+        :
         try:
             cmd = [
                 'git', 'log', '--oneline', '--follow', 
@@ -183,9 +180,8 @@ class TDDCycleTracker:
             
         return cycles
         
-    def _detect_tdd_phase(self, commit_message: str) -> Optional[str]:
-        """コミットメッセージからTDDフェーズを検出"""
-        for phase, patterns in self.git_patterns.items():
+    def _detect_tdd_phase(self, commit_message: str) -> Optional[str]for phase, patterns in self.git_patterns.items():
+    """コミットメッセージからTDDフェーズを検出"""
             for pattern in patterns:
                 if pattern.search(commit_message):
                     return phase
@@ -252,8 +248,7 @@ class TestQualityAnalyzer:
     """テスト品質・実質性評価システム"""
     
     def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger("TestQualityAnalyzer")
+    """初期化メソッド"""
         
         # 低品質テストのパターン
         self.poor_quality_patterns = [
@@ -334,10 +329,8 @@ class TestQualityAnalyzer:
                 
         return test_functions
         
-    def _has_assertions(self, func_node: ast.FunctionDef) -> bool:
-        """関数内にアサーションがあるかチェック"""
-        for node in ast.walk(func_node):
-            if isinstance(node, ast.Assert):
+    def _has_assertions(self, func_node: ast.FunctionDef) -> boolfor node in ast.walk(func_node)if isinstance(node, ast.Assert):
+    """関数内にアサーションがあるかチェック"""
                 return True
             if isinstance(node, ast.Call):
                 if isinstance(node.func, ast.Attribute):
@@ -418,10 +411,9 @@ class TestQualityAnalyzer:
                 
         return violations
         
-    def _count_empty_tests(self, test_functions: List[Dict[str, Any]]) -> int:
-        """空のテスト数をカウント"""
-        return sum(1 for func in test_functions if func["body_length"] <= 1)
-        
+    def _count_empty_tests(self, test_functions: List[Dict[str, Any]]) -> intreturn sum(1 for func in test_functions if func["body_length"] <= 1)
+    """空のテスト数をカウント"""
+        :
     def _count_assertions(self, content: str) -> int:
         """アサーションの数をカウント"""
         assertion_patterns = [
@@ -474,10 +466,8 @@ class TestQualityAnalyzer:
 class CoverageManipulationDetector:
     """カバレッジ操作検出システム"""
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        self.project_root = project_root or Path.cwd()
+    def __init__(self, project_root: Optional[Path] = None)self.project_root = project_root or Path.cwd()
+    """初期化メソッド"""
         self.logger = logging.getLogger("CoverageManipulationDetector")
         
     def detect_coverage_manipulation(self, coverage_file: Optional[str] = None) -> Dict[str, Any]:
@@ -516,9 +506,8 @@ class CoverageManipulationDetector:
                 "manipulation_score": 0.0
             }
             
-    def _load_coverage_data(self, coverage_file: Optional[str]) -> Dict[str, Any]:
-        """カバレッジデータを読み込み"""
-        if coverage_file and Path(coverage_file).exists():
+    def _load_coverage_data(self, coverage_file: Optional[str]) -> Dict[str, Any]if coverage_file and Path(coverage_file).exists():
+    """カバレッジデータを読み込み"""
             try:
                 if coverage_file.endswith('.xml'):
                     return self._parse_coverage_xml(coverage_file)
@@ -531,12 +520,11 @@ class CoverageManipulationDetector:
         # カバレッジファイルが見つからない場合はpytestで生成を試行
         return self._generate_coverage_report()
         
-    def _parse_coverage_xml(self, xml_file: str) -> Dict[str, Any]:
-        """XML形式のカバレッジレポートを解析"""
-        tree = ET.parse(xml_file)
+    def _parse_coverage_xml(self, xml_file: str) -> Dict[str, Any]tree = ET.parse(xml_file)
+    """XML形式のカバレッジレポートを解析"""
         root = tree.getroot()
         
-        coverage_data = {
+        coverage_data = {:
             "overall_coverage": 0.0,
             "files": {},
             "summary": {}
@@ -725,10 +713,8 @@ class TDDGuardian(AncientElderBase):
     TDD違反を検出する
     """
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        super().__init__(specialty="tdd_guardian")
+    def __init__(self, project_root: Optional[Path] = None)super().__init__(specialty="tdd_guardian")
+    """初期化メソッド"""
         
         # コンポーネント初期化
         self.cycle_tracker = TDDCycleTracker(project_root)
@@ -747,12 +733,11 @@ class TDDGuardian(AncientElderBase):
             "minimum_assertion_per_test": 1.0
         }
         
-    async def execute_audit(self, target_path: str, **kwargs) -> AuditResult:
-        """TDD守護監査を実行"""
-        start_time = datetime.now()
+    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now()
+    """TDD守護監査を実行"""
         violations = []
         metrics = {}
-        
+        :
         try:
             self.logger.info(f"🧪 Starting TDD Guardian audit for: {target_path}")
             
@@ -773,7 +758,7 @@ class TDDGuardian(AncientElderBase):
                 }
                 return empty_result
                 
-            # 1. TDDサイクル分析
+            # 1.0 TDDサイクル分析
             time_window = timedelta(days=30)
             cycle_violations = 0
             
@@ -784,7 +769,7 @@ class TDDGuardian(AncientElderBase):
                 violations.extend(cycle_analysis.get("violations", []))
                 cycle_violations += len(cycle_analysis.get("violations", []))
                 
-            # 2. テスト品質分析
+            # 2.0 テスト品質分析
             quality_violations = 0
             total_quality_score = 0.0
             
@@ -794,12 +779,12 @@ class TDDGuardian(AncientElderBase):
                 quality_violations += len(quality_analysis.get("violations", []))
                 total_quality_score += quality_analysis.get("quality_score", 0.0)
                 
-            # 3. カバレッジ操作検出
+            # 3.0 カバレッジ操作検出
             coverage_analysis = self.coverage_detector.detect_coverage_manipulation()
             violations.extend(coverage_analysis.get("violations", []))
             coverage_violations = len(coverage_analysis.get("violations", []))
             
-            # 4. 総合TDDスコア計算
+            # 4.0 総合TDDスコア計算
             avg_quality_score = total_quality_score / max(len(test_files), 1)
             overall_score = self._calculate_overall_tdd_score(
                 avg_quality_score, cycle_violations, quality_violations, coverage_violations
@@ -812,7 +797,7 @@ class TDDGuardian(AncientElderBase):
             metrics["coverage_violations"] = coverage_violations
             metrics["average_test_quality"] = avg_quality_score
             
-            # 5. 改善提案生成
+            # 5.0 改善提案生成
             recommendations = self._generate_tdd_improvement_recommendations(
                 cycle_violations, quality_violations, coverage_violations, violations
             )
@@ -820,7 +805,7 @@ class TDDGuardian(AncientElderBase):
             execution_time = (datetime.now() - start_time).total_seconds()
             metrics["execution_time"] = execution_time
             
-            self.logger.info(f"✅ TDD Guardian audit completed in {execution_time:.2f}s")
+            self.logger.info(f"✅ TDD Guardian audit completed in {execution_time:0.2f}s")
             
             # AuditResultを正しく作成
             result = AuditResult()
@@ -1085,9 +1070,8 @@ class TDDGuardian(AncientElderBase):
                 }
             )
             
-    async def _audit_single_file(self, result: AuditResult, file_path: str, time_window: timedelta):
-        """単一ファイルのTDD監査"""
-        cycle_analysis = self.cycle_tracker.analyze_tdd_cycle_compliance(file_path, time_window)
+    async def _audit_single_file(self, result: AuditResult, file_path: str, time_window: timedelta)cycle_analysis = self.cycle_tracker.analyze_tdd_cycle_compliance(file_path, time_window)
+    """単一ファイルのTDD監査"""
         
         for violation in cycle_analysis.get("violations", []):
             result.add_violation(
@@ -1103,9 +1087,8 @@ class TDDGuardian(AncientElderBase):
                 }
             )
             
-    async def _audit_test_file(self, result: AuditResult, test_file_path: str):
-        """テストファイルの品質監査"""
-        quality_analysis = self.quality_analyzer.analyze_test_quality(test_file_path)
+    async def _audit_test_file(self, result: AuditResult, test_file_path: str)quality_analysis = self.quality_analyzer.analyze_test_quality(test_file_path)
+    """テストファイルの品質監査"""
         
         for violation in quality_analysis.get("violations", []):
             result.add_violation(
@@ -1132,11 +1115,10 @@ class TDDGuardian(AncientElderBase):
         path_str = str(file_path)
         return any(pattern in path_str for pattern in skip_patterns)
         
-    def _suggest_cycle_fix(self, violation: Dict[str, Any]) -> str:
-        """TDDサイクル違反の修正提案"""
-        violation_type = violation.get("type", "")
+    def _suggest_cycle_fix(self, violation: Dict[str, Any]) -> strviolation_type = violation.get("type", "")
+    """TDDサイクル違反の修正提案"""
         
-        fixes = {
+        fixes = {:
             TDDViolationType.NO_RED_PHASE: "Write a failing test first before implementing functionality",
             TDDViolationType.SKIPPED_GREEN_PHASE: "Implement minimal code to make the test pass",
             TDDViolationType.INSUFFICIENT_REFACTOR: "Refactor code after making tests pass",
@@ -1145,11 +1127,10 @@ class TDDGuardian(AncientElderBase):
         
         return fixes.get(violation_type, "Follow proper TDD Red→Green→Refactor cycle")
         
-    def _suggest_test_quality_fix(self, violation: Dict[str, Any]) -> str:
-        """テスト品質違反の修正提案"""
-        violation_type = violation.get("type", "")
+    def _suggest_test_quality_fix(self, violation: Dict[str, Any]) -> strviolation_type = violation.get("type", "")
+    """テスト品質違反の修正提案"""
         
-        fixes = {
+        fixes = {:
             TDDViolationType.POOR_TEST_QUALITY: "Add meaningful assertions and test logic",
             TDDViolationType.FAKE_TEST_IMPLEMENTATION: "Remove fake implementations and write real tests"
         }

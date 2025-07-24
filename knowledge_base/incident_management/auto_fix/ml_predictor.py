@@ -357,15 +357,15 @@ class IncidentPredictor:
         try:
             # 複数の予測手法を組み合わせ
 
-            # 1. ルールベース予測
+            # 1.0 ルールベース予測
             rule_based = self._rule_based_prediction(features)
             prediction["predictions"]["rule_based"] = rule_based
 
-            # 2. 統計ベース予測
+            # 2.0 統計ベース予測
             statistical = self._statistical_prediction(features)
             prediction["predictions"]["statistical"] = statistical
 
-            # 3. パターン認識予測
+            # 3.0 パターン認識予測
             pattern_based = self._pattern_based_prediction(features)
             prediction["predictions"]["pattern_based"] = pattern_based
 
@@ -764,8 +764,8 @@ def main():
             confidence = prediction["confidence"]
 
             print(f"🔮 Incident Prediction Summary")
-            print(f"Overall Risk: {risk.upper()} ({prob:.2%})")
-            print(f"Confidence: {confidence:.2%}")
+            print(f"Overall Risk: {risk.upper()} ({prob:0.2%})")
+            print(f"Confidence: {confidence:0.2%}")
             print(f"Recommendations:")
             for rec in prediction["recommendations"]:
                 print(f"  - {rec}")

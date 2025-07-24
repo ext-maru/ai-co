@@ -1590,6 +1590,7 @@ def create_quality_task(task_id: str, command: str, **kwargs) -> ServantTask:
 
 # Example Usage
 if __name__ == "__main__":
+    pass
 
     async def main():
         """mainメソッド"""

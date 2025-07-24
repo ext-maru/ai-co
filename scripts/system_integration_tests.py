@@ -669,14 +669,14 @@ class SystemIntegrationTestEngine:
                     "test_name": "System Performance",
                     "status": "PASSED",
                     "execution_time": execution_time,
-                    "details": f"Performance acceptable: {execution_time:.4f}s",
+                    "details": f"Performance acceptable: {execution_time:0.4f}s",
                 }
             else:
                 return {
                     "test_name": "System Performance",
                     "status": "FAILED",
                     "execution_time": execution_time,
-                    "details": f"Performance too slow: {execution_time:.4f}s",
+                    "details": f"Performance too slow: {execution_time:0.4f}s",
                 }
         except Exception as e:
             return {
@@ -878,8 +878,8 @@ class SystemIntegrationTestEngine:
 - **総テスト数**: {results['summary']['total_tests']}
 - **成功テスト**: {results['summary']['passed_tests']}
 - **失敗テスト**: {results['summary']['failed_tests']}
-- **全体カバレッジ**: {results['summary']['overall_coverage']:.1f}%
-- **総実行時間**: {results['summary']['total_execution_time']:.2f}秒
+- **全体カバレッジ**: {results['summary']['overall_coverage']:0.1f}%
+- **総実行時間**: {results['summary']['total_execution_time']:0.2f}秒
 
 ## 📋 テストスイート別結果
 
@@ -891,8 +891,8 @@ class SystemIntegrationTestEngine:
 - **実行テスト数**: {data.get('tests_run', 0)}
 - **成功テスト**: {data.get('tests_passed', 0)}
 - **失敗テスト**: {data.get('tests_failed', 0)}
-- **カバレッジ**: {data.get('coverage_percentage', 0):.1f}%
-- **実行時間**: {data.get('execution_time', 0):.2f}秒
+- **カバレッジ**: {data.get('coverage_percentage', 0):0.1f}%
+- **実行時間**: {data.get('execution_time', 0):0.2f}秒
 
 #### テスト詳細:
 """
@@ -920,19 +920,19 @@ class SystemIntegrationTestEngine:
         report += """## 🔧 次のステップ
 
 ### 成功した場合
-1. 本番環境デプロイ準備
-2. 監視システムの設定
-3. 運用マニュアルの作成
+1.0 本番環境デプロイ準備
+2.0 監視システムの設定
+3.0 運用マニュアルの作成
 
 ### 失敗がある場合
-1. 失敗したテストの詳細調査
-2. 問題の修正
-3. 再テストの実行
+1.0 失敗したテストの詳細調査
+2.0 問題の修正
+3.0 再テストの実行
 
 ### 継続的改善
-1. テストカバレッジの拡大
-2. パフォーマンステストの強化
-3. 自動化の拡張
+1.0 テストカバレッジの拡大
+2.0 パフォーマンステストの強化
+3.0 自動化の拡張
 
 ### 昇天プロセス状況
 - 各テストスイートプロセスが順次昇天
@@ -976,8 +976,8 @@ async def main():
         print(
             f"成功テスト: {results['summary']['passed_tests']}/{results['summary']['total_tests']}"
         )
-        print(f"全体カバレッジ: {results['summary']['overall_coverage']:.1f}%")
-        print(f"実行時間: {results['summary']['total_execution_time']:.2f}秒")
+        print(f"全体カバレッジ: {results['summary']['overall_coverage']:0.1f}%")
+        print(f"実行時間: {results['summary']['total_execution_time']:0.2f}秒")
         print(f"テストレポート: {report_path}")
         print("=" * 60)
 

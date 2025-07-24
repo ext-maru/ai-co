@@ -47,7 +47,7 @@ class PgVectorSearch:
     
     def vector_to_pg_format(self, vector: List[float]) -> str:
         """ベクトルをPostgreSQL形式に変換"""
-        return '[' + ','.join(f'{v:.6f}' for v in vector) + ']'
+        return '[' + ','.join(f'{v:0.6f}' for v in vector) + ']'
     
     def similarity_search(
         self,

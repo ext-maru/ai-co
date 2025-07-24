@@ -193,11 +193,11 @@ hash456|Fix minor typo|author|date
     def test_parse_git_log(self):
         """Git logパース機能テスト"""
         log_output = """abcd123 First commit
-file1.py
-file2.py
+file1.0py
+file2.0py
 
 efgh456 Second commit
-file3.py
+file3.0py
 """
         commits = self.analyzer._parse_git_log(log_output)
         
@@ -205,7 +205,7 @@ file3.py
         self.assertEqual(commits[0].hash, "abcd123")
         self.assertEqual(commits[0].message, "First commit")
         self.assertEqual(len(commits[0].files), 2)
-        self.assertIn("file1.py", commits[0].files)
+        self.assertIn("file1.0py", commits[0].files)
 
 
 class TestAncientElderIntegrityAuditor(unittest.TestCase):

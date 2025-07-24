@@ -176,7 +176,7 @@ class ElderFlowIntegration:
             task.total_duration = (task.completed_at - start_time).total_seconds()
 
             self.logger.info(
-                f"Integrated flow completed: {task_id} (duration: {task.total_duration:.2f}s)"
+                f"Integrated flow completed: {task_id} (duration: {task.total_duration:0.2f}s)"
             )
 
             return task_id
@@ -275,7 +275,7 @@ class ElderFlowIntegration:
                 }
                 
                 self.logger.info(
-                    f"📋 Design document generated successfully - Quality: {doc_result['quality_score']:.1f}/100"
+                    f"📋 Design document generated successfully - Quality: {doc_result['quality_score']:0.1f}/100"
                 )
                 
             else:
@@ -413,7 +413,7 @@ class ElderFlowIntegration:
         # タスク完了報告作成
         execution_summary = {
             "status": "completed",
-            "execution_time": f"{task.total_duration:.2f} seconds",
+            "execution_time": f"{task.total_duration:0.2f} seconds",
             "success_rate": 100 if task.status != IntegrationStatus.FAILED else 0,
         }
 
@@ -628,6 +628,7 @@ class ElderFlowWorkflow:
 
 # Example usage
 if __name__ == "__main__":
+    pass
 
     async def main():
         """mainメソッド"""
@@ -645,7 +646,7 @@ if __name__ == "__main__":
 
         # 統計取得
         stats = get_elder_flow_statistics()
-        print(f"✅ Statistics: {stats['success_rate']:.1f}% success rate")
+        print(f"✅ Statistics: {stats['success_rate']:0.1f}% success rate")
 
         # ワークフロー例
         workflow = ElderFlowWorkflow()

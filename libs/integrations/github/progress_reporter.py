@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Progress Reporter
+"📊" Progress Reporter
 リアルタイム進捗報告システム
 
 機能:
@@ -99,7 +99,7 @@ class ProgressReporter:
     # 詳細情報の表示フォーマット
     DETAIL_FORMATTERS = {
         "retry_info": lambda d: f"試行 {d.get('attempt', 0)}/{d.get('max_attempts', 0)}",
-        "duration": lambda d: f"経過時間: {d.get('duration', 0):.1f}秒",
+        "duration": lambda d: f"経過時間: {d.get('duration', 0):0.1f}秒",
         "next_retry": lambda d: f"次回試行: {d.get('next_retry', 0)}秒後",
         "ci_status": lambda d: f"CI状況: {d.get('ci_status', 'unknown')}",
         "merge_state": lambda d: f"マージ状態: {d.get('mergeable_state', 'unknown')}",
@@ -296,7 +296,7 @@ class ProgressReporter:
         session_info = f"\n**セッション情報**:\n"
         session_info += f"- セッションID: `{session.session_id}`\n"
         session_info += f"- 開始時刻: {session.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
-        session_info += f"- 経過時間: {duration:.0f}秒\n"
+        session_info += f"- 経過時間: {duration:0.0f}秒\n"
         session_info += f"- PR: #{session.pr_number}\n"
         
         # フッター

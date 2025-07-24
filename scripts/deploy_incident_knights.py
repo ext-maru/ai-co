@@ -40,26 +40,26 @@ class IncidentKnightsDeployer:
         """完全システムの展開"""
         logger.info("🏰 インシデント騎士団 完全展開開始")
 
-        # 1. システム基盤初期化
+        # 1.0 システム基盤初期化
         await self._initialize_foundation()
 
-        # 2. 偵察騎士展開（問題検出）
+        # 2.0 偵察騎士展開（問題検出）
         scout_knight = await self._deploy_scout_knight()
 
-        # 3. 修復騎士展開（自動修復）
+        # 3.0 修復騎士展開（自動修復）
         repair_knight = await self._deploy_repair_knight()
 
-        # 4. カバレッジ向上騎士展開（アイドル時テスト強化）
+        # 4.0 カバレッジ向上騎士展開（アイドル時テスト強化）
         coverage_knight = await self._deploy_coverage_knight()
 
-        # 5. 完全自動修復実行
+        # 5.0 完全自動修復実行
         await self._execute_mass_repair(scout_knight, repair_knight)
 
-        # 6. 騎士団フレームワーク初期化
+        # 6.0 騎士団フレームワーク初期化
         framework = IncidentKnightsFramework()
         framework.deploy_emergency_response()
 
-        # 7. 展開レポート生成
+        # 7.0 展開レポート生成
         await self._generate_deployment_report()
 
         logger.info("✅ インシデント騎士団 展開完了")
@@ -152,7 +152,7 @@ class IncidentKnightsDeployer:
         """大規模自動修復の実行"""
         logger.info("⚡ 大規模自動修復開始...")
 
-        # 1. 全問題の検出
+        # 1.0 全問題の検出
         logger.info("🔍 システム全体スキャン実行中...")
         all_issues = await scout_knight.patrol()
 
@@ -163,10 +163,10 @@ class IncidentKnightsDeployer:
             logger.info("🎉 問題は検出されませんでした！")
             return
 
-        # 2. 問題の分類
+        # 2.0 問題の分類
         categorized_issues = self._categorize_issues(all_issues)
 
-        # 3. 優先順位別修復実行
+        # 3.0 優先順位別修復実行
         repaired_count = 0
         failed_count = 0
 
@@ -220,7 +220,7 @@ class IncidentKnightsDeployer:
         )
 
         logger.info(
-            f"🎯 修復結果: {repaired_count}/{total_issues} 成功 ({repaired_count/total_issues*100:.1f}%)"
+            f"🎯 修復結果: {repaired_count}/{total_issues} 成功 ({repaired_count/total_issues*100:0.1f}%)"
         )
 
     def _categorize_issues(self, issues):
@@ -291,7 +291,7 @@ class IncidentKnightsDeployer:
 
 **展開ID**: {report['deployment_id']}
 **実行日時**: {report['start_time']} ～ {report['end_time']}
-**所要時間**: {report['total_time_seconds']:.1f}秒
+**所要時間**: {report['total_time_seconds']:0.1f}秒
 
 ## 📊 展開サマリー
 
@@ -301,7 +301,7 @@ class IncidentKnightsDeployer:
 | 騎士展開数 | {summary['knights_deployed']}体 |
 | 検出問題数 | {summary['issues_detected']}件 |
 | 修復成功数 | {summary['issues_repaired']}件 |
-| 修復成功率 | {summary['success_rate']*100:.1f}% |
+| 修復成功率 | {summary['success_rate']*100:0.1f}% |
 | システム健全性 | 🔼 {summary['system_health'].upper()} |
 
 ## 🚀 展開手順

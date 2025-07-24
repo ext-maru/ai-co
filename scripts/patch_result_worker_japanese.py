@@ -92,7 +92,7 @@ MESSAGES_JA = {
             f"",
             (
                 f"f"**{MESSAGES_JA['task_type']}:** `{task_type}` | **{MESSAGES_JA['duration']}:** `"
-                f"{duration:.2f}秒` | **{MESSAGES_JA['files']}:** `{files_count}`","
+                f"{duration:0.2f}秒` | **{MESSAGES_JA['files']}:** `{files_count}`","
             )
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         ]
@@ -128,10 +128,10 @@ MESSAGES_JA = {
             message_parts.extend([
                 f"**{MESSAGES_JA['performance_metrics']}:**",
                 (
-                    f"f"• {MESSAGES_JA['success_rate']}: `{success_rate:.1f}%` ("
+                    f"f"• {MESSAGES_JA['success_rate']}: `{success_rate:0.1f}%` ("
                     f"{self.stats['successful_tasks']}/{self.stats['total_tasks']})","
                 )
-                f"• {MESSAGES_JA['average_duration']}: `{avg_duration:.2f}秒`",
+                f"• {MESSAGES_JA['average_duration']}: `{avg_duration:0.2f}秒`",
                 ""
             ])
 
@@ -279,10 +279,10 @@ MESSAGES_JA = {
                     f"{MESSAGES_JA['period']}: {datetime.now().strftime('%Y-%m-%d %H:00')}",
                     "",
                     f"• {MESSAGES_JA['total_tasks']}: `{self.stats['total_tasks']}`",
-                    f"• {MESSAGES_JA['success_rate']}: `{success_rate:.1f}%`",
+                    f"• {MESSAGES_JA['success_rate']}: `{success_rate:0.1f}%`",
                     f"• {MESSAGES_JA['failed_tasks']}: `{self.stats['failed_tasks']}`",
-                    f"• {MESSAGES_JA['average_duration']}: `{avg_duration:.2f}秒`",
-                    f"• {MESSAGES_JA['total_processing_time']}: `{self.stats['total_duration']:.1f}秒`"
+                    f"• {MESSAGES_JA['average_duration']}: `{avg_duration:0.2f}秒`",
+                    f"• {MESSAGES_JA['total_processing_time']}: `{self.stats['total_duration']:0.1f}秒`"
                 ]"""
 
     # 時間別レポートの置換
@@ -291,10 +291,10 @@ MESSAGES_JA = {
                     f"Period: {datetime.now().strftime('%Y-%m-%d %H:00')}",
                     "",
                     f"• Total Tasks: `{self.stats['total_tasks']}`",
-                    f"• Success Rate: `{success_rate:.1f}%`",
+                    f"• Success Rate: `{success_rate:0.1f}%`",
                     f"• Failed Tasks: `{self.stats['failed_tasks']}`",
-                    f"• Average Duration: `{avg_duration:.2f}s`",
-                    f"• Total Processing Time: `{self.stats['total_duration']:.1f}s`"
+                    f"• Average Duration: `{avg_duration:0.2f}s`",
+                    f"• Total Processing Time: `{self.stats['total_duration']:0.1f}s`"
                 ]"""
 
     content = content.replace(old_report, hourly_report_section)
@@ -318,8 +318,8 @@ def main():
         print("  - コマンドの説明を日本語化")
         print("  - 時間別レポートを日本語化")
         print("\n次の手順:")
-        print("  1. ResultWorkerを再起動: ai-restart")
-        print("  2. 新しいタスクを実行してSlack通知を確認")
+        print("  1.0 ResultWorkerを再起動: ai-restart")
+        print("  2.0 新しいタスクを実行してSlack通知を確認")
     else:
         print("\n❌ 日本語化に失敗しました")
 

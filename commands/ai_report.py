@@ -183,16 +183,16 @@ class AIReportCommand(BaseCommand):
                 summary_lines.append(f"  最近の学習: {data.get('recent_learnings', 0)}件")
             elif sage_name == "task_sage":
                 summary_lines.append(f"  管理タスク数: {data.get('managed_tasks', 0)}")
-                summary_lines.append(f"  最適化率: {data.get('optimization_rate', 0):.1%}")
+                summary_lines.append(f"  最適化率: {data.get('optimization_rate', 0):0.1%}")
             elif sage_name == "incident_sage":
                 summary_lines.append(
                     f"  防止インシデント: {data.get('prevented_incidents', 0)}件"
                 )
                 summary_lines.append(
-                    f"  復旧成功率: {data.get('recovery_success_rate', 0):.1%}"
+                    f"  復旧成功率: {data.get('recovery_success_rate', 0):0.1%}"
                 )
             elif sage_name == "rag_sage":
-                summary_lines.append(f"  検索精度: {data.get('search_accuracy', 0):.1%}")
+                summary_lines.append(f"  検索精度: {data.get('search_accuracy', 0):0.1%}")
                 summary_lines.append(
                     f"  コンテキスト強化: {data.get('context_enhancements', 0)}件"
                 )
@@ -213,13 +213,13 @@ class AIReportCommand(BaseCommand):
 
         summary_lines = [
             f"期間: 過去{args.period}日間",
-            f"平均応答時間: {perf_metrics.get('average_response_time', 0):.2f}秒",
-            f"タスク完了率: {perf_metrics.get('task_completion_rate', 0):.1%}",
-            f"システム可用性: {perf_metrics.get('system_availability', 0):.1%}",
+            f"平均応答時間: {perf_metrics.get('average_response_time', 0):0.2f}秒",
+            f"タスク完了率: {perf_metrics.get('task_completion_rate', 0):0.1%}",
+            f"システム可用性: {perf_metrics.get('system_availability', 0):0.1%}",
             "\nリソース使用率:",
-            f"  CPU: {perf_metrics.get('resource_utilization', {}).get('cpu', 0):.1%}",
-            f"  メモリ: {perf_metrics.get('resource_utilization', {}).get('memory', 0):.1%}",
-            f"  ディスク: {perf_metrics.get('resource_utilization', {}).get('disk', 0):.1%}",
+            f"  CPU: {perf_metrics.get('resource_utilization', {}).get('cpu', 0):0.1%}",
+            f"  メモリ: {perf_metrics.get('resource_utilization', {}).get('memory', 0):0.1%}",
+            f"  ディスク: {perf_metrics.get('resource_utilization', {}).get('disk', 0):0.1%}",
         ]
 
         return {
@@ -239,7 +239,7 @@ class AIReportCommand(BaseCommand):
             f"期間: 過去{args.period}日間",
             f"総インシデント数: {incident_data.get('total_incidents', 0)}",
             f"解決済み: {incident_data.get('resolved_incidents', 0)}",
-            f"平均解決時間: {incident_data.get('average_resolution_time', 0):.1f}分",
+            f"平均解決時間: {incident_data.get('average_resolution_time', 0):0.1f}分",
             "\nインシデントタイプ別:",
         ]
 
@@ -265,7 +265,7 @@ class AIReportCommand(BaseCommand):
             f"学習セッション総数: {learning_data.get('total_learning_sessions', 0)}",
             f"コンセンサス成功: {learning_data.get('successful_consensus', 0)}",
             f"賢者間知識転送: {learning_data.get('cross_sage_transfers', 0)}",
-            f"知識成長率: {learning_data.get('knowledge_growth_rate', 0):.1%}",
+            f"知識成長率: {learning_data.get('knowledge_growth_rate', 0):0.1%}",
         ]
 
         return {
@@ -318,7 +318,7 @@ class AIReportCommand(BaseCommand):
         summary_lines = [
             f"現在期間: 過去{args.period}日間",
             f"比較期間: 過去{args.compare_with}日間",
-            f"\n成長率: {growth:.1%}",
+            f"\n成長率: {growth:0.1%}",
             f"\n現在期間のタスク数: {current.get('total_tasks', 0)}",
             f"比較期間のタスク数: {previous.get('total_tasks', 0)}",
         ]

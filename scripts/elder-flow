@@ -25,12 +25,7 @@ from libs.elder_flow_integration import (
 # Retry wrapper import
 from libs.elder_flow_retry_wrapper import execute_elder_flow_with_retry
 
-# Elder Soul Integration imports
-from libs.elder_flow_soul_integration import (
-    ElderFlowSoulMode,
-    execute_soul_enhanced_elder_flow,
-    get_soul_enhanced_flow_status,
-)
+# Elder Soul Integration imports - Removed (soul.py deprecated)
 from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine
 from libs.elder_system.elder_flow_enhancement_engine import ElderFlowEnhancementEngine
 
@@ -59,39 +54,10 @@ async def cmd_execute(args):
     print(f"⚡ Priority: {priority}")
     print(f"📤 Auto-commit: {'Yes' if auto_commit else 'No'}")
 
-    if soul_mode:
-        print(f"🌟 Soul Mode: {soul_mode}")
-        print("🧙‍♂️ Using Elder Soul integration")
-    else:
-        print("👑 Using default Claude Elder Soul integration")
+    print("👑 Using standard Elder Flow integration")
     print()
 
     try:
-        if soul_mode:
-            # Elder Soul統合実行
-            print("🌊 Starting Soul Enhanced Elder Flow...")
-            task_id = await execute_soul_enhanced_elder_flow(
-                description, priority, auto_commit, commit_message, soul_mode
-            )
-
-            print(f"✅ Soul Enhanced Elder Flow completed!")
-            print(f"🆔 Task ID: {task_id}")
-
-            # Soul統合結果表示
-            status = await get_soul_enhanced_flow_status(task_id)
-            if status:
-                print(f"⏱️  Duration: {status['total_duration']:.2f}s")
-                print(f"📊 Status: {status['soul_mode']}")
-
-                summary = status.get("soul_results_summary", {})
-                completion_rate = summary.get("completion_rate", 0)
-                print(
-                    f"🌟 Soul Completion: {completion_rate:.1%} ({summary.get('phases_completed', 0)}/5 phases)"
-                )
-
-                if status.get("error_message"):
-                    print(f"⚠️  Error: {status['error_message']}")
-        else:
             # リトライ機能付きElder Flow実行
             if retry_on_lock:
                 print("🔄 Retry mode enabled")

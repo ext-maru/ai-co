@@ -71,10 +71,10 @@ report_data = {
     )
 
     print("\n📊 報告を受けた際の自動処理:")
-    print("1. 品質分析（完了度、明確性、詳細度を評価）")
-    print("2. リスク評価（問題や未完了項目を分析）")
-    print("3. 次のアクション提案（デプロイ、テスト、改善など）")
-    print("4. 優先順位付けとタイムライン生成")
+    print("1.0 品質分析（完了度、明確性、詳細度を評価）")
+    print("2.0 リスク評価（問題や未完了項目を分析）")
+    print("3.0 次のアクション提案（デプロイ、テスト、改善など）")
+    print("4.0 優先順位付けとタイムライン生成")
 
     print("\n" + "=" * 60)
     print("⏳ 騎士団からの完了報告を待機中...")
@@ -139,9 +139,9 @@ Worker Health Monitorのスケーリング分析失敗の原因を特定し、
             analysis = result["analysis"]
             print(f"\n📊 品質スコア:")
             quality = analysis["quality_score"]
-            print(f"   総合: {quality['overall']:.1f}%")
-            print(f"   完全性: {quality['completeness']:.1f}%")
-            print(f"   明確性: {quality['clarity']:.1f}%")
+            print(f"   総合: {quality['overall']:0.1f}%")
+            print(f"   完全性: {quality['completeness']:0.1f}%")
+            print(f"   明確性: {quality['clarity']:0.1f}%")
 
             print(f"\n✅ 成功指標:")
             for indicator in analysis["success_indicators"][:3]:
@@ -162,7 +162,7 @@ Worker Health Monitorのスケーリング分析失敗の原因を特定し、
             if timeline["short_term"]:
                 print(f"   短期（1週間以内）: {', '.join(timeline['short_term'])}")
 
-            print(f"\n🔍 信頼度: {decision['confidence_level']*100:.1f}%")
+            print(f"\n🔍 信頼度: {decision['confidence_level']*100:0.1f}%")
 
     return result
 

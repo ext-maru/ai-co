@@ -94,8 +94,8 @@ class AIWorkersCommand(BaseCommand):
                 script_name,
                 status_text,
                 str(pid) if pid else "-",
-                f"{cpu:.1f}%" if cpu is not None else "-",
-                f"{mem:.1f}MB" if mem is not None else "-",
+                f"{cpu:0.1f}%" if cpu is not None else "-",
+                f"{mem:0.1f}MB" if mem is not None else "-",
                 queue_name,
             )
 

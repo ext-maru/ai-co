@@ -50,7 +50,7 @@ class TaskTrackerClient(BaseManager):
 
     def _create_database(self):
         """データベースの作成"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         cursor = conn.cursor()
         cursor.execute(
             """
@@ -122,8 +122,8 @@ class TaskTrackerClient(BaseManager):
     def get_task_by_original_id(self, original_task_id: str) -> Optional[Dict]:
         """元のタスクIDでタスクを検索"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
-            conn.row_factory = sqlite3.Row
+            conn = sqlite3connect(str(self.db_path))
+            conn.row_factory = sqlite3Row
             cursor = conn.cursor()
 
             # タイトルに元のタスクIDが含まれているタスクを検索

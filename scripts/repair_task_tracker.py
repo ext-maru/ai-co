@@ -21,10 +21,10 @@ async def repair_task_tracker():
     # Elder Flowでタスク実行
     task_description = """
     タスクトラッカーシステムの完全修復:
-    1. claude_task_tracker.pyを本物の実装に置き換える
-    2. PostgreSQL統合を有効化してタスク記録を移行
-    3. Elder Flow自動適用メカニズムを確実に動作させる
-    4. 現在のTodoListをタスクトラッカーと同期
+    1.0 claude_task_tracker.pyを本物の実装に置き換える
+    2.0 PostgreSQL統合を有効化してタスク記録を移行
+    3.0 Elder Flow自動適用メカニズムを確実に動作させる
+    4.0 現在のTodoListをタスクトラッカーと同期
     """
 
     try:

@@ -109,9 +109,9 @@ def consult_elders_about_challenges():
                 "verdict": "解決可能",
                 "confidence": 0.85,
                 "key_solutions": [
-                    "1. ハイブリッドアーキテクチャ: 緊急度に応じて同期/非同期を使い分け",
-                    "2. エッジ処理とキャッシング: 頻出パターンは即座に応答",
-                    "3. 並列処理の最適化: タスク分割と優先度管理",
+                    "1.0 ハイブリッドアーキテクチャ: 緊急度に応じて同期/非同期を使い分け",
+                    "2.0 エッジ処理とキャッシング: 頻出パターンは即座に応答",
+                    "3.0 並列処理の最適化: タスク分割と優先度管理",
                 ],
                 "implementation_time": "2-3週間",
                 "difficulty": "中",
@@ -120,9 +120,9 @@ def consult_elders_about_challenges():
                 "verdict": "部分的に解決可能",
                 "confidence": 0.70,
                 "key_solutions": [
-                    "1. 統合監視ダッシュボード: 全通信の可視化",
-                    "2. 標準化されたデバッグツール: トレーシングとログ分析",
-                    "3. 自動テストとCI/CDの強化",
+                    "1.0 統合監視ダッシュボード: 全通信の可視化",
+                    "2.0 標準化されたデバッグツール: トレーシングとログ分析",
+                    "3.0 自動テストとCI/CDの強化",
                 ],
                 "implementation_time": "3-4週間",
                 "difficulty": "高",
@@ -131,9 +131,9 @@ def consult_elders_about_challenges():
                 "verdict": "継続的改善により解決可能",
                 "confidence": 0.75,
                 "key_solutions": [
-                    "1. 共通プロトコルとガイドライン策定",
-                    "2. 定期的な相互レビューと学習",
-                    "3. Consensusメカニズムの導入",
+                    "1.0 共通プロトコルとガイドライン策定",
+                    "2.0 定期的な相互レビューと学習",
+                    "3.0 Consensusメカニズムの導入",
                 ],
                 "implementation_time": "4-6週間",
                 "difficulty": "高",
@@ -144,9 +144,9 @@ def consult_elders_about_challenges():
 
         3つの課題は完全には解決できないが、実用レベルまで改善可能：
 
-        1. レイテンシ → ハイブリッド方式で85%解決可能
-        2. 複雑性 → ツールとプロセスで70%管理可能
-        3. 一貫性 → 継続的改善で75%達成可能
+        1.0 レイテンシ → ハイブリッド方式で85%解決可能
+        2.0 複雑性 → ツールとプロセスで70%管理可能
+        3.0 一貫性 → 継続的改善で75%達成可能
 
         推奨アプローチ:
         - Phase 1: レイテンシ対策（キャッシュ、並列化）
@@ -182,7 +182,7 @@ def consult_elders_about_challenges():
     for challenge, data in integrated_solution["elder_consensus"].items():
         print(f"\n{challenge.upper()} 問題:")
         print(f"  判定: {data['verdict']}")
-        print(f"  信頼度: {data['confidence']*100:.0f}%")
+        print(f"  信頼度: {data['confidence']*100:0.0f}%")
         print(f"  実装期間: {data['implementation_time']}")
         print(f"  難易度: {data['difficulty']}")
         print("  主要解決策:")

@@ -324,9 +324,9 @@ class TestInfrastructureSmith:
         medium_instance = infrastructure_smith._select_instance_type("medium", provider_config)
         large_instance = infrastructure_smith._select_instance_type("large", provider_config)
         
-        assert small_instance == "t3.small"
-        assert medium_instance == "t3.medium"
-        assert large_instance == "t3.large"
+        assert small_instance == "t3.0small"
+        assert medium_instance == "t3.0medium"
+        assert large_instance == "t3.0large"
 
     @pytest.mark.asyncio
     async def test_db_instance_type_selection(self, infrastructure_smith):
@@ -337,8 +337,8 @@ class TestInfrastructureSmith:
         small_db = infrastructure_smith._select_db_instance_type("small", provider_config)
         medium_db = infrastructure_smith._select_db_instance_type("medium", provider_config)
         
-        assert small_db == "db.t3.micro"
-        assert medium_db == "db.t3.small"
+        assert small_db == "db.t3.0micro"
+        assert medium_db == "db.t3.0small"
 
     @pytest.mark.asyncio
     async def test_user_data_generation(self, infrastructure_smith):

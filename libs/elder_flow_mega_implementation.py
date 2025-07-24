@@ -58,7 +58,7 @@ async def mega_implementation():
     # 詳細結果
     print("\n📋 Task Execution Details:")
     for task_id, info in result["completed_tasks"].items():
-        print(f'  ✅ {task_id}: {info["duration"]:.3f}s')
+        print(f'  ✅ {task_id}: {info["duration"]:0.3f}s')
 
     if result["failed_tasks"]:
         print("\n❌ Failed Tasks:")
@@ -69,7 +69,7 @@ async def mega_implementation():
     success_rate = (
         result["summary"]["completed"] / result["summary"]["total_tasks"]
     ) * 100
-    print(f"\n🏆 Success Rate: {success_rate:.1f}%")
+    print(f"\n🏆 Success Rate: {success_rate:0.1f}%")
 
     if success_rate >= 80:
         print("🎉 MEGA Implementation SUCCESS!")

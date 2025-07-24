@@ -34,14 +34,14 @@ def test_weapon_sharing():
     """武具共有システムのテスト"""
     print("🧪 Testing Weapon Sharing System...\n")
 
-    # 1. システム初期化
+    # 1.0 システム初期化
     print("1️⃣ Initializing systems...")
     initialize_weapon_sharing()
     crafting_engine = CraftingEngine()
     knight_squad = KnightSquad("test_squad_001", "guardian")
     print("✅ Systems initialized\n")
 
-    # 2. ドワーフ工房で武具を作成
+    # 2.0 ドワーフ工房で武具を作成
     print("2️⃣ Dwarf Workshop creating initial weapons...")
     initial_weapons = [
         ("memory_optimizer", 2),
@@ -59,7 +59,7 @@ def test_weapon_sharing():
     available = shared_inventory.get_available_weapons()
     print(f"✅ Total weapons in inventory: {len(available)}\n")
 
-    # 3. 騎士団から武具リクエスト
+    # 3.0 騎士団から武具リクエスト
     print("3️⃣ Knight Squad requesting weapons...")
     request_id = knight_squad.request_weapon_from_workshop(
         "memory_optimizer",
@@ -76,7 +76,7 @@ def test_weapon_sharing():
     delivery_status = weapon_coordinator.get_delivery_status(request_id)
     print(f"   - Delivery status: {delivery_status}")
 
-    # 4. ドワーフ工房から直接提供
+    # 4.0 ドワーフ工房から直接提供
     print("\n4️⃣ Direct weapon provision from Dwarf Workshop...")
     direct_result = crafting_engine.provide_weapon_to_knights(
         knight_squad.squad_id, "anomaly_detector", 1
@@ -87,16 +87,16 @@ def test_weapon_sharing():
         knight_squad.receive_weapon_delivery(direct_result["weapons"])
         print(f"✅ Knight squad received {len(direct_result['weapons'])} weapons")
 
-    # 5. 装備状態確認
+    # 5.0 装備状態確認
     print("\n5️⃣ Equipment status:")
     print(f"   - Squad equipment count: {len(knight_squad.equipment)}")
     for weapon_id, weapon_data in knight_squad.equipment.items():
         print(
             f"     • {weapon_id}: {weapon_data['weapon_type']} "
-            f"(effectiveness: {weapon_data['effectiveness']:.2f})"
+            f"(effectiveness: {weapon_data['effectiveness']:0.2f})"
         )
 
-    # 6. メトリクス表示
+    # 6.0 メトリクス表示
     print("\n6️⃣ System metrics:")
     metrics = weapon_coordinator.get_metrics()
     print(f"   - Total requests: {metrics['total_requests']}")
@@ -104,7 +104,7 @@ def test_weapon_sharing():
     print(f"   - Pending requests: {metrics['pending_requests']}")
     print(f"   - Active deliveries: {metrics['active_deliveries']}")
 
-    # 7. 武具の解放とメンテナンス
+    # 7.0 武具の解放とメンテナンス
     print("\n7️⃣ Weapon maintenance...")
     for weapon_id in list(knight_squad.equipment.keys())[:1]:
         if shared_inventory.release_weapon(weapon_id):

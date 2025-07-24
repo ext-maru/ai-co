@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 RAG Sage A2A Agent - 直接テストスイート
+"🔍" RAG Sage A2A Agent - 直接テストスイート
 ========================================
 
 Elder Loop Phase 3: 基本テストスイート
@@ -124,7 +124,7 @@ class TestRAGSageA2ADirect:
         print("\n" + "=" * 50)
         print(f"📊 Test Results Summary")
         print(f"Total: {total}, Passed: {passed}, Failed: {failed}")
-        print(f"Success Rate: {success_rate:.1f}%")
+        print(f"Success Rate: {success_rate:0.1f}%")
         
         return {
             "total": total,
@@ -422,9 +422,9 @@ async def main():
     
     # Elder Loop基準チェック（80%以上）
     if results["success_rate"] >= 80:
-        print(f"\n🎉 Elder Loop Quality Gate PASSED! ({results['success_rate']:.1f}%)")
+        print(f"\n🎉 Elder Loop Quality Gate PASSED! ({results['success_rate']:0.1f}%)")
     else:
-        print(f"\n❌ Elder Loop Quality Gate FAILED! ({results['success_rate']:.1f}% < 80%)")
+        print(f"\n❌ Elder Loop Quality Gate FAILED! ({results['success_rate']:0.1f}% < 80%)")
 
 
 if __name__ == "__main__":

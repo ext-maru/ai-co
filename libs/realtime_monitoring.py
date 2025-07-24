@@ -33,10 +33,10 @@ class RealTimeMonitor:
 
                 # 異常検知
                 if metrics["cpu_percent"] > 90:
-                    self.alerts.append(f"HIGH CPU: {metrics['cpu_percent']:.1f}%")
+                    self.alerts.append(f"HIGH CPU: {metrics['cpu_percent']:0.1f}%")
 
                 if metrics["memory_percent"] > 95:
-                    self.alerts.append(f"HIGH MEMORY: {metrics['memory_percent']:.1f}%")
+                    self.alerts.append(f"HIGH MEMORY: {metrics['memory_percent']:0.1f}%")
 
                 self.metrics = metrics
 

@@ -554,77 +554,64 @@ class TaskSage:
         return strategy
 
     # 以下、その他のヘルパーメソッド（簡略実装）
-    def _calculate_completion_percentage(self, task:
+    def _calculate_completion_percentage(self, task: Task) -> float:
         """calculate_completion_percentage（内部メソッド）"""
-    Task) -> float:
         return 50.0 \
             if task.status == TaskStatus.IN_PROGRESS \
             else (100.0 if task.status == TaskStatus.COMPLETED else 0.0)
 
-    def _calculate_time_variance(self, task:
+    def _calculate_time_variance(self, task: Task) -> float:
         """calculate_time_variance（内部メソッド）"""
-    Task) -> float:
         if task.estimated_hours and task.actual_hours:
             return ((task.actual_hours - task.estimated_hours) / task.estimated_hours) * 100
         return 0.0
 
-    def _suggest_next_actions(self, task:
+    def _suggest_next_actions(self, task: Task) -> List[str]:
         """suggest_next_actions（内部メソッド）"""
-    Task) -> List[str]:
         if task.status == TaskStatus.PENDING:
             return ["タスクを開始してください"]
         elif task.status == TaskStatus.IN_PROGRESS:
             return ["進捗を確認してください", "必要に応じてヘルプを求めてください"]
         return ["タスクをレビューしてください"]
 
-    def _identify_current_blockers(self, task:
+    def _identify_current_blockers(self, task: Task) -> List[str]:
         """identify_current_blockers（内部メソッド）"""
-    Task) -> List[str]:
         return ["特になし"] if task.status != TaskStatus.BLOCKED else ["調査が必要"]
 
-    def _find_optimal_sequence(self, tasks:
+    def _find_optimal_sequence(self, tasks: List[Dict]) -> List[str]:
         """find_optimal_sequence（内部メソッド）"""
-    List[Dict]) -> List[str]:
         return [task.get("name", f"task_{i}") for i, task in enumerate(tasks)]
 
-    def _identify_parallel_tasks(self, tasks:
+    def _identify_parallel_tasks(self, tasks: List[Dict]) -> List[List[str]]:
         """identify_parallel_tasks（内部メソッド）"""
-    List[Dict]) -> List[List[str]]:
         return []
 
-    def _optimize_resource_allocation(self, tasks:
+    def _optimize_resource_allocation(self, tasks: List[Dict]) -> Dict[str, str]:
         """optimize_resource_allocation（内部メソッド）"""
-    List[Dict]) -> Dict[str, str]:
         return {}
 
-    def _analyze_bottlenecks(self, tasks:
+    def _analyze_bottlenecks(self, tasks: List[Dict]) -> List[str]:
         """analyze_bottlenecks（内部メソッド）"""
-    List[Dict]) -> List[str]:
         return []
 
-    def _suggest_efficiency_improvements(self, tasks:
+    def _suggest_efficiency_improvements(self, tasks: List[Dict]) -> List[str]:
         """suggest_efficiency_improvements（内部メソッド）"""
-    List[Dict]) -> List[str]:
         return ["自動化の機会を探してください"]
 
-    def _calculate_complexity_multiplier(self, factors:
+    def _calculate_complexity_multiplier(self, factors: Dict) -> float:
         """calculate_complexity_multiplier（内部メソッド）"""
-    Dict) -> float:
         return 1.2
 
-    def _calculate_uncertainty_range(self, title:
+    def _calculate_uncertainty_range(self, title: str, description: str) -> Dict[str, float]:
         """calculate_uncertainty_range（内部メソッド）"""
-    str, description: str) -> Dict[str, float]:
         return {"min_factor": 0.8, "max_factor": 1.3}
 
-    def _calculate_estimate_confidence(self, title:
+    def _calculate_estimate_confidence(self, title: str, description: str) -> float:
         """calculate_estimate_confidence（内部メソッド）"""
-    str, description: str) -> float:
         return 0.7
 
-    def _create_effort_breakdown(self, title:
+    def _create_effort_breakdown(self, title: str, description: str) -> Dict[str, float]:
         """create_effort_breakdown作成（内部メソッド）"""
-    str, description: str) -> Dict[str, float]:
         return {
             "analysis": 0.2,
             "implementation": 0.6,

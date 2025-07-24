@@ -163,7 +163,7 @@ def main():
         module = result["module"]
         desc = result["description"][:30]
         if result["status"] == "success":
-            coverage = f"{result['coverage_percent']:.1f}%"
+            coverage = f"{result['coverage_percent']:0.1f}%"
         else:
             coverage = "N/A"
         status = result["status"]
@@ -180,12 +180,12 @@ def main():
         avg_module_coverage = sum(
             r["coverage_percent"] for r in successful_tests
         ) / len(successful_tests)
-        print(f"Average Module Coverage: {avg_module_coverage:.1f}%")
+        print(f"Average Module Coverage: {avg_module_coverage:0.1f}%")
 
     if overall_percent:
-        print(f"Overall Project Coverage: {overall_percent:.1f}%")
+        print(f"Overall Project Coverage: {overall_percent:0.1f}%")
         print(
-            f"Coverage Improvement: {overall_percent - 2.21:.1f}% (from baseline 2.21%)"
+            f"Coverage Improvement: {overall_percent - 2.21:0.1f}% (from baseline 2.21%)"
         )
 
     print(f"\nModules Activated: {len(modules_tested)}")
@@ -196,7 +196,7 @@ def main():
         print(f"\nLines Coverage for Tested Modules:")
         print(f"  Total Lines: {total_lines}")
         print(f"  Covered Lines: {covered_lines}")
-        print(f"  Coverage: {actual_coverage:.1f}%")
+        print(f"  Coverage: {actual_coverage:0.1f}%")
 
     # Save detailed report
     report_data = {
@@ -223,14 +223,14 @@ def main():
     print("\n" + "=" * 80)
     print("RECOMMENDATIONS FOR PHASE 2")
     print("=" * 80)
-    print("1. Fix failing tests in database_manager and result_worker")
-    print("2. Target high-line-count modules:")
+    print("1.0 Fix failing tests in database_manager and result_worker")
+    print("2.0 Target high-line-count modules:")
     print("   - workers/enhanced_pm_worker.py (748 lines)")
     print("   - workers/task_worker.py")
     print("   - core/base_worker.py")
-    print("3. Implement batch test generation for similar modules")
-    print("4. Use proven patterns from monitoring_mixin (99% coverage)")
-    print("5. Focus on import verification and basic functionality tests")
+    print("3.0 Implement batch test generation for similar modules")
+    print("4.0 Use proven patterns from monitoring_mixin (99% coverage)")
+    print("5.0 Focus on import verification and basic functionality tests")
 
     return overall_percent
 

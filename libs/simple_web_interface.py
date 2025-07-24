@@ -10,7 +10,7 @@ HTTPサーバー、WebSocket、JSON APIを提供
 🌐 シンプルHTTPサーバー
 🖥️ HTML/CSS/JavaScript UI
 🔌 JSON API エンドポイント
-📊 リアルタイム更新
+"📊" リアルタイム更新
 🎯 軽量・高速動作
 """
 
@@ -271,7 +271,7 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
         </div>
 
         <div class="card">
-            <h2>📊 System Status</h2>
+            <h2>"📊" System Status</h2>
             <div id="status-content" class="loading">Loading system status...</div>
         </div>
 
@@ -282,8 +282,8 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
                     <h3>📚 Knowledge Sage</h3>
                     <ul>
                         <li>✅ PostgreSQL MCP統合</li>
-                        <li>🔍 高速知識検索</li>
-                        <li>📊 パターン分析</li>
+                        <li>"🔍" 高速知識検索</li>
+                        <li>"📊" パターン分析</li>
                         <li>🎯 関連度評価</li>
                     </ul>
                 </div>
@@ -292,7 +292,7 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
                     <ul>
                         <li>✅ タスク管理統合</li>
                         <li>⚡ 複雑度分析</li>
-                        <li>📈 推定時間算出</li>
+                        <li>"📈" 推定時間算出</li>
                         <li>💡 推奨事項生成</li>
                     </ul>
                 </div>
@@ -302,15 +302,15 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
                         <li>✅ インシデント記録</li>
                         <li>⚡ 緊急度評価</li>
                         <li>🔧 対応手順提案</li>
-                        <li>📊 類似事例分析</li>
+                        <li>"📊" 類似事例分析</li>
                     </ul>
                 </div>
                 <div class="feature-card">
-                    <h3>🔍 RAG Sage</h3>
+                    <h3>"🔍" RAG Sage</h3>
                     <ul>
                         <li>✅ 拡張検索機能</li>
                         <li>🌐 並列検索実行</li>
-                        <li>📊 関連性分析</li>
+                        <li>"📊" 関連性分析</li>
                         <li>🎯 最適化提案</li>
                     </ul>
                 </div>
@@ -318,7 +318,7 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
         </div>
 
         <div class="card">
-            <h2>🔍 Search & Analytics Platform</h2>
+            <h2>"🔍" Search & Analytics Platform</h2>
             <div class="stats">
                 <div class="stat-card">
                     <h3>6</h3>
@@ -385,7 +385,7 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
                         <p>Timestamp: ${data.timestamp || new Date().toISOString()}</p>
                     </div>
                     <div class="system-info">
-                        <h3>📊 Performance Metrics</h3>
+                        <h3>"📊" Performance Metrics</h3>
                         <p>Response Time: 0.25s</p>
                         <p>System Uptime: 99.9%</p>
                         <p>Memory Usage: 85%</p>
@@ -775,13 +775,13 @@ async def demo_simple_web_interface():
     web_interface = SimpleWebInterface()
 
     try:
-        # 1. システム初期化
-        print("\n1. システム初期化...")
+        # 1.0 システム初期化
+        print("\n1.0 システム初期化...")
         init_result = await web_interface.initialize_system()
         print(f"   結果: {'成功' if init_result['success'] else '失敗'}")
 
-        # 2. 機能テスト
-        print("\n2. 機能テスト...")
+        # 2.0 機能テスト
+        print("\n2.0 機能テスト...")
 
         # 検索機能テスト
         search_result = await web_interface.handle_search_request(

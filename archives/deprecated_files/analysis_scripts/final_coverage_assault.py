@@ -130,9 +130,8 @@ class Test{class_name}:
 
         return test_content
 
-    def generate_all_tests(self):
-        """Generate comprehensive tests for all modules"""
-        print("🎯 Generating comprehensive tests for maximum coverage...")
+    def generate_all_tests(self)print("🎯 Generating comprehensive tests for maximum coverage...")
+    """Generate comprehensive tests for all modules"""
 
         # Target directories
         targets = [
@@ -164,7 +163,7 @@ class Test{class_name}:
                 module_name = py_file.stem
                 test_file = test_dir / f"test_{module_name}_comprehensive.py"
 
-                # Generate class name
+                # Generate class name:
                 class_name = "".join(
                     word.capitalize() for word in module_name.split("_")
                 )
@@ -182,9 +181,8 @@ class Test{class_name}:
 
             print(f"  ✅ Generated {len(py_files)} tests for {dir_name}")
 
-    def run_coverage_by_module(self):
-        """Run coverage test by module to avoid timeouts"""
-        print("\n📊 Running coverage analysis by module...")
+    def run_coverage_by_module(self)print("\n📊 Running coverage analysis by module...")
+    """Run coverage test by module to avoid timeouts"""
 
         total_stmts = 0
         total_miss = 0
@@ -230,7 +228,7 @@ class Test{class_name}:
                                 if stmts > 0:
                                     coverage = (covered / stmts) * 100
                                     print(
-                                        f"    {file_path}: {coverage:.1f}% ({covered}/{stmts})"
+                                        f"    {file_path}: {coverage:0.1f}% ({covered}/{stmts})"
                                     )
             except:
                 pass
@@ -250,9 +248,9 @@ class Test{class_name}:
 
 ## Mission Status: {"SUCCESS ✅" if coverage >= 60 else "IN PROGRESS 🔄"}
 
-### Coverage Achieved: {coverage:.1f}%
+### Coverage Achieved: {coverage:0.1f}%
 ### Target: 60%
-### Gap: {max(0, 60 - coverage):.1f}%
+### Gap: {max(0, 60 - coverage):0.1f}%
 
 ## Battle Statistics:
 - Tests Created: {self.results["tests_created"]}
@@ -276,9 +274,8 @@ Generated: {datetime.now().isoformat()}
 
         print(f"\n📝 Report saved to final_coverage_assault_report.md")
 
-    def execute_assault(self):
-        """Execute the final coverage assault"""
-        print("⚔️ FINAL COVERAGE ASSAULT - OPERATION COMMENCE!")
+    def execute_assault(self)print("⚔️ FINAL COVERAGE ASSAULT - OPERATION COMMENCE!")
+    """Execute the final coverage assault"""
         print("=" * 60)
 
         # Generate all tests
@@ -290,13 +287,13 @@ Generated: {datetime.now().isoformat()}
         # Generate report
         self.generate_final_report(coverage)
 
-        print(f"\n📊 FINAL COVERAGE: {coverage:.1f}%")
+        print(f"\n📊 FINAL COVERAGE: {coverage:0.1f}%")
 
         if coverage >= 60:
             print("🎉 MISSION ACCOMPLISHED! 60% coverage achieved!")
             return True
         else:
-            print(f"📈 Progress made! Need {60 - coverage:.1f}% more.")
+            print(f"📈 Progress made! Need {60 - coverage:0.1f}% more.")
             return False
 
 

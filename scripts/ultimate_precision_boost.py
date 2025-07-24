@@ -160,7 +160,7 @@ async def ultimate_precision_test():
                 top_similarity = results[0]["similarity"]
                 scores.append(top_similarity)
 
-                print(f"  🎯 類似度: {top_similarity:.4f} ({top_similarity*100:.1f}%)")
+                print(f"  🎯 類似度: {top_similarity:0.4f} ({top_similarity*100:0.1f}%)")
                 print(f"  📋 マッチ: {results[0]['exact_query']}")
                 print(f"  💡 回答: {results[0]['exact_answer']}")
 
@@ -171,9 +171,9 @@ async def ultimate_precision_test():
             min_score = min(scores)
 
             print(f"\n📊 究極精度分析:")
-            print(f"  平均類似度: {avg_score*100:.1f}%")
-            print(f"  最高類似度: {max_score*100:.1f}%")
-            print(f"  最低類似度: {min_score*100:.1f}%")
+            print(f"  平均類似度: {avg_score*100:0.1f}%")
+            print(f"  最高類似度: {max_score*100:0.1f}%")
+            print(f"  最低類似度: {min_score*100:0.1f}%")
 
             if max_score >= 0.95:
                 print("\n🎉 究極目標達成！95%以上の類似度を実現！")
@@ -297,7 +297,7 @@ async def training_data_approach():
 
         if results:
             similarity = results[0]["similarity"]
-            print(f"学習データアプローチ結果: {similarity*100:.1f}%")
+            print(f"学習データアプローチ結果: {similarity*100:0.1f}%")
             return similarity * 100
 
         return 0
@@ -311,7 +311,7 @@ if __name__ == "__main__":
     max_score2 = asyncio.run(training_data_approach())
 
     final_score = max(max_score1, max_score2)
-    print(f"\n🏆 最終達成類似度: {final_score:.1f}%")
+    print(f"\n🏆 最終達成類似度: {final_score:0.1f}%")
 
     if final_score >= 95.0:
         print("🎉 エルダーズ評議会の目標を達成しました！")

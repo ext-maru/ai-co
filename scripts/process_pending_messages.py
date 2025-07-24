@@ -81,7 +81,7 @@ def process_pending_messages():
                     details = {
                         "タスクタイプ": msg_data.get("task_type", "general"),
                         "ワーカー": msg_data.get("worker_id", "unknown"),
-                        "処理時間": f"{msg_data.get('duration', 0):.2f}秒",
+                        "処理時間": f"{msg_data.get('duration', 0):0.2f}秒",
                         "ファイル数": len(msg_data.get("files_created", [])),
                     }
 

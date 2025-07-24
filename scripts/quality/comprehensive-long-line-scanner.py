@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 Comprehensive Long Line Scanner
+"🔍" Comprehensive Long Line Scanner
 残存する長い行を効率的にスキャン・修正するツール
 """
 

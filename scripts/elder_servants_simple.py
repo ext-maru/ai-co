@@ -144,7 +144,7 @@ if __name__ == "__main__":
                 )
 
                 status = "✅" if success else "❌"
-                print(f"{status} {Path(test_file).name} - {execution_time:.2f}s")
+                print(f"{status} {Path(test_file).name} - {execution_time:0.2f}s")
 
             except subprocess.TimeoutExpired:
                 results.append(
@@ -184,8 +184,8 @@ def deploy_simple_elder_servants():
 ## 📊 実行サマリー
 - **生成テスト数**: {generation_result['count']}個
 - **成功テスト**: {execution_result['successful_tests']}個
-- **成功率**: {execution_result['success_rate']:.1%}
-- **推定カバレッジ向上**: +{generation_result['count'] * 1.2:.1f}%
+- **成功率**: {execution_result['success_rate']:0.1%}
+- **推定カバレッジ向上**: +{generation_result['count'] * 1.2:0.1f}%
 
 ## 🎯 貢献内容
 - 高価値モジュールの基本的なテストカバレッジ確保
@@ -198,7 +198,7 @@ def deploy_simple_elder_servants():
     for result in execution_result["results"]:
         status = "✅ 成功" if result["success"] else "❌ 失敗"
         test_name = Path(result["test_file"]).name
-        report += f"- **{test_name}**: {status} ({result['execution_time']:.2f}s)\n"
+        report += f"- **{test_name}**: {status} ({result['execution_time']:0.2f}s)\n"
 
     report += f"""
 ## 🚀 次のアクション
@@ -216,8 +216,8 @@ def deploy_simple_elder_servants():
         f.write(report)
 
     print(f"📋 エルダーサーバント展開完了!")
-    print(f"📊 成功率: {execution_result['success_rate']:.1%}")
-    print(f"🎯 推定カバレッジ向上: +{generation_result['count'] * 1.2:.1f}%")
+    print(f"📊 成功率: {execution_result['success_rate']:0.1%}")
+    print(f"🎯 推定カバレッジ向上: +{generation_result['count'] * 1.2:0.1f}%")
     print(f"📁 レポート: {report_file}")
 
     return {

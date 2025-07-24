@@ -152,8 +152,8 @@ class PostgreSQLUnificationMigrator:
         logger.info(f"📋 {db_path} からタスク移行開始...")
 
         # SQLiteからデータ取得
-        sqlite_conn = sqlite3.connect(db_path)
-        sqlite_conn.row_factory = sqlite3.Row
+        sqlite_conn = sqlite3connect(db_path)
+        sqlite_conn.row_factory = sqlite3Row
         cursor = sqlite_conn.cursor()
 
         # テーブル構造確認
@@ -263,8 +263,8 @@ class PostgreSQLUnificationMigrator:
             return
 
         # SQLiteからデータ取得
-        sqlite_conn = sqlite3.connect("conversations.db")
-        sqlite_conn.row_factory = sqlite3.Row
+        sqlite_conn = sqlite3connect("conversations.db")
+        sqlite_conn.row_factory = sqlite3Row
         cursor = sqlite_conn.cursor()
 
         try:
@@ -512,8 +512,8 @@ async def main():
         print("=" * 60)
         print(f"移行タスク: {migrator.migration_stats['tasks_migrated']}件")
         print(f"移行会話: {migrator.migration_stats['conversations_migrated']}件")
-        print(f"成功率: {report['success_rate']:.1f}%")
-        print(f"実行時間: {report['execution_time']:.2f}秒")
+        print(f"成功率: {report['success_rate']:0.1f}%")
+        print(f"実行時間: {report['execution_time']:0.2f}秒")
 
         if migrator.migration_stats["errors"]:
             print(f"\n⚠️ エラー: {len(migrator.migration_stats['errors'])}件")

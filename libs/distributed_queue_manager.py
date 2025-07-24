@@ -477,7 +477,7 @@ class DistributedQueueManager:
                 self._active_alerts.append(
                     Alert(
                         'wait_time_threshold',
-                        f'Avg wait time {self.metrics.avg_wait_time:.2f}s exceeds threshold'
+                        f'Avg wait time {self.metrics.avg_wait_time:0.2f}s exceeds threshold'
                     )
                 )
     

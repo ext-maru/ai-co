@@ -306,9 +306,9 @@ class TestStep82FinalQualityAssurance(unittest.TestCase):
             # 詳細な品質レポート
             print(f"\n品質レポート - Step 82:")
             print(f"  モジュール: commands.ai_backup")
-            print(f"  品質スコア: {quality_score:.2f}%")
+            print(f"  品質スコア: {quality_score:0.2f}%")
             print(f"  Iron Will基準: 95%")
-            print(f"  結果: {'✅ PASS' if quality_score >= 95.0 else '❌ FAIL'}")
+            print(f"  結果: {'✅ PASS' if quality_score >}")
             
         except ImportError:
             self.skipTest("モジュールインポートできません")

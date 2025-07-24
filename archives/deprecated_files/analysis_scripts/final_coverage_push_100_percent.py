@@ -97,10 +97,10 @@ class FinalCoveragePush:
             results["success"] = final_coverage >= 99.0  # Allow 1% margin
 
             if results["success"]:
-                logger.info(f"🎉 SUCCESS! Final coverage: {final_coverage:.1f}%")
+                logger.info(f"🎉 SUCCESS! Final coverage: {final_coverage:0.1f}%")
             else:
                 logger.info(
-                    f"📊 Progress made: {final_coverage:.1f}% (need {100 - final_coverage:.1f}% more)"
+                    f"📊 Progress made: {final_coverage:0.1f}% (need {100 - final_coverage:0.1f}% more)"
                 )
 
             return results
@@ -686,7 +686,7 @@ if __name__ == "__main__":
             logger.info(
                 f"📊 Test files: {total_files}, Working: {working_test_files}/{sample_size}"
             )
-            logger.info(f"📈 Final coverage estimate: {final_coverage:.1f}%")
+            logger.info(f"📈 Final coverage estimate: {final_coverage:0.1f}%")
 
             return final_coverage
 
@@ -712,8 +712,8 @@ def main():
 
     # Print summary
     print(f"\\n🎯 Coverage Summary:")
-    print(f"Start: {results['start_coverage']:.1f}%")
-    print(f"Final: {results['final_coverage']:.1f}%")
+    print(f"Start: {results['start_coverage']:0.1f}%")
+    print(f"Final: {results['final_coverage']:0.1f}%")
     print(f"Success: {'YES' if results['success'] else 'PROGRESS MADE'}")
 
     return results

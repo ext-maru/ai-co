@@ -4,10 +4,10 @@ Optimized Auto Issue Processor - Issue #192対応
 動的並列処理とパフォーマンス最適化を統合したAuto Issue Processor
 
 主な最適化:
-1. 動的並列処理スケーリング
-2. プロセスプーリング
-3. メモリ使用最適化
-4. パフォーマンスモニタリング
+1.0 動的並列処理スケーリング
+2.0 プロセスプーリング
+3.0 メモリ使用最適化
+4.0 パフォーマンスモニタリング
 """
 
 import asyncio
@@ -544,7 +544,7 @@ async def main():
         
         def progress_callback(completed, total):
             """progress_callbackメソッド"""
-            print(f"Progress: {completed}/{total} ({completed/total*100:.1f}%)")
+            print(f"Progress: {completed}/{total} ({completed/total*100:0.1f}%)")
         
         print("Starting optimized batch processing...")
         start_time = time.time()
@@ -558,7 +558,7 @@ async def main():
         
         end_time = time.time()
         
-        print(f"\nBatch processing completed in {end_time - start_time:.2f} seconds")
+        print(f"\nBatch processing completed in {end_time - start_time:0.2f} seconds")
         print(f"Results: {result['summary']}")
         
         # ステータス表示
@@ -568,7 +568,7 @@ async def main():
         print(f"- Workers: {status['worker_count']}")
         print(f"- Completed: {status['completed_jobs']}")
         print(f"- Failed: {status['failed_jobs']}")
-        print(f"- Throughput: {status['performance']['throughput']:.2f} issues/sec")
+        print(f"- Throughput: {status['performance']['throughput']:0.2f} issues/sec")
         
         # パフォーマンスレポート
         report = await processor.get_performance_report()

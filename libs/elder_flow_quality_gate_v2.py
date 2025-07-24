@@ -4,10 +4,10 @@ Elder Flow Quality Gate V2
 Phase 3強化版: 実装系Issueに対する厳格な品質基準
 
 主な強化点:
-1. 最低品質スコア: 85点（実装系）、70点（設計系）
-2. Iron Will違反: 即座不合格
-3. セキュリティリスク: レベル3以下必須
-4. Issue種別に応じた品質基準の自動調整
+1.0 最低品質スコア: 85点（実装系）、70点（設計系）
+2.0 Iron Will違反: 即座不合格
+3.0 セキュリティリスク: レベル3以下必須
+4.0 Issue種別に応じた品質基準の自動調整
 """
 
 import asyncio
@@ -263,7 +263,7 @@ class ElderFlowQualityGateV2:
         
         # スコアが基準未満
         if average_score < config.minimum_quality_score:
-            logger.warning(f"Quality gate failed: Score {average_score:.1f} < {config.minimum_quality_score}")
+            logger.warning(f"Quality gate failed: Score {average_score:0.1f} < {config.minimum_quality_score}")
             return False
         
         # 実装系の追加チェック
@@ -291,9 +291,9 @@ class ElderFlowQualityGateV2:
         
         # サマリー生成
         if results['passed']:
-            feedback['summary'] = f"✅ 品質ゲート通過（スコア: {results['quality_score']:.1f}/100）"
+            feedback['summary'] = f"✅ 品質ゲート通過（スコア: {results['quality_score']:0.1f}/100）"
         else:
-            feedback['summary'] = f"❌ 品質ゲート不合格（スコア: {results['quality_score']:.1f}/100）"
+            feedback['summary'] = f"❌ 品質ゲート不合格（スコア: {results['quality_score']:0.1f}/100）"
         
         # 違反の分類
         for violation in results['violations']:
@@ -459,9 +459,9 @@ class ElderFlowQualityIntegrationV2:
         }
         
         if results['passed']:
-            logger.info(f"✅ Quality gate PASSED (Score: {results['quality_score']:.1f}/100)")
+            logger.info(f"✅ Quality gate PASSED (Score: {results['quality_score']:0.1f}/100)")
         else:
-            logger.warning(f"❌ Quality gate FAILED (Score: {results['quality_score']:.1f}/100)")
+            logger.warning(f"❌ Quality gate FAILED (Score: {results['quality_score']:0.1f}/100)")
             logger.warning(f"   Violations: {len(results['violations'])}")
             logger.warning(f"   Iron Will violations: {results['iron_will_violations']}")
         
@@ -491,7 +491,7 @@ if __name__ == "__main__":
         print("🏛️ Elder Flow Quality Gate V2 Test Results")
         print("=" * 50)
         print(f"Passed: {results['passed']}")
-        print(f"Quality Score: {results['quality_score']:.1f}/100")
+        print(f"Quality Score: {results['quality_score']:0.1f}/100")
         print(f"Issue Category: {results.get('issue_category', 'unknown')}")
         print(f"Files Analyzed: {results['files_analyzed']}")
         print(f"Violations: {len(results['violations'])}")

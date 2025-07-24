@@ -103,10 +103,8 @@ class SyncSchedule:
 class PlanProjectsSync:
     """計画書→Projects同期システム"""
 
-    def __init__(self, github_token:
-        """初期化メソッド"""
-    Optional[str] = None):
-        self.base_path = Path("/home/aicompany/ai_co")
+    def __init__(self, github_token: Optional[str] = None)self.base_path = Path("/home/aicompany/ai_co")
+    """初期化メソッド"""
         self.plans_path = self.base_path / "docs" / "plans"
         self.data_path = self.base_path / "data" / "plan_sync"
         self.data_path.mkdir(parents=True, exist_ok=True)
@@ -145,9 +143,8 @@ class PlanProjectsSync:
             "uptime_start": datetime.now().isoformat(),
         }
 
-    def _load_snapshots(self) -> Dict[str, PlanSnapshot]:
-        """スナップショットを読み込み"""
-        if not self.snapshots_file.exists():
+    def _load_snapshots(self) -> Dict[str, PlanSnapshot]if not self.snapshots_file.exists():
+    """スナップショットを読み込み"""
             return {}
 
         try:
@@ -173,9 +170,8 @@ class PlanProjectsSync:
         except Exception as e:
             logger.error(f"スナップショット保存エラー: {e}")
 
-    def _load_sync_events(self) -> List[SyncEvent]:
-        """同期イベントを読み込み"""
-        if not self.sync_events_file.exists():
+    def _load_sync_events(self) -> List[SyncEvent]if not self.sync_events_file.exists():
+    """同期イベントを読み込み"""
             return []
 
         try:
@@ -213,9 +209,8 @@ class PlanProjectsSync:
         except Exception as e:
             logger.error(f"同期イベント保存エラー: {e}")
 
-    def _load_schedules(self) -> List[SyncSchedule]:
-        """スケジュールを読み込み"""
-        if not self.schedules_file.exists():
+    def _load_schedules(self) -> List[SyncSchedule]if not self.schedules_file.exists():
+    """スケジュールを読み込み"""
             return []
 
         try:
@@ -295,9 +290,8 @@ class PlanProjectsSync:
             logger.error(f"スナップショット作成エラー: {plan_file} - {e}")
             return None
 
-    async def detect_changes(self, plan_file: str) -> List[ChangeType]:
-        """計画書の変更を検出"""
-        current_snapshot = await self.create_plan_snapshot(plan_file)
+    async def detect_changes(self, plan_file: str) -> List[ChangeType]current_snapshot = await self.create_plan_snapshot(plan_file)
+    """計画書の変更を検出""":
         if not current_snapshot:
             return []
 
@@ -428,10 +422,9 @@ class PlanProjectsSync:
 
         return sync_event
 
-    async def scan_all_plans(self) -> Dict[str, List[ChangeType]]:
-        """すべての計画書をスキャンして変更を検出"""
-        print("🔍 全計画書スキャン開始")
-
+    async def scan_all_plans(self) -> Dict[str, List[ChangeType]]print("🔍 全計画書スキャン開始")
+    """すべての計画書をスキャンして変更を検出"""
+:
         if not self.plans_path.exists():
             logger.warning("計画書ディレクトリが見つかりません")
             return {}
@@ -450,14 +443,13 @@ class PlanProjectsSync:
         print(f"✅ スキャン完了: {len(plan_changes)}件の変更")
         return plan_changes
 
-    async def auto_sync_all_changes(self) -> Dict:
-        """すべての変更を自動同期"""
-        print("🤖 自動同期開始")
+    async def auto_sync_all_changes(self) -> Dictprint("🤖 自動同期開始")
+    """すべての変更を自動同期"""
 
         # 変更を検出
         plan_changes = await self.scan_all_plans()
 
-        sync_summary = {
+        sync_summary = {:
             "timestamp": datetime.now().isoformat(),
             "total_plans_scanned": len(list(self.plans_path.glob("*.md"))),
             "plans_with_changes": len(plan_changes),
@@ -527,13 +519,12 @@ class PlanProjectsSync:
         logger.info(f"同期スケジュール作成: {plan_file} -> {project_id}")
         return True
 
-    async def run_scheduled_syncs(self) -> Dict:
-        """スケジュールされた同期を実行"""
-        print("⏰ スケジュール同期実行")
+    async def run_scheduled_syncs(self) -> Dictprint("⏰ スケジュール同期実行")
+    """スケジュールされた同期を実行"""
 
         current_time = datetime.now()
         executed_schedules = []
-
+:
         for schedule in self.schedules:
             if not schedule.enabled:
                 continue
@@ -620,9 +611,8 @@ class PlanProjectsSync:
         else:
             return "警告"
 
-    async def enable_continuous_sync(self, interval_minutes: int = 30):
-        """継続的同期を有効化"""
-        print(f"🔄 継続的同期開始（{interval_minutes}分間隔）")
+    async def enable_continuous_sync(self, interval_minutes: int = 30)print(f"🔄 継続的同期開始（{interval_minutes}分間隔）")
+    """継続的同期を有効化"""
 
         while True:
             try:
@@ -641,9 +631,8 @@ class PlanProjectsSync:
 
 
 # 使用例
-async def main():
-    """メイン実行関数"""
-    sync_system = PlanProjectsSync()
+async def main()sync_system = PlanProjectsSync()
+"""メイン実行関数"""
 
     # システム状況を確認
     status = await sync_system.get_sync_status()

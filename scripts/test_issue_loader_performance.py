@@ -31,7 +31,7 @@ async def test_issue_loader_performance():
     
     print(f"\n📊 初期状態:")
     print(f"  - 開始時刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"  - 初期メモリ: {start_memory:.1f} MB")
+    print(f"  - 初期メモリ: {start_memory:0.1f} MB")
     
     try:
         # AutoIssueProcessorの初期化
@@ -39,7 +39,7 @@ async def test_issue_loader_performance():
         init_start = time.time()
         processor = AutoIssueProcessor()
         init_end = time.time()
-        print(f"  ✅ 初期化完了 ({init_end - init_start:.2f}秒)")
+        print(f"  ✅ 初期化完了 ({init_end - init_start:0.2f}秒)")
         
         # Issue #193を直接取得
         print("\n📋 Issue #193を取得中...")
@@ -54,7 +54,7 @@ async def test_issue_loader_performance():
         issue = repo.get_issue(193)
         
         fetch_end = time.time()
-        print(f"  ✅ Issue取得完了 ({fetch_end - fetch_start:.2f}秒)")
+        print(f"  ✅ Issue取得完了 ({fetch_end - fetch_start:0.2f}秒)")
         print(f"  - タイトル: {issue.title}")
         print(f"  - 本文長: {len(issue.body or '')} 文字")
         
@@ -64,12 +64,12 @@ async def test_issue_loader_performance():
         complexity = await processor.evaluator.evaluate(issue)
         eval_end = time.time()
         
-        print(f"  ✅ 複雑度評価完了 ({eval_end - eval_start:.2f}秒)")
-        print(f"  - 複雑度スコア: {complexity.score:.3f}")
+        print(f"  ✅ 複雑度評価完了 ({eval_end - eval_start:0.2f}秒)")
+        print(f"  - 複雑度スコア: {complexity.score:0.3f}")
         print(f"  - 処理可能: {'✅ Yes' if complexity.is_processable else '❌ No'}")
         print(f"  - 評価要因:")
         for factor, score in complexity.factors.items():
-            print(f"    - {factor}: {score:.2f}")
+            print(f"    - {factor}: {score:0.2f}")
         
         # ドライラン実行
         print("\n🏃 ドライラン実行中...")
@@ -82,7 +82,7 @@ async def test_issue_loader_performance():
         
         dry_run_end = time.time()
         
-        print(f"  ✅ ドライラン完了 ({dry_run_end - dry_run_start:.2f}秒)")
+        print(f"  ✅ ドライラン完了 ({dry_run_end - dry_run_start:0.2f}秒)")
         print(f"  - ステータス: {result.get('status')}")
         
         if result.get('status') == 'dry_run':
@@ -90,7 +90,7 @@ async def test_issue_loader_performance():
             print(f"\n📊 処理可能性分析:")
             print(f"  - Issue番号: #{issue_info.get('number')}")
             print(f"  - 優先度: {issue_info.get('priority')}")
-            print(f"  - 複雑度: {issue_info.get('complexity', 0):.3f}")
+            print(f"  - 複雑度: {issue_info.get('complexity', 0):0.3f}")
             print(f"  - 処理可能: {'✅ Yes' if issue_info.get('processable') else '❌ No'}")
             
             if not issue_info.get('processable'):
@@ -103,7 +103,7 @@ async def test_issue_loader_performance():
         sage_advice = await processor.consult_four_sages(issue)
         sage_end = time.time()
         
-        print(f"  ✅ 4賢者相談完了 ({sage_end - sage_start:.2f}秒)")
+        print(f"  ✅ 4賢者相談完了 ({sage_end - sage_start:0.2f}秒)")
         print(f"  - タスク賢者: {'✅' if 'task_sage' in sage_advice else '❌'}")
         print(f"  - インシデント賢者: {'✅' if 'incident_sage' in sage_advice else '❌'}")
         print(f"  - ナレッジ賢者: {'✅' if 'knowledge_sage' in sage_advice else '❌'}")
@@ -117,20 +117,20 @@ async def test_issue_loader_performance():
         print("\n" + "=" * 80)
         print("📊 性能テスト結果サマリー")
         print("=" * 80)
-        print(f"  - 総処理時間: {total_time:.2f}秒")
-        print(f"  - 初期化時間: {init_end - init_start:.2f}秒")
-        print(f"  - Issue取得時間: {fetch_end - fetch_start:.2f}秒")
-        print(f"  - 複雑度評価時間: {eval_end - eval_start:.2f}秒")
-        print(f"  - ドライラン時間: {dry_run_end - dry_run_start:.2f}秒")
-        print(f"  - 4賢者相談時間: {sage_end - sage_start:.2f}秒")
-        print(f"  - メモリ使用量: {start_memory:.1f} MB → {end_memory:.1f} MB (+{memory_increase:.1f} MB)")
+        print(f"  - 総処理時間: {total_time:0.2f}秒")
+        print(f"  - 初期化時間: {init_end - init_start:0.2f}秒")
+        print(f"  - Issue取得時間: {fetch_end - fetch_start:0.2f}秒")
+        print(f"  - 複雑度評価時間: {eval_end - eval_start:0.2f}秒")
+        print(f"  - ドライラン時間: {dry_run_end - dry_run_start:0.2f}秒")
+        print(f"  - 4賢者相談時間: {sage_end - sage_start:0.2f}秒")
+        print(f"  - メモリ使用量: {start_memory:0.1f} MB → {end_memory:0.1f} MB (+{memory_increase:0.1f} MB)")
         
         # 期待値との比較
         print("\n🎯 期待値との比較:")
         expected_time = 3.2  # Issue Loader Performance Reportより
         print(f"  - 期待処理時間: {expected_time}秒")
-        print(f"  - 実測処理時間: {total_time:.2f}秒")
-        print(f"  - 差分: {total_time - expected_time:+.2f}秒")
+        print(f"  - 実測処理時間: {total_time:0.2f}秒")
+        print(f"  - 差分: {total_time - expected_time:+0.2f}秒")
         
         if total_time <= expected_time * 1.2:  # 20%の許容範囲
             print("  ✅ 性能は期待範囲内です")
@@ -139,9 +139,9 @@ async def test_issue_loader_performance():
             
         # 推定スループット
         estimated_throughput = 3600 / total_time  # issues/hour
-        print(f"\n📈 推定スループット: {estimated_throughput:.0f} issues/hour")
+        print(f"\n📈 推定スループット: {estimated_throughput:0.0f} issues/hour")
         print(f"  - 期待値: 1,126 issues/hour")
-        print(f"  - 達成率: {(estimated_throughput / 1126) * 100:.1f}%")
+        print(f"  - 達成率: {(estimated_throughput / 1126) * 100:0.1f}%")
         
     except Exception as e:
         print(f"\n❌ エラーが発生しました: {type(e).__name__}: {e}")

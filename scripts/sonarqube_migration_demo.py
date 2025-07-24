@@ -272,10 +272,10 @@ def main():
 
     print("\n✅ デモ完了！")
     print("\n📝 次のアクション:")
-    print("1. docker-compose.ymlにSonarQubeを追加")
-    print("2. requirements-poc.txtにリンターを追加")
-    print("3. pre-commit installでフック有効化")
-    print("4. 初回品質分析の実行")
+    print("1.0 docker-compose.ymlにSonarQubeを追加")
+    print("2.0 requirements-poc.txtにリンターを追加")
+    print("3.0 pre-commit installでフック有効化")
+    print("4.0 初回品質分析の実行")
 
 
 if __name__ == "__main__":

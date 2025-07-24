@@ -456,8 +456,7 @@ class ElderFlowGitAutomator:
     def validate_commit_message(self, message: str) -> Dict:
         """コミットメッセージ検証"""
         # Conventional Commits形式チェック
-        conventional_pattern = r"^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\(.+\))?: .{1,50}" \
-            "^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\(.+\))?: .{1,50}"
+        conventional_pattern = r"^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\(.+\))?: .{1,50}"
 
         is_conventional = bool(re.match(conventional_pattern, message))
 
@@ -542,6 +541,7 @@ def get_repository_info() -> Dict:
 
 # Example usage
 if __name__ == "__main__":
+    pass
 
     def main():
         """mainメソッド"""

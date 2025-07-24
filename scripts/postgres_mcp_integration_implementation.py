@@ -467,23 +467,23 @@ async def demo_mcp_integration():
     client = PostgreSQLMCPClient(server)
 
     try:
-        # 1. ヘルスチェック
-        print("\n1. ヘルスチェック...")
+        # 1.0 ヘルスチェック
+        print("\n1.0 ヘルスチェック...")
         health_response = await client.health_check()
         print(f"   結果: {health_response.message}")
         if health_response.success:
             print(f"   データ: {health_response.data}")
 
-        # 2. 検索テスト
-        print("\n2. 検索テスト...")
+        # 2.0 検索テスト
+        print("\n2.0 検索テスト...")
         search_response = await client.search("4賢者について", limit=3)
         print(f"   結果: {search_response.message}")
         if search_response.success:
             for i, result in enumerate(search_response.data[:2]):
                 print(f"   #{i+1}: {result['title']}")
 
-        # 3. 統計情報取得
-        print("\n3. 統計情報取得...")
+        # 3.0 統計情報取得
+        print("\n3.0 統計情報取得...")
         stats_response = await client.get_stats()
         print(f"   結果: {stats_response.message}")
         if stats_response.success:
@@ -491,8 +491,8 @@ async def demo_mcp_integration():
             print(f"   総文書数: {basic['total_documents']}")
             print(f"   文書タイプ数: {basic['unique_types']}")
 
-        # 4. 新規データ保存テスト
-        print("\n4. 新規データ保存テスト...")
+        # 4.0 新規データ保存テスト
+        print("\n4.0 新規データ保存テスト...")
         test_metadata = {
             "section_title": "MCP統合テスト",
             "section_content": "これはMCP統合のテストデータです。PostgreSQL MCPサーバーが正常に動作していることを確認するためのサンプルです。",
@@ -507,8 +507,8 @@ async def demo_mcp_integration():
         if store_response.success:
             print(f"   新規ID: {store_response.data['id']}")
 
-        # 5. 保存したデータの検索確認
-        print("\n5. 保存データ検索確認...")
+        # 5.0 保存したデータの検索確認
+        print("\n5.0 保存データ検索確認...")
         verify_response = await client.search("MCP統合テスト", limit=1)
         print(f"   結果: {verify_response.message}")
         if verify_response.success and verify_response.data:
@@ -606,7 +606,7 @@ if __name__ == "__main__":
     asyncio.run(create_mcp_integration_service())
 
     print("\n🎯 次のステップ:")
-    print("1. MCP統合サービスのテスト実行")
-    print("2. 4賢者システムとの連携")
-    print("3. CLI/Webインターフェースとの統合")
-    print("4. 本番環境での段階的導入")
+    print("1.0 MCP統合サービスのテスト実行")
+    print("2.0 4賢者システムとの連携")
+    print("3.0 CLI/Webインターフェースとの統合")
+    print("4.0 本番環境での段階的導入")

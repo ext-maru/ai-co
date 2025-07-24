@@ -137,10 +137,10 @@ class PostgreSQLMCPIntegrationTest:
                 {
                     "test": test_name,
                     "status": "PASS",
-                    "message": f"検索時間: {search_time:.2f}ms, 最高類似度: {best_similarity:.3f}",
+                    "message": f"検索時間: {search_time:0.2f}ms, 最高類似度: {best_similarity:0.3f}",
                 }
             )
-            print(f"✅ {test_name} - 成功 (時間: {search_time:.2f}ms)")
+            print(f"✅ {test_name} - 成功 (時間: {search_time:0.2f}ms)")
 
         except Exception as e:
             self.test_results.append(
@@ -260,7 +260,7 @@ class PostgreSQLMCPIntegrationTest:
                 {
                     "test": test_name,
                     "status": "PASS",
-                    "message": f'MCP統合OK - 文書数: {stats["total_documents"]}, 類似度: {best_match["similarity"]:.3f}',
+                    "message": f'MCP統合OK - 文書数: {stats["total_documents"]}, 類似度: {best_match["similarity"]:0.3f}',
                 }
             )
             print(f"✅ {test_name} - 成功")
@@ -421,7 +421,7 @@ class PostgreSQLMCPIntegrationTest:
                     "status": "PASS",
                     "message": f'データ整合性OK - 総件数: {
                         integrity_check["total_count"]},
-                        平均長: {quality_check["avg_length"]:.0f},
+                        平均長: {quality_check["avg_length"]:0.0f},
                         次元: {embedding_check
                     }',
                 }
@@ -498,7 +498,7 @@ class PostgreSQLMCPIntegrationTest:
                 {
                     "test": test_name,
                     "status": "PASS",
-                    "message": f"平均検索時間: {avg_time:.2f}ms, 平均類似度: {avg_similarity:.3f}",
+                    "message": f"平均検索時間: {avg_time:0.2f}ms, 平均類似度: {avg_similarity:0.3f}",
                 }
             )
             print(f"✅ {test_name} - 成功")
@@ -619,9 +619,8 @@ class PostgreSQLMCPIntegrationTest:
             if conn:
                 await conn.close()
 
-    def generate_test_report(self):
-        """テストレポート生成"""
-        print("\n" + "=" * 80)
+    def generate_test_report(self)print("\n" + "=" * 80)
+    """テストレポート生成"""
         print("📊 PostgreSQL MCP統合テストレポート")
         print("=" * 80)
 
@@ -636,7 +635,7 @@ class PostgreSQLMCPIntegrationTest:
         print(f"スキップ: {skipped_tests}")
 
         if total_tests > 0:
-            print(f"成功率: {passed_tests/total_tests*100:.1f}%")
+            print(f"成功率: {passed_tests/total_tests*100:0.1f}%")
 
         print("\n🔍 テスト詳細:")
         for result in self.test_results:
@@ -665,17 +664,16 @@ class PostgreSQLMCPIntegrationTest:
             print("  🔧 問題を修正してから統合を進めてください。")
 
         print("\n🚀 次の段階:")
-        print("  1. PostgreSQL MCP統合の実装")
-        print("  2. 4賢者システムとの連携")
-        print("  3. UI/UX統合")
-        print("  4. 本番環境での段階的導入")
+        print("  1.0 PostgreSQL MCP統合の実装")
+        print("  2.0 4賢者システムとの連携")
+        print("  3.0 UI/UX統合")
+        print("  4.0 本番環境での段階的導入")
 
         return failed_tests == 0
 
 
-async def main():
-    """メイン実行関数"""
-    print("🚀 PostgreSQL MCP統合テストスイート開始 (最終版)")
+async def main()print("🚀 PostgreSQL MCP統合テストスイート開始 (最終版)")
+"""メイン実行関数"""
     print("=" * 80)
 
     tester = PostgreSQLMCPIntegrationTest()

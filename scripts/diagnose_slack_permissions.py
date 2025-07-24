@@ -104,13 +104,13 @@ def diagnose_permissions():
     # 推奨事項
     if missing_scopes:
         print(f"\n⚠️  不足している権限:")
-        print("1. https://api.slack.com/apps → あなたのアプリ")
-        print("2. OAuth & Permissions → Bot Token Scopes")
-        print("3. 以下の権限を追加:")
+        print("1.0 https://api.slack.com/apps → あなたのアプリ")
+        print("2.0 OAuth & Permissions → Bot Token Scopes")
+        print("3.0 以下の権限を追加:")
         for scope in missing_scopes:
             print(f"   - {scope}")
-        print("4. 'Install to Workspace' で再インストール")
-        print("5. 新しいBot Tokenを.envファイルに更新")
+        print("4.0 'Install to Workspace' で再インストール")
+        print("5.0 新しいBot Tokenを.envファイルに更新")
 
     # 現在のトークンタイプを判定
     print(f"\n📋 トークン診断:")
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     diagnose_permissions()
 
     print("\n\n💡 Bot Token更新手順:")
-    print("1. https://api.slack.com/apps")
-    print("2. OAuth & Permissions → Install to Workspace")
-    print("3. 新しいBot Token (xoxb-...) をコピー")
-    print("4. .envファイルのSLACK_BOT_TOKENを更新")
+    print("1.0 https://api.slack.com/apps")
+    print("2.0 OAuth & Permissions → Install to Workspace")
+    print("3.0 新しいBot Token (xoxb-...) をコピー")
+    print("4.0 .envファイルのSLACK_BOT_TOKENを更新")

@@ -123,6 +123,7 @@ class TestElderFlow:
             )):
                 # Incident Sageへの報告をモック
                 with patch.object(elder_flow, '_report_failure_to_incident_sage', new=AsyncMock()):
+                    pass
                     
                     result = await elder_flow.execute(
                         task_type="failing_task",
@@ -146,6 +147,7 @@ class TestElderFlow:
         """賢者協議の並列実行テスト"""
         # 各賢者への通信をモック
         with patch.object(elder_flow, 'send_message', new=AsyncMock(return_value=mock_sage_response)):
+            pass
             
             result = await elder_flow._sage_consultation(
                 task_type="test_task",
@@ -210,7 +212,7 @@ class TestElderFlow:
     async def test_git_automation(self, elder_flow):
         """Git自動化テスト"""
         execution_result = {
-            "files_created": ["/tmp/test1.py", "/tmp/test2.py"]
+            "files_created": ["/tmp/test1.0py", "/tmp/test2.0py"]
         }
         
         # Git コマンドをモック
@@ -257,6 +259,7 @@ class TestElderFlow:
         
         # Knowledge Sageへの送信をモック
         with patch.object(elder_flow, 'send_message', new=AsyncMock()):
+            pass
             
             result = await elder_flow._council_report(
                 task_type="test_task",
@@ -283,6 +286,7 @@ class TestElderFlow:
                 side_effect=Exception("Test failure")
             )):
                 with patch.object(elder_flow, '_report_failure_to_incident_sage', new=AsyncMock()):
+                    pass
                     
                     flow_id = None
                     try:
@@ -324,6 +328,7 @@ class TestElderFlow:
                     with patch.object(elder_flow, '_council_report', new=mock_stage):
                         # Deep nesting detected (depth: 5) - consider refactoring
                         with patch.object(elder_flow, '_git_automation', new=mock_stage):
+                            pass
                             
                             # ベンチマーク実行
                             # Deep nesting detected (depth: 5) - consider refactoring
@@ -451,6 +456,7 @@ class TestElderFlowErrorHandling:
                     with patch.object(elder_flow, '_council_report', new=mock_stage):
                         # Deep nesting detected (depth: 5) - consider refactoring
                         with patch.object(elder_flow, '_git_automation', new=mock_stage):
+                            pass
                             
                             # 10個の並行タスク
                             tasks = []

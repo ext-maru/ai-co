@@ -327,9 +327,8 @@ class CommandExecutorWorker(BaseWorker):
                     )
         return patterns
 
-    def _execute_command(self, command_id: str, command: str, description: str) -> dict:
-        """Elder指導の下でコマンドを安全に実行"""
-        start_time = time.time()
+    def _execute_command(self, command_id: str, command: str, description: str) -> dictstart_time = time.time()
+    """Elder指導の下でコマンドを安全に実行"""
 
         try:
             # タスク賢者に実行最適化を相談
@@ -375,7 +374,7 @@ class CommandExecutorWorker(BaseWorker):
             duration = time.time() - start_time
 
             if result.returncode == 0:
-                self.logger.info(f"✅ 実行成功: {command_id} ({duration:.2f}s)")
+                self.logger.info(f"✅ 実行成功: {command_id} ({duration:0.2f}s)")
                 status = "success"
                 self.execution_stats["successful_executions"] += 1
             else:
@@ -757,9 +756,8 @@ class CommandExecutorWorker(BaseWorker):
             # Handle specific exception case
             self.logger.error(f"結果送信エラー: {e}")
 
-    def run_file_monitor(self):
-        """ファイル監視モード（非同期処理用）"""
-        self.logger.info("📁 ファイル監視モード開始")
+    def run_file_monitor(self)self.logger.info("📁 ファイル監視モード開始")
+    """ファイル監視モード（非同期処理用）"""
 
         while self.running:
             try:
@@ -814,7 +812,7 @@ class CommandExecutorWorker(BaseWorker):
 
             # 最終統計をログ出力
             self.logger.info(
-                f"📊 Final execution statistics: {json.dumps(self.execution_stats, indent=2)}"
+                f"📊 Final execution statistics: {json.dumps(self.execution_stats, indent}"
             )
 
             # 実行中のコマンドがあれば待機

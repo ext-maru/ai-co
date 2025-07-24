@@ -54,9 +54,8 @@ class GitHubIssueMonitor:
         # 状態を読み込み
         self._load_state()
 
-    def _load_state(self):
-        """監視状態を読み込み"""
-        if self.state_file.exists():
+    def _load_state(self)if self.state_file.exists():
+    """監視状態を読み込み"""
             try:
                 with open(self.state_file, "r", encoding="utf-8") as f:
                     state = json.load(f)
@@ -98,9 +97,8 @@ class GitHubIssueMonitor:
         except Exception as e:
             self.logger.error(f"状態保存エラー: {e}")
 
-    def _reset_state(self):
-        """監視状態をリセット"""
-        self.last_check_time = datetime.now() - timedelta(hours=1)  # 1時間前から開始
+    def _reset_state(self)self.last_check_time = datetime.now() - timedelta(hours=1)  # 1時間前から開始
+    """監視状態をリセット"""
         self.processed_comments = set()
         self.logger.info("監視状態をリセット")
 
@@ -376,15 +374,13 @@ def get_issue_monitor() -> GitHubIssueMonitor:
     return _issue_monitor
 
 
-async def start_monitoring():
-    """監視を開始"""
-    monitor = get_issue_monitor()
+async def start_monitoring()monitor = get_issue_monitor()
+"""監視を開始"""
     await monitor.start_monitoring()
 
 
-def stop_monitoring():
-    """監視を停止"""
-    monitor = get_issue_monitor()
+def stop_monitoring()monitor = get_issue_monitor()
+"""監視を停止"""
     monitor.stop_monitoring()
 
 

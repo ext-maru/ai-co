@@ -102,11 +102,10 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
             self.logger.error(f"Elder Tree initialization failed: {e}")
             self.elder_integration_enabled = False
 
-    async def process_message(self, message: Dict[str, Any]) -> Dict[str, Any]:
-        """🌳 Elder Tree統合メッセージ処理 - レビュー完了メッセージを処理"""
-        message_type = message.get("message_type")
+    async def process_message(self, message: Dict[str, Any]) -> Dict[str, Any]message_type = message.get("message_type")
+    """🌳 Elder Tree統合メッセージ処理 - レビュー完了メッセージを処理"""
 
-        # Elder Treeメタデータの追加
+        # Elder Treeメタデータの追加:
         if self.elder_integration_enabled:
             message["elder_metadata"] = {
                 "processed_by": "CodeReviewResultWorker",
@@ -349,7 +348,7 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
         summary = f"Code review completed with quality score improvement from {quality_improvement[" \
             "Code review completed with quality score improvement from {quality_improvement[" \
             "Code review completed with quality score improvement from " \
-                "{quality_improvement["before']:.1f} to {quality_improvement['after']:.1f}"
+                "{quality_improvement["before']:0.1f} to {quality_improvement['after']:0.1f}"
 
         # 改善点の整理
         improvements = payload.get("improvement_summary", {}).get(
@@ -451,7 +450,7 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
 
 ## Task: {task_id}
 
-## Quality Score: {payload.get('final_quality_score', 0):.1f}/100
+## Quality Score: {payload.get('final_quality_score', 0):0.1f}/100
 
 ## Summary
 Code review completed successfully with quality improvements.
@@ -487,7 +486,7 @@ Code review completed successfully with quality improvements.
 <body>
     <h1 class="header">Code Review Report</h1>
     <h2>Task: {task_id}</h2>
-    <p class="score">Quality Score: {payload.get('final_quality_score', 0):.1f}/100</p>
+    <p class="score">Quality Score: {payload.get('final_quality_score', 0):0.1f}/100</p>
 
     <h3>Summary</h3>
     <p>Code review completed successfully with quality improvements.</p>

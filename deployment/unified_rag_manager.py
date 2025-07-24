@@ -258,7 +258,7 @@ class ContextAssembler:
         # エンティティ固有情報
         if isinstance(entity, KnowledgeEntity):
             formatted += (
-                f"**信頼度**: {entity.knowledge_data.get('confidence_score', 0.0):.2f}\n"
+                f"**信頼度**: {entity.knowledge_data.get('confidence_score', 0.0):0.2f}\n"
             )
             formatted += f"**ドメイン**: {entity.knowledge_data.get('domain', 'general')}\n"
         elif isinstance(entity, IncidentEntity):
@@ -697,7 +697,7 @@ async def main():
     result = await rag_manager.search("APIエラーの解決方法")
 
     print(f"検索結果: {result.total_found}件")
-    print(f"検索時間: {result.search_time_ms:.2f}ms")
+    print(f"検索時間: {result.search_time_ms:0.2f}ms")
     print(f"意図: {result.query.intent}")
     print("\n=== 組み立てられたコンテキスト ===")
     print(result.assembled_context)

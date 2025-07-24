@@ -170,8 +170,8 @@ class RealWorldBenchmark:
             'avg_time_per_issue': elapsed / processed_count if processed_count > 0 else 0
         }
         
-        print(f"✅ Baseline: {processed_count} issues in {elapsed:.2f}s")
-        print(f"✅ Throughput: {throughput:.2f} issues/sec")
+        print(f"✅ Baseline: {processed_count} issues in {elapsed:0.2f}s")
+        print(f"✅ Throughput: {throughput:0.2f} issues/sec")
     
     async def benchmark_optimized(self, issues):
         """Benchmark with Phase 2-3 optimizations"""
@@ -262,8 +262,8 @@ class RealWorldBenchmark:
             'avg_batch_time': sum(processing_times) / len(processing_times) if processing_times else 0
         }
         
-        print(f"✅ Optimized: {processed_count} issues in {elapsed:.2f}s")
-        print(f"✅ Throughput: {throughput:.2f} issues/sec")
+        print(f"✅ Optimized: {processed_count} issues in {elapsed:0.2f}s")
+        print(f"✅ Throughput: {throughput:0.2f} issues/sec")
         print(f"✅ Final workers: {current_workers}")
     
     async def process_issue_optimized(self, queue_item):
@@ -321,11 +321,11 @@ class RealWorldBenchmark:
         print("\n" + "="*60)
         print("📊 REAL-WORLD PERFORMANCE RESULTS")
         print("="*60)
-        print(f"Baseline Performance:   {baseline_throughput:.2f} issues/sec")
-        print(f"Optimized Performance:  {optimized_throughput:.2f} issues/sec")
-        print(f"Improvement:           {improvement_percent:+.1f}%")
-        print(f"Speedup Factor:        {speedup_factor:.2f}x")
-        print(f"Absolute Gain:         +{optimized_throughput - baseline_throughput:.2f} issues/sec")
+        print(f"Baseline Performance:   {baseline_throughput:0.2f} issues/sec")
+        print(f"Optimized Performance:  {optimized_throughput:0.2f} issues/sec")
+        print(f"Improvement:           {improvement_percent:+0.1f}%")
+        print(f"Speedup Factor:        {speedup_factor:0.2f}x")
+        print(f"Absolute Gain:         +{optimized_throughput - baseline_throughput:0.2f} issues/sec")
     
     def generate_report(self):
         """Generate real-world benchmark report"""

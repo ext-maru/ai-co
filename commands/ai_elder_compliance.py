@@ -113,7 +113,7 @@ class ElderComplianceManager:
 
         # Show compliance score
         report = self.monitor.get_compliance_report(elder_instance)
-        print(f"\n📊 Compliance Score: {report['compliance_rate']:.1f}%")
+        print(f"\n📊 Compliance Score: {report['compliance_rate']:0.1f}%")
 
     def enforce_compliance(self, args):
         """Enforce compliance by correcting violations"""
@@ -156,7 +156,7 @@ class ElderComplianceManager:
         report = self.monitor.get_compliance_report(elder_instance)
 
         # Overall compliance
-        print(f"🎯 Overall Compliance Rate: {report['compliance_rate']:.1f}%")
+        print(f"🎯 Overall Compliance Rate: {report['compliance_rate']:0.1f}%")
         print(f"📈 Total Violations: {report['total_violations']}")
         print(f"🚀 Total Servant Deployments: {report['total_deployments']}")
         print()
@@ -195,7 +195,7 @@ class ElderComplianceManager:
         print(f"  - Violations Detected: {metrics['violations_detected']}")
         print(f"  - Violations Corrected: {metrics['violations_corrected']}")
         print(f"  - Servants Deployed: {metrics['servants_deployed']}")
-        print(f"  - Monitoring Uptime: {metrics['monitoring_uptime']:.1f}s")
+        print(f"  - Monitoring Uptime: {metrics['monitoring_uptime']:0.1f}s")
 
         if metrics["last_violation"]:
             print(f"  - Last Violation: {metrics['last_violation']}")
@@ -245,7 +245,7 @@ class ElderComplianceManager:
         print("📈 Recent Activity:")
         print(f"  - Total Violations: {report['total_violations']}")
         print(f"  - Total Deployments: {report['total_deployments']}")
-        print(f"  - Compliance Rate: {report['compliance_rate']:.1f}%")
+        print(f"  - Compliance Rate: {report['compliance_rate']:0.1f}%")
         print()
 
         # Active deployments

@@ -10,6 +10,7 @@ from datetime import datetime
 
 
 class TaskSage(ElderTreeAgent):
+    pass
 
 
 """Task Sage - タスク管理専門エージェント""" int = 50052):
@@ -25,11 +26,10 @@ class TaskSage(ElderTreeAgent):
         
         self.logger.info("Task Sage initialized")
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """メッセージハンドラー"""
-        message_type = data.get('type', 'unknown')
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
+    """メッセージハンドラー"""
         
-        # 基本メッセージタイプの処理
+        # 基本メッセージタイプの処理:
         if message_type in ["health_check", "get_metrics"]:
             return super().handle_message(data)
         
@@ -67,9 +67,8 @@ class TaskSage(ElderTreeAgent):
             "task": task
         }
     
-    def _handle_update_task(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク更新"""
-        task_id = data.get("task_id")
+    def _handle_update_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
+    """タスク更新""":
         if task_id not in self.tasks:
             return {"status": "error", "message": "Task not found"}
         
@@ -86,12 +85,11 @@ class TaskSage(ElderTreeAgent):
             "task": self.tasks[task_id]
         }
     
-    def _handle_get_tasks(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """タスク一覧取得"""
-        status_filter = data.get("status")
+    def _handle_get_tasks(self, data: Dict[str, Any]) -> Dict[str, Any]status_filter = data.get("status")
+    """タスク一覧取得"""
         priority_filter = data.get("priority")
         
-        filtered_tasks = []
+        filtered_tasks = []:
         for task in self.tasks.values():
             if status_filter and task["status"] != status_filter:
                 continue
@@ -105,9 +103,8 @@ class TaskSage(ElderTreeAgent):
             "count": len(filtered_tasks)
         }
     
-    def _handle_elder_flow_consultation(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Elder Flow協議処理"""
-        task_type = data.get("task_type", "unknown")
+    def _handle_elder_flow_consultation(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")
+    """Elder Flow協議処理"""
         requirements = data.get("requirements", [])
         
         # タスク管理の観点からの推奨事項
@@ -120,7 +117,7 @@ class TaskSage(ElderTreeAgent):
         # 工数見積もり（簡易版）
         estimated_hours = len(requirements) * 0.5 + 2  # 基本2時間 + 要件数×0.5時間
         
-        return {
+        return {:
             "status": "success",
             "recommendations": recommendations,
             "estimated_hours": estimated_hours,
@@ -130,6 +127,7 @@ class TaskSage(ElderTreeAgent):
 
 # 単体実行用
 def main():
+    pass
 
         """mainメソッド"""
         try:

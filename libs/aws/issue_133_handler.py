@@ -35,7 +35,7 @@ class Issue133Implementation:
             if profile_name:
                 session_params['profile_name'] = profile_name
                 
-            self.session = boto3.Session(**session_params)
+            self.session = boto3Session(**session_params)
             
             # 必要なクライアントの初期化
             self._initialize_clients()

@@ -9,6 +9,7 @@ import asyncio
 
 
 class TestElderTreeUserStories:
+    pass
 
 
 """ユーザーストーリーベースの受け入れテスト"""
@@ -50,6 +51,7 @@ class TestElderTreeUserStories:
     
     @pytest.mark.acceptance
     async def test_elder_flow_complete_execution(self):
+        pass
 
             """
         ユーザーストーリー #2: Elder Flowが5段階を完全実行

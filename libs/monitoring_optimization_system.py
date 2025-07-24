@@ -7,9 +7,9 @@ PostgreSQL MCPの監視・最適化・パフォーマンス管理システム
 リアルタイム監視、自動最適化、予測分析を提供
 
 機能:
-📊 リアルタイム監視
+"📊" リアルタイム監視
 🔧 自動最適化
-📈 パフォーマンス分析
+"📈" パフォーマンス分析
 🚨 アラート管理
 📋 レポート生成
 """
@@ -314,7 +314,7 @@ class SystemMonitor:
                 metric="cpu_usage",
                 current_value=metrics.cpu_usage,
                 threshold=self.thresholds["cpu_usage"],
-                message=f"CPU使用率が高い: {metrics.cpu_usage:.1f}%",
+                message=f"CPU使用率が高い: {metrics.cpu_usage:0.1f}%",
                 suggested_action="プロセス負荷の確認とスケーリング検討",
             )
             alerts.append(alert)
@@ -329,7 +329,7 @@ class SystemMonitor:
                 metric="memory_usage",
                 current_value=metrics.memory_usage,
                 threshold=self.thresholds["memory_usage"],
-                message=f"メモリ使用率が高い: {metrics.memory_usage:.1f}%",
+                message=f"メモリ使用率が高い: {metrics.memory_usage:0.1f}%",
                 suggested_action="メモリリークの確認とガベージコレクション",
             )
             alerts.append(alert)
@@ -344,7 +344,7 @@ class SystemMonitor:
                 metric="disk_usage",
                 current_value=metrics.disk_usage,
                 threshold=self.thresholds["disk_usage"],
-                message=f"ディスク使用率が高い: {metrics.disk_usage:.1f}%",
+                message=f"ディスク使用率が高い: {metrics.disk_usage:0.1f}%",
                 suggested_action="ディスクスペースの確保とデータアーカイブ",
             )
             alerts.append(alert)
@@ -359,7 +359,7 @@ class SystemMonitor:
                 metric="error_rate",
                 current_value=metrics.error_rate,
                 threshold=self.thresholds["error_rate"],
-                message=f"エラー率が高い: {metrics.error_rate:.1f}%",
+                message=f"エラー率が高い: {metrics.error_rate:0.1f}%",
                 suggested_action="エラーログの確認とバグ修正",
             )
             alerts.append(alert)
@@ -374,7 +374,7 @@ class SystemMonitor:
                 metric="response_time",
                 current_value=metrics.response_time,
                 threshold=self.thresholds["response_time"],
-                message=f"応答時間が遅い: {metrics.response_time:.3f}秒",
+                message=f"応答時間が遅い: {metrics.response_time:0.3f}秒",
                 suggested_action="クエリの最適化とインデックス確認",
             )
             alerts.append(alert)
@@ -962,27 +962,27 @@ async def demo_monitoring_optimization_system():
     )
 
     try:
-        # 1. システム初期化
-        print("\n1. システム初期化...")
+        # 1.0 システム初期化
+        print("\n1.0 システム初期化...")
         init_result = await monitoring_system.initialize_system()
         print(f"   結果: {'成功' if init_result['success'] else '失敗'}")
 
-        # 2. パフォーマンス分析
-        print("\n2. パフォーマンス分析...")
+        # 2.0 パフォーマンス分析
+        print("\n2.0 パフォーマンス分析...")
         analysis_result = await monitoring_system.run_performance_analysis()
         if analysis_result["success"]:
             print(f"   推奨事項: {analysis_result['recommendations_count']}件")
             print(f"   ボトルネック: {analysis_result['bottlenecks_count']}件")
             print(f"   最適化機会: {analysis_result['optimization_opportunities']}件")
 
-        # 3. 緊急最適化
-        print("\n3. 緊急最適化...")
+        # 3.0 緊急最適化
+        print("\n3.0 緊急最適化...")
         emergency_result = await monitoring_system.apply_emergency_optimizations()
         if emergency_result["success"]:
             print(f"   緊急最適化: {emergency_result['emergency_optimizations']}件適用")
 
-        # 4. 監視開始（短時間）
-        print("\n4. 監視開始...")
+        # 4.0 監視開始（短時間）
+        print("\n4.0 監視開始...")
         monitoring_system.monitoring_interval = 5  # 5秒間隔
         start_result = await monitoring_system.start_monitoring()
         if start_result["success"]:
@@ -996,17 +996,17 @@ async def demo_monitoring_optimization_system():
             if stop_result["success"]:
                 print(f"   監視停止 (サイクル: {stop_result['total_cycles']}回)")
 
-        # 5. 監視レポート
-        print("\n5. 監視レポート...")
+        # 5.0 監視レポート
+        print("\n5.0 監視レポート...")
         report = await monitoring_system.get_monitoring_report()
         if "error" not in report:
             print(f"   監視サイクル: {report['monitoring_status']['cycles']}回")
             print(f"   アラート: {len(report['recent_alerts'])}件")
             print(f"   最適化: {len(report['recent_optimizations'])}件")
-            print(f"   稼働時間: {report['monitoring_status']['uptime']:.1f}秒")
+            print(f"   稼働時間: {report['monitoring_status']['uptime']:0.1f}秒")
 
-        # 6. システム状況
-        print("\n6. システム状況...")
+        # 6.0 システム状況
+        print("\n6.0 システム状況...")
         status = monitoring_system.get_system_status()
         print(f"   監視レベル: {status['monitoring_level']}")
         print(f"   最適化戦略: {status['optimization_strategy']}")

@@ -186,9 +186,8 @@ class FeatureExtractor:
 class IncidentPredictor(EldersAILegacy):
     """インシデント予測システム"""
 
-    def __init__(self, pattern_detector:
+    def __init__(self, pattern_detector: FailurePatternDetector):
         """初期化メソッド"""
-    FailurePatternDetector):
         super().__init__(name="IncidentPredictor", model_type="prediction-v1")
         self.pattern_detector = pattern_detector
         self.prediction_model = None
@@ -294,8 +293,8 @@ class IncidentPredictor(EldersAILegacy):
             self.training_history.append(training_result)
 
             logger.info(
-                f"✅ Model training completed - Category: {cat_accuracy:.2%}, Severity: " \
-                    "{sev_accuracy:.2%}"
+                f"✅ Model training completed - Category: {cat_accuracy:0.2%}, Severity: " \
+                    "{sev_accuracy:0.2%}"
             )
 
             return {"success": True, "training_result": training_result}
@@ -435,13 +434,13 @@ class IncidentPredictor(EldersAILegacy):
 
             # 閾値を超えている特徴量を寄与要因として記録
             if name == "error_rate" and value > 0.05:
-                contributing.append((f"High error rate: {value:.2%}", importance))
+                contributing.append((f"High error rate: {value:0.2%}", importance))
             elif name == "response_time" and value > 5.0:
-                contributing.append((f"Slow response time: {value:.1f}s", importance))
+                contributing.append((f"Slow response time: {value:0.1f}s", importance))
             elif name == "cpu_usage" and value > 80:
-                contributing.append((f"High CPU usage: {value:.1f}%", importance))
+                contributing.append((f"High CPU usage: {value:0.1f}%", importance))
             elif name == "memory_usage" and value > 80:
-                contributing.append((f"High memory usage: {value:.1f}%", importance))
+                contributing.append((f"High memory usage: {value:0.1f}%", importance))
             elif name == "failure_count_1h" and value > 10:
                 contributing.append(
                     (f"Recent failures: {int(value)} in 1h", importance)
@@ -535,10 +534,10 @@ class IncidentPredictor(EldersAILegacy):
         # 主要なメトリクスからキーを生成
         metrics = state.get("metrics", {})
         key_parts = [
-            f"err_{metrics.get('error_rate', 0):.2f}",
-            f"cpu_{metrics.get('cpu_usage', 0):.0f}",
-            f"mem_{metrics.get('memory_usage', 0):.0f}",
-            f"resp_{metrics.get('response_time', 0):.1f}",
+            f"err_{metrics.get('error_rate', 0):0.2f}",
+            f"cpu_{metrics.get('cpu_usage', 0):0.0f}",
+            f"mem_{metrics.get('memory_usage', 0):0.0f}",
+            f"resp_{metrics.get('response_time', 0):0.1f}",
         ]
         return "_".join(key_parts)
 

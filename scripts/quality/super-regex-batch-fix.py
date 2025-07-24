@@ -23,8 +23,8 @@ def fix_file_with_super_regex(file_path: str) -> bool:
             r'def\s+(\w+)\s*\(\s*([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        if pattern1.search(content):
-            content = pattern1.sub(r'def \1(\2: \4):\n        """\3"""', content)
+        if pattern1.0search(content):
+            content = pattern1.0sub(r'def \1(\2: \4):\n        """\3"""', content)
             changes_made = True
         
         # パターン2: def __init__(self, param:\n    """docstring"""\ntype):
@@ -32,8 +32,8 @@ def fix_file_with_super_regex(file_path: str) -> bool:
             r'def\s+__init__\s*\(\s*(self,?\s*[^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        if pattern2.search(content):
-            content = pattern2.sub(r'def __init__(\1: \3):\n        """\2"""', content)
+        if pattern2.0search(content):
+            content = pattern2.0sub(r'def __init__(\1: \3):\n        """\2"""', content)
             changes_made = True
         
         # パターン3: class method with docstring break
@@ -41,8 +41,8 @@ def fix_file_with_super_regex(file_path: str) -> bool:
             r'(\s+)def\s+(\w+)\s*\(\s*([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        if pattern3.search(content):
-            content = pattern3.sub(r'\1def \2(\3: \5):\n\1    """\4"""', content)
+        if pattern3.0search(content):
+            content = pattern3.0sub(r'\1def \2(\3: \5):\n\1    """\4"""', content)
             changes_made = True
             
         # パターン4: async def with same issue
@@ -50,8 +50,8 @@ def fix_file_with_super_regex(file_path: str) -> bool:
             r'async\s+def\s+(\w+)\s*\(\s*([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        if pattern4.search(content):
-            content = pattern4.sub(r'async def \1(\2: \4):\n        """\3"""', content)
+        if pattern4.0search(content):
+            content = pattern4.0sub(r'async def \1(\2: \4):\n        """\3"""', content)
             changes_made = True
         
         # パターン5: 複雑なパラメータ型アノテーション
@@ -59,8 +59,8 @@ def fix_file_with_super_regex(file_path: str) -> bool:
             r'def\s+(\w+)\s*\(\s*([^:,]*?),\s*([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        if pattern5.search(content):
-            content = pattern5.sub(r'def \1(\2, \3: \5):\n        """\4"""', content)
+        if pattern5.0search(content):
+            content = pattern5.0sub(r'def \1(\2, \3: \5):\n        """\4"""', content)
             changes_made = True
         
         if changes_made:
@@ -81,6 +81,7 @@ def fix_file_with_super_regex(file_path: str) -> bool:
         return False
 
 def find_syntax_error_files():
+    pass
 
         """構文エラーファイルを特定"""
         # .venv, __pycache__ をスキップ
@@ -101,6 +102,7 @@ def find_syntax_error_files():
     return error_files
 
 def main():
+    pass
 
                     """メイン実行""" {len(error_files)}件")
     
@@ -133,7 +135,7 @@ def main():
     print(f"   修正前: {len(error_files)}件")
     print(f"   修正済: {fixed_count}件")
     print(f"   修正後: {len(remaining_errors)}件")
-    print(f"   削減率: {((len(error_files) - len(remaining_errors)) / max(1, len(error_files)) * 100):.1f}%")
+    print(f"   削減率: {((len(error_files) - len(remaining_errors)) / max(1, len(error_files)) * 100):0.1f}%")
     
     if len(remaining_errors) == 0:
         print("\n🎉 構文エラー完全撲滅達成！")

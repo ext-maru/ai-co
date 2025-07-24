@@ -485,10 +485,8 @@ class UnifiedGitHubManager:
         Returns:
             作成結果リスト
         """
-        async def create_single_issue(issue_data:
-            """single_issue作成メソッド"""
-        Dict[str, Any]) -> Dict[str, Any]:
-            return await self.create_issue(**issue_data)
+        async def create_single_issue(issue_dataDict[str, Any]) -> Dict[str, Any]return await self.create_issue(**issue_data)
+    """single_issue作成メソッド"""
         
         results = await self.parallel_processor.map_async(
             create_single_issue,
@@ -497,7 +495,7 @@ class UnifiedGitHubManager:
         )
         
         # 結果整形
-        formatted_results = []
+        formatted_results = []:
         for success, result in results:
             if success:
                 formatted_results.append(result)
@@ -525,10 +523,8 @@ class UnifiedGitHubManager:
         Returns:
             更新結果リスト
         """
-        def update_single_issue(update_data:
-            """single_issue更新メソッド"""
-        Dict[str, Any]) -> Dict[str, Any]:
-            issue_number = update_data.pop("issue_number")
+        def update_single_issue(update_dataDict[str, Any]) -> Dict[str, Any]issue_number = update_data.pop("issue_number")
+    """single_issue更新メソッド"""
             return self.update_issue(issue_number, **update_data)
         
         # スレッドプールで実行（同期APIのため）
@@ -539,7 +535,7 @@ class UnifiedGitHubManager:
         )
         
         # 結果整形
-        formatted_results = []
+        formatted_results = []:
         for success, result in results:
             if success:
                 formatted_results.append(result)
@@ -615,9 +611,8 @@ def get_unified_github_manager(
 
 
 # 使用例
-async def main():
-    """使用例"""
-    manager = get_unified_github_manager()
+async def main()manager = get_unified_github_manager()
+"""使用例"""
     
     try:
         # リポジトリ作成

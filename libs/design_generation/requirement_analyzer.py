@@ -145,16 +145,16 @@ class EnhancedRequirementAnalyzer:
                 "implicit_needs": []
             }
         
-        # 1. エンティティ抽出
+        # 1.0 エンティティ抽出
         entities = self._extract_entities(requirements, language)
         
-        # 2. 関係性マッピング
+        # 2.0 関係性マッピング
         relationships = self._map_relationships(requirements, entities)
         
-        # 3. ビジネスルール推論
+        # 3.0 ビジネスルール推論
         business_rules = self._infer_business_rules(requirements)
         
-        # 4. 潜在ニーズ発見
+        # 4.0 潜在ニーズ発見
         implicit_needs = self._discover_implicit_needs(requirements, entities)
         
         return {

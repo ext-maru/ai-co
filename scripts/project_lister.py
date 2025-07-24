@@ -179,7 +179,7 @@ class ProjectLister:
             # 品質スコア
             coverage = project["quality_metrics"].get("test_coverage", 0)
             quality = project["quality_metrics"].get("quality_score", 0)
-            quality_str = f"📊 {coverage:.0f}% | 🎯 {quality:.0f}"
+            quality_str = f"📊 {coverage:0.0f}% | 🎯 {quality:0.0f}"
 
             table.add_row(
                 project["name"],
@@ -246,9 +246,9 @@ class ProjectLister:
             f"📊 サマリー\n\n"
             f"総プロジェクト数: {len(projects)}\n"
             f"アクティブ: {active_count} 🟢\n"
-            f"総容量: {total_size:.1f} MB\n"
-            f"平均品質スコア: {avg_quality:.1f}/100\n"
-            f"平均テストカバレッジ: {avg_coverage:.1f}%\n\n"
+            f"総容量: {total_size:0.1f} MB\n"
+            f"平均品質スコア: {avg_quality:0.1f}/100\n"
+            f"平均テストカバレッジ: {avg_coverage:0.1f}%\n\n"
             f"💡 ヒント:\n"
             f"  • 新規作成: ai-project create\n"
             f"  • PDCA分析: ai-project pdca <project_name>\n"

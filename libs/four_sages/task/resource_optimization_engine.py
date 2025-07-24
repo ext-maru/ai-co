@@ -193,9 +193,8 @@ class SystemResourceMonitor:
 class ResourceOptimizationEngine:
     """リソース最適化エンジン"""
 
-    def __init__(self, task_sage, tracking_db:
+    def __init__(self, task_sage, tracking_db: UnifiedTrackingDB):
         """初期化メソッド"""
-    UnifiedTrackingDB):
         self.task_sage = task_sage
         self.tracking_db = tracking_db
         self.resource_monitor = SystemResourceMonitor()

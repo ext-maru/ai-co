@@ -196,7 +196,7 @@ class ComplianceAuditLogger:
                 "required_fields": ["user_id", "action", "result"],
                 "risk_factors": ["failed_attempts", "unusual_location"],
                 "compliance_mapping": {
-                    ComplianceStandard.ISO27001: ["A.9.4.2", "A.9.4.3"],
+                    ComplianceStandard.ISO27001: ["A0.9.4.2", "A0.9.4.3"],
                     ComplianceStandard.SOC2: ["CC6.1", "CC6.2"],
                     ComplianceStandard.GDPR: ["Article 25", "Article 32"],
                 },
@@ -205,7 +205,7 @@ class ComplianceAuditLogger:
                 "required_fields": ["user_id", "resource", "action"],
                 "risk_factors": ["sensitive_data", "bulk_access"],
                 "compliance_mapping": {
-                    ComplianceStandard.ISO27001: ["A.9.4.4", "A.9.4.5"],
+                    ComplianceStandard.ISO27001: ["A0.9.4.4", "A0.9.4.5"],
                     ComplianceStandard.SOC2: ["CC6.3", "CC6.7"],
                     ComplianceStandard.GDPR: ["Article 32", "Article 33"],
                 },
@@ -214,7 +214,7 @@ class ComplianceAuditLogger:
                 "required_fields": ["user_id", "action", "details"],
                 "risk_factors": ["production_system", "security_config"],
                 "compliance_mapping": {
-                    ComplianceStandard.ISO27001: ["A.12.1.2", "A.12.5.1"],
+                    ComplianceStandard.ISO27001: ["A0.12.1.2", "A0.12.5.1"],
                     ComplianceStandard.SOC2: ["CC8.1", "CC8.2"],
                     ComplianceStandard.GDPR: ["Article 25", "Article 32"],
                 },

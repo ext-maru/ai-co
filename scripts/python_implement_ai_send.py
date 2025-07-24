@@ -92,8 +92,8 @@ def implement_ai_send_extension():
                             info = task_types[task_type]
                             print(
                                 (
-                                    f"f"    - {task_type:<10} : {info.get('description', 'N/A')} (優先度: "
-                                    f"{info.get('default_priority', 5)})""
+                                    f"    - {task_type:<10} : {info.get('description', 'N/A')} (優先度: "
+                                    f"{info.get('default_priority', 5)})"
                                 )
                             )
 

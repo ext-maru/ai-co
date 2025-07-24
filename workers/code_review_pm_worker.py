@@ -339,7 +339,7 @@ class CodeReviewPMWorker(AsyncBaseWorkerV2):
                 "target_quality_score": self.quality_threshold,
                 "improvement_suggestions": suggestions,
                 "revised_code": revised_code,
-                "iteration_reason": f"Quality score {quality_score:.1f} below threshold {self.quality_threshold}",
+                "iteration_reason": f"Quality score {quality_score:0.1f} below threshold {self.quality_threshold}",
             },
         }
 

@@ -25,7 +25,7 @@ class CoverageTrendMonitor:
 
     def _init_db(self):
         """Initialize the coverage trends database"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS coverage_metrics (
@@ -71,7 +71,7 @@ class CoverageTrendMonitor:
 
     def record_coverage(self, coverage_data: Dict) -> None:
         """Record coverage metrics to the database"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO coverage_metrics (
@@ -102,7 +102,7 @@ class CoverageTrendMonitor:
             datetime.datetime.now() - datetime.timedelta(days=days)
         ).isoformat()
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             df = pd.read_sql_query(
                 """
                 SELECT timestamp, total_coverage, unit_coverage,
@@ -179,7 +179,7 @@ class CoverageTrendMonitor:
                 alert = {
                     "type": "threshold_breach",
                     "severity": "high",
-                    "message": f"Coverage {current_coverage:.1f}% below threshold {threshold}%",
+                    "message": f"Coverage {current_coverage:0.1f}% below threshold {threshold}%",
                     "coverage_drop": threshold - current_coverage,
                     "threshold": threshold,
                 }
@@ -191,7 +191,7 @@ class CoverageTrendMonitor:
                 alert = {
                     "type": "significant_drop",
                     "severity": "medium",
-                    "message": f"Coverage dropped {coverage_drop:.1f}% from recent average",
+                    "message": f"Coverage dropped {coverage_drop:0.1f}% from recent average",
                     "coverage_drop": coverage_drop,
                     "threshold": recent_avg,
                 }
@@ -202,7 +202,7 @@ class CoverageTrendMonitor:
 
     def _record_alert(self, alert: Dict) -> None:
         """Record an alert to the database"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO coverage_alerts (
@@ -296,7 +296,7 @@ class CoverageTrendMonitor:
         analysis = self.analyze_trends()
 
         # Get recent alerts
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             recent_alerts = pd.read_sql_query(
                 """
                 SELECT alert_type, message, severity, created_at

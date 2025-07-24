@@ -299,7 +299,7 @@ if __name__ == "__main__":
     for source, metrics in current.items():
         print(f"\n{source}:")
         for key, value in metrics.items():
-            print(f"  {key}: {value:.2f}")
+            print(f"  {key}: {value:0.2f}")
 
     # 時系列データ取得
     end_date = datetime.now()

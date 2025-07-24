@@ -203,7 +203,7 @@ class CouncilCommitCLI:
         # 複雑度とリスク情報
         complexity = context.get("complexity", 0)
         if complexity > 0.3:
-            enhanced_message += f"\n⚠️ Complexity: {complexity:.1f}"
+            enhanced_message += f"\n⚠️ Complexity: {complexity:0.1f}"
 
         # 平均リスクスコア
         avg_risk = (
@@ -212,7 +212,7 @@ class CouncilCommitCLI:
             else 0
         )
         if avg_risk > 0.5:
-            enhanced_message += f"\n🎯 Risk Score: {avg_risk:.2f}"
+            enhanced_message += f"\n🎯 Risk Score: {avg_risk:0.2f}"
 
         # エルダーズ署名
         enhanced_message += "\n\n🤖 Generated with Council Protocol"
@@ -241,7 +241,7 @@ class CouncilCommitCLI:
 
             print(f"📚 {result.sage_name}: {status}")
             print(f"   💡 アドバイス: {result.advice}")
-            print(f"   🎯 リスク: {risk_level} ({result.risk_score:.2f})")
+            print(f"   🎯 リスク: {risk_level} ({result.risk_score:0.2f})")
             print()
 
     async def execute_council_commit(self, message: str, args) -> bool:
@@ -250,11 +250,11 @@ class CouncilCommitCLI:
         start_time = asyncio.get_event_loop().time()
 
         try:
-            # 1. Git状態分析
+            # 1.0 Git状態分析
             git_changes = self.get_git_changes()
             print(f"📊 変更ファイル: {git_changes['total_files']}個")
 
-            # 2. 自動ステージング（必要に応じて）
+            # 2.0 自動ステージング（必要に応じて）
             if not git_changes["staged"] and (
                 git_changes["unstaged"] or git_changes["untracked"]
             ):
@@ -271,7 +271,7 @@ class CouncilCommitCLI:
                 # 再取得
                 git_changes = self.get_git_changes()
 
-            # 3. コンテキスト作成
+            # 3.0 コンテキスト作成
             all_files = git_changes["staged"] + (args.files if args.files else [])
             complexity = self.analyze_complexity(all_files)
 
@@ -286,9 +286,9 @@ class CouncilCommitCLI:
                 "git_changes": git_changes,
             }
 
-            print(f"🎯 判定: 緊急度={urgency.value}, 複雑度={complexity:.2f}")
+            print(f"🎯 判定: 緊急度={urgency.value}, 複雑度={complexity:0.2f}")
 
-            # 4. レイヤー判定
+            # 4.0 レイヤー判定
             layer = self.lightning_system.determine_layer(context)
             print(f"📋 実行レイヤー: {layer.value}")
 
@@ -301,16 +301,16 @@ class CouncilCommitCLI:
                 print("   推奨: ai-commit-grand")
                 return False
 
-            # 5. 4賢者評議会開始
+            # 5.0 4賢者評議会開始
             print("🧙‍♂️ 4賢者評議会招集中...")
             sage_results = (
                 await self.lightning_system.harmony_engine.council_consultation(context)
             )
 
-            # 6. 相談結果表示
+            # 6.0 相談結果表示
             self.display_sage_consultation_details(sage_results)
 
-            # 7. 合意判定
+            # 7.0 合意判定
             decision = self.lightning_system._make_council_decision(sage_results)
 
             if not decision.approved:
@@ -320,12 +320,12 @@ class CouncilCommitCLI:
 
             print(f"✅ 評議会承認: {decision.reasoning}")
 
-            # 8. 強化コミットメッセージ
+            # 8.0 強化コミットメッセージ
             enhanced_message = self.create_enhanced_commit_message(
                 message, context, sage_results
             )
 
-            # 9. Council実行
+            # 9.0 Council実行
             print("🏛️ Council実行中...")
             success = await self.lightning_system.execute_council_commit(
                 enhanced_message, context
@@ -334,17 +334,17 @@ class CouncilCommitCLI:
             elapsed = asyncio.get_event_loop().time() - start_time
 
             if success:
-                print(f"✅ Council Commit成功! ({elapsed:.1f}秒)")
+                print(f"✅ Council Commit成功! ({elapsed:0.1f}秒)")
                 print(f"🏛️ 4賢者承認による高品質コミット完了")
                 return True
             else:
-                print(f"❌ Council Commit失敗 ({elapsed:.1f}秒)")
+                print(f"❌ Council Commit失敗 ({elapsed:0.1f}秒)")
                 return False
 
         except Exception as e:
             # Handle specific exception case
             elapsed = asyncio.get_event_loop().time() - start_time
-            print(f"💥 Council Protocol エラー ({elapsed:.1f}秒): {e}")
+            print(f"💥 Council Protocol エラー ({elapsed:0.1f}秒): {e}")
             return False
 
 
@@ -397,7 +397,7 @@ def main():
         git_changes = cli.get_git_changes()
         complexity = cli.analyze_complexity(git_changes.get("staged", []))
         print(f"📊 変更ファイル: {git_changes['total_files']}個")
-        print(f"🎯 複雑度: {complexity:.2f}")
+        print(f"🎯 複雑度: {complexity:0.2f}")
 
         context = {
             "urgency": CommitUrgency.HIGH

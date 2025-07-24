@@ -40,7 +40,7 @@ class ImprovedLoggingMixin:
 
         # 実行時間を追加
         if duration:
-            message += f" (duration: {duration:.2f}s)"
+            message += f" (duration: {duration:0.2f}s)"
 
         # 結果の要約を追加（50文字まで）
         if result_summary:
@@ -115,11 +115,11 @@ class ImprovedLoggingMixin:
         self, operation: str, duration: float, items_processed: Optional[int] = None
     ):
         """パフォーマンスデータをログ"""
-        message = f"Performance: {operation} took {duration:.3f}s"
+        message = f"Performance: {operation} took {duration:0.3f}s"
 
         if items_processed:
             rate = items_processed / duration if duration > 0 else 0
-            message += f" ({items_processed} items, {rate:.1f} items/s)"
+            message += f" ({items_processed} items, {rate:0.1f} items/s)"
 
         self.logger.info(message)
 
@@ -191,10 +191,10 @@ self.log_task_complete(task_id, "Generated 3 files")
 ```
 
 ## 移行手順
-1. ImprovedLoggingMixinを継承
-2. 誇張表現を含むログを特定
-3. 適切なログメソッドに置き換え
-4. メトリクスとパフォーマンスデータを追加
+1.0 ImprovedLoggingMixinを継承
+2.0 誇張表現を含むログを特定
+3.0 適切なログメソッドに置き換え
+4.0 メトリクスとパフォーマンスデータを追加
 
 ## チェックリスト
 - [ ] 絵文字を削除または最小化

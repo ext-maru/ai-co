@@ -161,7 +161,7 @@ if __name__ == "__main__":
     check_specific_user_messages()
 
     print("\n\n💡 確認ポイント:")
-    print("1. あなたのメッセージが表示されているか")
-    print("2. Bot IDが正しく検出されているか")
-    print("3. メンション形式が正しいか（@Bot_ID）")
-    print("4. チャンネルが正しいか")
+    print("1.0 あなたのメッセージが表示されているか")
+    print("2.0 Bot IDが正しく検出されているか")
+    print("3.0 メンション形式が正しいか（@Bot_ID）")
+    print("4.0 チャンネルが正しいか")

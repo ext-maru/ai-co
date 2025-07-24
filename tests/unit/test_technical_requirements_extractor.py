@@ -60,6 +60,7 @@ We need to implement a Redis-based caching layer for our FastAPI application.
         return {
             'title': 'Add OAuth2.0 authentication system',
             'body': '''Implement OAuth2.0 authentication with the following providers:
+                pass
 - Google
 - GitHub
 - Microsoft

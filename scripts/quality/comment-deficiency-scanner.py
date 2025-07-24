@@ -268,7 +268,7 @@ class CommentDeficiencyScanner:
             "",
             "## 📊 Summary",
             "",
-            f"- **Function Comment Ratio**: {results['function_comment_ratio']:.1f}%",
+            f"- **Function Comment Ratio**: {results['function_comment_ratio']:0.1f}%",
             f"- **Files with Issues**: {len(results['files_with_deficiencies'])}",
             "",
             "## 📋 Deficiency Types",
@@ -332,7 +332,7 @@ def main():
     print(f"\n📊 Scan Complete!")
     print(f"Files scanned: {results['total_files_scanned']}")
     print(f"Total deficiencies: {results['total_deficiencies']}")
-    print(f"Function comment ratio: {results['function_comment_ratio']:.1f}%")
+    print(f"Function comment ratio: {results['function_comment_ratio']:0.1f}%")
     
     # レポート生成
     report = scanner.generate_report(results)

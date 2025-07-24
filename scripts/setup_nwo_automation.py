@@ -23,7 +23,7 @@ def setup_nwo_automation():
     print("🌌 nWo (New World Order) 自動化セットアップ開始")
     print("=" * 60)
 
-    # 1. 必要ディレクトリ作成
+    # 1.0 必要ディレクトリ作成
     print("📁 ディレクトリ構造作成...")
     directories = [
         PROJECT_ROOT / "nwo_council_reports",
@@ -35,7 +35,7 @@ def setup_nwo_automation():
         directory.mkdir(parents=True, exist_ok=True)
         print(f"  ✅ {directory}")
 
-    # 2. cron設定ファイル作成
+    # 2.0 cron設定ファイル作成
     print("\n⏰ cron設定準備...")
     cron_script_path = PROJECT_ROOT / "scripts" / "nwo_daily_cron.sh"
 
@@ -63,13 +63,13 @@ echo "✅ nWo自動化完了: $(date)" >> logs/nwo/automation.log
     os.chmod(cron_script_path, 0o755)
     print(f"  ✅ Cronスクリプト作成: {cron_script_path}")
 
-    # 3. crontab エントリ生成（表示のみ）
+    # 3.0 crontab エントリ生成（表示のみ）
     print("\n📋 crontab設定用コマンド:")
     print(f"  crontab -e で以下を追加:")
     print(f"  0 9 * * * {cron_script_path}")
     print("  （毎日午前9時に nWo Daily Council 自動実行）")
 
-    # 4. 「未来を見せて」コマンド拡張
+    # 4.0 「未来を見せて」コマンド拡張
     print("\n🔮 「未来を見せて」コマンド拡張...")
 
     # 既存のRAGエルダーコマンドを探す
@@ -90,7 +90,7 @@ echo "✅ nWo自動化完了: $(date)" >> logs/nwo/automation.log
         print("  ⚠️  既存の「未来を見せて」コマンドが見つかりません")
         print("  💡 手動で統合が必要です")
 
-    # 5. エルダーズギルド統合
+    # 5.0 エルダーズギルド統合
     print("\n🏛️ エルダーズギルド統合確認...")
 
     # CLAUDEmdファイル更新
@@ -98,7 +98,7 @@ echo "✅ nWo自動化完了: $(date)" >> logs/nwo/automation.log
     if claude_md_path.exists():
         print("  📄 CLAUDE.md にnWo情報追加準備完了")
 
-    # 6. 初回テスト実行
+    # 6.0 初回テスト実行
     print("\n🧪 初回テスト実行...")
     try:
         result = subprocess.run(
@@ -118,14 +118,14 @@ echo "✅ nWo自動化完了: $(date)" >> logs/nwo/automation.log
     except Exception as e:
         print(f"  ❌ テストエラー: {e}")
 
-    # 7. セットアップ完了
+    # 7.0 セットアップ完了
     print("\n🎉 nWo自動化セットアップ完了!")
     print("=" * 60)
 
     print("🚀 次のアクション:")
-    print("  1. crontab -e で自動実行を設定")
-    print("  2. python3 libs/nwo_daily_council.py で手動テスト")
-    print("  3. python3 commands/ai_nwo_vision.py でビジョン確認")
+    print("  1.0 crontab -e で自動実行を設定")
+    print("  2.0 python3 libs/nwo_daily_council.py で手動テスト")
+    print("  3.0 python3 commands/ai_nwo_vision.py でビジョン確認")
     print()
 
     print("🌌 nWo (New World Order) システム準備完了")

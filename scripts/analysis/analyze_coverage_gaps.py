@@ -51,7 +51,7 @@ def analyze_coverage():
     print(f"Existing libs tests: {len(test_files)}")
     print(f"Missing tests for: {len(missing_tests)} modules")
     print(
-        f"Coverage: {((len(libs_modules) - len(missing_tests)) / len(libs_modules) * 100):.1f}%"
+        f"Coverage: {((len(libs_modules) - len(missing_tests)) / len(libs_modules) * 100):0.1f}%"
     )
     print()
 

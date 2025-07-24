@@ -6,7 +6,7 @@ Elders Guild Result Worker v7.0 - Complete Elder Tree Integration
 🌳 Elder Tree Integration Features:
 - 📚 Knowledge Sage: Success results learning and knowledge accumulation
 - 🚨 Incident Sage: Failed task escalation and incident management
-- 🔍 RAG Sage: Advanced error analysis and pattern matching
+- "🔍" RAG Sage: Advanced error analysis and pattern matching
 - 🏛️ Elder Council: Critical result pattern analysis and strategic decisions
 - 🌟 Elder Tree Hierarchy: Complete command chain and authority structure
 
@@ -57,14 +57,14 @@ class ResultWorkerV2(BaseWorker):
     タスク結果処理とSlack通知ワーカー（Elder Tree統合完全版）
 
     Features:
-    - 📊 Result processing with comprehensive analytics
+    - "📊" Result processing with comprehensive analytics
     - 📱 Enhanced Slack notifications with Elder insights
     - 🌳 Complete Elder Tree hierarchy integration
     - 📚 Knowledge Sage learning data submission
     - 🚨 Incident Sage failure escalation
-    - 🔍 RAG Sage error analysis
+    - "🔍" RAG Sage error analysis
     - 🏛️ Elder Council critical pattern reporting
-    - 📈 Elder integration status monitoring
+    - "📈" Elder integration status monitoring
     """
 
     def __init__(self):
@@ -595,7 +595,7 @@ class ResultWorkerV2(BaseWorker):
                     self.stats["successful_tasks"] / self.stats["total_tasks"]
                 ) * 100
                 insights["performance_metrics"] = {
-                    "success_rate": f"{success_rate:.1f}%",
+                    "success_rate": f"{success_rate:0.1f}%",
                     "elder_escalations": self.stats["elder_escalations"],
                     "sage_consultations": self.stats["sage_consultations"],
                     "council_requests": self.stats["council_requests"],
@@ -647,7 +647,7 @@ class ResultWorkerV2(BaseWorker):
                 f"Result received: {task_id} | "
                 f"Status: {status} | "
                 f"Type: {task_type} | "
-                f"Duration: {duration:.2f}s | "
+                f"Duration: {duration:0.2f}s | "
                 f"Files: {len(files_created)}"
             )
 
@@ -687,7 +687,7 @@ class ResultWorkerV2(BaseWorker):
             process_duration = time.time() - start_time
             self.logger.info(
                 f"Result processed: {task_id} | "
-                f"Process duration: {process_duration:.2f}s"
+                f"Process duration: {process_duration:0.2f}s"
             )
 
         except Exception as e:
@@ -764,7 +764,7 @@ class ResultWorkerV2(BaseWorker):
             f"📝 **要求:** {prompt_summary}",
             f"💬 **応答:** {response_summary}",
             "",
-            f"⚡ **処理時間:** {duration:.1f}秒 | 📁 **ファイル:** {files_count}個",
+            f"⚡ **処理時間:** {duration:0.1f}秒 | 📁 **ファイル:** {files_count}個",
             f"🤖 **ワーカー:** {worker_id} | 🧠 **RAG:** {'ON' if rag_applied else 'OFF'}",
         ]
 
@@ -788,33 +788,33 @@ class ResultWorkerV2(BaseWorker):
         # スレッドメッセージ（詳細情報）
         thread_messages = []
 
-        # 1. プロンプト全文
+        # 1.0 プロンプト全文
         if prompt:
             thread_messages.append(f"📝 **プロンプト全文:**\n```\n{prompt}\n```")
 
-        # 2. レスポンス詳細
+        # 2.0 レスポンス詳細
         if response:
             response_formatted = self._format_response_details(response)
             thread_messages.append(f"💬 **レスポンス詳細:**\n{response_formatted}")
 
-        # 3. ファイル操作
+        # 3.0 ファイル操作
         if kwargs.get("files_created"):
             file_commands = self._generate_file_commands(kwargs["files_created"])
             thread_messages.append(f"📁 **ファイル操作コマンド:**\n{file_commands}")
 
-        # 4. GitHub Flow コマンド
+        # 4.0 GitHub Flow コマンド
         if files_count > 0:
             git_commands = self._generate_git_commands(
                 kwargs["files_created"], task_type
             )
             thread_messages.append(f"🔄 **GitHub Flow:**\n{git_commands}")
 
-        # 5. パフォーマンス詳細
+        # 5.0 パフォーマンス詳細
         if self.stats["total_tasks"] >= 10:
             perf_details = self._format_performance_details()
             thread_messages.append(f"📊 **パフォーマンス統計:**\n{perf_details}")
 
-        # 6. Elder統合詳細
+        # 6.0 Elder統合詳細
         if elder_insights:
             elder_details = self._format_elder_insights(elder_insights)
             thread_messages.append(elder_details)
@@ -872,11 +872,11 @@ class ResultWorkerV2(BaseWorker):
         # スレッドメッセージ（詳細情報）
         thread_messages = []
 
-        # 1. エラートレース
+        # 1.0 エラートレース
         if error_trace:
             thread_messages.append(f"🔍 **エラートレース:**\n```\n{error_trace}\n```")
 
-        # 2. デバッグコマンド
+        # 2.0 デバッグコマンド
         debug_commands = f"""🔧 **デバッグコマンド:**
 ```bash
 # 詳細ログ確認
@@ -893,7 +893,7 @@ ai-error analyze {task_id}
 ```"""
         thread_messages.append(debug_commands)
 
-        # 3. 修正提案（AI Command Executorを使用）
+        # 3.0 修正提案（AI Command Executorを使用）
         fix_suggestions = f"""🛠️ **修正提案:**
 ```bash
 # エラーの自動修正を試行
@@ -907,7 +907,7 @@ ai-error search "{error_summary}"
 ```"""
         thread_messages.append(fix_suggestions)
 
-        # 4. Elder統合詳細
+        # 4.0 Elder統合詳細
         if elder_insights:
             elder_details = self._format_elder_insights(elder_insights)
             thread_messages.append(elder_details)
@@ -1097,10 +1097,10 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
 
         return f"""```
 総タスク数: {self.stats['total_tasks']}
-成功率: {success_rate:.1f}%
-平均処理時間: {avg_duration:.2f}秒
+成功率: {success_rate:0.1f}%
+平均処理時間: {avg_duration:0.2f}秒
 失敗タスク: {self.stats['failed_tasks']}
-総処理時間: {self.stats['total_duration']:.1f}秒
+総処理時間: {self.stats['total_duration']:0.1f}秒
 
 時間別分析:
 - 最速: {self._get_fastest_task()}
@@ -1130,7 +1130,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                 report_parts = [
                     f"📊 **時間別レポート** `{datetime.now().strftime('%H:00')}`",
                     "",
-                    f"📈 **統計:** {self.stats['total_tasks']}タスク | 成功率 {success_rate:.0f}% | 平均 {avg_duration:.1f}秒",
+                    f"📈 **統計:** {self.stats['total_tasks']}タスク | 成功率 {success_rate:0.0f}% | 平均 {avg_duration:0.1f}秒",
                 ]
 
                 # Elder統合統計
@@ -1362,7 +1362,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                             'successful_tasks',
                             0) / max(1,
                             self.stats.get('total_tasks', 1))
-                        ) * 100:.1f}%\n"
+                        ) * 100:0.1f}%\n"
                         f"・ Elderエスカレーション: {self.stats.get('elder_escalations', 0)}\n"
                         f"・ 評議会要請: {self.stats.get('council_requests', 0)}"
                     )
@@ -1747,10 +1747,10 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                 if self.stats["total_tasks"] > 0:
                     error_rate = (self.stats["failed_tasks"] / self.stats["total_tasks"]) * 100
                     if error_rate > 10:
-                        validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:.1f}%")
+                        validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:0.1f}%")
                         validation_result["recommendations"].append("エラーパターンの分析を実施してください")
                     elif error_rate > 5:
-                        validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:.1f}%")
+                        validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:0.1f}%")
             
             # 初期化エラーチェック
             if hasattr(

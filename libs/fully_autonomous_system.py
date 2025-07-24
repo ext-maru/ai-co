@@ -186,7 +186,7 @@ class FullyAutonomousSystem:
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS autonomous_decisions (
@@ -420,7 +420,7 @@ class FullyAutonomousSystem:
                 self, option: Dict[str, Any], context: Dict[str, Any]
             ) -> str:
                 """理由生成"""
-                return f"選択理由: スコア{option['score']:.2f}、リスク{len(option['risks'])}件、利益{len(option['benefits'])}件"
+                return f"選択理由: スコア{option['score']:0.2f}、リスク{len(option['risks'])}件、利益{len(option['benefits'])}件"
 
             def _predict_outcome(self, option: Dict[str, Any]) -> Dict[str, Any]:
                 """結果予測"""
@@ -870,7 +870,7 @@ class FullyAutonomousSystem:
 
     async def _save_decision(self, decision: AutonomousDecision):
         """決定保存"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """INSERT INTO autonomous_decisions
                    (decision_id, timestamp, component, decision_type,
@@ -903,7 +903,7 @@ async def main():
     # 現在のステータス
     status = await system.get_autonomy_status()
     print(f"\n📊 現在の自律レベル: {status['current_level']}")
-    print(f"介入率: {status['metrics']['intervention_rate']:.1%}")
+    print(f"介入率: {status['metrics']['intervention_rate']:0.1%}")
 
     # 完全自律への進化計画
     print("\n🚀 完全自律への進化開始...")
@@ -920,7 +920,7 @@ async def main():
         print(f"\n📌 {demo['demo_type']}:")
         if demo["demo_type"] == "autonomous_problem_solving":
             print(
-                f"  問題: CPU {demo['problem']['cpu_usage']:.0%}, メモリ {demo['problem']['memory_usage']:.0%}"
+                f"  問題: CPU {demo['problem']['cpu_usage']:0.0%}, メモリ {demo['problem']['memory_usage']:0.0%}"
             )
             print(f"  解決: {demo['solution']['action']}")
             print(f"  人間介入: {demo['human_intervention_required']}")
@@ -932,7 +932,7 @@ async def main():
             print(f"  ダウンタイム: {demo['expected_downtime']}秒")
         elif demo["demo_type"] == "full_autonomous_decisions":
             print(f"  自律的決定数: {demo['total_decisions']}")
-            print(f"  平均信頼度: {demo['average_confidence']:.1%}")
+            print(f"  平均信頼度: {demo['average_confidence']:0.1%}")
             print(f"  人間介入: {demo['human_interventions']}回")
 
     print("\n✨ Phase 3 完全自律システム実装完了！")

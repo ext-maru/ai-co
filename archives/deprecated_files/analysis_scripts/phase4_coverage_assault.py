@@ -693,8 +693,8 @@ class TestMemoryManagement:
         # Create circular reference
         node1 = Node()
         node2 = Node()
-        node1.ref = node2
-        node2.ref = node1
+        node1.0ref = node2
+        node2.0ref = node1
 
         ref1 = weakref.ref(node1)
         ref2 = weakref.ref(node2)
@@ -1253,27 +1253,27 @@ Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 - 🧝‍♀️ **Elf Forest**: Security tests implemented
 
 ## Test Categories Created
-1. **Integration Tests** (3 files)
+1.0 **Integration Tests** (3 files)
    - Worker-to-worker communication
    - Database integration
    - API integration
 
-2. **Edge Case Tests** (3 files)
+2.0 **Edge Case Tests** (3 files)
    - Error handling edge cases
    - Boundary conditions
    - Exception scenarios
 
-3. **Performance Tests** (3 files)
+3.0 **Performance Tests** (3 files)
    - Load handling
    - Memory management
    - Performance benchmarks
 
-4. **Security Tests** (3 files)
+4.0 **Security Tests** (3 files)
    - Input validation
    - Authentication/Authorization
    - Encryption
 
-5. **End-to-End Tests** (1 file)
+5.0 **End-to-End Tests** (1 file)
    - Complete workflow testing
 
 ## Next Phase Preview (Day 5)

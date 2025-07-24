@@ -712,7 +712,7 @@ def {test_name}():
                     f"""
 
 class {test_class_name}(unittest.TestCase):
-    # Main class implementation
+    # Main class implementation:
     \"\"\"Test for {cls.name}\"\"\"
 
     def setUp(self):
@@ -774,44 +774,44 @@ class {test_class_name}(unittest.TestCase):
 
         quality_score = 0.0  # 基本スコアを0から開始
 
-        # 1. コードが存在する（基本要件: 15%）
+        # 1.0 コードが存在する（基本要件: 15%）
         if "code" in result_data and result_data["code"]:
             # Complex condition - consider breaking down
             quality_score += 15.0
             code = result_data["code"]
 
-            # 2. 構文的に正しい（基本要件: 15%）
+            # 2.0 構文的に正しい（基本要件: 15%）
             try:
                 tree = ast.parse(code)
                 quality_score += 15.0
 
-                # 3. エラーハンドリング（Iron Will要件: 20%）
+                # 3.0 エラーハンドリング（Iron Will要件: 20%）
                 has_error_handling = any(
                     isinstance(node, ast.Try) for node in ast.walk(tree)
                 )
                 if has_error_handling:
                     quality_score += 20.0
 
-                # 4. ドキュメント品質（Iron Will要件: 15%）
+                # 4.0 ドキュメント品質（Iron Will要件: 15%）
                 doc_score = self._evaluate_documentation_quality(tree)
                 quality_score += doc_score * 15.0
 
-                # 5. 型ヒント使用（Iron Will要件: 10%）
+                # 5.0 型ヒント使用（Iron Will要件: 10%）
                 type_hint_score = self._evaluate_type_hints(tree)
                 quality_score += type_hint_score * 10.0
 
-                # 6. コード複雑度（Iron Will要件: 10%）
+                # 6.0 コード複雑度（Iron Will要件: 10%）
                 complexity = self._calculate_complexity(tree)
                 if complexity <= 10:
                     quality_score += 10.0
                 elif complexity <= 20:
                     quality_score += 5.0
 
-                # 7. フォーマット品質（Iron Will要件: 10%）
+                # 7.0 フォーマット品質（Iron Will要件: 10%）
                 if self._is_formatted(code):
                     quality_score += 10.0
 
-                # 8. セキュリティチェック（Iron Will要件: 5%）
+                # 8.0 セキュリティチェック（Iron Will要件: 5%）
                 security_score = self._evaluate_security(code)
                 quality_score += security_score * 5.0
 
@@ -1018,7 +1018,7 @@ class {test_class_name}(unittest.TestCase):
                 return """# Async function implementation
     try:
         # Add async implementation here
-        await asyncio.sleep(0.001)  # Placeholder async call
+        await asyncio.sleep(0.01)  # Placeholder async call
         return result
     except Exception as e:
         # Handle specific exception case

@@ -443,42 +443,42 @@ class PgVectorDatabaseSetup:
         }
 
         try:
-            # 1. データベース接続
+            # 1 データベース接続
             logger.info("Step 1: Connecting to database...")
             self.connect()
             setup_result["steps"]["connection"] = "success"
 
-            # 2. pgvector拡張のセットアップ
+            # 2 pgvector拡張のセットアップ
             logger.info("Step 2: Setting up pgvector extension...")
             self.setup_pgvector_extension()
             setup_result["steps"]["pgvector_extension"] = "success"
 
-            # 3. スキーマ作成
+            # 3 スキーマ作成
             logger.info("Step 3: Creating schemas...")
             self.create_schemas()
             setup_result["steps"]["schemas"] = "success"
 
-            # 4. テーブル作成
+            # 4 テーブル作成
             logger.info("Step 4: Creating tables...")
             self.create_tables()
             setup_result["steps"]["tables"] = "success"
 
-            # 5. インデックス作成
+            # 5 インデックス作成
             logger.info("Step 5: Creating indexes...")
             self.create_indexes()
             setup_result["steps"]["indexes"] = "success"
 
-            # 6. 関数作成
+            # 6 関数作成
             logger.info("Step 6: Creating functions...")
             self.create_functions()
             setup_result["steps"]["functions"] = "success"
 
-            # 7. 権限設定
+            # 7 権限設定
             logger.info("Step 7: Setting up permissions...")
             self.setup_permissions()
             setup_result["steps"]["permissions"] = "success"
 
-            # 8. 検証
+            # 8 検証
             logger.info("Step 8: Verifying setup...")
             setup_result["verification"] = self.verify_setup()
 

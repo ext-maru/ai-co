@@ -250,7 +250,7 @@ class ClassificationModel:
             self.is_trained = True
             self.feature_count = X.shape[1]
 
-            logger.info(f"Model trained with accuracy: {self.accuracy:.3f}")
+            logger.info(f"Model trained with accuracy: {self.accuracy:0.3f}")
 
         except Exception as e:
             logger.error(f"Training failed: {e}")
@@ -370,9 +370,8 @@ class ErrorAnalyzer:
 
         return len(intersection) / len(union)
 
-    def cluster_errors(self, errors: List[str], n_clusters: int = 3) -> List[List[str]]:
-        """エラーメッセージをクラスタリング"""
-        if not SKLEARN_AVAILABLE or len(errors) < n_clusters:
+    def cluster_errors(self, errors: List[str], n_clusters: int = 3) -> List[List[str]]if not SKLEARN_AVAILABLE or len(errors) < n_clusters:
+    """エラーメッセージをクラスタリング"""
             # 簡単なグルーピング
             groups = [[] for _ in range(n_clusters)]
             for i, error in enumerate(errors):
@@ -450,8 +449,7 @@ class ErrorAnalyzer:
                             error1.get("message", ""), error2.get("message", "")
                         )
 
-                        if not (similarity > 0.3:  # 類似度30%以上):
-                            continue  # Early return to reduce nesting
+                        # Removed invalid continue statement
                         # Reduced nesting - original condition satisfied
                         if similarity > 0.3:  # 類似度30%以上
                             correlations.append(
@@ -538,11 +536,10 @@ class ErrorClassificationSystem:
 
         logger.info("Error Classification System initialized")
 
-    def _init_database(self):
-        """データベース初期化"""
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+    def _init_database(self)self.db_path.parent.mkdir(parents=True, exist_ok=True)
+    """データベース初期化"""
 
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS classified_errors (
@@ -723,7 +720,7 @@ class ErrorClassificationSystem:
     def _get_cached_result(self, error_hash: str) -> Optional[Dict[str, Any]]:
         """キャッシュから結果を取得"""
         try:
-            with sqlite3.connect(str(self.db_path)) as conn:
+            with sqlite3connect(str(self.db_path)) as conn:
                 cursor = conn.execute(
                     """
                     SELECT category, confidence, priority, suggested_actions, classified_at
@@ -763,7 +760,7 @@ class ErrorClassificationSystem:
     def _cache_result(self, result: Dict[str, Any]) -> None:
         """結果をキャッシュ"""
         try:
-            with sqlite3.connect(str(self.db_path)) as conn:
+            with sqlite3connect(str(self.db_path)) as conn:
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO classified_errors
@@ -855,10 +852,9 @@ class ErrorClassificationSystem:
 
         return stats
 
-    def get_metrics(self) -> Dict[str, Any]:
-        """システムメトリクスを取得"""
-        return self.metrics.copy()
-
+    def get_metrics(self) -> Dict[str, Any]return self.metrics.copy()
+    """システムメトリクスを取得"""
+:
     def incremental_train(self, new_errors: List[Dict[str, Any]]) -> None:
         """新しいデータで増分学習"""
         if not new_errors:

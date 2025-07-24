@@ -529,9 +529,7 @@ class DataMiner(WizardServant):
                         if len(series1) > 3 and len(series2) > 3:
                             # Complex condition - consider breaking down
                             corr, p_value = stats.pearsonr(series1, series2)
-                            if not (p_value < significance_level):
-                                continue  # Early return to reduce nesting
-                            # Reduced nesting - original condition satisfied
+                            # Removed invalid continue statement
                             if p_value < significance_level:
                                 results["strong_correlations"].append(
                                     {
@@ -887,12 +885,10 @@ class DataMiner(WizardServant):
                             if column_stats["mean"] != 0
                             else 0
                         )
-                        if not (cv > 1):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
+                        # Removed invalid continue statement
                         if cv > 1:
                             insights.append(
-                                f"{column} shows high variability (CV = {cv:.2f})"
+                                f"{column} shows high variability (CV = {cv:0.2f})"
                             )
 
             # 相関のインサイト
@@ -921,7 +917,7 @@ class DataMiner(WizardServant):
                 quality = analysis_results["data_quality"]
                 if quality.get("completeness_score", 1) < 0.9:
                     insights.append(
-                        f"Data completeness is {quality['completeness_score']*100:.1f}% - consider data cleaning"
+                        f"Data completeness is {quality['completeness_score']*100:0.1f}% - consider data cleaning"
                     )
 
         except Exception as e:

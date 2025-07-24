@@ -4,10 +4,10 @@
 エルダー評議会令第501号実装 - Iron Will完全準拠版
 
 機能:
-1. セキュアなドキュメント分類（パストラバーサル対策）
-2. 4賢者システム完全統合
-3. 堅牢なエラーハンドリング
-4. 包括的テストカバレッジ対応
+1.0 セキュアなドキュメント分類（パストラバーサル対策）
+2.0 4賢者システム完全統合
+3.0 堅牢なエラーハンドリング
+4.0 包括的テストカバレッジ対応
 """
 
 import os
@@ -252,7 +252,7 @@ class SecureDocumentClassifier:
         violations = []
         security_score = 100.0
         
-        # 1. パス検証
+        # 1.0 パス検証
         try:
             resolved_path = file_path.resolve()
             if not str(resolved_path).startswith(str(self.base_path)):
@@ -262,14 +262,14 @@ class SecureDocumentClassifier:
             violations.append(f"パス解決エラー: {e}")
             security_score -= 30
         
-        # 2. ファイル名検証
+        # 2.0 ファイル名検証
         filename = file_path.name
         for forbidden_char in self.forbidden_chars:
             if forbidden_char in filename:
                 violations.append(f"禁止文字検出: {forbidden_char} in {filename}")
                 security_score -= 20
         
-        # 3. ファイルサイズ検証
+        # 3.0 ファイルサイズ検証
         try:
             file_size = file_path.stat().st_size
             if file_size > self.max_file_size:
@@ -278,18 +278,18 @@ class SecureDocumentClassifier:
         except OSError:
             pass  # ファイル存在しない場合はスキップ
         
-        # 4. 拡張子検証
+        # 4.0 拡張子検証
         if file_path.suffix.lower() not in self.allowed_extensions:
             violations.append(f"許可されていない拡張子: {file_path.suffix}")
             security_score -= 15
         
-        # 5. コンテンツセキュリティスキャン
+        # 5.0 コンテンツセキュリティスキャン
         for pattern in SECURITY_RISK_PATTERNS:
             if re.search(pattern, content, re.IGNORECASE):
                 violations.append(f"セキュリティリスクパターン検出: {pattern}")
                 security_score -= 30
         
-        # 6. Iron Will基準チェック
+        # 6.0 Iron Will基準チェック
         for pattern in FORBIDDEN_PATTERNS:
             if pattern in content:
                 violations.append(f"Iron Will違反: {pattern} found")
@@ -543,10 +543,9 @@ class SecureDocumentClassifier:
             self.logger.error(f"4賢者通知エラー: {e}")
             return False
     
-    def classify_and_move_secure(self, dry_run: bool = True, add_metadata: bool = True) -> ClassificationResult:
-        """セキュアな分類・移動処理"""
-        result = ClassificationResult()
-        
+    def classify_and_move_secure(self, dry_run: bool = True, add_metadata: bool = True) -> ClassificationResultresult = ClassificationResult()
+    """セキュアな分類・移動処理"""
+        :
         try:
             # ディレクトリ構造作成
             if not dry_run:
@@ -630,9 +629,8 @@ class SecureDocumentClassifier:
         
         return result
     
-    def _matches_patterns(self, filename: str, patterns: List[str]) -> bool:
-        """パターンマッチング（セキュア版）"""
-        filename_lower = filename.lower()
+    def _matches_patterns(self, filename: str, patterns: List[str]) -> boolfilename_lower = filename.lower()
+    """パターンマッチング（セキュア版）""":
         for pattern in patterns:
             try:
                 if re.match(pattern, filename_lower):
@@ -641,10 +639,9 @@ class SecureDocumentClassifier:
                 self.logger.warning(f"正規表現エラー {pattern}: {e}")
         return False
     
-    def _determine_subcategory(self, file_path: Path, content: str, subcategories: Dict[str, List[str]]) -> str:
-        """サブカテゴリ決定（セキュア版）"""
-        filename_lower = file_path.name.lower()
-        # コンテンツサイズ制限（DoS対策）
+    def _determine_subcategory(self, file_path: Path, content: str, subcategories: Dict[str, List[str]]) -> strfilename_lower = file_path.name.lower()
+    """サブカテゴリ決定（セキュア版）"""
+        # コンテンツサイズ制限（DoS対策）:
         content_lower = content[:10000].lower()  # 最初の10KB
         
         for subcategory, keywords in subcategories.items():
@@ -654,9 +651,8 @@ class SecureDocumentClassifier:
         
         return list(subcategories.keys())[0]
     
-    def _determine_audience(self, content: str, category: str) -> str:
-        """対象読者決定"""
-        content_lower = content[:5000].lower()  # サイズ制限
+    def _determine_audience(self, content: str, category: str) -> strcontent_lower = content[:5000].lower()  # サイズ制限
+    """対象読者決定"""
         
         if "administrator" in content_lower or "admin" in content_lower:
             return "administrators"
@@ -671,9 +667,8 @@ class SecureDocumentClassifier:
         else:
             return "developers"
     
-    def _determine_difficulty(self, content: str) -> str:
-        """難易度決定"""
-        content_lower = content[:5000].lower()
+    def _determine_difficulty(self, content: str) -> strcontent_lower = content[:5000].lower()
+    """難易度決定"""
         
         if any(word in content_lower for word in ["quickstart", "beginner", "getting started", "basic"]):
             return "beginner"
@@ -682,9 +677,8 @@ class SecureDocumentClassifier:
         else:
             return "intermediate"
     
-    def _extract_title(self, content: str) -> str:
-        """タイトル抽出"""
-        lines = content.split('\n')[:10]  # 最初の10行のみ
+    def _extract_title(self, content: str) -> strlines = content.split('\n')[:10]  # 最初の10行のみ
+    """タイトル抽出"""
         for line in lines:
             line = line.strip()
             if line.startswith('# '):
@@ -741,9 +735,8 @@ class SecureDocumentClassifier:
         yaml_content = yaml.dump(metadata, default_flow_style=False, allow_unicode=True)
         return f"---\n{yaml_content}---\n\n{content}"
     
-    def _extract_description(self, content: str) -> str:
-        """説明抽出（セキュア版）"""
-        lines = content.split('\n')[:20]  # 最初の20行
+    def _extract_description(self, content: str) -> strlines = content.split('\n')[:20]  # 最初の20行
+    """説明抽出（セキュア版）"""
         description_lines = []
         in_description = False
         
@@ -810,9 +803,8 @@ class SecureDocumentClassifier:
                     path.mkdir(parents=True, exist_ok=True)
 
 
-def main():
-    """エントリポイント"""
-    parser = argparse.ArgumentParser(description='エルダーズギルド セキュアドキュメント分類ツール v2.0')
+def main()parser = argparse.ArgumentParser(description='エルダーズギルド セキュアドキュメント分類ツール v2.0')
+"""エントリポイント"""
     parser.add_argument('--dry-run', action='store_true', help='実際の移動は行わない（テスト実行）')
     parser.add_argument('--no-metadata', action='store_true', help='メタデータを追加しない')
     parser.add_argument('--base-path', default='/home/aicompany/ai_co', help='ベースパス')
@@ -858,9 +850,9 @@ def main():
         iron_will_compliance = ((result.processed_files - result.iron_will_violations) / result.processed_files) * 100
         
         print(f"\n📈 品質指標:")
-        print(f"処理成功率: {success_rate:.1f}%")
-        print(f"セキュリティ準拠率: {security_compliance:.1f}%")
-        print(f"Iron Will準拠率: {iron_will_compliance:.1f}%")
+        print(f"処理成功率: {success_rate:0.1f}%")
+        print(f"セキュリティ準拠率: {security_compliance:0.1f}%")
+        print(f"Iron Will準拠率: {iron_will_compliance:0.1f}%")
         
         # 総合判定
         if success_rate >= 95 and security_compliance >= 90 and iron_will_compliance >= 95:

@@ -12,22 +12,22 @@ It will complete automatically in about 15-20 seconds.
 
 📋 Quick Commands:
 
-1. Check status now:
+1.0 Check status now:
    python3 check_mcp_now.py
 
-2. Wait and check (recommended):
+2.0 Wait and check (recommended):
    python3 wait_and_check_mcp.py
 
-3. Full status report:
+3.0 Full status report:
    python3 mcp_final_report.py
 
-4. Test MCP:
+4.0 Test MCP:
    python3 test_mcp_quick.py
 
-5. Force execution (if needed):
+5.0 Force execution (if needed):
    python3 force_execute_mcp.py
 
-6. Direct setup (bypass AI Command Executor):
+6.0 Direct setup (bypass AI Command Executor):
    python3 mcp_direct_setup.py
 
 📚 Documentation:

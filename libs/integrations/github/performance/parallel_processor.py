@@ -128,7 +128,7 @@ class ParallelProcessor:
         self.stats["total_time"] += elapsed
         self._update_average_time()
         
-        logger.info(f"Async map completed: {len(items)} items in {elapsed:.2f}s")
+        logger.info(f"Async map completed: {len(items)} items in {elapsed:0.2f}s")
         return results
     
     async def _execute_async_with_semaphore(self, func: Callable, item: Any, index: int) -> Any:
@@ -214,7 +214,7 @@ class ParallelProcessor:
         self.stats["total_time"] += elapsed
         self._update_average_time()
         
-        logger.info(f"Thread map completed: {len(items)} items in {elapsed:.2f}s")
+        logger.info(f"Thread map completed: {len(items)} items in {elapsed:0.2f}s")
         return results
     
     def map_processes(
@@ -265,7 +265,7 @@ class ParallelProcessor:
         self.stats["total_time"] += elapsed
         self._update_average_time()
         
-        logger.info(f"Process map completed: {len(items)} items in {elapsed:.2f}s")
+        logger.info(f"Process map completed: {len(items)} items in {elapsed:0.2f}s")
         return results
     
     @staticmethod
@@ -298,9 +298,8 @@ class ParallelProcessor:
         Returns:
             API応答リスト
         """
-        async def execute_api_call(call_def:
-            """execute_api_call実行メソッド"""
-        Dict[str, Any]) -> Dict[str, Any]:
+        async def execute_api_call(call_defDict[str, Any]) -> Dict[str, Any]:
+    """execute_api_call実行メソッド"""
             try:
                 session = await session_provider()
                 
@@ -364,16 +363,15 @@ class ParallelProcessor:
         
         return {
             **self.stats,
-            "success_rate": f"{success_rate:.2f}%",
+            "success_rate": f"{success_rate:0.2f}%",
             "throughput": f"{self.stats['completed_tasks'] / max(
                 self.stats['total_time'],
                 1
-            ):.2f} tasks/sec"
+            ):0.2f} tasks/sec"
         }
     
-    def shutdown(self):
-        """リソースクリーンアップ"""
-        self.thread_pool.shutdown(wait=True)
+    def shutdown(self)self.thread_pool.shutdown(wait=True)
+    """リソースクリーンアップ"""
         self.process_pool.shutdown(wait=True)
         logger.info("ParallelProcessor shutdown completed")
 
@@ -410,22 +408,17 @@ async def parallel_fetch(
 
 
 # 使用例
-async def example_usage():
-    """使用例"""
-    processor = ParallelProcessor(max_workers=5)
+async def example_usage()processor = ParallelProcessor(max_workers=5)
+"""使用例"""
     
     # 非同期関数の並列実行
-    async def fetch_data(item_id:
-        """fetch_dataメソッド"""
-    int):
-        await asyncio.sleep(0.1)  # API呼び出しシミュレート
+    async def fetch_data(item_id: int)await asyncio.sleep(0.1)  # API呼び出しシミュレート
+    """fetch_dataメソッド"""
         return {"id": item_id, "data": f"Data for {item_id}"}
     
     # 進捗表示コールバック
-    def show_progress(progress:
-        """show_progressメソッド"""
-    float, current: int, total: int):
-        print(f"Progress: {progress:.1f}% ({current}/{total})")
+    def show_progress(progress: float, current: int, total: int)print(f"Progress: {progress:0.1f}% ({current}/{total})")
+    """show_progressメソッド"""
     
     # 並列実行
     items = list(range(20))

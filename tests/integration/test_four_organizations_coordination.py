@@ -40,9 +40,8 @@ class TestFourOrganizationsCoordination:
     """4組織間協調テストクラス"""
 
     @pytest.fixture
-    async def coordinator(self):
-        """コーディネーター用フィクスチャ"""
-        coordinator = FourOrganizationsCoordinator()
+    async def coordinator(self)coordinator = FourOrganizationsCoordinator()
+    """コーディネーター用フィクスチャ"""
 
         # テストサーバントを登録
         await self._setup_test_servants(coordinator)
@@ -346,9 +345,8 @@ class TestFourOrganizationsCoordination:
         assert result.coordination_efficiency > 0.8
 
     @pytest.mark.asyncio
-    async def test_system_health_assessment(self, coordinator):
-        """システム健全性評価テスト"""
-        health_status = await coordinator._assess_system_health()
+    async def test_system_health_assessment(self, coordinator)health_status = await coordinator._assess_system_health()
+    """システム健全性評価テスト"""
 
         assert "overall_healthy" in health_status
         assert "organization_health" in health_status
@@ -484,9 +482,8 @@ class TestFourOrganizationsCoordination:
 
 
 # 統合テスト実行関数
-async def run_coordination_integration_test():
-    """協調統合テストの実行"""
-    print("🤝 4組織間協調統合テスト開始")
+async def run_coordination_integration_test()print("🤝 4組織間協調統合テスト開始")
+"""協調統合テストの実行"""
     print("=" * 50)
 
     coordinator = FourOrganizationsCoordinator()
@@ -609,8 +606,8 @@ async def run_coordination_integration_test():
 
             print(
                 (
-                    f"f"   {status}: 品質={result.quality_metrics.get('average_quality', 0):.1f}%, 効率="
-                    f"{result.coordination_efficiency:.1%}""
+                    f"f"   {status}: 品質={result.quality_metrics.get('average_quality', 0):0.1f}%, 効率="
+                    f"{result.coordination_efficiency:0.1%}""
                 )
             )
 
@@ -631,7 +628,7 @@ async def run_coordination_integration_test():
     print(f"\n📊 4組織間協調テスト結果")
     print("=" * 50)
     print(
-        f"✅ 成功率: {success_rate:.1%} ({test_results['successful_tests']}/{test_results['total_tests']})"
+        f"✅ 成功率: {success_rate:0.1%} ({test_results['successful_tests']}/{test_results['total_tests']})"
     )
     print(f"📈 実行統計: {final_status['execution_stats']['total_coordinated_tasks']} タスク協調")
     print(f"🏥 システム健全性: {'健全' if health_status['overall_healthy'] else '要注意'}")

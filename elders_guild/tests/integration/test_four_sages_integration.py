@@ -81,7 +81,7 @@ class TestFourSagesIntegration:
         print("\n📚 === Knowledge → RAG フローテスト ===")
         
         try:
-            # 1. Knowledge Sageに知識を保存
+            # 1.0 Knowledge Sageに知識を保存
             knowledge_data = {
                 "title": "Elder Loop開発手法",
                 "content": "Elder Loopは品質を重視した反復的開発手法です。7つのフェーズで構成されています。",
@@ -104,7 +104,7 @@ class TestFourSagesIntegration:
             knowledge_id = store_result["data"]["id"]
             print(f"   ✅ 知識保存成功: {knowledge_id}")
             
-            # 2. RAG Sageでインデックス
+            # 2.0 RAG Sageでインデックス
             index_result = await self.rag_sage.process_action("index_document", {
                 "document": {
                     "id": knowledge_id,
@@ -122,7 +122,7 @@ class TestFourSagesIntegration:
                 
             print("   ✅ RAGインデックス成功")
             
-            # 3. RAG Sageで検索
+            # 3.0 RAG Sageで検索
             search_result = await self.rag_sage.process_action("search_knowledge", {
                 "query": "Elder Loop",
                 "limit": 5
@@ -155,7 +155,7 @@ class TestFourSagesIntegration:
         print("\n📋 === Task → Incident エラーフローテスト ===")
         
         try:
-            # 1. Task Sageでタスク作成
+            # 1.0 Task Sageでタスク作成
             task_data = {
                 "title": "重要なデプロイメントタスク",
                 "description": "本番環境への重要なデプロイメント",
@@ -174,7 +174,7 @@ class TestFourSagesIntegration:
             task_id = create_result["data"]["task_id"]
             print(f"   ✅ タスク作成成功: {task_id}")
             
-            # 2. タスク実行中にエラーが発生したと仮定
+            # 2.0 タスク実行中にエラーが発生したと仮定
             # Incident Sageでインシデント検知
             incident_result = await self.incident_sage.process_action("detect_incident", {
                 "anomaly_data": {
@@ -195,7 +195,7 @@ class TestFourSagesIntegration:
             incident_id = incident_result["data"]["incident_id"]
             print(f"   ✅ インシデント検知成功: {incident_id}")
             
-            # 3. Task Sageでタスクステータス更新（失敗）
+            # 3.0 Task Sageでタスクステータス更新（失敗）
             update_result = await self.task_sage.process_action("update_task", {
                 "task_id": task_id,
                 "updates": {
@@ -210,7 +210,7 @@ class TestFourSagesIntegration:
                 
             print("   ✅ タスクステータス更新成功（failed）")
             
-            # 4. インシデント対応
+            # 4.0 インシデント対応
             response_result = await self.incident_sage.process_action("respond_to_incident", {
                 "incident_id": incident_id
             })
@@ -231,11 +231,11 @@ class TestFourSagesIntegration:
         print("\n🌊 === 完全ワークフローシナリオテスト ===")
         
         try:
-            # 1. Knowledge Sageで開発ガイドライン保存
+            # 1.0 Knowledge Sageで開発ガイドライン保存
             guidelines_result = await self.knowledge_sage.process_action("store_knowledge", {
                 "knowledge": {
                     "title": "エルダーズギルド開発ガイドライン",
-                    "content": "1. TDD必須\n2. Elder Loop準拠\n3. 品質スコア90以上",
+                    "content": "1.0 TDD必須\n2.0 Elder Loop準拠\n3.0 品質スコア90以上",
                     "category": "guidelines",
                     "tags": ["development", "quality", "tdd"]
                 }
@@ -246,7 +246,7 @@ class TestFourSagesIntegration:
                 
             print("   ✅ Step 1: ガイドライン保存")
             
-            # 2. Task Sageでワークフロー作成
+            # 2.0 Task Sageでワークフロー作成
             workflow_result = await self.task_sage.process_action("create_workflow", {
                 "workflow": {
                     "name": "新機能開発フロー",
@@ -277,7 +277,7 @@ class TestFourSagesIntegration:
             workflow_id = workflow_result["data"]["workflow_id"]
             print(f"   ✅ Step 2: ワークフロー作成: {workflow_id}")
             
-            # 3. RAG Sageでガイドライン検索とインデックス
+            # 3.0 RAG Sageでガイドライン検索とインデックス
             rag_index_result = await self.rag_sage.process_action("index_document", {
                 "document": {
                     "id": guidelines_result["data"]["id"],
@@ -292,7 +292,7 @@ class TestFourSagesIntegration:
                 
             print("   ✅ Step 3: ガイドラインインデックス")
             
-            # 4. Incident Sageで品質基準登録
+            # 4.0 Incident Sageで品質基準登録
             quality_result = await self.incident_sage.process_action("register_quality_standard", {
                 "standard": {
                     "name": "Elder Loop品質基準",
@@ -321,7 +321,7 @@ class TestFourSagesIntegration:
                 
             print("   ✅ Step 4: 品質基準登録")
             
-            # 5. ワークフロー実行
+            # 5.0 ワークフロー実行
             execute_result = await self.task_sage.process_action("execute_workflow", {
                 "workflow_id": workflow_id
             })
@@ -331,7 +331,7 @@ class TestFourSagesIntegration:
                 
             print("   ✅ Step 5: ワークフロー実行開始")
             
-            # 6. 品質評価
+            # 6.0 品質評価
             assessment_result = await self.incident_sage.process_action("assess_quality", {
                 "standard_id": quality_result["data"]["standard_id"],
                 "component": workflow_id,
@@ -411,9 +411,9 @@ class TestFourSagesIntegration:
             print(f"   📊 実行統計:")
             print(f"      - 総操作数: {total}")
             print(f"      - 成功数: {successful}")
-            print(f"      - 成功率: {success_rate:.1f}%")
-            print(f"      - 総実行時間: {total_time:.2f}秒")
-            print(f"      - 平均処理時間: {(total_time / total):.3f}秒/操作")
+            print(f"      - 成功率: {success_rate:0.1f}%")
+            print(f"      - 総実行時間: {total_time:0.2f}秒")
+            print(f"      - 平均処理時間: {(total_time / total):0.3f}秒/操作")
             
             # 成功率90%以上かつ平均処理時間が0.5秒以下であること
             return success_rate >= 90 and (total_time / total) <= 0.5
@@ -427,7 +427,7 @@ class TestFourSagesIntegration:
         print("\n🔧 === エラー回復フローテスト ===")
         
         try:
-            # 1. わざと不正なデータでエラーを発生させる
+            # 1.0 わざと不正なデータでエラーを発生させる
             error_results = []
             
             # Knowledge Sage: 空のデータ
@@ -508,7 +508,7 @@ class TestFourSagesIntegration:
                 
                 if result:
                     passed_tests += 1
-                    print(f"\n✅ {test_name} 成功 ({end_time - start_time:.2f}秒)")
+                    print(f"\n✅ {test_name} 成功 ({end_time - start_time:0.2f}秒)")
                 else:
                     print(f"\n❌ {test_name} 失敗")
                     
@@ -528,14 +528,14 @@ class TestFourSagesIntegration:
         print("\n" + "=" * 70)
         print("📊 統合テスト結果サマリー")
         print("=" * 70)
-        print(f"合格テスト: {passed_tests}/{total_tests} ({success_rate:.1f}%)")
-        print(f"総実行時間: {total_duration:.2f}秒")
+        print(f"合格テスト: {passed_tests}/{total_tests} ({success_rate:0.1f}%)")
+        print(f"総実行時間: {total_duration:0.2f}秒")
         
         # Elder Loop基準（80%以上）
         if success_rate >= 80:
-            print(f"\n🎉 Elder Loop Quality Gate PASSED! ({success_rate:.1f}%)")
+            print(f"\n🎉 Elder Loop Quality Gate PASSED! ({success_rate:0.1f}%)")
         else:
-            print(f"\n❌ Elder Loop Quality Gate FAILED! ({success_rate:.1f}% < 80%)")
+            print(f"\n❌ Elder Loop Quality Gate FAILED! ({success_rate:0.1f}% < 80%)")
             
         return {
             "total": total_tests,

@@ -595,7 +595,7 @@ class ProjectRiskAnalyzer:
         report = f"""# Security Risk Analysis Report
 
 ## Overview
-- **Overall Risk Score**: {analysis.overall_score:.2f}/1.0
+- **Overall Risk Score**: {analysis.overall_score:0.2f}/1.0
 - **Risk Level**: {analysis.risk_level.value.upper()}
 - **Recommended Isolation**: {analysis.isolation_level}
 - **Manual Review Required**: {'Yes' if analysis.manual_review_required else 'No'}
@@ -617,7 +617,7 @@ class ProjectRiskAnalyzer:
             report += f"### {category.replace('_', ' ').title()}\n\n"
             for factor in factors:
                 report += (
-                    f"- **{factor.description}** (Severity: {factor.severity:.1f})\n"
+                    f"- **{factor.description}** (Severity: {factor.severity:0.1f})\n"
                 )
                 report += f"  - Pattern: `{factor.pattern}`\n"
                 report += f"  - Location: {factor.detected_in}\n"
@@ -662,12 +662,12 @@ if __name__ == "__main__":
 
     print("=== Risk Analysis Results ===")
     print(f"Risk Level: {analysis.risk_level.value}")
-    print(f"Score: {analysis.overall_score:.2f}")
+    print(f"Score: {analysis.overall_score:0.2f}")
     print(f"Isolation: {analysis.isolation_level}")
     print(f"Manual Review: {analysis.manual_review_required}")
     print(f"\nFactors: {len(analysis.factors)}")
     for factor in analysis.factors:
-        print(f"  - {factor.description} ({factor.severity:.1f})")
+        print(f"  - {factor.description} ({factor.severity:0.1f})")
 
     # Export as JSON
     json_report = analyzer.export_analysis(analysis, "json")

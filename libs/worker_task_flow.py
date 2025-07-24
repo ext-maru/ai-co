@@ -96,7 +96,7 @@ class TaskFlowTracker:
         """タスクフロー用データベース初期化"""
         try:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # タスクフローテーブル
@@ -540,7 +540,7 @@ class TaskFlowTracker:
             suggestions = []
             if bottleneck_severity > 0.5:
                 suggestions.append(
-                    f"{primary_bottleneck.get('worker_type')} の処理時間が全体の{bottleneck_severity*100:.1f}%を占めています"
+                    f"{primary_bottleneck.get('worker_type')} の処理時間が全体の{bottleneck_severity*100:0.1f}%を占めています"
                 )
                 suggestions.append(
                     "このWorkerのスケーリングまたは最適化を検討してください"
@@ -640,7 +640,7 @@ class TaskFlowTracker:
     def _save_flow_to_db(self, flow: TaskFlow):
         """フローをデータベースに保存"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # メインフロー情報
@@ -677,7 +677,7 @@ class TaskFlowTracker:
     def _save_error_to_db(self, task_id: str, error_record: Dict):
         """エラーをデータベースに保存"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -711,8 +711,8 @@ class TaskFlowTracker:
     def _load_flow_from_db(self, task_id: str) -> Optional[Dict]:
         """データベースからフローを読み込み"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
-            conn.row_factory = sqlite3.Row
+            conn = sqlite3connect(str(self.db_path))
+            conn.row_factory = sqlite3Row
             cursor = conn.cursor()
 
             cursor.execute("SELECT * FROM task_flows WHERE task_id = ?", (task_id,))

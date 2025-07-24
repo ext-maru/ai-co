@@ -60,17 +60,17 @@ def analyze_test_report():
     print("=" * 50)
 
     if "AMQPConnectionError" in error_patterns:
-        print("1. AMQPConnectionError issues:")
+        print("1.0 AMQPConnectionError issues:")
         print("   - Need to properly mock pika.exceptions")
         print("   - Ensure pika_exceptions is defined in test files")
 
     if "Connection" in error_patterns:
-        print("2. Connection-related issues:")
+        print("2.0 Connection-related issues:")
         print("   - Mock pika.BlockingConnection properly")
         print("   - Handle retry logic in tests")
 
     if "Mock/Assert" in error_patterns:
-        print("3. Mock/Assertion issues:")
+        print("3.0 Mock/Assertion issues:")
         print("   - Review mock setup and expectations")
         print("   - Check call counts and arguments")
 

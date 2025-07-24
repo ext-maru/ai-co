@@ -124,20 +124,20 @@ class SelfEvolutionManager:
         """
         file_name = Path(file_path).name
 
-        # 1. ファイル名パターンマッチング
+        # 1 ファイル名パターンマッチング
         for pattern, target_dir in self.placement_rules.items():
             if re.match(pattern, file_name, re.IGNORECASE):
                 logger.info(f"ファイル名マッチ: {file_name} → {target_dir}")
                 return target_dir
 
-        # 2. 内容ベース解析
+        # 2 内容ベース解析
         if content:
             for keyword, target_dir in self.content_based_rules.items():
                 if re.search(keyword, content, re.IGNORECASE | re.MULTILINE):
                     logger.info(f"内容マッチ: {keyword} → {target_dir}")
                     return target_dir
 
-        # 3. 拡張子ベースフォールバック
+        # 3 拡張子ベースフォールバック
         suffix = Path(file_path).suffix.lower()
         if suffix == ".py":
             return "libs/"  # Pythonファイルデフォルト
@@ -146,7 +146,7 @@ class SelfEvolutionManager:
         elif suffix in [".txt", ".log"]:
             return "output/"  # ログ・テキストファイル
 
-        # 4. 最終フォールバック
+        # 4 最終フォールバック
         logger.warning(f"配置先不明: {file_name} → output/misc/")
         return "output/misc/"
 
@@ -236,7 +236,7 @@ class SelfEvolutionManager:
             self._post_placement_analysis(result)
 
             logger.info(
-                f"次世代自己進化配置成功: {result['relative_path']} (confidence: {confidence:.3f})"
+                f"次世代自己進化配置成功: {result['relative_path']} (confidence: {confidence:0.3f})"
             )
             return result
 
@@ -332,7 +332,7 @@ class SelfEvolutionManager:
         """学習データベース初期化"""
         try:
             self.learning_db_path.parent.mkdir(exist_ok=True)
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -373,7 +373,7 @@ class SelfEvolutionManager:
             if not self.learning_db_path.exists():
                 return
 
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -403,7 +403,7 @@ class SelfEvolutionManager:
         """複数の手法で配置候補を分析 - Enhanced with advanced ML algorithms"""
         candidates = []
 
-        # 1. 従来のルールベース (重み調整)
+        # 1 従来のルールベース (重み調整)
         rule_based_dir = self.analyze_file_type(filename, content)
         rule_confidence = self._calculate_rule_confidence(
             filename, content, rule_based_dir
@@ -413,37 +413,37 @@ class SelfEvolutionManager:
                 "dir": rule_based_dir,
                 "score": 0.6 + (rule_confidence * 0.3),
                 "method": "rule_based",
-                "reason": f"Pattern matching (confidence: {rule_confidence:.2f})",
+                "reason": f"Pattern matching (confidence: {rule_confidence:0.2f})",
             }
         )
 
-        # 2. 内容類似度ベース (改良版)
+        # 2 内容類似度ベース (改良版)
         similarity_candidates = self._analyze_content_similarity_enhanced(content)
         candidates.extend(similarity_candidates)
 
-        # 3. 機械学習予測 (強化版)
+        # 3 機械学習予測 (強化版)
         ml_candidates = self._ml_predict_placement_enhanced(filename, content)
         candidates.extend(ml_candidates)
 
-        # 4. 統計的パターン分析 (改良版)
+        # 4 統計的パターン分析 (改良版)
         pattern_candidates = self._analyze_statistical_patterns_enhanced(
             filename, content
         )
         candidates.extend(pattern_candidates)
 
-        # 5. 依存関係分析
+        # 5 依存関係分析
         dependency_candidates = self._analyze_dependency_patterns(content)
         candidates.extend(dependency_candidates)
 
-        # 6. 意味的類似度分析
+        # 6 意味的類似度分析
         semantic_candidates = self._analyze_semantic_similarity(filename, content)
         candidates.extend(semantic_candidates)
 
-        # 7. NEW: Advanced embedding-based similarity
+        # 7 NEW: Advanced embedding-based similarity
         embedding_candidates = self._advanced_embedding_similarity(content, filename)
         candidates.extend(embedding_candidates)
 
-        # 8. NEW: Contextual pattern analysis
+        # 8 NEW: Contextual pattern analysis
         contextual_candidates = self._contextual_pattern_analysis(filename, content)
         candidates.extend(contextual_candidates)
 
@@ -491,7 +491,7 @@ class SelfEvolutionManager:
                     "dir": placement,
                     "score": 0.5 + (similarity * 0.4),
                     "method": "content_similarity",
-                    "reason": f"Similar to existing files (similarity: {similarity:.2f})",
+                    "reason": f"Similar to existing files (similarity: {similarity:0.2f})",
                 }
             )
 
@@ -513,7 +513,7 @@ class SelfEvolutionManager:
                     "dir": prediction,
                     "score": 0.3 + (confidence * 0.5),
                     "method": "ml_prediction",
-                    "reason": f"ML prediction (confidence: {confidence:.2f})",
+                    "reason": f"ML prediction (confidence: {confidence:0.2f})",
                 }
             )
 
@@ -532,7 +532,7 @@ class SelfEvolutionManager:
         # 組み合わせスコア計算
         for pattern, dirs in {**name_patterns, **content_patterns}.items():
             for dir_path, frequency in dirs.items():
-                score = min(0.8, frequency / 10.0)  # 頻度ベーススコア
+                score = min(0.8, frequency / 10)  # 頻度ベーススコア
                 candidates.append(
                     {
                         "dir": dir_path,
@@ -647,7 +647,7 @@ class SelfEvolutionManager:
             comp_sim = 1 - abs(comp1 - comp2) / max(comp1, comp2)
             similarities.append(comp_sim * 0.1)
 
-        return sum(similarities) if similarities else 0.0
+        return sum(similarities) if similarities else 0
 
     def _predict_from_history(self, features: Dict) -> List[Tuple[str, float]]:
         """履歴からの予測"""
@@ -667,7 +667,7 @@ class SelfEvolutionManager:
 
             if count > 0:
                 confidence = (total_score / count) * min(
-                    1.0, count / 5.0
+                    1, count / 5
                 )  # 履歴数による重み
                 predictions.append((target_dir, confidence))
 
@@ -737,7 +737,7 @@ class SelfEvolutionManager:
         placements = defaultdict(int)
 
         try:
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -780,7 +780,7 @@ class SelfEvolutionManager:
                 confidence += 0.2
                 break
 
-        return min(1.0, confidence)
+        return min(1, confidence)
 
     def _analyze_content_similarity_enhanced(self, content: str) -> List[Dict]:
         """改良版内容類似度分析 - TF-IDF + コサイン類似度"""
@@ -801,7 +801,7 @@ class SelfEvolutionManager:
                     "dir": placement,
                     "score": 0.4 + (similarity * 0.5),
                     "method": f"enhanced_similarity_{method}",
-                    "reason": f"Enhanced similarity ({method}: {similarity:.3f})",
+                    "reason": f"Enhanced similarity ({method}: {similarity:0.3f})",
                 }
             )
 
@@ -814,13 +814,13 @@ class SelfEvolutionManager:
         # 特徴量抽出
         features = self._extract_ml_features_enhanced(filename, content)
 
-        # 1. 履歴ベース予測 (改良版)
+        # 1 履歴ベース予測 (改良版)
         history_predictions = self._predict_from_history_enhanced(features)
 
-        # 2. 決定木風の予測
+        # 2 決定木風の予測
         tree_predictions = self._decision_tree_predict(features)
 
-        # 3. 近傍法予測
+        # 3 近傍法予測
         knn_predictions = self._knn_predict(features)
 
         # 全予測結果を統合
@@ -834,7 +834,7 @@ class SelfEvolutionManager:
 
         for prediction, data in vote_counts.items():
             avg_confidence = data["total_confidence"] / data["count"]
-            vote_weight = min(1.0, data["count"] / 3.0)
+            vote_weight = min(1, data["count"] / 3)
             final_score = 0.3 + (avg_confidence * vote_weight * 0.4)
 
             candidates.append(
@@ -842,7 +842,7 @@ class SelfEvolutionManager:
                     "dir": prediction,
                     "score": final_score,
                     "method": "enhanced_ml_ensemble",
-                    "reason": f'ML ensemble ({data["count"]} votes, avg_conf: {avg_confidence:.2f})',
+                    "reason": f'ML ensemble ({data["count"]} votes, avg_conf: {avg_confidence:0.2f})',
                 }
             )
 
@@ -926,7 +926,7 @@ class SelfEvolutionManager:
                     "dir": dir_path,
                     "score": min(0.8, score),
                     "method": "dependency_analysis",
-                    "reason": f"Dependency pattern (score: {score:.2f})",
+                    "reason": f"Dependency pattern (score: {score:0.2f})",
                 }
             )
 
@@ -1153,7 +1153,7 @@ class SelfEvolutionManager:
     def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
         """コサイン類似度計算"""
         if not vec1 or not vec2:
-            return 0.0
+            return 0
 
         # ベクトル長を合わせる
         min_len = min(len(vec1), len(vec2))
@@ -1168,7 +1168,7 @@ class SelfEvolutionManager:
         norm2 = sum(b * b for b in vec2) ** 0.5
 
         if norm1 == 0 or norm2 == 0:
-            return 0.0
+            return 0
 
         return dot_product / (norm1 * norm2)
 
@@ -1205,7 +1205,7 @@ class SelfEvolutionManager:
 
             for i, item in enumerate(history_items):
                 # 新しい履歴ほど高い重み
-                time_weight = 1.0 / (1.0 + i * 0.1)
+                time_weight = 1 / (1 + i * 0.1)
 
                 similarity = self._calculate_feature_similarity(
                     features, item["features"]
@@ -1218,7 +1218,7 @@ class SelfEvolutionManager:
                 confidence = weighted_score / total_weight
                 # 履歴数による信頼度調整
                 history_bonus = min(0.2, len(history_items) * 0.02)
-                final_confidence = min(1.0, confidence + history_bonus)
+                final_confidence = min(1, confidence + history_bonus)
                 predictions.append((target_dir, final_confidence))
 
         predictions.sort(key=lambda x: x[1], reverse=True)
@@ -1325,7 +1325,7 @@ class SelfEvolutionManager:
         patterns = {}
 
         try:
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             # 最近の配置傾向を分析
@@ -1344,11 +1344,11 @@ class SelfEvolutionManager:
             recent_trends = cursor.fetchall()
 
             for target_dir, count, avg_confidence in recent_trends:
-                score = min(0.6, (count / 10.0) * avg_confidence)
+                score = min(0.6, (count / 10) * avg_confidence)
                 patterns["recent_trend"] = patterns.get("recent_trend", {})
                 patterns["recent_trend"][target_dir] = {
                     "score": score,
-                    "evidence": f"{count} recent placements, avg_conf: {avg_confidence:.2f}",
+                    "evidence": f"{count} recent placements, avg_conf: {avg_confidence:0.2f}",
                 }
 
             conn.close()
@@ -1382,7 +1382,7 @@ class SelfEvolutionManager:
                 if keyword_patterns:
                     patterns[f"keyword_{keyword}"] = {
                         dir_path: {
-                            "score": min(0.5, (freq / 20.0) * (count / 10.0)),
+                            "score": min(0.5, (freq / 20) * (count / 10)),
                             "evidence": f'keyword "{keyword}" appears {count} times',
                         }
                         for dir_path, freq in keyword_patterns.items()
@@ -1460,13 +1460,13 @@ class SelfEvolutionManager:
     ) -> float:
         """配置信頼度計算"""
         if not candidates:
-            return 0.0
+            return 0
 
         selected_candidate = next(
             (c for c in candidates if c["dir"] == selected_dir), None
         )
         if not selected_candidate:
-            return 0.0
+            return 0
 
         # トップ候補との差を考慮
         top_score = candidates[0]["score"]
@@ -1476,7 +1476,7 @@ class SelfEvolutionManager:
         method_diversity = len(set(c["method"] for c in candidates[:3]))
         diversity_bonus = min(0.2, method_diversity * 0.1)
 
-        return min(1.0, selected_score + diversity_bonus)
+        return min(1, selected_score + diversity_bonus)
 
     def _record_placement_learning(
         self, filename: str, content: str, target_dir: str, candidates: List[Dict]
@@ -1487,7 +1487,7 @@ class SelfEvolutionManager:
             features = self._extract_content_features(content)
             confidence = self._calculate_placement_confidence(candidates, target_dir)
 
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -1504,7 +1504,7 @@ class SelfEvolutionManager:
 
             logger.debug(
                 f"Recorded placement learning: {filename} -> {target_dir} (confidence: " \
-                    "{confidence:.2f})"
+                    "{confidence:0.2f})"
             )
         except Exception as e:
             logger.error(f"Failed to record placement learning: {e}")
@@ -1512,7 +1512,7 @@ class SelfEvolutionManager:
     def get_placement_analytics(self) -> Dict:
         """配置分析レポート"""
         try:
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             # 基本統計
@@ -1667,7 +1667,7 @@ class SelfEvolutionManager:
             for directory, keywords in directory_keywords.items():
                 embedding = {}
                 for i, keyword in enumerate(keywords):
-                    embedding[keyword] = 1.0 / (i + 1)  # Inverse position weighting
+                    embedding[keyword] = 1 / (i + 1)  # Inverse position weighting
                 self.directory_embeddings[directory] = embedding
 
             # Load historical success rates and feature importance
@@ -1687,7 +1687,7 @@ class SelfEvolutionManager:
             if not self.learning_db_path.exists():
                 return
 
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             # Calculate success rates based on confidence scores
@@ -1703,7 +1703,7 @@ class SelfEvolutionManager:
             for row in cursor.fetchall():
                 target_dir, avg_confidence, count = row
                 # Weight by both confidence and frequency
-                success_rate = avg_confidence * min(1.0, count / 10.0)
+                success_rate = avg_confidence * min(1, count / 10)
                 self.placement_success_rates[target_dir] = success_rate
 
             conn.close()
@@ -1731,8 +1731,8 @@ class SelfEvolutionManager:
 
             # Calculate similarity with each directory embedding
             for directory, embedding in self.directory_embeddings.items():
-                similarity_score = 0.0
-                total_weight = 0.0
+                similarity_score = 0
+                total_weight = 0
 
                 for keyword, freq in keyword_freq.items():
                     if keyword in embedding:
@@ -1752,7 +1752,7 @@ class SelfEvolutionManager:
                                 "dir": directory,
                                 "score": min(0.85, final_score),
                                 "method": "advanced_embedding",
-                                "reason": f"Embedding similarity: {normalized_score:.3f}, success_rate: {success_rate:.2f}",
+                                "reason": f"Embedding similarity: {normalized_score:0.3f}, success_rate: {success_rate:0.2f}",
                             }
                         )
 
@@ -2022,7 +2022,7 @@ class SelfEvolutionManager:
             if not self.learning_db_path.exists():
                 return
 
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             # Analyze which features correlate with high confidence placements
@@ -2086,7 +2086,7 @@ class SelfEvolutionManager:
             if not self.learning_db_path.exists():
                 return
 
-            conn = sqlite3.connect(self.learning_db_path)
+            conn = sqlite3connect(self.learning_db_path)
             cursor = conn.cursor()
 
             # Get recent placement patterns
@@ -2128,7 +2128,7 @@ class SelfEvolutionManager:
                     if change_ratio > self.concept_drift_detector["drift_threshold"]:
                         drift_detected = True
                         logger.info(
-                            f"Concept drift detected in {directory}: {change_ratio:.2f}"
+                            f"Concept drift detected in {directory}: {change_ratio:0.2f}"
                         )
 
             if drift_detected:
@@ -2195,7 +2195,7 @@ class SelfEvolutionManager:
         # Apply adjustment to all weights (simplified approach)
         for key in self.neural_weights:
             self.neural_weights[key] = max(
-                0.01, min(1.0, self.neural_weights[key] + adjustment * 0.1)
+                0.01, min(1, self.neural_weights[key] + adjustment * 0.1)
             )
 
         # Normalize weights to sum to 1
@@ -2233,7 +2233,7 @@ class SelfEvolutionManager:
                         "dir": directory,
                         "score": final_score,
                         "method": "meta_learning_ensemble",
-                        "reason": f"Meta-learning (score: {meta_score:.3f}, candidates: {len(dir_candidates)})",
+                        "reason": f"Meta-learning (score: {meta_score:0.3f}, candidates: {len(dir_candidates)})",
                         "meta_score": meta_score,
                         "component_count": len(dir_candidates),
                     }
@@ -2267,7 +2267,7 @@ class SelfEvolutionManager:
     ) -> float:
         """Calculate meta-learning score for a directory based on candidate agreement"""
         if not candidates:
-            return 0.0
+            return 0
 
         # Base score from candidates
         avg_score = sum(c["score"] for c in candidates) / len(candidates)
@@ -2290,7 +2290,7 @@ class SelfEvolutionManager:
     ) -> float:
         """Calculate how well candidates align with important features for this directory"""
         # This is a simplified version - in practice would analyze feature patterns
-        alignment_score = 0.0
+        alignment_score = 0
 
         if directory in self.directory_embeddings:
             embedding = self.directory_embeddings[directory]
@@ -2306,11 +2306,11 @@ class SelfEvolutionManager:
     def _neural_combination(self, candidates: List[Dict], meta_score: float) -> float:
         """Neural network-like combination of candidate scores"""
         if not candidates:
-            return 0.0
+            return 0
 
         # Weighted combination using neural weights
-        weighted_sum = 0.0
-        total_weight = 0.0
+        weighted_sum = 0
+        total_weight = 0
 
         for candidate in candidates:
             method = candidate["method"]
@@ -2360,12 +2360,12 @@ class SelfEvolutionManager:
         """内容からファイル名を推測（強化版）"""
         lines = content.split("\n")
 
-        # 1. ファイルヘッダーから推測
+        # 1 ファイルヘッダーから推測
         filename_from_header = self._extract_filename_from_header(content)
         if filename_from_header:
             return filename_from_header
 
-        # 2. 主要クラス名から推測（複数クラスの場合は最も重要なものを選択）
+        # 2 主要クラス名から推測（複数クラスの場合は最も重要なものを選択）
         classes = re.findall(r"class\s+(\w+)", content)
         if classes:
             # クラスの重要度を評価
@@ -2374,12 +2374,12 @@ class SelfEvolutionManager:
                 snake_name = re.sub(r"(?<!^)(?=[A-Z])", "_", primary_class).lower()
                 return f"{snake_name}.py"
 
-        # 3. モジュール名パターンから推測
+        # 3 モジュール名パターンから推測
         module_name = self._extract_module_name_from_content(content)
         if module_name:
             return f"{module_name}.py"
 
-        # 4. 主要関数名から推測（改良版）
+        # 4 主要関数名から推測（改良版）
         functions = re.findall(r"def\s+(\w+)", content)
         if functions:
             # __init__, __main__ などを除外し、最も重要な関数を選択
@@ -2387,13 +2387,13 @@ class SelfEvolutionManager:
             if primary_function:
                 return f"{primary_function}.py"
 
-        # 5. ファイルタイプに基づく推測
+        # 5 ファイルタイプに基づく推測
         file_type = self._determine_file_type_from_content(content)
         if file_type["extension"]:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             return f"{file_type['prefix']}_{timestamp}{file_type['extension']}"
 
-        # 6. セマンティック分析による命名
+        # 6 セマンティック分析による命名
         semantic_name = self._generate_semantic_filename(content)
         if semantic_name:
             return semantic_name
@@ -2621,25 +2621,25 @@ class SelfEvolutionManager:
         # Add new analysis methods
         enhanced_candidates = []
 
-        # 1. Deep content understanding
+        # 1 Deep content understanding
         deep_analysis_candidates = self._deep_content_analysis(filename, content)
         enhanced_candidates.extend(deep_analysis_candidates)
 
-        # 2. Cross-reference analysis with existing files
+        # 2 Cross-reference analysis with existing files
         cross_ref_candidates = self._cross_reference_analysis(filename, content)
         enhanced_candidates.extend(cross_ref_candidates)
 
-        # 3. Temporal pattern analysis (time-based placement trends)
+        # 3 Temporal pattern analysis (time-based placement trends)
         temporal_candidates = self._temporal_pattern_analysis_enhanced(
             filename, content
         )
         enhanced_candidates.extend(temporal_candidates)
 
-        # 4. Code complexity and architecture analysis
+        # 4 Code complexity and architecture analysis
         architecture_candidates = self._architecture_based_placement(filename, content)
         enhanced_candidates.extend(architecture_candidates)
 
-        # 5. Integration pattern analysis
+        # 5 Integration pattern analysis
         integration_candidates = self._integration_pattern_analysis(filename, content)
         enhanced_candidates.extend(integration_candidates)
 

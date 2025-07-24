@@ -185,11 +185,11 @@ def print_simple_report(report: Dict):
     if total > 0:
         print("🛠️ 推奨対応:")
         if important:
-            print("  1. 重複ディレクトリの統合・削除")
+            print("  1.0 重複ディレクトリの統合・削除")
         if sage_conflicts:
-            print("  2. 4賢者システム重複解決（最安全策適用）")
+            print("  2.0 4賢者システム重複解決（最安全策適用）")
         if dangerous:
-            print("  3. 危険パターンディレクトリの改名")
+            print("  3.0 危険パターンディレクトリの改名")
         print("\n📚 詳細: docs/standards/PROJECT_STRUCTURE_STANDARDS.md")
     
     print("="*60)

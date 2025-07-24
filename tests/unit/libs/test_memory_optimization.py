@@ -36,7 +36,7 @@ def test_memory_efficient_indexing():
     """メモリ効率的なインデックス処理のテスト"""
     # 初期メモリ使用量
     initial_memory = get_memory_usage()
-    print(f"初期メモリ使用量: {initial_memory:.2f} MB")
+    print(f"初期メモリ使用量: {initial_memory:0.2f} MB")
     
     # RAGマネージャー初期化
     rag_manager = RagManager()
@@ -48,13 +48,13 @@ def test_memory_efficient_indexing():
     final_memory = get_memory_usage()
     memory_increase = final_memory - initial_memory
     
-    print(f"最終メモリ使用量: {final_memory:.2f} MB")
-    print(f"メモリ増加量: {memory_increase:.2f} MB")
+    print(f"最終メモリ使用量: {final_memory:0.2f} MB")
+    print(f"メモリ増加量: {memory_increase:0.2f} MB")
     print(f"インデックスされたファイル数: {indexed_count}")
     
     # メモリ増加が妥当な範囲内であることを確認
     # 大量のファイルがあっても50MB以下の増加に抑える
-    assert memory_increase < 50, f"メモリ増加量が大きすぎます: {memory_increase:.2f} MB"
+    assert memory_increase < 50, f"メモリ増加量が大きすぎます: {memory_increase:0.2f} MB"
     
     print("✅ メモリ効率化テスト成功 - 応急処置なしで最適化完了")
 

@@ -57,10 +57,8 @@ class SageViolationType:
 class SageConsultationTracker:
     """4賢者相談追跡システム"""
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        self.project_root = project_root or Path.cwd()
+    def __init__(self, project_root: Optional[Path] = None)self.project_root = project_root or Path.cwd()
+    """初期化メソッド"""
         self.logger = logging.getLogger("SageConsultationTracker")
         
         # 4賢者ログパス
@@ -251,10 +249,8 @@ class SageConsultationTracker:
 class SageActivityAnalyzer:
     """4賢者活動実質性評価システム"""
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        self.project_root = project_root or Path.cwd()
+    def __init__(self, project_root: Optional[Path] = None)self.project_root = project_root or Path.cwd()
+    """初期化メソッド"""
         self.logger = logging.getLogger("SageActivityAnalyzer")
         
     def analyze_sage_activity_quality(self, 
@@ -314,11 +310,10 @@ class SageActivityAnalyzer:
             
         return activities
         
-    def _analyze_sage_collaboration(self, time_window: timedelta) -> Dict[str, Any]:
-        """賢者間連携を評価"""
-        collaboration_patterns = self._detect_collaboration_patterns(time_window)
+    def _analyze_sage_collaboration(self, time_window: timedelta) -> Dict[str, Any]collaboration_patterns = self._detect_collaboration_patterns(time_window)
+    """賢者間連携を評価"""
         
-        return {
+        return {:
             "collaboration_frequency": len(collaboration_patterns),
             "collaboration_patterns": collaboration_patterns,
             "cross_sage_consultations": self._count_cross_sage_consultations(time_window),
@@ -417,10 +412,8 @@ class SageActivityAnalyzer:
 class FourSagesOverseer(AncientElderBase):
     """4賢者監督魔法 - 総合監査システム"""
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        super().__init__(specialty="four_sages_overseer")
+    def __init__(self, project_root: Optional[Path] = None)super().__init__(specialty="four_sages_overseer")
+    """初期化メソッド"""
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("FourSagesOverseer")
         
@@ -428,10 +421,9 @@ class FourSagesOverseer(AncientElderBase):
         self.consultation_tracker = SageConsultationTracker(project_root)
         self.activity_analyzer = SageActivityAnalyzer(project_root)
         
-    async def audit(self, target_path: str, **kwargs) -> AuditResult:
-        """AncientElderBaseの抽象メソッド実装"""
-        return await self.execute_audit(target_path, **kwargs)
-        
+    async def audit(self, target_path: str, **kwargs) -> AuditResultreturn await self.execute_audit(target_path, **kwargs)
+    """AncientElderBaseの抽象メソッド実装"""
+        :
     def get_audit_scope(self) -> List[str]:
         """監査対象スコープを返す"""
         return [
@@ -441,30 +433,29 @@ class FourSagesOverseer(AncientElderBase):
             "four_sages_compliance"
         ]
         
-    async def execute_audit(self, target_path: str, **kwargs) -> AuditResult:
-        """4賢者監督監査を実行"""
-        start_time = datetime.now()
+    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now()
+    """4賢者監督監査を実行"""
         violations = []
         metrics = {}
-        
+        :
         try:
             self.logger.info(f"🧙‍♂️ Starting Four Sages Overseer audit for: {target_path}")
             
-            # 1. 相談義務履行検証
+            # 1.0 相談義務履行検証
             consultation_result = self.consultation_tracker.track_sage_consultations(target_path)
             violations.extend(consultation_result.get("violations", []))
             metrics["consultation_score"] = consultation_result.get("overall_consultation_score", 0)
             
-            # 2. 賢者活動実質性評価
+            # 2.0 賢者活動実質性評価
             activity_result = self.activity_analyzer.analyze_sage_activity_quality(target_path)
             violations.extend(activity_result.get("violations", []))
             metrics["activity_score"] = activity_result.get("overall_activity_score", 0)
             
-            # 3. 総合4賢者スコア計算
+            # 3.0 総合4賢者スコア計算
             overall_score = self._calculate_overall_sage_score(metrics)
             metrics["overall_sage_score"] = overall_score
             
-            # 4. 改善提案生成
+            # 4.0 改善提案生成
             recommendations = self._generate_sage_improvement_recommendations(
                 consultation_result, activity_result, violations
             )
@@ -472,7 +463,7 @@ class FourSagesOverseer(AncientElderBase):
             execution_time = (datetime.now() - start_time).total_seconds()
             metrics["execution_time"] = execution_time
             
-            self.logger.info(f"✅ Four Sages Overseer audit completed in {execution_time:.2f}s")
+            self.logger.info(f"✅ Four Sages Overseer audit completed in {execution_time:0.2f}s")
             
             return AuditResult(
                 auditor_name="FourSagesOverseer",
@@ -499,16 +490,15 @@ class FourSagesOverseer(AncientElderBase):
                 execution_time=(datetime.now() - start_time).total_seconds()
             )
             
-    def _calculate_overall_sage_score(self, metrics: Dict[str, Any]) -> float:
-        """総合4賢者スコアを計算"""
-        consultation_score = metrics.get("consultation_score", 0)
+    def _calculate_overall_sage_score(self, metrics: Dict[str, Any]) -> floatconsultation_score = metrics.get("consultation_score", 0)
+    """総合4賢者スコアを計算"""
         activity_score = metrics.get("activity_score", 0)
         
         # 相談義務 40% + 活動実質性 60%
         overall_score = (consultation_score * 0.4) + (activity_score * 0.6)
         return min(overall_score, 100.0)
         
-    def _generate_sage_improvement_recommendations(self,
+    def _generate_sage_improvement_recommendations(self,:
                                                  consultation_result: Dict[str, Any],
                                                  activity_result: Dict[str, Any],
                                                  violations: List[Dict[str, Any]]) -> List[str]:

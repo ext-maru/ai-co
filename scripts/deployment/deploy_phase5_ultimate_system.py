@@ -168,8 +168,8 @@ class Phase5UltimateDeployment:
             results["current_coverage"] = estimated_coverage
             results["gap_remaining"] = 100.0 - estimated_coverage
 
-            logger.info(f"📊 Estimated coverage: {estimated_coverage:.1f}%")
-            logger.info(f"🎯 Gap remaining: {results['gap_remaining']:.1f}%")
+            logger.info(f"📊 Estimated coverage: {estimated_coverage:0.1f}%")
+            logger.info(f"🎯 Gap remaining: {results['gap_remaining']:0.1f}%")
 
         except Exception as e:
             logger.error(f"Coverage analysis failed: {str(e)}")
@@ -434,7 +434,7 @@ class Phase5UltimateDeployment:
                 {
                     "name": "Test Coverage >= 95%",
                     "status": coverage_check,
-                    "value": f"{self.status.coverage_current:.1f}%",
+                    "value": f"{self.status.coverage_current:0.1f}%",
                 }
             )
             results["coverage_achieved"] = coverage_check
@@ -512,8 +512,8 @@ class Phase5UltimateDeployment:
             "timestamp": datetime.now().isoformat(),
             "deployment_duration": str(deployment_time),
             "status_summary": {
-                "coverage_current": f"{self.status.coverage_current:.1f}%",
-                "coverage_target": f"{self.status.coverage_target:.1f}%",
+                "coverage_current": f"{self.status.coverage_current:0.1f}%",
+                "coverage_target": f"{self.status.coverage_target:0.1f}%",
                 "ai_evolution_tests": self.status.ai_evolution_tests,
                 "elder_council_active": self.status.elder_council_active,
                 "autonomous_operation": self.status.autonomous_operation,
@@ -540,7 +540,7 @@ class Phase5UltimateDeployment:
         # Add next steps
         if self.status.coverage_current < 100:
             remaining = 100 - self.status.coverage_current
-            report["next_steps"].append(f"🎯 Close final {remaining:.1f}% coverage gap")
+            report["next_steps"].append(f"🎯 Close final {remaining:0.1f}% coverage gap")
 
         if not self.status.autonomous_operation:
             report["next_steps"].append("🤖 Enable full autonomous operation")

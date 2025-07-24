@@ -30,7 +30,7 @@ class TaskHistoryDB:
 
     def _init_tables(self):
         """テーブル作成"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS task_history (
@@ -72,7 +72,7 @@ class TaskHistoryDB:
     ):
         """タスク履歴を保存"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO task_history
@@ -101,7 +101,7 @@ class TaskHistoryDB:
     def update_summary(self, task_id, summary):
         """要約を更新"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     UPDATE task_history
@@ -119,8 +119,8 @@ class TaskHistoryDB:
     def search_tasks(self, keyword=None, worker=None, limit=10):
         """タスク検索"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+            with sqlite3connect(self.db_path) as conn:
+                conn.row_factory = sqlite3Row
 
                 query = "SELECT * FROM task_history WHERE 1=1"
                 params = []
@@ -145,8 +145,8 @@ class TaskHistoryDB:
     def get_recent_tasks(self, limit=10):
         """最新タスク取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+            with sqlite3connect(self.db_path) as conn:
+                conn.row_factory = sqlite3Row
                 cursor = conn.execute(
                     """
                     SELECT * FROM task_history
@@ -163,7 +163,7 @@ class TaskHistoryDB:
     def get_stats(self):
         """統計情報取得（修正版）"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.execute(
                     """
                     SELECT
@@ -190,8 +190,8 @@ class TaskHistoryDB:
     def get_task_by_id(self, task_id):
         """タスクIDで検索"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+            with sqlite3connect(self.db_path) as conn:
+                conn.row_factory = sqlite3Row
                 cursor = conn.execute(
                     """
                     SELECT * FROM task_history

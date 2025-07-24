@@ -74,7 +74,7 @@ class PMQualityEvaluator(BaseManager):
         """品質評価データベースの初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 品質評価記録テーブル
             conn.execute(
                 """
@@ -146,30 +146,30 @@ class PMQualityEvaluator(BaseManager):
             # 各基準で評価
             evaluation_results = {}
 
-            # 1. テスト成功率評価
+            # 1.0 テスト成功率評価
             evaluation_results["test_success_rate"] = self._evaluate_test_success(
                 task_data
             )
 
-            # 2. コード品質評価
+            # 2.0 コード品質評価
             evaluation_results["code_quality_score"] = self._evaluate_code_quality(
                 task_data
             )
 
-            # 3. 要件適合度評価
+            # 3.0 要件適合度評価
             evaluation_results["requirement_compliance"] = (
                 self._evaluate_requirement_compliance(task_data)
             )
 
-            # 4. エラー率評価
+            # 4.0 エラー率評価
             evaluation_results["error_rate"] = self._evaluate_error_rate(task_data)
 
-            # 5. パフォーマンス評価
+            # 5.0 パフォーマンス評価
             evaluation_results["performance_score"] = self._evaluate_performance(
                 task_data
             )
 
-            # 6. セキュリティ評価
+            # 6.0 セキュリティ評価
             evaluation_results["security_score"] = self._evaluate_security(task_data)
 
             # 総合スコア計算
@@ -192,7 +192,7 @@ class PMQualityEvaluator(BaseManager):
             self._record_evaluation(task_id, evaluation_results, task_data)
 
             logger.info(
-                f"✅ 品質評価完了: {task_id} - スコア: {overall_score:.1f}% - {'承認' if pm_approved else '要改善'}"
+                f"✅ 品質評価完了: {task_id} - スコア: {overall_score:0.1f}% - {'承認' if pm_approved else '要改善'}"
             )
 
             return evaluation_results
@@ -393,7 +393,7 @@ class PMQualityEvaluator(BaseManager):
 
         if pm_approved:
             return (
-                f"✅ PM承認: 総合スコア {overall_score:.1f}% - 品質基準を満たしています"
+                f"✅ PM承認: 総合スコア {overall_score:0.1f}% - 品質基準を満たしています"
             )
 
         # 改善点を特定
@@ -405,13 +405,13 @@ class PMQualityEvaluator(BaseManager):
             if criterion == "error_rate":
                 if current_score < 100 - threshold:  # エラー率は逆転
                     improvements.append(
-                        f"エラー率改善 (現在: {100-current_score:.1f}%)"
+                        f"エラー率改善 (現在: {100-current_score:0.1f}%)"
                     )
             else:
                 if current_score < threshold:
-                    improvements.append(f"{criterion}改善 (現在: {current_score:.1f}%)")
+                    improvements.append(f"{criterion}改善 (現在: {current_score:0.1f}%)")
 
-        message = f"❌ PM再評価要: 総合スコア {overall_score:.1f}%\n"
+        message = f"❌ PM再評価要: 総合スコア {overall_score:0.1f}%\n"
         message += "改善点:\n"
         for improvement in improvements[:3]:  # 最大3つの改善点
             message += f"  - {improvement}\n"
@@ -420,7 +420,7 @@ class PMQualityEvaluator(BaseManager):
 
     def _should_retry(self, task_id: str) -> bool:
         """再試行すべきかの判定"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT COUNT(*) FROM quality_evaluations WHERE task_id = ?", (task_id,)
             )
@@ -435,7 +435,7 @@ class PMQualityEvaluator(BaseManager):
         task_data: Dict[str, Any],
     ):
         """評価結果をデータベースに記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 試行回数取得
             cursor = conn.execute(
                 "SELECT COUNT(*) FROM quality_evaluations WHERE task_id = ?", (task_id,)
@@ -492,18 +492,18 @@ class PMQualityEvaluator(BaseManager):
             # 基本的な品質チェック
             lines = content.split("\n")
 
-            # 1. 行の長さチェック
+            # 1.0 行の長さチェック
             long_lines = [line for line in lines if len(line) > 120]
             quality_score -= len(long_lines) * 2
 
-            # 2. コメント率チェック
+            # 2.0 コメント率チェック
             comment_lines = [line for line in lines if line.strip().startswith("#")]
             if len(lines) > 0:
                 comment_ratio = len(comment_lines) / len(lines)
                 if comment_ratio < 0.1:  # 10%未満
                     quality_score -= 10
 
-            # 3. 関数の複雑さチェック（簡易版）
+            # 3.0 関数の複雑さチェック（簡易版）
             function_lines = [line for line in lines if "def " in line]
             if len(function_lines) > 10:  # 関数が多すぎる
                 quality_score -= 5
@@ -581,7 +581,7 @@ class PMQualityEvaluator(BaseManager):
 
     def get_evaluation_history(self, task_id: str) -> List[Dict[str, Any]]:
         """評価履歴取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT * FROM quality_evaluations
@@ -602,7 +602,7 @@ class PMQualityEvaluator(BaseManager):
 
     def get_quality_statistics(self) -> Dict[str, Any]:
         """品質統計情報取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             stats = {}
 
             # 全体統計
@@ -668,7 +668,7 @@ if __name__ == "__main__":
     print("=== PM Quality Evaluator Test ===")
     result = evaluator.evaluate_task_quality("test_task_001", test_task_data)
 
-    print(f"Overall Score: {result['overall_score']:.1f}%")
+    print(f"Overall Score: {result['overall_score']:0.1f}%")
     print(f"PM Approved: {result['pm_approved']}")
     print(f"Feedback: {result['feedback_message']}")
     print(f"Retry Required: {result['retry_required']}")
@@ -676,5 +676,5 @@ if __name__ == "__main__":
     print("\n=== Quality Statistics ===")
     stats = evaluator.get_quality_statistics()
     print(f"Total Evaluations: {stats['total_evaluations']}")
-    print(f"Average Score: {stats['average_score']:.1f}%")
-    print(f"Approval Rate: {stats['approval_rate']:.1f}%")
+    print(f"Average Score: {stats['average_score']:0.1f}%")
+    print(f"Approval Rate: {stats['approval_rate']:0.1f}%")

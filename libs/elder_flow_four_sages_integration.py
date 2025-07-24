@@ -85,9 +85,8 @@ class ElderFlowSession:
 class ElderFlowFourSagesIntegration:
     """Elder Flow + 4賢者統合システム"""
 
-    def __init__(self, max_workers:
+    def __init__(self, max_workers: int = 8):
         """初期化メソッド"""
-    int = 8):
         self.logger = logging.getLogger(__name__)
 
         # Elder Flow コンポーネント
@@ -420,7 +419,7 @@ class ElderFlowFourSagesIntegration:
                         duration = (datetime.now() - task.started_at).total_seconds()
                         if duration > 300:  # 5分以上
                             self.logger.warning(
-                                f"🚨 長時間実行タスク検出: {task_id} ({duration:.1f}s)"
+                                f"🚨 長時間実行タスク検出: {task_id} ({duration:0.1f}s)"
                             )
 
         except asyncio.CancelledError:
@@ -692,13 +691,13 @@ async def main():
     print("\n📊 Elder Flow + 4賢者統合結果:")
     print("=" * 60)
 
-    print(f"⚡ 実行時間: {result['performance_metrics']['total_execution_time']:.2f}秒")
-    print(f"📊 並列効率: {result['performance_metrics']['parallel_efficiency']:.1f}%")
-    print(f"🎯 成功率: {result['performance_metrics']['success_rate']:.1f}%")
+    print(f"⚡ 実行時間: {result['performance_metrics']['total_execution_time']:0.2f}秒")
+    print(f"📊 並列効率: {result['performance_metrics']['parallel_efficiency']:0.1f}%")
+    print(f"🎯 成功率: {result['performance_metrics']['success_rate']:0.1f}%")
 
     print(f"\n🧙‍♂️ 4賢者の英知:")
     for rec in result["sages_wisdom"]["recommendations"]:
-        print(f"  {rec['sage']}: {rec['title']} (信頼度: {rec['confidence']:.1f})")
+        print(f"  {rec['sage']}: {rec['title']} (信頼度: {rec['confidence']:0.1f})")
 
     print(f"\n🧠 学習した洞察:")
     for insight in result["sages_wisdom"]["learning_insights"]:

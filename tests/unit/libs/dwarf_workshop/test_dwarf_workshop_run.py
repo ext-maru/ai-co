@@ -49,7 +49,7 @@ async def test_api_architect():
 
         result = await architect.execute_task(task)
         if result.status.name == "COMPLETED":
-            print(f"✅ REST API設計成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ REST API設計成功 - Quality: {result.quality_score:0.1f}/100")
             print(f"   エンドポイント数: {result.result_data.get('endpoint_count', 0)}")
         else:
             print(f"❌ REST API設計失敗: {result.error_message}")
@@ -68,7 +68,7 @@ async def test_api_architect():
 
         result = await architect.execute_task(openapi_task)
         if result.status.name == "COMPLETED":
-            print(f"✅ OpenAPI仕様生成成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ OpenAPI仕様生成成功 - Quality: {result.quality_score:0.1f}/100")
         else:
             print(f"❌ OpenAPI仕様生成失敗: {result.error_message}")
 
@@ -84,7 +84,7 @@ async def test_api_architect():
 
         result = await architect.execute_task(auth_task)
         if result.status.name == "COMPLETED":
-            print(f"✅ JWT認証実装成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ JWT認証実装成功 - Quality: {result.quality_score:0.1f}/100")
         else:
             print(f"❌ JWT認証実装失敗: {result.error_message}")
 
@@ -136,7 +136,7 @@ async def test_database_shaper():
 
         result = await shaper.execute_task(task)
         if result.status.name == "COMPLETED":
-            print(f"✅ スキーマ設計成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ スキーマ設計成功 - Quality: {result.quality_score:0.1f}/100")
             print(f"   テーブル数: {result.result_data.get('table_count', 0)}")
         else:
             print(f"❌ スキーマ設計失敗: {result.error_message}")
@@ -155,7 +155,7 @@ async def test_database_shaper():
 
         result = await shaper.execute_task(optimization_task)
         if result.status.name == "COMPLETED":
-            print(f"✅ パフォーマンス最適化成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ パフォーマンス最適化成功 - Quality: {result.quality_score:0.1f}/100")
         else:
             print(f"❌ パフォーマンス最適化失敗: {result.error_message}")
 
@@ -175,7 +175,7 @@ async def test_database_shaper():
 
         result = await shaper.execute_task(indexing_task)
         if result.status.name == "COMPLETED":
-            print(f"✅ インデックス戦略成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ インデックス戦略成功 - Quality: {result.quality_score:0.1f}/100")
         else:
             print(f"❌ インデックス戦略失敗: {result.error_message}")
 
@@ -212,7 +212,7 @@ async def test_existing_servants():
 
         result = await refactor_smith.execute_task(task)
         if result.status.name == "COMPLETED":
-            print(f"✅ D03 リファクタリング成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ D03 リファクタリング成功 - Quality: {result.quality_score:0.1f}/100")
         else:
             print(f"❌ D03 リファクタリング失敗: {result.error_message}")
 
@@ -242,7 +242,7 @@ async def test_existing_servants():
 
         result = await performance_tuner.execute_task(task)
         if result.status.name == "COMPLETED":
-            print(f"✅ D04 プロファイリング成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ D04 プロファイリング成功 - Quality: {result.quality_score:0.1f}/100")
         else:
             print(f"❌ D04 プロファイリング失敗: {result.error_message}")
 
@@ -267,7 +267,7 @@ async def test_existing_servants():
 
         result = await bug_hunter.execute_task(task)
         if result.status.name == "COMPLETED":
-            print(f"✅ D05 静的解析成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ D05 静的解析成功 - Quality: {result.quality_score:0.1f}/100")
         else:
             print(f"❌ D05 静的解析失敗: {result.error_message}")
 
@@ -295,7 +295,7 @@ async def test_existing_servants():
 
         result = await security_guard.execute_task(task)
         if result.status.name == "COMPLETED":
-            print(f"✅ D06 セキュリティ監査成功 - Quality: {result.quality_score:.1f}/100")
+            print(f"✅ D06 セキュリティ監査成功 - Quality: {result.quality_score:0.1f}/100")
         else:
             print(f"❌ D06 セキュリティ監査失敗: {result.error_message}")
 

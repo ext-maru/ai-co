@@ -85,7 +85,7 @@ class PerformanceRegression:
         report_lines = [
             "# 📊 Performance Regression Analysis",
             "",
-            f"**Threshold**: ±{self.threshold*100:.1f}%",
+            f"**Threshold**: ±{self.threshold*100:0.1f}%",
             "",
         ]
 
@@ -119,9 +119,9 @@ class PerformanceRegression:
             report_lines.append(
                 f"### {test_name}\n"
                 f"- **Status**: {status}\n"
-                f"- **Change**: {change:+.1f}%\n"
-                f"- **Current**: {current:.2f} ops/sec\n"
-                f"- **Baseline**: {baseline:.2f} ops/sec\n"
+                f"- **Change**: {change:+0.1f}%\n"
+                f"- **Current**: {current:0.2f} ops/sec\n"
+                f"- **Baseline**: {baseline:0.2f} ops/sec\n"
             )
 
         return "\n".join(report_lines)
@@ -200,7 +200,7 @@ def main():
         regressions = {k: v for k, v in results.items() if v["is_regression"]}
         for test_name, result in regressions.items():
             change = result["change_percent"] * 100
-            print(f"  🔴 {test_name}: {change:.1f}% slower")
+            print(f"  🔴 {test_name}: {change:0.1f}% slower")
 
         sys.exit(1)
     else:
@@ -212,7 +212,7 @@ def main():
             print("\n🎉 Performance improvements detected:")
             for test_name, result in improvements.items():
                 change = result["change_percent"] * 100
-                print(f"  🟢 {test_name}: {change:.1f}% faster")
+                print(f"  🟢 {test_name}: {change:0.1f}% faster")
 
         sys.exit(0)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 Improved Conflict Analyzer
+"🔍" Improved Conflict Analyzer
 実証済みPythonライブラリを活用したコンフリクト分析エンジン
 
 使用ライブラリ:

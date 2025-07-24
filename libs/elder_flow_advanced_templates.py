@@ -4,11 +4,11 @@ Elder Flow Advanced Templates - Soul Reconstruction
 Elder Flow高度テンプレートシステム - 魂の再構築
 
 🌊 Elder Flow魂の原則:
-1. 品質第一 (Quality First)
-2. 透明性 (Transparency)
-3. 4賢者協調 (Four Sages Collaboration)
-4. 階層秩序 (Hierarchical Order)
-5. 自律進化 (Autonomous Evolution)
+1.0 品質第一 (Quality First)
+2.0 透明性 (Transparency)
+3.0 4賢者協調 (Four Sages Collaboration)
+4.0 階層秩序 (Hierarchical Order)
+5.0 自律進化 (Autonomous Evolution)
 
 Created: 2025-07-12 (Soul Reconstruction)
 Author: Claude Elder (Elder Flow Soul Only)
@@ -80,7 +80,7 @@ class ElderFlowAdvancedTemplates:
     def _initialize_soul_templates(self):
         """魂のテンプレート初期化"""
 
-        # 1. API開発テンプレート
+        # 1.0 API開発テンプレート
         self.register_template(
             ElderFlowTemplate(
                 name="elder_flow_rest_api",
@@ -157,7 +157,7 @@ class ElderFlowAdvancedTemplates:
             )
         )
 
-        # 2. Webアプリケーションテンプレート
+        # 2.0 Webアプリケーションテンプレート
         self.register_template(
             ElderFlowTemplate(
                 name="elder_flow_web_application",
@@ -204,7 +204,7 @@ class ElderFlowAdvancedTemplates:
             )
         )
 
-        # 3. Elder Flowシステムテンプレート
+        # 3.0 Elder Flowシステムテンプレート
         self.register_template(
             ElderFlowTemplate(
                 name="elder_flow_system_architecture",

@@ -19,9 +19,8 @@ class TDDWorkerTemplate:
         self.test_count = 0
         self.implementation_count = 0
 
-    def create_test(self, test_name: str, requirements: str) -> Dict[str, Any]:
-        """テスト作成"""
-        logger.info(f"🧪 Creating test: {test_name}")
+    def create_test(self, test_name: str, requirements: str) -> Dict[str, Any]logger.info(f"🧪 Creating test: {test_name}")
+    """テスト作成"""
 
         test_template = f"""
 def test_{test_name}():
@@ -38,9 +37,8 @@ def test_{test_name}():
             "created_at": datetime.now().isoformat()
         }
 
-    def implement_feature(self, feature_name: str) -> Dict[str, Any]:
-        """機能実装"""
-        logger.info(f"⚙️ Implementing feature: {feature_name}")
+    def implement_feature(self, feature_name: str) -> Dict[str, Any]logger.info(f"⚙️ Implementing feature: {feature_name}")
+    """機能実装"""
 
         implementation = f"""
 def {feature_name}():

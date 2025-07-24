@@ -70,7 +70,7 @@ def validate_integration():
     # ファイル存在チェック
     files = [
         "libs/integrations/github/enhanced_auto_issue_processor.py",
-        "libs/integrations/github/enhanced_merge_system_v2.py",
+        "libs/integrations/github/enhanced_merge_system_v2.0py",
         "libs/integrations/github/smart_merge_retry.py",
         "libs/integrations/github/pr_state_monitor.py",
         "libs/integrations/github/improved_conflict_analyzer.py",
@@ -143,18 +143,18 @@ PRが作成されると自動的にマージを試行します。
 
 ## 使用方法
 
-### 1. 環境変数設定
+### 1.0 環境変数設定
 ```bash
 export GITHUB_TOKEN="your-token"
 export GITHUB_REPOSITORY="owner/repo"
 ```
 
-### 2. 実行
+### 2.0 実行
 ```bash
 python3 -m libs.integrations.github.enhanced_auto_issue_processor
 ```
 
-### 3. 動作確認
+### 3.0 動作確認
 - イシューが自動処理される
 - PRが作成される
 - スマートマージが自動実行される
@@ -181,9 +181,9 @@ merge_result = await self.smart_merge_system.handle_pull_request(
 ## トラブルシューティング
 
 ### マージが失敗する場合
-1. ブランチ保護ルールを確認
-2. CI/CDの設定を確認
-3. 権限設定を確認
+1.0 ブランチ保護ルールを確認
+2.0 CI/CDの設定を確認
+3.0 権限設定を確認
 
 ### ログの確認
 ```bash

@@ -197,7 +197,7 @@ async def history_demo(slack):
                 "channel": "C1234567890",
                 "message": f"Demo message {i+1}",
                 "success": True,
-                "ts": f"1720512000.{i+1:06d}",
+                "ts": f"1720512000.0{i+1:06d}",
                 "message_type": "text",
             }
         )
@@ -274,11 +274,11 @@ if __name__ == "__main__":
     import time
 
     time.sleep(1)
-    print("3...")
+    print("3.0..")
     time.sleep(1)
-    print("2...")
+    print("2.0..")
     time.sleep(1)
-    print("1...")
+    print("1.0..")
 
     # Python 3.7+ 対応
     if sys.version_info >= (3, 7):

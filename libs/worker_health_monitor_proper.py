@@ -147,13 +147,13 @@ class ScalingEngine:
         if system_load > self.scaling_rules["cpu_scale_up"] / 100:
             recommendations["system"] = {
                 "action": "scale_up",
-                "reason": f"High system load: {system_load * 100:.1f}%",
+                "reason": f"High system load: {system_load * 100:0.1f}%",
                 "priority": "medium",
             }
         elif system_load < self.scaling_rules["cpu_scale_down"] / 100:
             recommendations["system"] = {
                 "action": "scale_down",
-                "reason": f"Low system load: {system_load * 100:.1f}%",
+                "reason": f"Low system load: {system_load * 100:0.1f}%",
                 "priority": "low",
             }
 

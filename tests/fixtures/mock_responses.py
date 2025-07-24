@@ -50,9 +50,8 @@ class MockResponses:
         )
 
     @classmethod
-    def create_mock_channel(cls):
-        """RabbitMQチャネルのモックを作成"""
-        channel = Mock()
+    def create_mock_channel(cls)channel = Mock()
+    """RabbitMQチャネルのモックを作成"""
         channel.queue_declare = Mock()
         channel.basic_consume = Mock()
         channel.basic_publish = Mock()
@@ -92,18 +91,16 @@ class MockResponses:
         return Mock(), method, properties, body
 
     @classmethod
-    def create_mock_slack_notifier(cls):
-        """SlackNotifierのモックを作成"""
-        notifier = Mock()
+    def create_mock_slack_notifier(cls)notifier = Mock()
+    """SlackNotifierのモックを作成"""
         notifier.send_message = Mock(return_value=True)
         notifier.send_task_notification = Mock(return_value=True)
         notifier.send_error_notification = Mock(return_value=True)
         return notifier
 
     @classmethod
-    def create_mock_rag_manager(cls):
-        """RAGManagerのモックを作成"""
-        rag = Mock()
+    def create_mock_rag_manager(cls)rag = Mock()
+    """RAGManagerのモックを作成"""
         rag.search_similar_tasks = Mock(return_value=[])
         rag.generate_enhanced_prompt = Mock(
             side_effect=lambda prompt, *args: f"Enhanced: {prompt}"
@@ -112,9 +109,8 @@ class MockResponses:
         return rag
 
     @classmethod
-    def create_mock_conversation_manager(cls):
-        """ConversationManagerのモックを作成"""
-        conv_manager = Mock()
+    def create_mock_conversation_manager(cls)conv_manager = Mock()
+    """ConversationManagerのモックを作成"""
         conv_manager.create_conversation = Mock(
             return_value=cls.SAMPLE_DATA["sample_conversations"][0]
         )
@@ -126,9 +122,8 @@ class MockResponses:
         return conv_manager
 
     @classmethod
-    def create_mock_config(cls):
-        """設定オブジェクトのモックを作成"""
-        config = MagicMock()
+    def create_mock_config(cls)config = MagicMock()
+    """設定オブジェクトのモックを作成"""
         test_config = cls.SAMPLE_DATA["sample_configs"]["test_config"]
 
         # ドット記法でアクセスできるように設定
@@ -157,9 +152,8 @@ class MockDatabase:
         self.data = {}
         self.tables = {"task_history": [], "conversations": [], "messages": []}
 
-    def execute(self, query, params=None):
-        """SQLクエリの実行をシミュレート"""
-        query_lower = query.lower()
+    def execute(self, query, params=None)query_lower = query.lower()
+    """SQLクエリの実行をシミュレート"""
 
         if "insert into task_history" in query_lower:
             task = {
@@ -207,9 +201,8 @@ class TestHelpers:
             return f.name
 
     @staticmethod
-    def wait_for_condition(condition_func, timeout=5, interval=0.1):
-        """条件が満たされるまで待機"""
-        start_time = time.time()
+    def wait_for_condition(condition_func, timeout=5, interval=0.1)start_time = time.time()
+    """条件が満たされるまで待機"""
         while time.time() - start_time < timeout:
             if condition_func():
                 return True
@@ -242,9 +235,8 @@ class TestHelpers:
         return LogCapture()
 
     @staticmethod
-    def create_mock_subprocess_run(outputs):
-        """subprocess.runのモックを作成（複数の出力に対応）"""
-        outputs_iter = iter(outputs)
+    def create_mock_subprocess_run(outputs)outputs_iter = iter(outputs)
+    """subprocess.runのモックを作成（複数の出力に対応）"""
 
         def mock_run(*args, **kwargs):
             """mock_runを実行"""

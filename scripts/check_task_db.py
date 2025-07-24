@@ -7,7 +7,7 @@ import sqlite3
 db_path = "/home/aicompany/ai_co/task_history.db"
 
 if os.path.exists(db_path):
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3connect(db_path)
     cursor = conn.cursor()
 
     print("=== テーブル一覧 ===")

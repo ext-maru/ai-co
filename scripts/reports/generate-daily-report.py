@@ -4,11 +4,11 @@
 エルダー評議会令第601号 - 日次レポート標準化令
 
 機能:
-1. システム状態の自動収集
-2. タスク進捗の自動集計
-3. 品質メトリクスの自動計算
-4. インシデント状況の自動報告
-5. 4賢者システム統合レポート
+1.0 システム状態の自動収集
+2.0 タスク進捗の自動集計
+3.0 品質メトリクスの自動計算
+4.0 インシデント状況の自動報告
+5.0 4賢者システム統合レポート
 """
 
 import os
@@ -223,7 +223,7 @@ class DailyReportGenerator:
         """タスクメトリクス収集"""
         try:
             # データベース接続
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
             
             # 当日のタスク統計
@@ -420,7 +420,7 @@ class DailyReportGenerator:
     def _collect_incident_metrics(self, date: datetime) -> IncidentMetrics:
         """インシデントメトリクス収集"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
             
             today = date.strftime('%Y-%m-%d')
@@ -546,14 +546,14 @@ class DailyReportGenerator:
             recommendations.append("🗡️ Iron Will違反が増加しています。コード品質改善が必要")
         
         if quality.technical_debt_hours > 100:
-            recommendations.append(f"💳 技術負債が{quality.technical_debt_hours:.0f}時間分蓄積。リファクタリング計画を推奨")
+            recommendations.append(f"💳 技術負債が{quality.technical_debt_hours:0.0f}時間分蓄積。リファクタリング計画を推奨")
         
         # インシデント関連
         if incident.critical_incidents > 0:
             recommendations.append(f"🚨 {incident.critical_incidents}件のクリティカルインシデントが未解決です")
         
         if incident.mttr > 24:
-            recommendations.append(f"⏱️ 平均解決時間が{incident.mttr:.1f}時間です。対応プロセス改善を推奨")
+            recommendations.append(f"⏱️ 平均解決時間が{incident.mttr:0.1f}時間です。対応プロセス改善を推奨")
         
         # 推奨事項がない場合
         if not recommendations:
@@ -646,14 +646,14 @@ sage_assignment: "task_sage"
 
 | メトリクス | 値 | 状態 |
 |----------|-----|------|
-| CPU使用率 | {report.system_metrics.cpu_usage:.1f}% | {self._status_indicator(report.system_metrics.cpu_usage, 80, 90)} |
+| CPU使用率 | {report.system_metrics.cpu_usage:0.1f}% | {self._status_indicator(report.system_metrics.cpu_usage, 80, 90)} |
 | メモリ使用率 | {
-    report.system_metrics.memory_usage:.1f}% | {self._status_indicator(report.system_metrics.memory_usage,
+    report.system_metrics.memory_usage:0.1f}% | {self._status_indicator(report.system_metrics.memory_usage,
     85,
     95)
 } |
 | ディスク使用率 | {
-    report.system_metrics.disk_usage:.1f}% | {self._status_indicator(report.system_metrics.disk_usage,
+    report.system_metrics.disk_usage:0.1f}% | {self._status_indicator(report.system_metrics.disk_usage,
     85,
     95)
 } |
@@ -674,8 +674,8 @@ sage_assignment: "task_sage"
 | 進行中 | {report.task_metrics.in_progress} | - |
 | 保留中 | {report.task_metrics.pending} | - |
 | 期限切れ | {report.task_metrics.overdue} | {self._overdue_indicator(report.task_metrics.overdue)} |
-| 完了率 | {report.task_metrics.completion_rate:.1f}% | - |
-| 平均所要時間 | {report.task_metrics.average_duration:.1f}時間 | - |
+| 完了率 | {report.task_metrics.completion_rate:0.1f}% | - |
+| 平均所要時間 | {report.task_metrics.average_duration:0.1f}時間 | - |
 
 ---
 
@@ -684,30 +684,30 @@ sage_assignment: "task_sage"
 | メトリクス | 値 | 基準 | 評価 |
 |----------|-----|------|------|
 | コード品質スコア | {
-    report.quality_metrics.code_quality_score:.1f}/100 | 80 | {self._quality_indicator( \
+    report.quality_metrics.code_quality_score:0.1f}/100 | 80 | {self._quality_indicator( \
         report.quality_metrics.code_quality_score,
     80)
 } |
 | テストカバレッジ | {
-    report.quality_metrics.test_coverage:.1f}% | 80% | {self._quality_indicator(report.quality_metrics.test_coverage,
+    report.quality_metrics.test_coverage:0.1f}% | 80% | {self._quality_indicator(report.quality_metrics.test_coverage,
     80)
 } |
 | Iron Will準拠率 | {
-    report.quality_metrics.iron_will_compliance:.1f}% | 95% | {self._quality_indicator( \
+    report.quality_metrics.iron_will_compliance:0.1f}% | 95% | {self._quality_indicator( \
         report.quality_metrics.iron_will_compliance,
     95)
 } |
 | セキュリティスコア | {
-    report.quality_metrics.security_score:.1f}/100 | 85 | {self._quality_indicator( \
+    report.quality_metrics.security_score:0.1f}/100 | 85 | {self._quality_indicator( \
         report.quality_metrics.security_score,
     85)
 } |
 | ドキュメントカバレッジ | {
-    report.quality_metrics.documentation_coverage:.1f}% | 70% | {self._quality_indicator( \
+    report.quality_metrics.documentation_coverage:0.1f}% | 70% | {self._quality_indicator( \
         report.quality_metrics.documentation_coverage,
     70)
 } |
-| 技術負債 | {report.quality_metrics.technical_debt_hours:.0f}時間 | <100 \
+| 技術負債 | {report.quality_metrics.technical_debt_hours:0.0f}時間 | <100 \
     | {self._debt_indicator(report.quality_metrics.technical_debt_hours)} |
 
 ---
@@ -722,7 +722,7 @@ sage_assignment: "task_sage"
 | 未解決 | {report.incident_metrics.open_incidents} | {self._incident_indicator(report.incident_metrics.open_incidents)} |
 | クリティカル | {report.incident_metrics.critical_incidents} | {self._critical_indicator( \
     report.incident_metrics.critical_incidents)} |
-| 平均解決時間 | {report.incident_metrics.mttr:.1f}時間 | {self._mttr_indicator(report.incident_metrics.mttr)} |
+| 平均解決時間 | {report.incident_metrics.mttr:0.1f}時間 | {self._mttr_indicator(report.incident_metrics.mttr)} |
 
 ### カテゴリ別分布
 {self._format_categories(report.incident_metrics.incident_categories)}
@@ -743,9 +743,9 @@ sage_assignment: "task_sage"
 
 ## 🎯 本日の重点事項
 
-1. **品質向上**: Iron Will基準の完全遵守
-2. **インシデント対応**: クリティカルインシデントの即座解決
-3. **技術負債削減**: 計画的なリファクタリング実施
+1.0 **品質向上**: Iron Will基準の完全遵守
+2.0 **インシデント対応**: クリティカルインシデントの即座解決
+3.0 **技術負債削減**: 計画的なリファクタリング実施
 
 ---
 

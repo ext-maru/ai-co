@@ -102,7 +102,6 @@ class ErrorClassifier:
         """エラーを分類してリトライ可能性を判断"""
         error_str = str(error).lower()
         error_type_str = type(error).__name__.lower()
-
         for error_type, config in cls.ERROR_TYPES.items():
             for pattern in config["patterns"]:
                 if pattern in error_str or pattern in error_type_str:
@@ -115,9 +114,8 @@ class ErrorClassifier:
 class ErrorHistory:
     """エラー履歴管理"""
 
-    def __init__(self, db_path:
+    def __init__(self, db_path: Optional[Path] = None):
         """初期化メソッド"""
-    Optional[Path] = None):
         if db_path is None:
             db_path = Path.home() / ".elders_guild" / "error_history.db"
 
@@ -153,7 +151,7 @@ class ErrorHistory:
         retry_count: int = 0,
     ):
         """エラーを記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO error_history
@@ -189,7 +187,7 @@ class ErrorHistory:
     def get_error_patterns(self, days: int = 7) -> Dict[str, int]:
         """最近のエラーパターンを取得"""
         since = (datetime.now() - timedelta(days=days)).isoformat()
-
+        
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
@@ -216,12 +214,9 @@ def smart_retry(
     if error_history is None:
         error_history = ErrorHistory()
 
-    def decorator(func:
-        """decoratorメソッド"""
-    Callable) -> Callable:
+    def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
-            """wrapperメソッド"""
             last_error = None
             attempt = 0
 
@@ -270,7 +265,7 @@ def smart_retry(
                     delay = current_strategy.get_delay(attempt - 1)
                     logger.warning(
                         f"Error in {func.__name__} (attempt {attempt}/{current_strategy.max_attempts}): "
-                        f"{error_type} - {e}. Retrying in {delay:.1f}s..."
+                        f"{error_type} - {e}. Retrying in {delay:0.1f}s..."
                     )
 
                     time.sleep(delay)
@@ -300,12 +295,10 @@ class CircuitBreaker:
         self._last_failure_time = None
         self._state = "CLOSED"  # CLOSED, OPEN, HALF_OPEN
 
-    def __call__(self, func:
+    def __call__(self, func: Callable) -> Callable:
         """__call__特殊メソッド"""
-    Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            """wrapperメソッド"""
             if self._state == "OPEN":
                 # 回復タイムアウトをチェック
                 if (
@@ -356,8 +349,6 @@ class EnhancedTaskExecutor:
     """強化版タスク実行エンジン"""
 
     def __init__(self):
-        """初期化メソッド"""
-        self.error_history = ErrorHistory()
         self.circuit_breakers = {}
 
     def execute_with_resilience(
@@ -384,7 +375,6 @@ class EnhancedTaskExecutor:
             @smart_retry(error_history=self.error_history)
             @circuit_breaker
             def wrapped_func():
-                """wrapped_funcメソッド"""
                 return func(*args, **kwargs)
 
             result = wrapped_func()
@@ -411,7 +401,6 @@ class EnhancedTaskExecutor:
     def get_health_report(self) -> Dict[str, Any]:
         """システムヘルスレポートを生成"""
         error_patterns = self.error_history.get_error_patterns(days=1)
-
         circuit_states = {name: cb._state for name, cb in self.circuit_breakers.items()}
 
         return {

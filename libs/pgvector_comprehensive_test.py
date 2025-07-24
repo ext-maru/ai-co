@@ -43,28 +43,28 @@ class PgVectorComprehensiveTest:
         print("🧪 pgvector総合テスト・検証システム開始")
         print("=" * 60)
         
-        # 1. ファイル存在確認
+        # 1.0 ファイル存在確認
         await self._test_file_existence()
         
-        # 2. データベース整合性テスト
+        # 2.0 データベース整合性テスト
         await self._test_database_integrity()
         
-        # 3. PostgreSQL接続テスト
+        # 3.0 PostgreSQL接続テスト
         await self._test_postgresql_connection()
         
-        # 4. 検索機能テスト
+        # 4.0 検索機能テスト
         await self._test_search_functionality()
         
-        # 5. 自動化システムテスト
+        # 5.0 自動化システムテスト
         await self._test_automation_system()
         
-        # 6. パフォーマンステスト
+        # 6.0 パフォーマンステスト
         await self._test_performance()
         
-        # 7. アラート機能テスト
+        # 7.0 アラート機能テスト
         await self._test_alert_system()
         
-        # 8. 統合システムテスト
+        # 8.0 統合システムテスト
         await self._test_integration()
         
         # 総合評価
@@ -77,7 +77,7 @@ class PgVectorComprehensiveTest:
         
     async def _test_file_existence(self):
         """ファイル存在確認テスト"""
-        print("\n📁 1. ファイル存在確認テスト")
+        print("\n📁 1.0 ファイル存在確認テスト")
         
         test_name = "file_existence"
         results = {
@@ -109,7 +109,7 @@ class PgVectorComprehensiveTest:
         
     async def _test_database_integrity(self):
         """データベース整合性テスト"""
-        print("\n🗄️ 2. データベース整合性テスト")
+        print("\n🗄️ 2.0 データベース整合性テスト")
         
         test_name = "database_integrity"
         results = {
@@ -130,7 +130,7 @@ class PgVectorComprehensiveTest:
                 self.test_results['tests'][test_name] = results
                 return
                 
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3connect(db_path)
             
             # テーブル存在確認
             cursor = conn.execute("""
@@ -176,9 +176,9 @@ class PgVectorComprehensiveTest:
                     results['score'] = int(quality_score)
                     
                     if record_count > 500 and quality_score > 80:
-                        print(f"  ✅ データ品質: {quality_score:.1f}%")
+                        print(f"  ✅ データ品質: {quality_score:0.1f}%")
                     else:
-                        print(f"  ⚠️ データ品質: {quality_score:.1f}% (要改善)")
+                        print(f"  ⚠️ データ品質: {quality_score:0.1f}% (要改善)")
                         results['status'] = 'warning'
                         
             conn.close()
@@ -192,7 +192,7 @@ class PgVectorComprehensiveTest:
         
     async def _test_postgresql_connection(self):
         """PostgreSQL接続テスト"""
-        print("\n🐘 3. PostgreSQL接続テスト")
+        print("\n🐘 3.0 PostgreSQL接続テスト")
         
         test_name = "postgresql_connection"
         results = {
@@ -273,7 +273,7 @@ class PgVectorComprehensiveTest:
         
     async def _test_search_functionality(self):
         """検索機能テスト"""
-        print("\n🔍 4. 検索機能テスト")
+        print("\n🔍 4.0 検索機能テスト")
         
         test_name = "search_functionality"
         results = {
@@ -367,7 +367,7 @@ class PgVectorComprehensiveTest:
             
             print(f"  📝 テキスト検索: {results['text_search']['successful_queries']}/{len(test_queries)} 成功")
             print(f"  🔮 ベクトル検索: {results['vector_search']['successful_queries']}/{len(test_queries)} 成功")
-            print(f"  ⏱️ 平均応答時間: {results['text_search']['average_response_time']:.3f}秒")
+            print(f"  ⏱️ 平均応答時間: {results['text_search']['average_response_time']:0.3f}秒")
             
         except Exception as e:
             results['status'] = 'fail'
@@ -378,7 +378,7 @@ class PgVectorComprehensiveTest:
         
     async def _test_automation_system(self):
         """自動化システムテスト"""
-        print("\n🤖 5. 自動化システムテスト")
+        print("\n🤖 5.0 自動化システムテスト")
         
         test_name = "automation_system"
         results = {
@@ -460,7 +460,7 @@ class PgVectorComprehensiveTest:
         
     async def _test_performance(self):
         """パフォーマンステスト"""
-        print("\n⚡ 6. パフォーマンステスト")
+        print("\n⚡ 6.0 パフォーマンステスト")
         
         test_name = "performance"
         results = {
@@ -480,7 +480,7 @@ class PgVectorComprehensiveTest:
                     'size_bytes': db_size,
                     'size_mb': db_size / (1024 * 1024)
                 }
-                print(f"  💾 SQLiteデータベースサイズ: {db_size / (1024 * 1024):.1f} MB")
+                print(f"  💾 SQLiteデータベースサイズ: {db_size / (1024 * 1024):0.1f} MB")
                 
             # 検索速度テスト
             import sys
@@ -504,7 +504,7 @@ class PgVectorComprehensiveTest:
                 'min_time': min(search_times)
             }
             
-            print(f"  🔍 平均検索速度: {results['search_speed']['average_time']:.3f}秒")
+            print(f"  🔍 平均検索速度: {results['search_speed']['average_time']:0.3f}秒")
             
             # スコア計算
             speed_score = 100 if results['search_speed']['average_time'] < 0.1 else max(
@@ -524,7 +524,7 @@ class PgVectorComprehensiveTest:
         
     async def _test_alert_system(self):
         """アラート機能テスト"""
-        print("\n🚨 7. アラート機能テスト")
+        print("\n🚨 7.0 アラート機能テスト")
         
         test_name = "alert_system"
         results = {
@@ -601,7 +601,7 @@ class PgVectorComprehensiveTest:
         
     async def _test_integration(self):
         """統合システムテスト"""
-        print("\n🔗 8. 統合システムテスト")
+        print("\n🔗 8.0 統合システムテスト")
         
         test_name = "integration"
         results = {
@@ -639,7 +639,7 @@ class PgVectorComprehensiveTest:
             # SQLite件数
             db_path = f'{self.base_path}/knowledge_base/integrated_knowledge.db'
             if os.path.exists(db_path):
-                conn = sqlite3.connect(db_path)
+                conn = sqlite3connect(db_path)
                 cursor = conn.execute("SELECT COUNT(*) FROM knowledge_documents")
                 sqlite_count = cursor.fetchone()[0]
                 conn.close()

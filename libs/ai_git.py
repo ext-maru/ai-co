@@ -487,5 +487,5 @@ if __name__ == "__main__":
         analysis = analyze_for_commit()
         print(f"Commit Type: {analysis.commit_type}")
         print(f"Scope: {analysis.scope}")
-        print(f"Confidence: {analysis.confidence:.2f}")
+        print(f"Confidence: {analysis.confidence:0.2f}")
         print(f"Description: {analysis.description}")

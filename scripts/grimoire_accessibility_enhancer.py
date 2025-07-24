@@ -301,7 +301,7 @@ def main():
     print("-" * 40)
     print(f"総合状況: {enhancement_results['overall_status'].upper()}")
     print(
-        f"改善完了率: {enhancement_results['metrics']['enhancement_completion']:.1f}%"
+        f"改善完了率: {enhancement_results['metrics']['enhancement_completion']:0.1f}%"
     )
 
 

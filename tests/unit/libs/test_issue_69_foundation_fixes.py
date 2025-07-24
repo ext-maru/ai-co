@@ -362,10 +362,10 @@ async def test_issue_69_complete_integration():
     
     servant = TestElderServantImplementation()
     
-    # 1. EldersLegacy継承確認
+    # 1.0 EldersLegacy継承確認
     assert isinstance(servant, EldersServiceLegacy)
     
-    # 2. Iron Will 95%閾値確認
+    # 2.0 Iron Will 95%閾値確認
     sample_request = ServantRequest(
         task_id="integration_001",
         task_type="integration_test",
@@ -376,11 +376,11 @@ async def test_issue_69_complete_integration():
     response = await servant.execute_with_quality_gate(sample_request)
     assert response.quality_score >= 95.0
     
-    # 3. メトリクス確認
+    # 3.0 メトリクス確認
     metrics = servant.get_metrics()
     assert metrics["iron_will_compliant"] is True
     
-    # 4. ヘルスチェック確認
+    # 4.0 ヘルスチェック確認
     health = await servant.health_check()
     assert health["status"] == "healthy"
     

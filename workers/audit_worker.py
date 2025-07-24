@@ -222,7 +222,7 @@ class AuditWorker(ElderAwareBaseWorker):
 
         # 簡略監査ログシステム
         class SimpleAuditLogger:
-            # Main class implementation
+            # Main class implementation:
             def __init__(self, logger):
                 self.logger = logger
 
@@ -986,9 +986,8 @@ class AuditWorker(ElderAwareBaseWorker):
         # 重要度によるアラート
         return severity in [SecuritySeverity.CRITICAL, SecuritySeverity.HIGH]
 
-    async def _send_security_alert(self, context: ElderTaskContext, audit_record: Dict):
-        """セキュリティアラート送信"""
-        severity = audit_record.get("severity", "unknown")
+    async def _send_security_alert(self, context: ElderTaskContext, audit_record: Dict)severity = audit_record.get("severity", "unknown")
+    """セキュリティアラート送信"""
         event_type = audit_record.get("event_type", "unknown")
 
         alert_message = f"""
@@ -1017,9 +1016,8 @@ class AuditWorker(ElderAwareBaseWorker):
 
         self.audit_stats["alerts_sent"] += 1
 
-    async def _perform_elder_audit(self, context: ElderTaskContext, audit_record: Dict):
-        """Elder階層特別監査"""
-        elder_action = audit_record.get("details", {}).get("action")
+    async def _perform_elder_audit(self, context: ElderTaskContext, audit_record: Dict)elder_action = audit_record.get("details", {}).get("action")
+    """Elder階層特別監査"""
         elder_user = audit_record.get("user")
 
         # Elder行動追跡
@@ -1036,9 +1034,8 @@ class AuditWorker(ElderAwareBaseWorker):
         if audit_record.get("details", {}).get("elder_role") == "grand_elder":
             await self._notify_elder_council(context, audit_record)
 
-    async def _handle_anomaly(self, context: ElderTaskContext, audit_record: Dict):
-        """異常検知ハンドリング"""
-        anomaly_score = audit_record.get("anomaly_score", 0)
+    async def _handle_anomaly(self, context: ElderTaskContext, audit_record: Dict)anomaly_score = audit_record.get("anomaly_score", 0)
+    """異常検知ハンドリング"""
 
         self.audit_stats["anomalies_detected"] += 1
 
@@ -1046,7 +1043,7 @@ class AuditWorker(ElderAwareBaseWorker):
         anomaly_message = f"""
 {AUDIT_EMOJI['warning']} **ANOMALY DETECTED**
 
-**Anomaly Score**: {anomaly_score:.2f}
+**Anomaly Score**: {anomaly_score:0.2f}
 **Event**: {audit_record.get('event_type')}
 **User**: {audit_record.get('user')}
 **Detected By**: {context.user.username}
@@ -1127,7 +1124,7 @@ Council attention requested.
     def _is_suspicious_location(self, ip_address: str) -> bool:
         """疑わしい地理的位置チェック（簡略実装）"""
         # 実際の実装ではGeoIPデータベースを使用
-        suspicious_patterns = ["10.0.0.", "192.168.", "172.16."]
+        suspicious_patterns = ["10.0.0.0", "192.168.0", "172.16.0"]
         return not any(
             ip_address.startswith(pattern) for pattern in suspicious_patterns
         )
@@ -1961,10 +1958,10 @@ Overall system security posture: GOOD
 - Council Summoner: {'Ready' if self.elder_integration_status['council_summoner_active'] else 'Unavailable'}
 
 **Immediate Actions Required**:
-1. Review security incident details
-2. Assess system impact
-3. Implement containment measures
-4. Coordinate Elder Tree response
+1.0 Review security incident details
+2.0 Assess system impact
+3.0 Implement containment measures
+4.0 Coordinate Elder Tree response
 
 **Security Guardian**: Audit Worker {self.worker_id}
 """
@@ -2178,9 +2175,8 @@ def create_audit_worker(
 
 
 # デモ実行関数
-async def demo_audit_worker():
-    """監査ワーカーのデモ実行"""
-    print(f"{AUDIT_EMOJI['start']} Audit Worker Demo Starting...")
+async def demo_audit_worker()print(f"{AUDIT_EMOJI['start']} Audit Worker Demo Starting...")
+"""監査ワーカーのデモ実行"""
 
     # デモ認証システム
     auth = create_demo_auth_system()

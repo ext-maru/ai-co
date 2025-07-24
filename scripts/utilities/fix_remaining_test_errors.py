@@ -27,16 +27,16 @@ class RemainingErrorFixer:
         """残りエラーの修復"""
         print("🚨 Elder Servants Final Fix Mission - 42エラー修復開始")
 
-        # 1. Path import issues
+        # 1.0 Path import issues
         self._fix_path_undefined_errors()
 
-        # 2. Workers directory tests
+        # 2.0 Workers directory tests
         self._fix_workers_tests()
 
-        # 3. Web tests
+        # 3.0 Web tests
         self._fix_web_tests()
 
-        # 4. Worker-specific tests
+        # 4.0 Worker-specific tests
         self._fix_worker_specific_tests()
 
         print(f"✅ 修復完了: {len(self.fixed_files)} ファイル")
@@ -257,10 +257,10 @@ def main():
 
     fixer = RemainingErrorFixer()
 
-    # 1. 残りエラーの修復
+    # 1.0 残りエラーの修復
     fixer.fix_remaining_errors()
 
-    # 2. 修正結果の検証
+    # 2.0 修正結果の検証
     error_count, test_count = fixer.validate_fixes()
 
     if error_count is not None:

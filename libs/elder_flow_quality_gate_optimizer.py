@@ -259,37 +259,37 @@ class ElderFlowQualityGateOptimizer:
 
             if metric == "test_coverage":
                 suggestions.append(
-                    f"テストカバレッジを{actual:.1f}%から{threshold:.1f}%以上に向上させてください。"
+                    f"テストカバレッジを{actual:0.1f}%から{threshold:0.1f}%以上に向上させてください。"
                     f"重要な関数やクラスのテストを追加することを推奨します。"
                 )
             elif metric == "code_complexity":
                 suggestions.append(
-                    f"コードの複雑度が{actual:.1f}と高すぎます（基準: {threshold:.1f}以下）。"
+                    f"コードの複雑度が{actual:0.1f}と高すぎます（基準: {threshold:0.1f}以下）。"
                     f"長い関数を分割し、条件分岐を簡素化してください。"
                 )
             elif metric == "duplication_ratio":
                 suggestions.append(
-                    f"コードの重複率が{actual:.1f}%と高すぎます（基準: {threshold:.1f}%以下）。"
+                    f"コードの重複率が{actual:0.1f}%と高すぎます（基準: {threshold:0.1f}%以下）。"
                     f"共通処理を関数やクラスに抽出してください。"
                 )
             elif metric == "documentation_coverage":
                 suggestions.append(
-                    f"ドキュメントカバレッジが{actual:.1f}%と不足しています（基準: {threshold:.1f}%以上）。"
+                    f"ドキュメントカバレッジが{actual:0.1f}%と不足しています（基準: {threshold:0.1f}%以上）。"
                     f"関数やクラスにdocstringを追加してください。"
                 )
             elif metric == "lint_score":
                 suggestions.append(
-                    f"リントスコアが{actual:.1f}/10と低いです（基準: {threshold:.1f}/10以上）。"
+                    f"リントスコアが{actual:0.1f}/10と低いです（基準: {threshold:0.1f}/10以上）。"
                     f"リンターの警告を修正してコード品質を向上させてください。"
                 )
             elif metric == "security_score":
                 suggestions.append(
-                    f"セキュリティスコアが{actual:.1f}/10と低いです（基準: {threshold:.1f}/10以上）。"
+                    f"セキュリティスコアが{actual:0.1f}/10と低いです（基準: {threshold:0.1f}/10以上）。"
                     f"セキュリティスキャンで検出された脆弱性を修正してください。"
                 )
             elif metric == "performance_score":
                 suggestions.append(
-                    f"パフォーマンススコアが{actual:.1f}/10と低いです（基準: {threshold:.1f}/10以上）。"
+                    f"パフォーマンススコアが{actual:0.1f}/10と低いです（基準: {threshold:0.1f}/10以上）。"
                     f"処理の最適化や非効率なコードの改善を行ってください。"
                 )
 

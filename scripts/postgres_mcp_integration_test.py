@@ -35,9 +35,8 @@ class PostgreSQLMCPIntegrationTest:
         self.test_results = []
         self.fallback_results = []
 
-    async def setup_test_environment(self):
-        """テスト環境セットアップ"""
-        print("🔧 テスト環境セットアップ開始...")
+    async def setup_test_environment(self)print("🔧 テスト環境セットアップ開始...")
+    """テスト環境セットアップ"""
 
         # 管理者権限でテストDB作成
         admin_conn = await asyncpg.connect(
@@ -207,10 +206,10 @@ class PostgreSQLMCPIntegrationTest:
                 {
                     "test": test_name,
                     "status": "PASS",
-                    "message": f"検索時間: {search_time:.2f}ms, 最高類似度: {best_similarity:.3f}",
+                    "message": f"検索時間: {search_time:0.2f}ms, 最高類似度: {best_similarity:0.3f}",
                 }
             )
-            print(f"✅ {test_name} - 成功 (時間: {search_time:.2f}ms)")
+            print(f"✅ {test_name} - 成功 (時間: {search_time:0.2f}ms)")
 
         except Exception as e:
             self.test_results.append(
@@ -303,7 +302,7 @@ class PostgreSQLMCPIntegrationTest:
                 {
                     "test": test_name,
                     "status": "PASS",
-                    "message": f'MCP統合正常 - 類似度: {best_match["similarity"]:.3f}',
+                    "message": f'MCP統合正常 - 類似度: {best_match["similarity"]:0.3f}',
                 }
             )
             print(f"✅ {test_name} - 成功")
@@ -472,7 +471,7 @@ class PostgreSQLMCPIntegrationTest:
                 {
                     "test": test_name,
                     "status": "PASS",
-                    "message": f"同時検索成功: {success_count}/10, 時間: {total_time:.2f}ms",
+                    "message": f"同時検索成功: {success_count}/10, 時間: {total_time:0.2f}ms",
                 }
             )
             print(f"✅ {test_name} - 成功")
@@ -522,7 +521,7 @@ class PostgreSQLMCPIntegrationTest:
                 {
                     "test": test_name,
                     "status": "PASS",
-                    "message": f"メモリ増加: {memory_increase:.2f}MB",
+                    "message": f"メモリ増加: {memory_increase:0.2f}MB",
                 }
             )
             print(f"✅ {test_name} - 成功")
@@ -542,9 +541,8 @@ class PostgreSQLMCPIntegrationTest:
             )
             print(f"❌ {test_name} - 失敗: {e}")
 
-    async def cleanup_test_environment(self):
-        """テスト環境クリーンアップ"""
-        print("\n🧹 テスト環境クリーンアップ...")
+    async def cleanup_test_environment(self)print("\n🧹 テスト環境クリーンアップ...")
+    """テスト環境クリーンアップ"""
 
         if self.conn:
             await self.conn.close()
@@ -566,9 +564,8 @@ class PostgreSQLMCPIntegrationTest:
 
         print("✅ テスト環境クリーンアップ完了")
 
-    def generate_test_report(self):
-        """テストレポート生成"""
-        print("\n" + "=" * 80)
+    def generate_test_report(self)print("\n" + "=" * 80)
+    """テストレポート生成"""
         print("📊 PostgreSQL MCP統合テストレポート")
         print("=" * 80)
 
@@ -581,7 +578,7 @@ class PostgreSQLMCPIntegrationTest:
         print(f"成功: {passed_tests}")
         print(f"失敗: {failed_tests}")
         print(f"スキップ: {skipped_tests}")
-        print(f"成功率: {passed_tests/total_tests*100:.1f}%")
+        print(f"成功率: {passed_tests/total_tests*100:0.1f}%")
 
         print("\n🔍 テスト詳細:")
         for result in self.test_results:
@@ -616,9 +613,8 @@ class PostgreSQLMCPIntegrationTest:
         return failed_tests == 0
 
 
-async def main():
-    """メイン実行関数"""
-    print("🚀 PostgreSQL MCP統合テストスイート開始")
+async def main()print("🚀 PostgreSQL MCP統合テストスイート開始")
+"""メイン実行関数"""
     print("=" * 80)
 
     tester = PostgreSQLMCPIntegrationTest()

@@ -677,9 +677,8 @@ def lightweight_proxy(
 ):
     """軽量プロキシデコレータ"""
 
-    def decorator(func:
+    def decorator(func: Callable):
         """decoratorメソッド"""
-    Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             """wrapperメソッド"""

@@ -508,11 +508,11 @@ class DocForge(DwarfServant):
 
         # 目次
         doc_parts.append("## Table of Contents\n")
-        doc_parts.append("1. [Getting Started](#getting-started)")
-        doc_parts.append("2. [Installation](#installation)")
-        doc_parts.append("3. [Usage](#usage)")
-        doc_parts.append("4. [Examples](#examples)")
-        doc_parts.append("5. [Troubleshooting](#troubleshooting)\n")
+        doc_parts.append("1.0 [Getting Started](#getting-started)")
+        doc_parts.append("2.0 [Installation](#installation)")
+        doc_parts.append("3.0 [Usage](#usage)")
+        doc_parts.append("4.0 [Examples](#examples)")
+        doc_parts.append("5.0 [Troubleshooting](#troubleshooting)\n")
 
         # Getting Started
         doc_parts.append("## Getting Started\n")
@@ -620,10 +620,10 @@ class DocForge(DwarfServant):
 
         # Contributing
         doc_parts.append("## Contributing\n")
-        doc_parts.append("1. Fork the repository")
-        doc_parts.append("2. Create a feature branch")
-        doc_parts.append("3. Make your changes")
-        doc_parts.append("4. Submit a pull request\n")
+        doc_parts.append("1.0 Fork the repository")
+        doc_parts.append("2.0 Create a feature branch")
+        doc_parts.append("3.0 Make your changes")
+        doc_parts.append("4.0 Submit a pull request\n")
 
         # License
         doc_parts.append("## License\n")
@@ -761,9 +761,7 @@ class DocForge(DwarfServant):
                     args = []
                     for arg in node.args.args:
                         arg_str = arg.arg
-                        if not (arg.annotation):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
+                        # Removed invalid continue statement
                         if arg.annotation:
                             arg_str += f": {ast.unparse(arg.annotation)}"
                         args.append(arg_str)
@@ -845,37 +843,37 @@ class DocForge(DwarfServant):
         try:
             score = 0.0
 
-            # 1. 基本品質要件（20%）
+            # 1.0 基本品質要件（20%）
             if len(documentation) > 100:
                 score += 20.0
             elif len(documentation) > 50:
                 score += 10.0
 
-            # 2. 構造品質（25%）
+            # 2.0 構造品質（25%）
             structure_score = self._evaluate_documentation_structure(documentation)
             score += structure_score * 25.0
 
-            # 3. 完全性評価（20%）
+            # 3.0 完全性評価（20%）
             completeness_score = self._evaluate_documentation_completeness(
                 documentation, config
             )
             score += completeness_score * 20.0
 
-            # 4. コード例品質（15%）
+            # 4.0 コード例品質（15%）
             example_score = self._evaluate_code_examples(documentation)
             score += example_score * 15.0
 
-            # 5. 詳細レベル適切性（10%）
+            # 5.0 詳細レベル適切性（10%）
             detail_score = self._evaluate_detail_level(
                 documentation, config.detail_level
             )
             score += detail_score * 10.0
 
-            # 6. フォーマット品質（5%）
+            # 6.0 フォーマット品質（5%）
             format_score = self._evaluate_format_quality(documentation, config.format)
             score += format_score * 5.0
 
-            # 7. 読みやすさ（5%）
+            # 7.0 読みやすさ（5%）
             readability_score = self._evaluate_readability(documentation)
             score += readability_score * 5.0
 
@@ -1121,9 +1119,9 @@ class DocForge(DwarfServant):
 - Format: {config.format}
 
 ## Troubleshooting
-1. Ensure the source code is valid {config.language} code
-2. Check that all required parameters are provided
-3. Verify the document type is supported
+1.0 Ensure the source code is valid {config.language} code
+2.0 Check that all required parameters are provided
+3.0 Verify the document type is supported
 
 ## Support
 Please contact support with the error details above.
@@ -1177,11 +1175,11 @@ Please contact support with the error details above.
                     "- Python 3.8 or higher",
                     "- pip package manager\n",
                     "## Installation Steps",
-                    "### 1. Using pip",
+                    "### 1.0 Using pip",
                     "```bash",
                     "pip install " + project_name.lower().replace(" ", "-"),
                     "```\n",
-                    "### 2. From source",
+                    "### 2.0 From source",
                     "```bash",
                     "git clone https://github.com/username/"
                     + project_name.lower().replace(" ", "-")

@@ -39,11 +39,8 @@ class IncidentManager:
         # インシデント履歴をロード
         self.load_history()
 
-    def load_history(self):
-        """インシデント履歴をロード"""
-        if self.history_file.exists():
-            with open(self.history_file, "r", encoding="utf-8") as f:
-                self.history = json.load(f)
+    def load_history(self)if self.history_file.exists()with open(self.history_file, "r", encoding="utf-8") as fself.history = json.load(f)
+    """インシデント履歴をロード"""
         else:
             # デフォルト構造
             self.history = {
@@ -306,7 +303,7 @@ class IncidentManager:
             if data["avg_resolution_time"]:
                 analysis["avg_resolution_times"][
                     cat
-                ] = f"{data['avg_resolution_time']:.1f}時間"
+                ] = f"{data['avg_resolution_time']:0.1f}時間"
 
         # 推奨事項の生成
         if analysis["most_common_category"]:
@@ -340,7 +337,7 @@ class IncidentManager:
         report.append("|----------|------|----------|--------------|")
         for cat, data in self.history["category_statistics"].items():
             avg_time = (
-                f"{data['avg_resolution_time']:.1f}h"
+                f"{data['avg_resolution_time']:0.1f}h"
                 if data["avg_resolution_time"]
                 else "N/A"
             )
@@ -352,7 +349,7 @@ class IncidentManager:
         report.append("|--------|------|----------|--------------|")
         for pri, data in self.history["priority_statistics"].items():
             avg_time = (
-                f"{data['avg_resolution_time']:.1f}h"
+                f"{data['avg_resolution_time']:0.1f}h"
                 if data["avg_resolution_time"]
                 else "N/A"
             )

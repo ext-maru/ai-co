@@ -55,10 +55,10 @@ class SmokeTest:
             duration = time.time() - start_time
 
             if result:
-                print(f"  ✅ {name} passed ({duration:.2f}s)")
+                print(f"  ✅ {name} passed ({duration:0.2f}s)")
                 status = "PASS"
             else:
-                print(f"  ❌ {name} failed ({duration:.2f}s)")
+                print(f"  ❌ {name} failed ({duration:0.2f}s)")
                 status = "FAIL"
 
             self.test_results.append(
@@ -74,7 +74,7 @@ class SmokeTest:
 
         except Exception as e:
             duration = time.time() - start_time
-            print(f"  ❌ {name} error: {str(e)} ({duration:.2f}s)")
+            print(f"  ❌ {name} error: {str(e)} ({duration:0.2f}s)")
 
             self.test_results.append(
                 {

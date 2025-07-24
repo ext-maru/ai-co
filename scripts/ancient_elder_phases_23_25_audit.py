@@ -202,7 +202,7 @@ class PhasesAuditEngine:
         for phase, data in self.audit_results.get("phases", {}).items():
             report_content += f"""### {phase}
 - **ステータス**: {data['status']}
-- **スコア**: {data['score']:.2f}/100
+- **スコア**: {data['score']:0.2f}/100
 - **主要な発見事項**: {len(data['findings'])}件
 
 """

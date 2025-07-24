@@ -18,7 +18,7 @@ def get_violations():
         print("❌ 違反データベースが見つかりません")
         return []
 
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3connect(db_path)
     cursor = conn.cursor()
 
     cursor.execute(
@@ -319,7 +319,7 @@ def fix_file(file_path, violations):
 def update_database(violations):
     """データベースを更新"""
     db_path = Path("data/abstract_violations.db")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3connect(db_path)
     cursor = conn.cursor()
 
     for file_path, class_name, method in violations:

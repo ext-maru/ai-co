@@ -103,7 +103,7 @@ class ElderServantsBenchmark:
         latencies = []
 
         # 最適化された処理をシミュレーション
-        # 1. バッチ処理
+        # 1.0 バッチ処理
         batch_size = 50
         batches = [operations // batch_size] * (operations // batch_size)
         if operations % batch_size:
@@ -153,13 +153,13 @@ class ElderServantsBenchmark:
     async def optimized_operation(self, operation_id: int):
         """最適化された個別操作"""
         # 最適化シミュレーション:
-        # 1. より短い処理時間（キャッシュ効果）
+        # 1.0 より短い処理時間（キャッシュ効果）
         await asyncio.sleep(0.0005)  # 0.5ms（50%削減）
 
-        # 2. データ処理最適化
+        # 2.0 データ処理最適化
         data = {"operation": f"optimized_{operation_id}", "cached": True}
 
-        # 3. 効率的なデータ処理（インメモリキャッシュ想定）
+        # 3.0 効率的なデータ処理（インメモリキャッシュ想定）
         if operation_id % 10 == 0:  # 10%はキャッシュヒット
             result = f"cached_result_{operation_id}"
         else:
@@ -213,21 +213,21 @@ class ElderServantsBenchmark:
             "phase": "Phase 3 Elder Servants Integration",
             "performance_target": "50% improvement",
             "target_achieved": target_achievement,
-            "overall_improvement": f"{improvement['overall_improvement_percent']:.1f}%",
+            "overall_improvement": f"{improvement['overall_improvement_percent']:0.1f}%",
             "baseline_performance": {
-                "throughput": f"{baseline['throughput_ops_sec']:.1f} ops/sec",
-                "avg_latency": f"{baseline['avg_latency_ms']:.2f} ms",
-                "total_time": f"{baseline['total_time_sec']:.2f} sec",
+                "throughput": f"{baseline['throughput_ops_sec']:0.1f} ops/sec",
+                "avg_latency": f"{baseline['avg_latency_ms']:0.2f} ms",
+                "total_time": f"{baseline['total_time_sec']:0.2f} sec",
             },
             "optimized_performance": {
-                "throughput": f"{optimized['throughput_ops_sec']:.1f} ops/sec",
-                "avg_latency": f"{optimized['avg_latency_ms']:.2f} ms",
-                "total_time": f"{optimized['total_time_sec']:.2f} sec",
+                "throughput": f"{optimized['throughput_ops_sec']:0.1f} ops/sec",
+                "avg_latency": f"{optimized['avg_latency_ms']:0.2f} ms",
+                "total_time": f"{optimized['total_time_sec']:0.2f} sec",
             },
             "detailed_improvements": {
-                "throughput": f"+{improvement['throughput_improvement_percent']:.1f}%",
-                "latency": f"-{improvement['latency_improvement_percent']:.1f}%",
-                "execution_time": f"-{improvement['time_improvement_percent']:.1f}%",
+                "throughput": f"+{improvement['throughput_improvement_percent']:0.1f}%",
+                "latency": f"-{improvement['latency_improvement_percent']:0.1f}%",
+                "execution_time": f"-{improvement['time_improvement_percent']:0.1f}%",
             },
             "optimization_features": optimized.get("optimization_features", []),
             "status": "✅ PASS" if target_achievement else "⚠️ PARTIAL",

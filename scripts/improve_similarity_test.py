@@ -42,7 +42,7 @@ async def test_similarity_improvements():
         # 既存データをクリア
         await conn.execute("TRUNCATE knowledge_base.vector_documents")
 
-        # 1. より具体的で詳細なテキストでテスト
+        # 1.0 より具体的で詳細なテキストでテスト
         print("1️⃣ 詳細なテキストでのテスト")
 
         detailed_texts = [
@@ -123,9 +123,9 @@ async def test_similarity_improvements():
 
             if results:
                 print(f"クエリ: '{query}'")
-                print(f"  → 類似度: {results[0]['similarity']:.4f}")
+                print(f"  → 類似度: {results[0]['similarity']:0.4f}")
 
-        # 2. チャンク分割によるテスト
+        # 2.0 チャンク分割によるテスト
         print("\n\n2️⃣ チャンク分割によるテスト")
 
         # 長いテキストを小さなチャンクに分割
@@ -182,10 +182,10 @@ async def test_similarity_improvements():
         print(f"クエリ: '{query}'")
         for row in results:
             print(
-                f"  {row['title']} (類似度: {row['similarity']:.4f}): {row['content']}"
+                f"  {row['title']} (類似度: {row['similarity']:0.4f}): {row['content']}"
             )
 
-        # 3. 前処理による改善
+        # 3.0 前処理による改善
         print("\n\n3️⃣ 前処理による改善テスト")
 
         # 正規化とキーワード強調
@@ -248,9 +248,9 @@ async def test_similarity_improvements():
         if results:
             print("\n前処理による改善結果:")
             print(f"クエリ: '{preprocessed_query}'")
-            print(f"  → 類似度: {results[0]['similarity']:.4f}")
+            print(f"  → 類似度: {results[0]['similarity']:0.4f}")
 
-        # 4. 最終的な類似度比較
+        # 4.0 最終的な類似度比較
         print("\n\n4️⃣ 最終比較")
 
         query = "4賢者システムについて教えてください"
@@ -273,12 +273,12 @@ async def test_similarity_improvements():
         print(f"\n全体の類似度ランキング (クエリ: '{query}'):")
         for i, row in enumerate(all_results):
             print(
-                f"{i+1}. {row['title']} (タイプ: {row['doc_type']}) - 類似度: {row['similarity']:.4f}"
+                f"{i+1}. {row['title']} (タイプ: {row['doc_type']}) - 類似度: {row['similarity']:0.4f}"
             )
 
         # 最高類似度を確認
         max_similarity = all_results[0]["similarity"] if all_results else 0
-        print(f"\n🎯 最高類似度: {max_similarity:.4f}")
+        print(f"\n🎯 最高類似度: {max_similarity:0.4f}")
 
         if max_similarity > 0.9:
             print("✅ 非常に高い類似度を達成しました！")
@@ -302,4 +302,4 @@ async def test_similarity_improvements():
 
 if __name__ == "__main__":
     max_similarity = asyncio.run(test_similarity_improvements())
-    print(f"\n最終的な最高類似度: {max_similarity:.4f}")
+    print(f"\n最終的な最高類似度: {max_similarity:0.4f}")

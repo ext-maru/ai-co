@@ -323,23 +323,23 @@ class TestCodeCrafterIntegration:
         """完全ワークフロー: コード生成→解析→修正→フォーマット"""
         crafter = CodeCrafterServant()
         
-        # 1. コード生成
+        # 1.0 コード生成
         gen_task = ServantTask("gen", "generate_function", "データ処理関数")
         gen_result = await crafter.execute_task(gen_task)
         assert gen_result["status"] == "completed"
         
-        # 2. コード解析
+        # 2.0 コード解析
         analysis_task = ServantTask("analysis", "analyze_code", "生成コード解析")
         analysis_result = await crafter.execute_task(analysis_task)
         assert analysis_result["status"] == "completed"
         
-        # 3. 必要に応じて修正
+        # 3.0 必要に応じて修正
         if analysis_result["complexity_score"] > 10:
             refactor_task = ServantTask("refactor", "refactor_code", "複雑度改善")
             refactor_result = await crafter.execute_task(refactor_task)
             assert refactor_result["status"] == "completed"
         
-        # 4. 最終フォーマット
+        # 4.0 最終フォーマット
         format_task = ServantTask("format", "lint_and_format", "最終フォーマット")
         format_result = await crafter.execute_task(format_task)
         assert format_result["status"] == "completed"

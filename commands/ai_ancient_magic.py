@@ -204,7 +204,7 @@ def health(days: int):
             status = "🔴 Poor"
             emoji = "🚨"
             
-        click.echo(f"\n{emoji} Guild Health Score: {health_score:.1f}/100 - {status}")
+        click.echo(f"\n{emoji} Guild Health Score: {health_score:0.1f}/100 - {status}")
         
         # 詳細統計
         stats = result.get('statistics', {})
@@ -236,11 +236,11 @@ def _display_audit_results(result: Dict[str, Any]):
         score_color = 'red'
         
     click.echo(f"\n🎯 Guild Health Score: ", nl=False)
-    click.secho(f"{health_score:.1f}/100", fg=score_color, bold=True)
+    click.secho(f"{health_score:0.1f}/100", fg=score_color, bold=True)
     
     # 実行時間
     execution_time = result.get('execution_time', 0)
-    click.echo(f"⏱️  Execution Time: {execution_time:.2f}s")
+    click.echo(f"⏱️  Execution Time: {execution_time:0.2f}s")
     
     # 違反サマリー
     violations = result.get('all_violations', [])

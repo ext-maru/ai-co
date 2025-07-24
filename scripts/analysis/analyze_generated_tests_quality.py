@@ -38,9 +38,8 @@ logger = logging.getLogger(__name__)
 class GeneratedTestsQualityAnalysis:
     """Comprehensive quality analysis of Day 3-4 generated tests"""
 
-    def __init__(self):
-        """Initialize analysis systems"""
-        self.elder_council = ElderCouncilReview()
+    def __init__(self)self.elder_council = ElderCouncilReview()
+    """Initialize analysis systems"""
         self.quality_metrics = TestQualityMetrics()
         self.four_sages = FourSagesQualityIntegration()
 
@@ -61,11 +60,10 @@ class GeneratedTestsQualityAnalysis:
             f"Initialized quality analysis for {len(self.generated_test_files)} generated test files"
         )
 
-    async def analyze_all_generated_tests(self) -> Dict[str, Any]:
-        """Perform comprehensive quality analysis of all generated tests"""
-        logger.info("Starting Elder Council analysis of generated tests from Day 3-4")
+    async def analyze_all_generated_tests(self) -> Dict[str, Any]logger.info("Starting Elder Council analysis of generated tests from Day 3-4")
+    """Perform comprehensive quality analysis of all generated tests"""
 
-        analysis_results = {
+        analysis_results = {:
             "analysis_summary": {
                 "total_files": len(self.generated_test_files),
                 "analysis_timestamp": datetime.now().isoformat(),
@@ -206,7 +204,7 @@ class GeneratedTestsQualityAnalysis:
         )
 
         logger.info(
-            f"Completed analysis: {avg_quality_score:.2f} average quality score"
+            f"Completed analysis: {avg_quality_score:0.2f} average quality score"
         )
         return analysis_results
 
@@ -614,9 +612,8 @@ class GeneratedTestsQualityAnalysis:
             logger.error(f"Failed to save analysis report: {e}")
             return None
 
-    def print_summary_report(self, analysis: Dict[str, Any]):
-        """Print a human-readable summary report"""
-        print("\n" + "=" * 80)
+    def print_summary_report(self, analysis: Dict[str, Any])print("\n" + "=" * 80)
+    """Print a human-readable summary report"""
         print("ELDER COUNCIL QUALITY ANALYSIS OF GENERATED TESTS")
         print("Day 3-4 Test Generation System Assessment")
         print("=" * 80)
@@ -629,7 +626,7 @@ class GeneratedTestsQualityAnalysis:
 
         overall = analysis["overall_quality_assessment"]
         print(f"\nOverall Quality Assessment:")
-        print(f"  Average Quality Score: {overall['average_quality_score']:.2f}")
+        print(f"  Average Quality Score: {overall['average_quality_score']:0.2f}")
         print(f"  Overall Grade: {overall['overall_grade']}")
         print(f"  Total Test Methods: {overall['total_test_methods']}")
         print(f"  Coverage Support: {overall['coverage_achievement_support']}")
@@ -642,10 +639,10 @@ class GeneratedTestsQualityAnalysis:
         patterns = analysis["pattern_compliance_analysis"]
         print(f"\nPattern Compliance Analysis:")
         print(
-            f"  Average Pattern Compliance: {patterns['average_pattern_compliance']:.2f}"
+            f"  Average Pattern Compliance: {patterns['average_pattern_compliance']:0.2f}"
         )
         print(
-            f"  Pattern Success Rate: {patterns['pattern_application_success_rate']:.1%}"
+            f"  Pattern Success Rate: {patterns['pattern_application_success_rate']:0.1%}"
         )
         print(f"  Assessment: {patterns['assessment']}")
 
@@ -666,9 +663,8 @@ class GeneratedTestsQualityAnalysis:
         print("\n" + "=" * 80)
 
 
-async def main():
-    """Main execution function"""
-    print("Elder Council Quality Analysis of Generated Tests")
+async def main()print("Elder Council Quality Analysis of Generated Tests")
+"""Main execution function"""
     print("Analyzing 214 test methods from Day 3-4 automated generation...")
 
     # Initialize analysis system

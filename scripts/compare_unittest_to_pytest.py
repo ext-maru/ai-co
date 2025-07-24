@@ -44,7 +44,7 @@ class TestMigrationComparator:
                 )
                 test_counts.append(test_count)
 
-                print(f"  実行 {i+1}/{iterations}: {duration:.2f}秒, {test_count}テスト")
+                print(f"  実行 {i+1}/{iterations}: {duration:0.2f}秒, {test_count}テスト")
             except Exception as e:
                 print(f"  エラー: {e}")
                 continue
@@ -89,7 +89,7 @@ class TestMigrationComparator:
                 test_count = len([line for line in output_lines if " PASSED" in line])
                 test_counts.append(test_count)
 
-                print(f"  実行 {i+1}/{iterations}: {duration:.2f}秒, {test_count}テスト")
+                print(f"  実行 {i+1}/{iterations}: {duration:0.2f}秒, {test_count}テスト")
             except Exception as e:
                 print(f"  エラー: {e}")
                 continue
@@ -162,11 +162,11 @@ class TestMigrationComparator:
 
 | メトリクス | unittest | pytest | 改善率 |
 |------------|----------|---------|--------|
-| 平均実行時間 | {unittest_result['avg_duration']:.3f}秒 | {pytest_result[ \
-    'avg_duration']:.3f}秒 | {((unittest_result['avg_duration'] - \
-        pytest_result['avg_duration']) / unittest_result['avg_duration'] * 100):.1f}% |
-| 最小実行時間 | {unittest_result['min_duration']:.3f}秒 | {pytest_result['min_duration']:.3f}秒 | - |
-| 最大実行時間 | {unittest_result['max_duration']:.3f}秒 | {pytest_result['max_duration']:.3f}秒 | - |
+| 平均実行時間 | {unittest_result['avg_duration']:0.3f}秒 | {pytest_result[ \
+    'avg_duration']:0.3f}秒 | {((unittest_result['avg_duration'] - \
+        pytest_result['avg_duration']) / unittest_result['avg_duration'] * 100):0.1f}% |
+| 最小実行時間 | {unittest_result['min_duration']:0.3f}秒 | {pytest_result['min_duration']:0.3f}秒 | - |
+| 最大実行時間 | {unittest_result['max_duration']:0.3f}秒 | {pytest_result['max_duration']:0.3f}秒 | - |
 | テスト数 | {unittest_result['test_count']} | {pytest_result['test_count']} | - |
 
 ## 📈 コードメトリクス
@@ -179,7 +179,7 @@ class TestMigrationComparator:
     'N/A')} | {code_metrics.get('pytest',
     {}).get('lines_of_code',
     'N/A')} | {code_metrics.get('code_reduction_percentage',
-    0):.1f
+    0):0.1f
 }% |
 | テスト数 | {code_metrics.get('unittest', { \
     }).get('test_methods', 'N/A')} | {code_metrics.get('pytest', {}).get('test_functions', 'N/A')} | - |
@@ -188,11 +188,11 @@ class TestMigrationComparator:
 
 ## 🎯 移行のメリット
 
-1. **コード削減**: より簡潔で読みやすいテストコード
-2. **フィクスチャ**: 再利用可能なセットアップコード
-3. **パラメータ化**: 同じテストロジックの効率的な再利用
-4. **より良いアサーション**: シンプルなassert文での詳細なエラー出力
-5. **豊富なプラグイン**: 並列実行、カバレッジ、レポート生成など
+1.0 **コード削減**: より簡潔で読みやすいテストコード
+2.0 **フィクスチャ**: 再利用可能なセットアップコード
+3.0 **パラメータ化**: 同じテストロジックの効率的な再利用
+4.0 **より良いアサーション**: シンプルなassert文での詳細なエラー出力
+5.0 **豊富なプラグイン**: 並列実行、カバレッジ、レポート生成など
 
 ## 📝 推奨事項
 

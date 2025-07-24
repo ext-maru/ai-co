@@ -70,9 +70,8 @@ class Issue:
 class Diagnosis:
     """Diagnosis of an issue"""
 
-    def __init__(self, issue:
+    def __init__(self, issue: Issue, root_cause: str):
         """初期化メソッド"""
-    Issue, root_cause: str):
         self.issue = issue
         self.root_cause = root_cause
         self.timestamp = datetime.now()
@@ -81,9 +80,8 @@ class Diagnosis:
 class Resolution:
     """Resolution for an issue"""
 
-    def __init__(self, diagnosis:
+    def __init__(self, diagnosis: Diagnosis, action: str, result: str):
         """初期化メソッド"""
-    Diagnosis, action: str, result: str):
         self.diagnosis = diagnosis
         self.action = action
         self.result = result

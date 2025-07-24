@@ -83,32 +83,31 @@ class APIIntegrationKnight(IncidentKnight):
 
         logger.info(f"🔑 {self.name} 初期化完了")
 
-    async def patrol(self) -> List[Issue]:
-        """API統合システムの巡回監視"""
-        logger.info("🔍 API統合システム巡回開始")
+    async def patrol(self) -> List[Issue]logger.info("🔍 API統合システム巡回開始")
+    """API統合システムの巡回監視"""
 
         issues = []
 
-        # 1. Claude API認証状態確認
+        # 1.0 Claude API認証状態確認
         auth_issues = await self._check_claude_api_auth()
         issues.extend(auth_issues)
 
-        # 2. ワーカーAPI統合状態確認
+        # 2.0 ワーカーAPI統合状態確認
         worker_issues = await self._check_worker_api_integration()
         issues.extend(worker_issues)
 
-        # 3. APIキー管理システム確認
+        # 3.0 APIキー管理システム確認
         key_management_issues = await self._check_api_key_management()
         issues.extend(key_management_issues)
 
-        # 4. 外部API接続確認
+        # 4.0 外部API接続確認
         external_api_issues = await self._check_external_api_connections()
         issues.extend(external_api_issues)
 
-        # 5. ログからエラーパターン抽出
+        # 5.0 ログからエラーパターン抽出
         log_issues = await self._analyze_api_logs()
         issues.extend(log_issues)
-
+:
         logger.info(f"📊 API統合問題検出: {len(issues)}件")
         return issues
 
@@ -411,9 +410,8 @@ class APIIntegrationKnight(IncidentKnight):
 
         return issues
 
-    async def investigate(self, issue: Issue) -> Diagnosis:
-        """API統合問題の詳細調査"""
-        logger.info(f"🔬 API問題詳細調査: {issue.title}")
+    async def investigate(self, issue: Issue) -> Diagnosislogger.info(f"🔬 API問題詳細調査: {issue.title}")
+    """API統合問題の詳細調査"""
 
         diagnosis_data = {
             "issue_type": issue.category,
@@ -501,9 +499,8 @@ class APIIntegrationKnight(IncidentKnight):
             ],
         }
 
-    async def resolve(self, diagnosis: Diagnosis) -> Resolution:
-        """API統合問題の修復実行"""
-        logger.info(f"🔧 API問題修復実行: {diagnosis.issue_id}")
+    async def resolve(self, diagnosis: Diagnosis) -> Resolutionlogger.info(f"🔧 API問題修復実行: {diagnosis.issue_id}")
+    """API統合問題の修復実行"""
 
         try:
             success = False
@@ -728,9 +725,8 @@ def setup_claude_api():
 if __name__ == "__main__":
     import asyncio
 
-    async def test_api_knight():
-        """test_api_knightテストメソッド"""
-        knight = APIIntegrationKnight()
+    async def test_api_knight()knight = APIIntegrationKnight()
+    """test_api_knightテストメソッド"""
 
         # 巡回テスト
         issues = await knight.patrol()

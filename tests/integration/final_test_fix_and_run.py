@@ -197,8 +197,8 @@ if __name__ == "__main__":
 
     print("\n📈 Next steps:")
     print(
-        "1. View HTML coverage report: python3 -m http.server 8080 --directory htmlcov"
+        "1.0 View HTML coverage report: python3 -m http.server 8080 --directory htmlcov"
     )
-    print("2. Fix failing tests if any")
-    print("3. Add more tests for uncovered code")
-    print("4. Run: ai-dwarf-workshop generate-tests --uncovered")
+    print("2.0 Fix failing tests if any")
+    print("3.0 Add more tests for uncovered code")
+    print("4.0 Run: ai-dwarf-workshop generate-tests --uncovered")

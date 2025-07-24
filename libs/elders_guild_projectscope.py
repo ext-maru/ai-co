@@ -281,7 +281,7 @@ class AICompanyProjectScope:
 - RabbitMQ Queues: {len(analysis['ai_company']['rabbitmq_queues']['defined_queues'])}
 - External Integrations: {len(analysis['ai_company']['integrations']['external_services'])}
 
-📊 View Report: http://localhost:8080/{Path(report_path).name}
+"📊" View Report: http://localhost:8080/{Path(report_path).name}
 """
 
         self.notifier.send_message(message)

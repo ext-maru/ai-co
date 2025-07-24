@@ -163,10 +163,10 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
         self.logger.info(f"🧠 PM知的判断開始: {task_id}")
 
         try:
-            # 1. 内容分析
+            # 1.0 内容分析
             analysis = await self._analyze_content(original_prompt, output)
 
-            # 1.5. Elder Treeコンサルテーション（複雑なタスクの場合）
+            # 1.5.0 Elder Treeコンサルテーション（複雑なタスクの場合）
             project_context = await self._create_project_context(task_id, analysis)
             if (
                 project_context.requires_elder_guidance
@@ -174,23 +174,23 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
             ):
                 await self._consult_elders(project_context, analysis)
 
-            # 2. 適切なAIコマンド選択（Elder推奨も考慮）
+            # 2.0 適切なAIコマンド選択（Elder推奨も考慮）
             selected_command = await self._select_ai_command(analysis, project_context)
 
-            # 3. 必要に応じてAIコマンド実行
+            # 3.0 必要に応じてAIコマンド実行
             command_result = await self._execute_ai_command(selected_command, analysis)
 
-            # 3.5. プロジェクト分析をKnowledge Sageに報告
+            # 3.5.0 プロジェクト分析をKnowledge Sageに報告
             if self.elder_integration_enabled and command_result.get("executed"):
                 # Complex condition - consider breaking down
                 await self._report_to_knowledge_sage(task_id, analysis, command_result)
 
-            # 4. 結果評価と次アクション決定（Elder評価含む）
+            # 4.0 結果評価と次アクション決定（Elder評価含む）
             final_result = await self._evaluate_and_decide_next_action(
                 task_id, analysis, command_result, is_slack_task, project_context
             )
 
-            # 5. Slack応答（Slackタスクの場合）
+            # 5.0 Slack応答（Slackタスクの場合）
             if is_slack_task:
                 await self._send_slack_response(task_id, final_result)
 
@@ -441,10 +441,10 @@ Context:
 - Required Output: Practical, actionable solution
 
 Please provide a detailed response that includes:
-1. Concrete implementation or solution
-2. Step-by-step instructions if applicable
-3. Code examples if requested
-4. Best practices and considerations
+1.0 Concrete implementation or solution
+2.0 Step-by-step instructions if applicable
+3.0 Code examples if requested
+4.0 Best practices and considerations
 
 Respond in {language}."""
 

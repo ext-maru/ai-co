@@ -5,7 +5,7 @@ A/B Testing Framework - A/Bテストフレームワーク
 
 4賢者との連携:
 📚 ナレッジ賢者: 過去のA/Bテスト結果の蓄積と成功パターン分析
-🔍 RAG賢者: 類似実験の検索と結果比較
+"🔍" RAG賢者: 類似実験の検索と結果比較
 📋 タスク賢者: 実験スケジューリングと並行実験の管理
 🚨 インシデント賢者: 実験の安全性監視とロールバック判断
 """
@@ -1182,23 +1182,23 @@ class ABTestingFramework:
         reasons = []
 
         if stat_sig:
-            reasons.append(f"Statistical significance achieved (p={p_value:.3f})")
+            reasons.append(f"Statistical significance achieved (p={p_value:0.3f})")
         else:
-            reasons.append(f"No statistical significance (p={p_value:.3f})")
+            reasons.append(f"No statistical significance (p={p_value:0.3f})")
 
         if pract_sig:
             reasons.append(
-                f"Practical significance met ({improvement:.1%} improvement)"
+                f"Practical significance met ({improvement:0.1%} improvement)"
             )
         else:
             reasons.append(
-                f"Practical significance not met ({improvement:.1%} improvement)"
+                f"Practical significance not met ({improvement:0.1%} improvement)"
             )
 
         if effect_size:
-            reasons.append(f"Adequate effect size (d={effect:.2f})")
+            reasons.append(f"Adequate effect size (d={effect:0.2f})")
         else:
-            reasons.append(f"Insufficient effect size (d={effect:.2f})")
+            reasons.append(f"Insufficient effect size (d={effect:0.2f})")
 
         return "; ".join(reasons)
 

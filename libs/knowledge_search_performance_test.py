@@ -22,16 +22,14 @@ class SearchPerformanceTester:
         """初期化メソッド"""
         self.db_conn = None
         
-    def connect_db(self):
-        """データベース接続"""
-        self.db_conn = sqlite3.connect(SQLITE_DB_PATH)
-        self.db_conn.row_factory = sqlite3.Row
+    def connect_db(self)self.db_conn = sqlite3connect(SQLITE_DB_PATH)
+    """データベース接続"""
+        self.db_conn.row_factory = sqlite3Row
         
-    def test_basic_queries(self) -> Dict[str, float]:
-        """基本クエリ性能テスト"""
-        logger.info("基本クエリ性能テスト開始")
+    def test_basic_queries(self) -> Dict[str, float]logger.info("基本クエリ性能テスト開始")
+    """基本クエリ性能テスト"""
         
-        test_queries = {
+        test_queries = {:
             'count_all': "SELECT COUNT(*) FROM knowledge_documents",
             'count_by_category': "SELECT category, COUNT(*) FROM knowledge_documents GROUP BY category",
             'count_by_priority': "SELECT priority, COUNT(*) FROM knowledge_documents GROUP BY priority",
@@ -50,13 +48,12 @@ class SearchPerformanceTester:
             execution_time = end_time - start_time
             results[test_name] = execution_time
             
-            logger.info(f"{test_name}: {execution_time:.4f}秒 ({len(rows)}件)")
+            logger.info(f"{test_name}: {execution_time:0.4f}秒 ({len(rows)}件)")
             
         return results
         
-    def test_full_text_search(self) -> Dict[str, float]:
-        """全文検索性能テスト"""
-        logger.info("全文検索性能テスト開始")
+    def test_full_text_search(self) -> Dict[str, float]logger.info("全文検索性能テスト開始")
+    """全文検索性能テスト"""
         
         search_terms = [
             'elder',
@@ -72,7 +69,7 @@ class SearchPerformanceTester:
         ]
         
         results = {}
-        
+        :
         for term in search_terms:
             # FTS検索
             start_time = time.time()
@@ -96,17 +93,16 @@ class SearchPerformanceTester:
             results[f'like_{term}'] = like_time
             
             logger.info(f"'{
-                term}' - FTS: {fts_time:.4f}秒 ({len(fts_rows)}件),
-                LIKE: {like_time:.4f}秒 ({len(like_rows)
+                term}' - FTS: {fts_time:0.4f}秒 ({len(fts_rows)}件),
+                LIKE: {like_time:0.4f}秒 ({len(like_rows)
             }件)")
             
         return results
         
-    def test_complex_queries(self) -> Dict[str, float]:
-        """複合クエリ性能テスト"""
-        logger.info("複合クエリ性能テスト開始")
+    def test_complex_queries(self) -> Dict[str, float]logger.info("複合クエリ性能テスト開始")
+    """複合クエリ性能テスト"""
         
-        complex_queries = {
+        complex_queries = {:
             'category_priority': """
                 SELECT category, priority, COUNT(*), AVG(file_size)
                 FROM knowledge_documents 
@@ -150,13 +146,12 @@ class SearchPerformanceTester:
             execution_time = end_time - start_time
             results[test_name] = execution_time
             
-            logger.info(f"{test_name}: {execution_time:.4f}秒 ({len(rows)}件)")
+            logger.info(f"{test_name}: {execution_time:0.4f}秒 ({len(rows)}件)")
             
         return results
         
-    def analyze_database_structure(self) -> Dict[str, Any]:
-        """データベース構造分析"""
-        logger.info("データベース構造分析開始")
+    def analyze_database_structure(self) -> Dict[str, Any]logger.info("データベース構造分析開始")
+    """データベース構造分析"""
         
         # テーブル情報
         cursor = self.db_conn.execute("PRAGMA table_info(knowledge_documents)")
@@ -179,7 +174,7 @@ class SearchPerformanceTester:
         cursor = self.db_conn.execute("SELECT AVG(LENGTH(content)) FROM knowledge_documents")
         avg_content_length = cursor.fetchone()[0]
         
-        return {
+        return {:
             'table_columns': len(table_info),
             'indexes': len(index_list),
             'database_size_mb': db_size / (1024 * 1024),
@@ -189,10 +184,9 @@ class SearchPerformanceTester:
             'docs_per_file': total_docs / unique_files if unique_files > 0 else 0
         }
         
-    def generate_performance_report(self) -> Dict[str, Any]:
-        """性能レポート生成"""
-        logger.info("=== 検索性能総合テスト開始 ===")
-        
+    def generate_performance_report(self) -> Dict[str, Any]logger.info("=== 検索性能総合テスト開始 ===")
+    """性能レポート生成"""
+        :
         try:
             self.connect_db()
             
@@ -283,9 +277,8 @@ class SearchPerformanceTester:
             
         return recommendations
 
-def main():
-    """メイン実行"""
-    tester = SearchPerformanceTester()
+def main()tester = SearchPerformanceTester()
+"""メイン実行"""
     
     try:
         report = tester.generate_performance_report()
@@ -293,17 +286,17 @@ def main():
         # レポート出力
         print("\n=== 検索性能テスト結果 ===")
         print(f"テスト日時: {report['test_timestamp']}")
-        print(f"データベースサイズ: {report['database_structure']['database_size_mb']:.2f}MB")
+        print(f"データベースサイズ: {report['database_structure']['database_size_mb']:0.2f}MB")
         print(f"総ドキュメント数: {report['database_structure']['total_documents']}")
         print(f"ユニークファイル数: {report['database_structure']['unique_files']}")
         
         print("\n--- 性能サマリー ---")
         summary = report['performance_summary']
-        print(f"FTS平均時間: {summary['fts_avg_time']:.4f}秒")
-        print(f"LIKE平均時間: {summary['like_avg_time']:.4f}秒")
-        print(f"FTS高速化倍率: {summary['fts_speedup']:.2f}倍")
-        print(f"基本クエリ平均: {summary['basic_avg_time']:.4f}秒")
-        print(f"複合クエリ平均: {summary['complex_avg_time']:.4f}秒")
+        print(f"FTS平均時間: {summary['fts_avg_time']:0.4f}秒")
+        print(f"LIKE平均時間: {summary['like_avg_time']:0.4f}秒")
+        print(f"FTS高速化倍率: {summary['fts_speedup']:0.2f}倍")
+        print(f"基本クエリ平均: {summary['basic_avg_time']:0.4f}秒")
+        print(f"複合クエリ平均: {summary['complex_avg_time']:0.4f}秒")
         
         print("\n--- 推奨事項 ---")
         for i, rec in enumerate(report['recommendations'], 1):

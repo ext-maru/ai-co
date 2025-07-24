@@ -63,10 +63,8 @@ class ServantViolationType:
 class ServantImplementationAnalyzer:
     """サーバント実装品質分析システム"""
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        self.project_root = project_root or Path.cwd()
+    def __init__(self, project_root: Optional[Path] = None)self.project_root = project_root or Path.cwd()
+    """初期化メソッド"""
         self.logger = logging.getLogger("ServantImplementationAnalyzer")
         
         # スタブ実装パターン
@@ -180,10 +178,9 @@ class ServantImplementationAnalyzer:
                 "overall_quality_score": 0.0
             }
             
-    def _detect_servant_type(self, file_path: str) -> str:
-        """ファイルパスからサーバントタイプを検出"""
-        file_name = Path(file_path).name.lower()
-        
+    def _detect_servant_type(self, file_path: str) -> strfile_name = Path(file_path).name.lower()
+    """ファイルパスからサーバントタイプを検出"""
+        :
         for servant_type, role_info in self.servant_roles.items():
             # ファイル名パターンマッチング
             for pattern in role_info["file_patterns"]:
@@ -444,10 +441,8 @@ class ServantImplementationAnalyzer:
 class ServantCollaborationAnalyzer:
     """サーバント間協調分析システム"""
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        self.project_root = project_root or Path.cwd()
+    def __init__(self, project_root: Optional[Path] = None)self.project_root = project_root or Path.cwd()
+    """初期化メソッド"""
         self.logger = logging.getLogger("ServantCollaborationAnalyzer")
         
     def analyze_servant_collaboration(self, 
@@ -592,10 +587,8 @@ class ServantCollaborationAnalyzer:
 class ServantInspector(AncientElderBase):
     """サーバント査察魔法 - 総合サーバント監査システム"""
     
-    def __init__(self, project_root:
-        """初期化メソッド"""
-    Optional[Path] = None):
-        super().__init__(specialty="servant_inspector")
+    def __init__(self, project_root: Optional[Path] = None)super().__init__(specialty="servant_inspector")
+    """初期化メソッド"""
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("ServantInspector")
         
@@ -603,10 +596,9 @@ class ServantInspector(AncientElderBase):
         self.implementation_analyzer = ServantImplementationAnalyzer(project_root)
         self.collaboration_analyzer = ServantCollaborationAnalyzer(project_root)
         
-    async def audit(self, target_path: str, **kwargs) -> AuditResult:
-        """AncientElderBaseの抽象メソッド実装"""
-        return await self.execute_audit(target_path, **kwargs)
-        
+    async def audit(self, target_path: str, **kwargs) -> AuditResultreturn await self.execute_audit(target_path, **kwargs)
+    """AncientElderBaseの抽象メソッド実装"""
+        :
     def get_audit_scope(self) -> List[str]:
         """監査対象スコープを返す"""
         return [
@@ -616,12 +608,11 @@ class ServantInspector(AncientElderBase):
             "servant_expertise_evaluation"
         ]
         
-    async def execute_audit(self, target_path: str, **kwargs) -> AuditResult:
-        """サーバント査察監査を実行"""
-        start_time = datetime.now()
+    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now()
+    """サーバント査察監査を実行"""
         violations = []
         metrics = {}
-        
+        :
         try:
             self.logger.info(f"🛡️ Starting Servant Inspector audit for: {target_path}")
             
@@ -642,7 +633,7 @@ class ServantInspector(AncientElderBase):
                 }
                 return empty_result
             
-            # 1. 各サーバントの実装品質分析
+            # 1.0 各サーバントの実装品質分析
             implementation_results = []
             for servant_file in servant_files:
                 result = self.implementation_analyzer.analyze_servant_implementation(servant_file)
@@ -651,11 +642,11 @@ class ServantInspector(AncientElderBase):
                 violations.extend(result.get("lazy_violations", []))
                 violations.extend(result.get("role_compliance", {}).get("violations", []))
                 
-            # 2. サーバント間協調分析
+            # 2.0 サーバント間協調分析
             collaboration_result = self.collaboration_analyzer.analyze_servant_collaboration(servant_files)
             violations.extend(collaboration_result.get("collaboration_violations", []))
             
-            # 3. 総合サーバントスコア計算
+            # 3.0 総合サーバントスコア計算
             overall_score = self._calculate_overall_servant_score(
                 implementation_results,
                 collaboration_result
@@ -668,7 +659,7 @@ class ServantInspector(AncientElderBase):
                 0
             )
             
-            # 4. 改善提案生成
+            # 4.0 改善提案生成
             recommendations = self._generate_servant_improvement_recommendations(
                 implementation_results, collaboration_result, violations
             )
@@ -676,7 +667,7 @@ class ServantInspector(AncientElderBase):
             execution_time = (datetime.now() - start_time).total_seconds()
             metrics["execution_time"] = execution_time
             
-            self.logger.info(f"✅ Servant Inspector audit completed in {execution_time:.2f}s")
+            self.logger.info(f"✅ Servant Inspector audit completed in {execution_time:0.2f}s")
             
             # AuditResultを正しく作成
             result = AuditResult()

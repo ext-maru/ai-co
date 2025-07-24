@@ -11,6 +11,7 @@ from typing import AsyncGenerator
 
 @pytest.fixture(scope="session")
 def event_loop():
+    pass
 
 
 """イベントループフィクスチャ"""
@@ -35,6 +36,7 @@ def event_loop():
 
 @pytest.fixture
 def mock_message():
+    pass
 
             """モックメッセージフィクスチャ"""
         def __init__(self, **kwargs):
@@ -44,6 +46,7 @@ def mock_message():
                 setattr(self, key, value)
     
     def _create_message(**kwargs):
+        pass
 
                 """_create_messageを作成""" "test",
             "data": {"test": "data"}

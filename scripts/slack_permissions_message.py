@@ -15,7 +15,7 @@ def send_permissions_list():
 
     message = """🔐 Elders Guild Slack Bot 権限設定推奨一覧
 
-📊 現在の問題:
+"📊" 現在の問題:
 ❌ 現在のスコープ: incoming-webhook
 ✅ 必要なスコープ: 以下の段階的実装
 
@@ -53,10 +53,10 @@ def send_permissions_list():
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🛠️ 設定方法:
-1. Slack App管理画面 → OAuth & Permissions
-2. Bot Token Scopes に上記を追加
-3. ワークスペースに再インストール
-4. 新しいトークンを環境変数に設定
+1.0 Slack App管理画面 → OAuth & Permissions
+2.0 Bot Token Scopes に上記を追加
+3.0 ワークスペースに再インストール
+4.0 新しいトークンを環境変数に設定
 
 🎯 理由:
 Elders Guildのファイル共有、DM機能、インタラクティブ要素の実装予定のため、今のうちに設定推奨。

@@ -17,15 +17,14 @@ logger = logging.getLogger(__name__)
 class ProjectManagerElder:
     """プロジェクト管理を司るエルダー"""
 
-    def __init__(self, db_path:
+    def __init__(self, db_path: str = "task_history.db"):
         """初期化メソッド"""
-    str = "task_history.db"):
         self.db_path = db_path
         self._init_database()
 
     def _init_database(self):
         """データベースの初期化と拡張"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # プロジェクトテーブル
@@ -125,7 +124,7 @@ class ProjectManagerElder:
         fantasy_rank: str = "⭐ HIGH",
     ) -> int:
         """新規プロジェクトを作成"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # エルダー自動割り当て
@@ -194,7 +193,7 @@ class ProjectManagerElder:
         self, project_id: int, name: str, description: str = None, due_date: str = None
     ) -> int:
         """マイルストーンを作成"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -228,7 +227,7 @@ class ProjectManagerElder:
         due_date: str = None,
     ) -> int:
         """タスクを作成（既存のタスクシステムと互換性維持）"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # ファンタジー分類を自動判定
@@ -316,7 +315,7 @@ class ProjectManagerElder:
         changed_by: str = "Task Elder",
     ) -> bool:
         """タスクステータスを更新"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # 現在のステータスを取得
@@ -412,7 +411,7 @@ class ProjectManagerElder:
 
     def get_project_gantt_data(self, project_id: int) -> Dict:
         """ガントチャート用のデータを取得"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # プロジェクト情報
@@ -511,7 +510,7 @@ class ProjectManagerElder:
 
     def get_dashboard_stats(self) -> Dict:
         """ダッシュボード用の統計情報を取得"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         stats = {}
@@ -582,9 +581,8 @@ class ProjectManagerElder:
 class ElderGuildIntegration:
     """4賢者システムとの統合インターフェース"""
 
-    def __init__(self, project_manager:
+    def __init__(self, project_manager: ProjectManagerElder):
         """初期化メソッド"""
-    ProjectManagerElder):
         self.pm = project_manager
 
     def consult_knowledge_sage(self, project_id: int) -> List[str]:

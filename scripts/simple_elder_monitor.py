@@ -115,7 +115,7 @@ class SimpleElderMonitor:
 
         while self.monitoring_active:
             try:
-                # 1. ワーカーチェック
+                # 1.0 ワーカーチェック
                 worker_count, worker_status = self.check_workers()
 
                 if worker_count < self.critical_thresholds["worker_count"]:
@@ -131,7 +131,7 @@ class SimpleElderMonitor:
                         ["python3", str(PROJECT_ROOT / "check_and_fix_workers.py")]
                     )
 
-                # 2. システムリソースチェック
+                # 2.0 システムリソースチェック
                 resources = self.check_system_resources()
 
                 if (
@@ -142,7 +142,7 @@ class SimpleElderMonitor:
                         "メモリ使用率過大", f"メモリ使用率: {resources['memory_percent']}%", "HIGH"
                     )
 
-                # 3. 定期レポート（1時間ごと）
+                # 3.0 定期レポート（1時間ごと）
                 if int(time.time()) % 3600 < self.check_interval:
                     logger.info(
                         f"📊 定期レポート - "

@@ -610,8 +610,8 @@ class ResourceIsolationManager:
                     ),
                     threshold_exceeded=usage.cpu_percent / quota.cpu_percent,
                     current_usage=usage.cpu_percent,
-                    message=f"CPU usage exceeded: {usage.cpu_percent:.1%} > {quota.cpu_percent:.1%}" \
-                        "CPU usage exceeded: {usage.cpu_percent:.1%} > {quota.cpu_percent:.1%}",
+                    message=f"CPU usage exceeded: {usage.cpu_percent:0.1%} > {quota.cpu_percent:0.1%}" \
+                        "CPU usage exceeded: {usage.cpu_percent:0.1%} > {quota.cpu_percent:0.1%}",
                     timestamp=datetime.now(),
                 )
             )
@@ -630,7 +630,7 @@ class ResourceIsolationManager:
                     ),
                     threshold_exceeded=usage.memory_mb / quota.memory_mb,
                     current_usage=usage.memory_mb,
-                    message=f"Memory usage exceeded: {usage.memory_mb:.0f}MB > {quota.memory_mb}MB",
+                    message=f"Memory usage exceeded: {usage.memory_mb:0.0f}MB > {quota.memory_mb}MB",
                     timestamp=datetime.now(),
                 )
             )
@@ -886,15 +886,15 @@ if __name__ == "__main__":
         print(f"✅ Isolation context created: {context.context_id}")
         print(f"   Security Level: {context.security_level.value}")
         print(f"   Isolation Type: {context.isolation_type.value}")
-        print(f"   CPU Quota: {context.resource_quota.cpu_percent:.1%}")
+        print(f"   CPU Quota: {context.resource_quota.cpu_percent:0.1%}")
         print(f"   Memory Quota: {context.resource_quota.memory_mb}MB")
 
         # リソース使用状況確認
         usage = manager.get_resource_usage(context.context_id)
         if usage:
             print(f"📊 Current Usage:")
-            print(f"   CPU: {usage.cpu_percent:.1%}")
-            print(f"   Memory: {usage.memory_mb:.0f}MB")
+            print(f"   CPU: {usage.cpu_percent:0.1%}")
+            print(f"   Memory: {usage.memory_mb:0.0f}MB")
             print(f"   Processes: {usage.process_count}")
 
         # リソース違反チェック
@@ -910,8 +910,8 @@ if __name__ == "__main__":
         metrics = manager.get_system_metrics()
         print(f"🖥️ System Metrics:")
         print(f"   Active Contexts: {metrics['active_contexts']}")
-        print(f"   System CPU: {metrics['system_resources']['cpu_percent']:.1f}%")
-        print(f"   System Memory: {metrics['system_resources']['memory_percent']:.1f}%")
+        print(f"   System CPU: {metrics['system_resources']['cpu_percent']:0.1f}%")
+        print(f"   System Memory: {metrics['system_resources']['memory_percent']:0.1f}%")
 
         # クリーンアップ
         print("\n🧹 Cleaning up test context...")

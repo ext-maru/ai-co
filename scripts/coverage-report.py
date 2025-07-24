@@ -108,7 +108,7 @@ class CoverageReporter:
         else:
             color = "red"
 
-        badge_url = f"https://img.shields.io/badge/coverage-{coverage:.1f}%25-{color}"
+        badge_url = f"https://img.shields.io/badge/coverage-{coverage:0.1f}%25-{color}"
         return badge_url
 
     def generate_report(self, analysis: Dict) -> str:
@@ -119,7 +119,7 @@ class CoverageReporter:
 
 ## 📊 全体カバレッジ
 
-**{analysis['total_coverage']:.1f}%**
+**{analysis['total_coverage']:0.1f}%**
 
 ![Coverage Badge]({self.generate_badge(analysis['total_coverage'])})
 
@@ -161,7 +161,7 @@ class CoverageReporter:
                         if coverage_percent >= 80
                         else "⚠️" if coverage_percent >= 60 else "❌"
                     )
-                    report += f"| {emoji} {module} | {coverage_percent:.1f}% " \
+                    report += f"| {emoji} {module} | {coverage_percent:0.1f}% " \
                         "| {data['covered_lines']} | {data['missing_lines']} |\n"
 
         # 改善が必要なモジュール
@@ -171,7 +171,7 @@ class CoverageReporter:
         if low_coverage:
             report += "\n## ⚠️ 改善が必要なモジュール\n\n"
             for module, data in sorted(low_coverage, key=lambda x: x[1]["coverage"]):
-                report += f"- **{module}**: {data['coverage']:.1f}% (目標: 80%)\n"
+                report += f"- **{module}**: {data['coverage']:0.1f}% (目標: 80%)\n"
 
         return report
 
@@ -232,7 +232,7 @@ class CoverageReporter:
 
         # 結果表示
         print(f"\n{GREEN}📊 カバレッジレポートを生成しました{NC}")
-        print(f"全体カバレッジ: {analysis['total_coverage']:.1f}%")
+        print(f"全体カバレッジ: {analysis['total_coverage']:0.1f}%")
         print(f"\nレポート: {report_file}")
         print(f"HTMLレポート: file://{self.htmlcov_dir}/index.html")
 

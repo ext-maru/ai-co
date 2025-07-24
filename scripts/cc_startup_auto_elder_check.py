@@ -43,19 +43,19 @@ class CCStartupElderCheck:
             )
         )
 
-        # 1. システム状況取得
+        # 1.0 システム状況取得
         status = self.summoner.get_system_status()
 
-        # 2. 緊急トリガーチェック
+        # 2.0 緊急トリガーチェック
         critical_issues = self._check_critical_triggers(status)
 
-        # 3. 4賢者健康状態
+        # 3.0 4賢者健康状態
         sages_health = self._check_four_sages_health()
 
-        # 4. システムメトリクス
+        # 4.0 システムメトリクス
         system_metrics = self._get_system_metrics()
 
-        # 5. 状況サマリー表示
+        # 5.0 状況サマリー表示
         self._display_startup_summary(
             {
                 "elder_status": status,
@@ -138,11 +138,11 @@ class CCStartupElderCheck:
         try:
             metrics = self.summoner._collect_system_metrics()
             return {
-                "test_coverage": f"{metrics.test_coverage:.1%}",
-                "worker_health": f"{metrics.worker_health_score:.1%}",
-                "memory_usage": f"{metrics.memory_usage:.1%}",
+                "test_coverage": f"{metrics.test_coverage:0.1%}",
+                "worker_health": f"{metrics.worker_health_score:0.1%}",
+                "memory_usage": f"{metrics.memory_usage:0.1%}",
                 "queue_backlog": metrics.queue_backlog,
-                "four_sages_consensus": f"{metrics.four_sages_consensus_rate:.1%}",
+                "four_sages_consensus": f"{metrics.four_sages_consensus_rate:0.1%}",
             }
         except Exception as e:
             logger.error(f"Failed to get system metrics: {e}")
@@ -250,11 +250,10 @@ def startup_hook():
         return {"error": str(e)}
 
 
-def main():
-    """メイン実行（テスト用）"""
-    logging.basicConfig(level=logging.INFO)
+def main()logging.basicConfig(level=logging.INFO)
+"""メイン実行（テスト用）"""
     result = startup_hook()
-    print(f"\n結果: {json.dumps(result, indent=2, default=str, ensure_ascii=False)}")
+    print(f"\n結果: {json.dumps(result, indent}")
 
 
 if __name__ == "__main__":

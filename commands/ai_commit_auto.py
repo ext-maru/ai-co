@@ -119,13 +119,13 @@ class AutoCommitCLI:
                 # Complex condition - consider breaking down
                 reasons.append("🚨 緊急事態のため Lightning Protocol が最適")
                 reasons.append(f"📁 ファイル数: {file_count} (≤5)")
-                reasons.append(f"🎯 複雑度: {complexity:.2f} (≤0.5)")
+                reasons.append(f"🎯 複雑度: {complexity:0.2f} (≤0.5)")
                 return DevelopmentLayer.LIGHTNING, reasons
             else:
                 reasons.append("🚨 緊急事態だが Lightning 条件を超過")
                 reasons.append(f"📁 ファイル数: {file_count} (>5)" if file_count > 5 else "")
                 reasons.append(
-                    f"🎯 複雑度: {complexity:.2f} (>0.5)" if complexity > 0.5 else ""
+                    f"🎯 複雑度: {complexity:0.2f} (>0.5)" if complexity > 0.5 else ""
                 )
 
         elif urgency == CommitUrgency.HIGH:
@@ -133,7 +133,7 @@ class AutoCommitCLI:
                 # Complex condition - consider breaking down
                 reasons.append("🔥 高優先度で Lightning Protocol が適用可能")
                 reasons.append(f"📁 ファイル数: {file_count} (≤3)")
-                reasons.append(f"🎯 複雑度: {complexity:.2f} (≤0.3)")
+                reasons.append(f"🎯 複雑度: {complexity:0.2f} (≤0.3)")
                 return DevelopmentLayer.LIGHTNING, reasons
 
         # Grand Protocol判定
@@ -141,7 +141,7 @@ class AutoCommitCLI:
             # Complex condition - consider breaking down
             reasons.append("👑 Grand Protocol が必要な大規模変更")
             if complexity > 0.8:
-                reasons.append(f"🎯 高複雑度: {complexity:.2f} (>0.8)")
+                reasons.append(f"🎯 高複雑度: {complexity:0.2f} (>0.8)")
             if file_count > 20:
                 reasons.append(f"📁 大量ファイル: {file_count} (>20)")
             return DevelopmentLayer.GRAND, reasons
@@ -149,7 +149,7 @@ class AutoCommitCLI:
         # Council Protocol（標準）
         reasons.append("🏛️ Council Protocol が最適（標準開発）")
         reasons.append(f"📁 ファイル数: {file_count} (3-20)")
-        reasons.append(f"🎯 複雑度: {complexity:.2f} (0.3-0.8)")
+        reasons.append(f"🎯 複雑度: {complexity:0.2f} (0.3-0.8)")
         reasons.append(f"🚀 緊急度: {urgency.value}")
 
         return DevelopmentLayer.COUNCIL, reasons
@@ -164,7 +164,7 @@ class AutoCommitCLI:
         # 基本情報
         print(f"💬 メッセージ: {context['description']}")
         print(f"📁 変更ファイル: {len(context['files'])}個")
-        print(f"🎯 複雑度: {context['complexity']:.2f}")
+        print(f"🎯 複雑度: {context['complexity']:0.2f}")
         print(f"🚀 緊急度: {context['urgency'].value}")
 
         # メッセージ分析
@@ -197,25 +197,25 @@ class AutoCommitCLI:
         print("🔍 最適なプロトコルを自動選択中...")
 
         try:
-            # 1. コンテキスト分析
+            # 1.0 コンテキスト分析
             context = self.analyze_commit_context(message, args)
 
-            # 2. 最適レイヤー推奨
+            # 2.0 最適レイヤー推奨
             recommended_layer, reasons = self.recommend_optimal_layer(context)
 
-            # 3. 強制レイヤー指定チェック
+            # 3.0 強制レイヤー指定チェック
             if args.force_layer:
                 force_layer = DevelopmentLayer(args.force_layer)
                 print(f"⚠️ 強制レイヤー指定: {force_layer.value}")
                 recommended_layer = force_layer
                 reasons = [f"🔧 ユーザーが {force_layer.value} を強制指定"]
 
-            # 4. 分析レポート表示
+            # 4.0 分析レポート表示
             if args.analyze:
                 self.display_analysis_report(context, recommended_layer, reasons)
                 return True
 
-            # 5. 選択されたプロトコルで実行
+            # 5.0 選択されたプロトコルで実行
             print(
                 f"\n{self.get_layer_icon(recommended_layer)} {recommended_layer.value.upper()} Protocol 選択"
             )

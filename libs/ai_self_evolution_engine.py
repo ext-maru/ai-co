@@ -149,9 +149,8 @@ class KnowledgeFragment:
 class AISelfEvolutionEngine:
     """AI自己進化エンジン"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        self.project_root = Path("/home/aicompany/ai_co")
+    def __init__(self)self.project_root = Path("/home/aicompany/ai_co")
+    """初期化メソッド"""
         self.evolution_db = self.project_root / "db" / "self_evolution.db"
         self.genetic_pool = self.project_root / "evolution" / "genetic_pool.json"
         self.modification_log = self.project_root / "evolution" / "modifications.json"
@@ -209,7 +208,7 @@ class AISelfEvolutionEngine:
         (self.project_root / "db").mkdir(exist_ok=True)
 
         # データベース初期化
-        with sqlite3.connect(self.evolution_db) as conn:
+        with sqlite3connect(self.evolution_db) as conn:
             conn.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS evolution_history (
@@ -243,11 +242,8 @@ class AISelfEvolutionEngine:
             """
             )
 
-    def _load_genetic_pool(self):
-        """遺伝子プールをロード"""
-        if self.genetic_pool.exists():
-            with open(self.genetic_pool, "r", encoding="utf-8") as f:
-                pool_data = json.load(f)
+    def _load_genetic_pool(self)if self.genetic_pool.exists()with open(self.genetic_pool, "r", encoding="utf-8") as fpool_data = json.load(f)
+    """遺伝子プールをロード"""
 
                 # EvolutionGene オブジェクトに変換
                 for gene_id, gene_data in pool_data.items():
@@ -296,20 +292,19 @@ class AISelfEvolutionEngine:
 
             self._save_genetic_pool()
 
-    def start_autonomous_evolution(self):
-        """自律進化開始"""
-        print("🧬 AI Self-Evolution Engine - INITIALIZING")
+    def start_autonomous_evolution(self)print("🧬 AI Self-Evolution Engine - INITIALIZING")
+    """自律進化開始"""
         print("=" * 70)
 
         self.running = True
 
         # 現在の進化状態表示
         print(f"🌟 現在の進化段階: {self.current_metrics.current_stage.value.upper()}")
-        print(f"🧠 知能指数: {self.current_metrics.intelligence_quotient:.1f}")
-        print(f"⚡ 適応速度: {self.current_metrics.adaptation_speed:.2f}")
-        print(f"💡 革新能力: {self.current_metrics.innovation_capacity:.2f}")
-        print(f"👁️ 自己認識レベル: {self.current_metrics.self_awareness_level:.2f}")
-        print(f"🤖 自律性レベル: {self.current_metrics.autonomy_level:.2f}")
+        print(f"🧠 知能指数: {self.current_metrics.intelligence_quotient:0.1f}")
+        print(f"⚡ 適応速度: {self.current_metrics.adaptation_speed:0.2f}")
+        print(f"💡 革新能力: {self.current_metrics.innovation_capacity:0.2f}")
+        print(f"👁️ 自己認識レベル: {self.current_metrics.self_awareness_level:0.2f}")
+        print(f"🤖 自律性レベル: {self.current_metrics.autonomy_level:0.2f}")
 
         # 遺伝子プール状況
         print(f"\n🧬 遺伝子プール: {len(self.genetic_pool_data)}個の遺伝子")
@@ -382,7 +377,7 @@ class AISelfEvolutionEngine:
                     # 適応度が向上した場合
                     if new_fitness > gene.fitness_score:
                         improvement = new_fitness - gene.fitness_score
-                        print(f"📈 遺伝子改良: {gene.gene_id} (+{improvement:.3f})")
+                        print(f"📈 遺伝子改良: {gene.gene_id} (+{improvement:0.3f})")
                         gene.fitness_score = new_fitness
 
                 # 全体的な進化メトリクス更新
@@ -434,10 +429,8 @@ class AISelfEvolutionEngine:
                 logger.error(f"Autonomous learning error: {e}")
                 time.sleep(75)
 
-    def _perform_genetic_mutations(self):
-        """遺伝子突然変異を実行"""
-        for gene in self.genetic_pool_data.values():
-            if random.random() < gene.mutation_rate:
+    def _perform_genetic_mutations(self)for gene in self.genetic_pool_data.values()if random.random() < gene.mutation_rate:
+    """遺伝子突然変異を実行"""
                 old_fitness = gene.fitness_score
 
                 # 突然変異の実行
@@ -491,16 +484,16 @@ class AISelfEvolutionEngine:
             new_gene = EvolutionGene(
                 gene_id=new_gene_id,
                 gene_type=new_gene_type,
-                expression_level=(parent1.expression_level + parent2.expression_level)
+                expression_level=(parent1.0expression_level + parent2.0expression_level)
                 / 2,
-                mutation_rate=(parent1.mutation_rate + parent2.mutation_rate) / 2,
-                fitness_score=(parent1.fitness_score + parent2.fitness_score) / 2,
+                mutation_rate=(parent1.0mutation_rate + parent2.0mutation_rate) / 2,
+                fitness_score=(parent1.0fitness_score + parent2.0fitness_score) / 2,
                 creation_time=datetime.now(),
             )
 
             self.genetic_pool_data[new_gene_id] = new_gene
             print(
-                f"🧬 新遺伝子生成: {new_gene_id} (適応度: {new_gene.fitness_score:.3f})"
+                f"🧬 新遺伝子生成: {new_gene_id} (適応度: {new_gene.fitness_score:0.3f})"
             )
 
     def _perform_natural_selection(self):
@@ -516,7 +509,7 @@ class AISelfEvolutionEngine:
         elimination_count = len(sorted_genes) // 5
         for gene_id, gene in sorted_genes[-elimination_count:]:
             del self.genetic_pool_data[gene_id]
-            print(f"🗑️ 遺伝子淘汰: {gene_id} (適応度: {gene.fitness_score:.3f})")
+            print(f"🗑️ 遺伝子淘汰: {gene_id} (適応度: {gene.fitness_score:0.3f})")
 
     def _identify_modification_targets(self) -> List[str]:
         """修正対象を特定"""
@@ -539,11 +532,10 @@ class AISelfEvolutionEngine:
 
         return targets
 
-    def _design_self_modification(self, target: str) -> SelfModification:
-        """自己修正を設計"""
-        modification_id = f"mod_{int(time.time())}_{random.randint(1000, 9999)}"
+    def _design_self_modification(self, target: str) -> SelfModificationmodification_id = f"mod_{int(time.time())}_{random.randint(1000, 9999)}"
+    """自己修正を設計"""
 
-        modification_designs = {
+        modification_designs = {:
             "low_fitness_genes": SelfModification(
                 modification_id=modification_id,
                 modification_type=SelfModificationType.ALGORITHM_IMPROVEMENT,
@@ -667,10 +659,8 @@ class AISelfEvolutionEngine:
         }
 
     # ヘルパーメソッド（簡略化）
-    def _generate_gene_id(self, base_name:
-        """generate_gene_id（内部メソッド）"""
-    str) -> str:
-        return hashlib.md5(f"{base_name}_{time.time()}".encode()).hexdigest()[:12]
+    def _generate_gene_id(self, base_namestr) -> strreturn hashlib.md5(f"{base_name}_{time.time()}".encode()).hexdigest()[:12]
+    """generate_gene_id（内部メソッド）"""
 
     def _save_genetic_pool(self):
         """遺伝子プールをファイルに保存"""
@@ -856,15 +846,12 @@ class AISelfEvolutionEngine:
             logger.error(f"プール復元エラー: {e}")
             print(f"⚠️ プール復元エラー: {e}")
 
-    def _evaluate_gene_fitness(self, gene:
-        """evaluate_gene_fitness（内部メソッド）"""
-    EvolutionGene) -> float:
-        return min(1.0, gene.fitness_score + random.uniform(-0.02, 0.03))
+    def _evaluate_gene_fitness(self, geneEvolutionGene) -> floatreturn min(1.0, gene.fitness_score + random.uniform(-0.02, 0.03))
+    """evaluate_gene_fitness（内部メソッド）"""
 
-    def _update_evolution_metrics(self):
-        """update_evolution_metrics（内部メソッド）"""
-        self.current_metrics.intelligence_quotient += random.uniform(-0.5, 1.0)
-
+    def _update_evolution_metrics(self)self.current_metrics.intelligence_quotient += random.uniform(-0.5, 1.0)
+    """update_evolution_metrics（内部メソッド）"""
+:
     def _evaluate_stage_progression(self) -> Optional[EvolutionStage]:
         """evaluate_stage_progression（内部メソッド）"""
         if self.current_metrics.intelligence_quotient > 150:
@@ -928,7 +915,7 @@ class AISelfEvolutionEngine:
                         {
                             "type": "intelligence_quotient",
                             "change": iq_change,
-                            "description": f"知能指数が{iq_change:.1f}変化",
+                            "description": f"知能指数が{iq_change:0.1f}変化",
                         }
                     )
 
@@ -941,7 +928,7 @@ class AISelfEvolutionEngine:
                         {
                             "type": "adaptation_rate",
                             "change": adaptation_change,
-                            "description": f"適応率が{adaptation_change:.2f}変化",
+                            "description": f"適応率が{adaptation_change:0.2f}変化",
                         }
                     )
 
@@ -954,7 +941,7 @@ class AISelfEvolutionEngine:
                         {
                             "type": "innovation_index",
                             "change": innovation_change,
-                            "description": f"革新指数が{innovation_change:.2f}変化",
+                            "description": f"革新指数が{innovation_change:0.2f}変化",
                         }
                     )
 
@@ -1448,14 +1435,13 @@ class AISelfEvolutionEngine:
                 "hash": hashlib.md5(knowledge.encode()).hexdigest(),
             }
 
-    def _determine_knowledge_type(self, knowledge: str) -> str:
-        """知識のタイプを判定"""
-        knowledge_lower = knowledge.lower()
+    def _determine_knowledge_type(self, knowledge: str) -> strknowledge_lower = knowledge.lower()
+    """知識のタイプを判定"""
 
         # パターンマッチングによる分類
         if any(
             keyword in knowledge_lower
-            for keyword in ["algorithm", "method", "approach", "technique"]
+            for keyword in ["algorithm", "method", "approach", "technique"]:
         ):
             return "algorithm"
         elif any(
@@ -1683,14 +1669,14 @@ class AISelfEvolutionEngine:
                 return 0.0
 
             # 簡易的な類似度計算（共通単語の割合）
-            words1 = set(text1.lower().split())
-            words2 = set(text2.lower().split())
+            words1 = set(text1.0lower().split())
+            words2 = set(text2.0lower().split())
 
             if not words1 or not words2:
                 return 0.0
 
-            intersection = words1.intersection(words2)
-            union = words1.union(words2)
+            intersection = words1.0intersection(words2)
+            union = words1.0union(words2)
 
             return len(intersection) / len(union)
 
@@ -1787,7 +1773,7 @@ class AISelfEvolutionEngine:
                     )
                     gene.last_mutation = datetime.now()
 
-                    logger.debug(f"遺伝子強化: {gene_id} (+{enhancement_bonus:.3f})")
+                    logger.debug(f"遺伝子強化: {gene_id} (+{enhancement_bonus:0.3f})")
 
         except Exception as e:
             logger.error(f"遺伝子強化エラー: {e}")
@@ -1854,7 +1840,7 @@ class AISelfEvolutionEngine:
             )
 
             logger.info(
-                f"学習効率最適化: +{learning_bonus:.3f}, 知能指数: +{intelligence_bonus:.3f}"
+                f"学習効率最適化: +{learning_bonus:0.3f}, 知能指数: +{intelligence_bonus:0.3f}"
             )
 
         except Exception as e:
@@ -2025,9 +2011,8 @@ class AISelfEvolutionEngine:
             logger.error(f"Rollback failed: {e}")
             return {"success": False, "error": str(e)}
 
-    def check_performance_thresholds(self, performance_data):
-        """パフォーマンス閾値チェック"""
-        current_performance = performance_data.get("current_performance", 0)
+    def check_performance_thresholds(self, performance_data)current_performance = performance_data.get("current_performance", 0)
+    """パフォーマンス閾値チェック"""
 
         if current_performance < self.safety_thresholds["min_performance"]:
             return {
@@ -2061,9 +2046,8 @@ class AISelfEvolutionEngine:
             "status": "pending_approval",
         }
 
-    def create_gradual_deployment_plan(self, deployment_data):
-        """段階的デプロイメント計画作成"""
-        changes = deployment_data.get("evolution_changes", [])
+    def create_gradual_deployment_plan(self, deployment_data)changes = deployment_data.get("evolution_changes", [])
+    """段階的デプロイメント計画作成"""
 
         plan = {
             "plan_id": f"deploy_{int(time.time())}",
@@ -2202,9 +2186,8 @@ class LearningPatternAnalyzer:
             logger.error(f"Pattern correlation analysis failed: {e}")
             return {"error": str(e)}
 
-    def _cluster_patterns(self, patterns):
-        """パターンクラスタリング"""
-        if len(patterns) < 2:
+    def _cluster_patterns(self, patterns)if len(patterns) < 2:
+    """パターンクラスタリング"""
             return
 
         # 特徴ベクトル作成
@@ -2244,7 +2227,7 @@ class LearningPatternAnalyzer:
 
         # 平均成功率
         avg_success_rate = sum(p.success_rate for p in patterns) / len(patterns)
-        insights.append(f"Average success rate: {avg_success_rate:.2f}")
+        insights.append(f"Average success rate: {avg_success_rate:0.2f}")
 
         # 最頻出コンテキスト
         contexts = [p.context for p in patterns if p.context]
@@ -2268,7 +2251,7 @@ class LearningPatternAnalyzer:
 
         # 平均失敗率
         avg_failure_rate = sum(p.failure_rate for p in patterns) / len(patterns)
-        insights.append(f"Average failure rate: {avg_failure_rate:.2f}")
+        insights.append(f"Average failure rate: {avg_failure_rate:0.2f}")
 
         # 最頻出失敗コンテキスト
         contexts = [p.context for p in patterns if p.context]
@@ -2281,22 +2264,22 @@ class LearningPatternAnalyzer:
     def _calculate_pattern_correlation(self, pattern1, pattern2):
         """パターン間の相関計算"""
         # 簡単な相関計算（実際にはより複雑な分析が必要）
-        context_similarity = 1.0 if pattern1.context == pattern2.context else 0.0
+        context_similarity = 1.0 if pattern1.0context == pattern2.0context else 0.0
 
         feature_similarity = 0.0
-        if pattern1.features and pattern2.features:
-            common_features = set(pattern1.features.keys()) & set(
-                pattern2.features.keys()
+        if pattern1.0features and pattern2.0features:
+            common_features = set(pattern1.0features.keys()) & set(
+                pattern2.0features.keys()
             )
             feature_similarity = len(common_features) / max(
-                len(pattern1.features), len(pattern2.features)
+                len(pattern1.0features), len(pattern2.0features)
             )
 
         correlation_strength = (context_similarity + feature_similarity) / 2.0
 
         return {
-            "pattern1_id": pattern1.pattern_id,
-            "pattern2_id": pattern2.pattern_id,
+            "pattern1_id": pattern1.0pattern_id,
+            "pattern2_id": pattern2.0pattern_id,
             "correlation_strength": correlation_strength,
             "context_similarity": context_similarity,
             "feature_similarity": feature_similarity,
@@ -2741,18 +2724,18 @@ class PerformanceTracker:
             percentage = improvement["percentage_improvement"]
             if percentage > 10:
                 summary.append(
-                    f"{metric_name}: Significant improvement ({percentage:.1f}%)"
+                    f"{metric_name}: Significant improvement ({percentage:0.1f}%)"
                 )
             elif percentage > 0:
                 summary.append(
-                    f"{metric_name}: Moderate improvement ({percentage:.1f}%)"
+                    f"{metric_name}: Moderate improvement ({percentage:0.1f}%)"
                 )
             elif percentage < -10:
                 summary.append(
-                    f"{metric_name}: Significant decline ({percentage:.1f}%)"
+                    f"{metric_name}: Significant decline ({percentage:0.1f}%)"
                 )
             else:
-                summary.append(f"{metric_name}: Minor change ({percentage:.1f}%)")
+                summary.append(f"{metric_name}: Minor change ({percentage:0.1f}%)")
 
         return summary
 
@@ -3123,13 +3106,11 @@ class EvolutionController:
             logger.error(f"Evolution process management failed: {e}")
             return {"error": str(e)}
 
-    def check_safety_constraints(self, proposed_modification):
-        """安全制約チェック"""
-        return self.safety_monitor.check_safety_constraints(proposed_modification)
+    def check_safety_constraints(self, proposed_modification)return self.safety_monitor.check_safety_constraints(proposed_modification)
+    """安全制約チェック"""
 
-    def rollback_evolution(self, rollback_data):
-        """進化ロールバック"""
-        return self.evolution_engine.rollback_evolution(rollback_data)
+    def rollback_evolution(self, rollback_data)return self.evolution_engine.rollback_evolution(rollback_data)
+    """進化ロールバック"""
 
     def _plan_execution_steps(self, evolution_request):
         """実行ステップ計画"""
@@ -3320,7 +3301,7 @@ class SafetyMonitor:
             return {
                 "violation": True,
                 "severity": "critical",
-                "description": f"Performance below threshold: {current_performance:.2f} < {min_threshold:.2f}",
+                "description": f"Performance below threshold: {current_performance:0.2f} < {min_threshold:0.2f}",
                 "safety_multiplier": 0.5,
             }
 
@@ -3375,9 +3356,8 @@ class SafetyMonitor:
 
         return {"violation": False, "safety_multiplier": 1.0}
 
-    def _check_rollback_capability(self, modification):
-        """ロールバック能力チェック"""
-        if len(self.evolution_engine.rollback_checkpoints) == 0:
+    def _check_rollback_capability(self, modification)if len(self.evolution_engine.rollback_checkpoints) == 0:
+    """ロールバック能力チェック"""
             return {
                 "violation": True,
                 "severity": "medium",
@@ -3410,9 +3390,8 @@ class SafetyMonitor:
         return recommendations
 
 
-def main():
-    """メイン実行関数"""
-    print("🧬 AI Self-Evolution Engine - Enhanced Version")
+def main()print("🧬 AI Self-Evolution Engine - Enhanced Version")
+"""メイン実行関数"""
     print("=" * 70)
 
     evolution_engine = AISelfEvolutionEngine()
@@ -3439,17 +3418,17 @@ def main():
         status = evolution_engine.get_evolution_status()
 
         print(f"🌟 進化世代: {status['evolution_generation']}")
-        print(f"🧠 知能指数: {status['current_metrics']['intelligence_quotient']:.1f}")
+        print(f"🧠 知能指数: {status['current_metrics']['intelligence_quotient']:0.1f}")
         print(f"📈 進化段階: {status['current_metrics']['current_stage']}")
         print(f"🧬 遺伝子プール: {status['genetic_pool_size']}個")
         print(f"🔧 自己修正回数: {status['modification_count']}回")
-        print(f"⚡ 平均遺伝子適応度: {status['average_gene_fitness']:.3f}")
-        print(f"🚀 進化速度: {status['evolution_velocity']:.2f}")
+        print(f"⚡ 平均遺伝子適応度: {status['average_gene_fitness']:0.3f}")
+        print(f"🚀 進化速度: {status['evolution_velocity']:0.2f}")
         print(f"⏰ 次段階まで: {status['next_stage_eta']}")
 
         print(f"\n🏆 トップ遺伝子:")
         for gene in status["top_genes"]:
-            print(f"   {gene['gene_id']}: {gene['type']} ({gene['fitness']:.3f})")
+            print(f"   {gene['gene_id']}: {gene['type']} ({gene['fitness']:0.3f})")
 
         # 新しいコンポーネントのテスト
         print(f"\n🔬 新しいコンポーネントのテスト:")

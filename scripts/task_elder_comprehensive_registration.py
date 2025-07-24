@@ -19,9 +19,8 @@ class TaskElderComprehensiveRegistration:
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.init_database()
 
-    def init_database(self):
-        """データベース初期化"""
-        with sqlite3.connect(self.db_path) as conn:
+    def init_database(self)with sqlite3connect(self.db_path) as conn:
+    """データベース初期化"""
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS coverage_tasks (
@@ -42,9 +41,8 @@ class TaskElderComprehensiveRegistration:
             )
             conn.commit()
 
-    def register_immediate_error_fixes(self):
-        """即座修正タスク（残存45エラー）"""
-        print("🚨 カテゴリ1: 即座修正タスク登録")
+    def register_immediate_error_fixes(self)print("🚨 カテゴリ1: 即座修正タスク登録")
+    """即座修正タスク（残存45エラー）"""
 
         immediate_tasks = [
             {
@@ -96,9 +94,8 @@ class TaskElderComprehensiveRegistration:
 
         return immediate_tasks
 
-    def register_module_coverage_tasks(self):
-        """モジュール別カバレッジ向上タスク"""
-        print("📊 カテゴリ2: モジュール別カバレッジ向上タスク登録")
+    def register_module_coverage_tasks(self)print("📊 カテゴリ2: モジュール別カバレッジ向上タスク登録")
+    """モジュール別カバレッジ向上タスク"""
 
         module_tasks = [
             {
@@ -151,9 +148,8 @@ class TaskElderComprehensiveRegistration:
 
         return module_tasks
 
-    def register_automated_test_generation_tasks(self):
-        """自動テスト生成タスク"""
-        print("🤖 カテゴリ3: 自動テスト生成タスク登録")
+    def register_automated_test_generation_tasks(self)print("🤖 カテゴリ3: 自動テスト生成タスク登録")
+    """自動テスト生成タスク"""
 
         automation_tasks = [
             {
@@ -196,9 +192,8 @@ class TaskElderComprehensiveRegistration:
 
         return automation_tasks
 
-    def register_infrastructure_tasks(self):
-        """インフラ・基盤改善タスク"""
-        print("🏗️ カテゴリ4: インフラ・基盤改善タスク登録")
+    def register_infrastructure_tasks(self)print("🏗️ カテゴリ4: インフラ・基盤改善タスク登録")
+    """インフラ・基盤改善タスク"""
 
         infrastructure_tasks = [
             {
@@ -232,9 +227,8 @@ class TaskElderComprehensiveRegistration:
 
         return infrastructure_tasks
 
-    def register_monitoring_improvement_tasks(self):
-        """継続的監視・改善タスク"""
-        print("👁️ カテゴリ5: 継続的監視・改善タスク登録")
+    def register_monitoring_improvement_tasks(self)print("👁️ カテゴリ5: 継続的監視・改善タスク登録")
+    """継続的監視・改善タスク"""
 
         monitoring_tasks = [
             {
@@ -268,9 +262,8 @@ class TaskElderComprehensiveRegistration:
 
         return monitoring_tasks
 
-    def register_strategic_tasks(self):
-        """戦略的長期タスク"""
-        print("🎯 カテゴリ6: 戦略的長期タスク登録")
+    def register_strategic_tasks(self)print("🎯 カテゴリ6: 戦略的長期タスク登録")
+    """戦略的長期タスク"""
 
         strategic_tasks = [
             {
@@ -304,9 +297,8 @@ class TaskElderComprehensiveRegistration:
 
         return strategic_tasks
 
-    def insert_tasks_to_database(self, tasks):
-        """タスクをデータベースに登録"""
-        with sqlite3.connect(self.db_path) as conn:
+    def insert_tasks_to_database(self, tasks)with sqlite3connect(self.db_path) as conn:
+    """タスクをデータベースに登録"""
             for task in tasks:
                 conn.execute(
                     """
@@ -328,9 +320,8 @@ class TaskElderComprehensiveRegistration:
                 )
             conn.commit()
 
-    def generate_task_summary(self):
-        """タスクサマリー生成"""
-        with sqlite3.connect(self.db_path) as conn:
+    def generate_task_summary(self)with sqlite3connect(self.db_path) as conn:
+    """タスクサマリー生成"""
             cursor = conn.execute(
                 """
                 SELECT category, COUNT(*) as count,
@@ -354,19 +345,18 @@ class TaskElderComprehensiveRegistration:
                 total_tasks += count
                 total_hours += hours or 0
                 print(
-                    f"📂 {category:20} | {count:2d}タスク | {hours:5.1f}時間 | 優先度{priority:.1f}"
+                    f"📂 {category:20} | {count:2d}タスク | {hours:5.1f}時間 | 優先度{priority:0.1f}"
                 )
 
             print("=" * 80)
             print(f"📊 総タスク数: {total_tasks}")
-            print(f"⏱️  総予想時間: {total_hours:.1f}時間 ({total_hours/8:.1f}営業日)")
+            print(f"⏱️  総予想時間: {total_hours:0.1f}時間 ({total_hours/8:0.1f}営業日)")
             print(
-                f"🎯 60%カバレッジ達成予定: {(datetime.now() + timedelta(hours=total_hours)).strftime('%Y-%m-%d %H:%M')}"
+                f"🎯 60%カバレッジ達成予定: {(datetime.now() + timedelta(hours}"
             )
 
-    def execute_comprehensive_registration(self):
-        """包括的タスク登録実行"""
-        print("📋 タスクエルダー - 包括的カバレッジ向上タスク登録開始")
+    def execute_comprehensive_registration(self)print("📋 タスクエルダー - 包括的カバレッジ向上タスク登録開始")
+    """包括的タスク登録実行"""
         print("=" * 80)
 
         all_tasks = []
@@ -398,16 +388,16 @@ class TaskElderComprehensiveRegistration:
 
 ## 即座実行推奨タスク（24時間以内）
 ```bash
-# 1. 残存エラー修正
+# 1.0 残存エラー修正
 python3 fix_remaining_errors.py
 
-# 2. 基本モジュールカバレッジ向上
+# 2.0 基本モジュールカバレッジ向上
 python3 -m pytest tests/unit/core/ --cov=core --cov-report=term
 
-# 3. 自動テスト生成開始
+# 3.0 自動テスト生成開始
 python3 auto_test_generator.py --target=libs/
 
-# 4. 並列実行環境構築
+# 4.0 並列実行環境構築
 pip install pytest-xdist
 python3 -m pytest -n auto tests/
 ```

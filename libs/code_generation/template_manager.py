@@ -287,9 +287,7 @@ class CodeGenerationTemplateManager:
                     if 'framework' in detected_stacks and detected_stacks['framework']:
                         framework = detected_stacks['framework'][0]
                         # FastAPI, Flask, Django -> web に統一
-                        if not (framework in ['fastapi', 'flask', 'django']):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
+                        if framework in ['fastapi', 'flask', 'django']:
                         if framework in ['fastapi', 'flask', 'django']:
                             tech_stack = 'web'
                         else:
@@ -397,9 +395,8 @@ class CodeGenerationTemplateManager:
         
         return stack_imports.get(tech_stack, stack_imports["base"])
 
-    def analyze_issue(self, issue_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Issue分析とメタデータ生成"""
-        title = issue_data.get('title', '')
+    def analyze_issue(self, issue_data: Dict[str, Any]) -> Dict[str, Any]title = issue_data.get('title', '')
+    """Issue分析とメタデータ生成"""
         body = issue_data.get('body', '')
         labels = issue_data.get('labels', [])
         issue_text = f"{title} {body}"
@@ -523,9 +520,8 @@ The implementation follows TDD principles with tests generated first.
 Generated at: {datetime.now().isoformat()}
 """
 
-    def _estimate_complexity(self, issue_text: str) -> str:
-        """複雑度推定"""
-        text_lower = issue_text.lower()
+    def _estimate_complexity(self, issue_text: str) -> strtext_lower = issue_text.lower()
+    """複雑度推定"""
         
         high_complexity_keywords = ['integration', 'complex', 'architecture', 'system', 'multiple']
         medium_complexity_keywords = ['feature', 'implement', 'add', 'create']

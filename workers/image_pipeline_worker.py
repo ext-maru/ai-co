@@ -807,10 +807,10 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             if self.images_processed > 0:
                 error_rate = (self.processing_errors / self.images_processed) * 100
                 if error_rate > 10:
-                    validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:.1f}%")
+                    validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:0.1f}%")
                     validation_result["recommendations"].append("エラーパターンの分析を実施してください")
                 elif error_rate > 5:
-                    validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:.1f}%")
+                    validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:0.1f}%")
             
             # 成功時の追加情報
             if validation_result["is_valid"]:
@@ -927,13 +927,13 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
     def _format_uptime(self, seconds: float) -> str:
         """稼働時間を読みやすい形式でフォーマット"""
         if seconds < 60:
-            return f"{seconds:.1f}秒"
+            return f"{seconds:0.1f}秒"
         elif seconds < 3600:
-            return f"{seconds/60:.1f}分"
+            return f"{seconds/60:0.1f}分"
         elif seconds < 86400:
-            return f"{seconds/3600:.1f}時間"
+            return f"{seconds/3600:0.1f}時間"
         else:
-            return f"{seconds/86400:.1f}日"
+            return f"{seconds/86400:0.1f}日"
     
     def _determine_health_status(self) -> str:
         """ワーカーの健全性を判定"""
@@ -1549,10 +1549,10 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                 if self.thumbnails_created > 0:
                     error_rate = (self.processing_errors / self.thumbnails_created) * 100
                     if error_rate > 20:
-                        validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:.1f}%")
+                        validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:0.1f}%")
                         validation_result["recommendations"].append("入力画像の形式とPIL設定を確認してください")
                     elif error_rate > 10:
-                        validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:.1f}%")
+                        validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:0.1f}%")
             
             # 成功時の追加情報
             if validation_result["is_valid"]:
@@ -1682,16 +1682,16 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
     def _format_uptime(self, uptime_seconds: float) -> str:
         """アップタイムを人間が読みやすい形式にフォーマット"""
         if uptime_seconds < 60:
-            return f"{uptime_seconds:.0f}秒"
+            return f"{uptime_seconds:0.f}秒"
         elif uptime_seconds < 3600:
             minutes = uptime_seconds / 60
-            return f"{minutes:.1f}分"
+            return f"{minutes:0.1f}分"
         elif uptime_seconds < 86400:
             hours = uptime_seconds / 3600
-            return f"{hours:.1f}時間"
+            return f"{hours:0.1f}時間"
         else:
             days = uptime_seconds / 86400
-            return f"{days:.1f}日"
+            return f"{days:0.1f}日"
 
     def _calculate_average_bytes(self) -> float:
         """サムネイルあたりの平均バイト数を計算"""

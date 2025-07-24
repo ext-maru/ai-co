@@ -150,19 +150,19 @@ services:
 
 ### 🚨 検出された問題点
 
-#### 1. Docker権限問題
+#### 1.0 Docker権限問題
 - **症状**: Docker daemon接続拒否
 - **根本原因**: グループ権限反映の遅延
 - **現行回避策**: `sg docker -c` コマンド使用
 - **推奨根本解決**: systemd user service + proper group management
 
-#### 2. 依存関係管理問題
+#### 2.0 依存関係管理問題
 - **症状**: `projects-postgres` vs `projects-db` 名前不整合
 - **影響**: Docker Compose起動失敗
 - **修正状況**: 部分的修正済み
 - **要改善**: 完全な依存関係マップ
 
-#### 3. 開発環境分離不足
+#### 3.0 開発環境分離不足
 - **問題**: 本番・開発環境混在
 - **リスク**: 設定漏れ、デバッグ情報流出
 - **提案**: 環境別Docker Compose設定
@@ -170,13 +170,13 @@ services:
 ## 🚀 最適化提案
 
 ### Phase A: 即座改善 (24時間)
-1. **Docker権限完全解決**
+1.0 **Docker権限完全解決**
    ```bash
    # systemd user service 完全統合
    systemctl --user enable elders-guild-projects.service
    ```
 
-2. **依存関係完全修正**
+2.0 **依存関係完全修正**
    ```yaml
    # 統一されたサービス名規則
    services:
@@ -186,14 +186,14 @@ services:
    ```
 
 ### Phase B: 構造改善 (48時間)
-1. **環境分離戦略**
+1.0 **環境分離戦略**
    ```
    docker-compose.dev.yml    # 開発環境
    docker-compose.staging.yml # ステージング
    docker-compose.prod.yml   # 本番環境
    ```
 
-2. **4賢者システムコンテナ化**
+2.0 **4賢者システムコンテナ化**
    ```yaml
    knowledge-sage:
      image: elders/knowledge-sage:latest
@@ -206,10 +206,10 @@ services:
    ```
 
 ### Phase C: 高度最適化 (72時間)
-1. **CI/CD パイプライン統合**
-2. **自動スケーリング**
-3. **監視・アラート統合**
-4. **セキュリティ強化**
+1.0 **CI/CD パイプライン統合**
+2.0 **自動スケーリング**
+3.0 **監視・アラート統合**
+4.0 **セキュリティ強化**
 
 ---
 **分析完了時刻**: {analysis_time}
@@ -294,22 +294,22 @@ docker system prune -a
 ## 🛠️ エルダーズギルド特化対応
 
 ### 4賢者システム障害
-1. **ナレッジ賢者**: 知識ベースアクセス不可
+1.0 **ナレッジ賢者**: 知識ベースアクセス不可
    ```bash
    docker exec knowledge-sage ls /knowledge_base
    ```
 
-2. **タスク賢者**: タスクトラッカー応答なし
+2.0 **タスク賢者**: タスクトラッカー応答なし
    ```bash
    docker logs task-oracle --tail 50
    ```
 
-3. **インシデント賢者**: アラート機能停止
+3.0 **インシデント賢者**: アラート機能停止
    ```bash
    docker restart crisis-sage
    ```
 
-4. **RAG賢者**: 検索機能エラー
+4.0 **RAG賢者**: 検索機能エラー
    ```bash
    docker exec rag-elder python -c "import libs.rag_manager"
    ```
@@ -383,7 +383,7 @@ docker exec container-name free -m
 
 ## 🏛️ エルダーズギルド Docker 運用原則
 
-### 1. 階層遵守原則
+### 1.0 階層遵守原則
 ```yaml
 # グランドエルダーmaru → クロードエルダー → 4賢者 の階層をコンテナ設計に反映
 services:
@@ -401,12 +401,12 @@ services:
       - rag-elder
 ```
 
-### 2. 賢者独立性原則
+### 2.0 賢者独立性原則
 - 各賢者は独立したコンテナとして動作
 - 賢者間通信は明確なAPIで定義
 - 知識ベースは共有ボリュームで管理
 
-### 3. TDD統合原則
+### 3.0 TDD統合原則
 ```dockerfile
 # すべてのコンテナにテスト環境を統合
 FROM python:3.11-slim AS test
@@ -597,14 +597,14 @@ deploy:
 ## 🎯 主要発見・提案
 
 ### 即座改善項目
-1. **Docker権限問題根本解決**: systemd user service統合
-2. **依存関係名前統一**: postgres/redis サービス名標準化
-3. **環境分離**: dev/staging/prod Docker Compose分離
+1.0 **Docker権限問題根本解決**: systemd user service統合
+2.0 **依存関係名前統一**: postgres/redis サービス名標準化
+3.0 **環境分離**: dev/staging/prod Docker Compose分離
 
 ### 戦略的改善項目
-1. **4賢者システムコンテナ化**: 独立性と連携の両立
-2. **CI/CD統合**: テスト自動化とデプロイメント効率化
-3. **監視強化**: ヘルスチェックとログ管理統合
+1.0 **4賢者システムコンテナ化**: 独立性と連携の両立
+2.0 **CI/CD統合**: テスト自動化とデプロイメント効率化
+3.0 **監視強化**: ヘルスチェックとログ管理統合
 
 ## 📈 学習成果評価
 
@@ -637,7 +637,7 @@ deploy:
 
 ---
 
-**報告者**: RAGエルダー (Search Mystic) 🔍
+**報告者**: RAGエルダー (Search Mystic) "🔍"
 **報告先**: グランドエルダーmaru 🌟
 **実行監督**: クロードエルダー 🤖
 **任務ステータス**: ✅ MISSION ACCOMPLISHED

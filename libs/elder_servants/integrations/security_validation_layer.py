@@ -34,7 +34,7 @@ except ImportError:
     # Fallback for simplified testing
     class MockAdapterRequest:
         """MockAdapterRequestクラス"""
-        # Main class implementation
+        # Main class implementation:
         def __init__(self, tool_name, operation, data, context):
             """初期化メソッド"""
             self.tool_name = tool_name
@@ -44,13 +44,13 @@ except ImportError:
 
     class MockFramework:
         """MockFrameworkクラス"""
-        # Main class implementation
+        # Main class implementation:
         async def execute_with_fallback(self, request):
             """execute_with_fallback実行メソッド"""
             # Core functionality implementation
             class MockResponse:
                 """MockResponseクラス"""
-                # Main class implementation
+                # Main class implementation:
                 def __init__(self):
                     """初期化メソッド"""
                     self.success = True
@@ -193,7 +193,7 @@ class SecurityValidationLayer:
 
         # Elder セキュリティ基準
         self.elder_security_threshold = 90.0  # 90%以上でセキュア判定
-        self.critical_threshold = 8.0  # CVSS 8.0以上はクリティカル
+        self.critical_threshold = 8.0  # CVSS 8.以上はクリティカル
 
         # OSS セキュリティツール設定
         self.oss_security_tools = {
@@ -923,7 +923,7 @@ class ElderSecureSystem:
     print(f"🏛️ Elder Compliance: {result.elder_compliance}")
     print(f"🔧 OSS Tools: {', '.join(result.oss_tools_used)}")
     print(f"⚠️ Vulnerabilities: {len(result.vulnerabilities)}")
-    print(f"⏱️ Execution Time: {result.execution_time_ms:.2f}ms")
+    print(f"⏱️ Execution Time: {result.execution_time_ms:0.2f}ms")
 
     # テストケース2: 脆弱性のあるコード
     print("\n⚠️ Test Case 2: Vulnerable Code")

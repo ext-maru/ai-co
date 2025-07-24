@@ -190,19 +190,19 @@ class PDCACycle:
 
         actions = []
 
-        # 1. 違反統計を分析
+        # 1.0 違反統計を分析
         stats = self.db.get_statistics()
 
-        # 2. 最も頻度の高い違反タイプを特定
+        # 2.0 最も頻度の高い違反タイプを特定
         top_violations = self._identify_top_violations(stats)
 
-        # 3. 各違反タイプに対する改善アクションを生成
+        # 3.0 各違反タイプに対する改善アクションを生成
         for violation_type, count in top_violations:
             action = self._create_improvement_action(violation_type, count)
             if action:
                 actions.append(action)
 
-        # 4. 優先度順にソート
+        # 4.0 優先度順にソート
         actions.sort(
             key=lambda a: (
                 0
@@ -245,14 +245,14 @@ class PDCACycle:
         """Check: 効果測定とKPI評価"""
         logger.info("PDCAサイクル - Check フェーズ開始")
 
-        # 1. 現在のメトリクスを計算
+        # 1.0 現在のメトリクスを計算
         current_metrics = self._calculate_current_metrics()
 
-        # 2. アクションの成功率を評価
+        # 2.0 アクションの成功率を評価
         successful_actions = sum(1 for a in executed_actions if a.success)
         failed_actions = len(executed_actions) - successful_actions
 
-        # 3. 改善度を評価
+        # 3.0 改善度を評価
         improvement = current_metrics.get_improvement_percentage()
 
         evaluation = {
@@ -272,7 +272,7 @@ class PDCACycle:
             "recommendations": self._generate_recommendations(current_metrics),
         }
 
-        logger.info(f"Check完了: 改善率={improvement:.1f}%")
+        logger.info(f"Check完了: 改善率={improvement:0.1f}%")
         return evaluation
 
     def act(self, evaluation: Dict[str, Any]) -> Dict[str, Any]:
@@ -285,20 +285,20 @@ class PDCACycle:
             "knowledge_base_updates": [],
         }
 
-        # 1. 効果的だったアクションに基づいてルールを更新
+        # 1.0 効果的だったアクションに基づいてルールを更新
         if evaluation["is_improving"]:
             rule_updates = self._update_violation_rules(evaluation)
             updates["rules_updated"] = rule_updates
 
-        # 2. プロセス改善の実施
+        # 2.0 プロセス改善の実施
         improvements = self._implement_process_improvements(evaluation)
         updates["process_improvements"] = improvements
 
-        # 3. 知識ベースの更新
+        # 3.0 知識ベースの更新
         kb_updates = self._update_knowledge_base(evaluation)
         updates["knowledge_base_updates"] = kb_updates
 
-        # 4. 次回サイクルへの引き継ぎ事項を記録
+        # 4.0 次回サイクルへの引き継ぎ事項を記録
         self._record_learnings(evaluation)
 
         logger.info(f"Act完了: {updates['rules_updated']}個のルール更新")

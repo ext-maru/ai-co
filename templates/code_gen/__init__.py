@@ -2,6 +2,7 @@
 Elders Guild Code Generation Templates
 
 This module provides templates for generating various types of code:
+    pass
 - REST API endpoints (FastAPI/Flask)
 - Database models (SQLAlchemy)
 - CLI commands (Click)

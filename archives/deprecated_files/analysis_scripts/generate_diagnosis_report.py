@@ -23,7 +23,7 @@ def generate_diagnosis_report():
     report.append(f"実行時刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     report.append("")
 
-    # 1. プロセス状態
+    # 1.0 プロセス状態
     import subprocess
 
     ps_result = subprocess.run(["ps", "aux"], capture_output=True, text=True)
@@ -32,7 +32,7 @@ def generate_diagnosis_report():
     report.append("1️⃣ プロセス状態:")
     report.append(f"   Slack Polling Worker: {'✅ 稼働中' if slack_running else '❌ 停止'}")
 
-    # 2. 最新ログ確認
+    # 2.0 最新ログ確認
     log_path = Path("/home/aicompany/ai_co/logs/slack_polling_worker.log")
     if log_path.exists():
         with open(log_path, "r") as f:
@@ -58,7 +58,7 @@ def generate_diagnosis_report():
             for err in errors[-2:]:
                 report.append(f"   - {err.strip()[:80]}")
 
-    # 3. キュー状態
+    # 3.0 キュー状態
     queue_result = subprocess.run(
         ["sudo", "rabbitmqctl", "list_queues", "name", "messages"],
         capture_output=True,
@@ -80,7 +80,7 @@ def generate_diagnosis_report():
                     if count > 0:
                         report.append(f"   ⚠️  未処理タスクあり")
 
-    # 4. 推奨アクション
+    # 4.0 推奨アクション
     report.append("")
     report.append("4️⃣ 推奨アクション:")
 

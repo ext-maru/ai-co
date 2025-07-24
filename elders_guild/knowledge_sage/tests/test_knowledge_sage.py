@@ -352,7 +352,7 @@ class TestKnowledgeSageIntegration:
     
     def test_full_knowledge_workflow(self, knowledge_sage):
         """完全な知識管理ワークフローテスト"""
-        # 1. 知識の保存
+        # 1.0 知識の保存
         knowledge = KnowledgeItem(
             title="Flask API実装パターン",
             content="Flaskでの RESTful API実装のベストプラクティス",
@@ -363,7 +363,7 @@ class TestKnowledgeSageIntegration:
         store_result = knowledge_sage.store_knowledge(knowledge)
         assert store_result["status"] == "success"
         
-        # 2. ベストプラクティスの関連付け
+        # 2.0 ベストプラクティスの関連付け
         practice = BestPractice(
             title="API エラーハンドリング",
             description="適切なHTTPステータスコードとエラーメッセージを返す",
@@ -373,7 +373,7 @@ class TestKnowledgeSageIntegration:
         practice_result = knowledge_sage.store_best_practice(practice)
         assert practice_result["status"] == "success"
         
-        # 3. 学習パターンの記録
+        # 3.0 学習パターンの記録
         pattern = LearningPattern(
             pattern_name="API実装学習パターン",
             trigger="API開発タスク",
@@ -383,14 +383,14 @@ class TestKnowledgeSageIntegration:
         pattern_result = knowledge_sage.store_learning_pattern(pattern)
         assert pattern_result["status"] == "success"
         
-        # 4. 統合検索
+        # 4.0 統合検索
         results = knowledge_sage.search_knowledge("API")
         assert len(results) >= 1
         
-        # 5. 知識統合
+        # 5.0 知識統合
         synthesis = knowledge_sage.synthesize_knowledge(topic="API開発")
         assert synthesis["topic"] == "API開発"
         
-        # 6. 統計確認
+        # 6.0 統計確認
         stats = knowledge_sage.get_knowledge_statistics()
         assert stats.total_items >= 1

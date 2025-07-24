@@ -330,22 +330,22 @@ class AutoSystemGenerator:
 
         print(f"🛠️ Starting auto system generation for: '{user_description}'")
 
-        # 1. 要件分析（意識統合）
+        # 1.0 要件分析（意識統合）
         print("🧠 Analyzing requirements with consciousness interface...")
         requirements = await self.analyze_requirements(user_description)
         print(f"Identified {len(requirements)} requirements")
 
-        # 2. 依存関係確立（因果律制御）
+        # 2.0 依存関係確立（因果律制御）
         print("🔮 Establishing dependency causality...")
         causality_result = await self.establish_dependency_causality(requirements)
         print(f"Build order: {causality_result['build_order']}")
 
-        # 3. 並列コンポーネント生成（無限並列宇宙処理）
+        # 3.0 並列コンポーネント生成（無限並列宇宙処理）
         print("♾️ Generating components in parallel universes...")
         components = await self.generate_system_components(requirements)
         print(f"Generated {len(components)} components")
 
-        # 4. システム統合
+        # 4.0 システム統合
         system_architecture = {
             "system_id": f"sys_{uuid.uuid4().hex[:8]}",
             "description": user_description,
@@ -358,7 +358,7 @@ class AutoSystemGenerator:
             "generated_at": datetime.now().isoformat(),
         }
 
-        # 5. 生成履歴に保存
+        # 5.0 生成履歴に保存
         self.generation_history.append(system_architecture)
         self.generated_systems[system_architecture["system_id"]] = system_architecture
 

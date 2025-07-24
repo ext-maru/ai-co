@@ -113,8 +113,8 @@ class ElderHarmonyChecker:
         # 重要なナレッジファイルの存在確認
         important_files = [
             "CLAUDE_TDD_GUIDE.md",
-            "AI_Company_Core_Knowledge_v5.1.md",
-            "IMPLEMENTATION_SUMMARY_2025_07.md",
+            "AI_Company_Core_Knowledge_v5.1.0md",
+            "IMPLEMENTATION_SUMMARY_2025_07.0md",
         ]
 
         missing_files = []
@@ -142,7 +142,7 @@ class ElderHarmonyChecker:
         # タスクデータベースの確認
         task_db = PROJECT_ROOT / "task_history.db"
         if task_db.exists():
-            logger.info(f"    タスクDB: {task_db.stat().st_size / 1024:.1f}KB")
+            logger.info(f"    タスクDB: {task_db.stat().st_size / 1024:0.1f}KB")
 
         return True
 
@@ -226,7 +226,7 @@ class ElderHarmonyChecker:
             # エルダーダッシュボードDB
             elder_db = PROJECT_ROOT / "elder_dashboard.db"
             if elder_db.exists():
-                conn = sqlite3.connect(str(elder_db))
+                conn = sqlite3connect(str(elder_db))
                 cursor = conn.cursor()
 
                 # テーブル存在確認

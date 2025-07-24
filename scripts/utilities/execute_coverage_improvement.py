@@ -454,7 +454,7 @@ class Test{class_name}:
             if test_file.exists():
                 continue
 
-            # Generate class name
+            # Generate class name:
             class_parts = module_name.split("_")
             class_name = "".join(part.capitalize() for part in class_parts)
 
@@ -495,10 +495,10 @@ class Test{class_name}:
         report = f"""# Test Coverage Improvement Report
 
 ## Summary
-- **Duration**: {duration:.1f} seconds
-- **Initial Coverage**: {self.results["initial_coverage"]:.1f}%
-- **Final Coverage**: {self.results["final_coverage"]:.1f}%
-- **Coverage Increase**: {self.results["final_coverage"] - self.results["initial_coverage"]:.1f}%
+- **Duration**: {duration:0.1f} seconds
+- **Initial Coverage**: {self.results["initial_coverage"]:0.1f}%
+- **Final Coverage**: {self.results["final_coverage"]:0.1f}%
+- **Coverage Increase**: {self.results["final_coverage"] - self.results["initial_coverage"]:0.1f}%
 
 ## Actions Taken
 - **Files Fixed**: {self.results["files_fixed"]}
@@ -506,10 +506,10 @@ class Test{class_name}:
 - **Errors Fixed**: {self.results["errors_fixed"]}
 
 ## Next Steps
-1. Review HTML coverage report at `htmlcov/index.html`
-2. Focus on uncovered critical paths
-3. Add integration tests for complex workflows
-4. Implement continuous coverage monitoring
+1.0 Review HTML coverage report at `htmlcov/index.html`
+2.0 Focus on uncovered critical paths
+3.0 Add integration tests for complex workflows
+4.0 Implement continuous coverage monitoring
 
 Generated: {datetime.now().isoformat()}
 """
@@ -519,7 +519,7 @@ Generated: {datetime.now().isoformat()}
 
         self.log(f"✅ Report saved to coverage_improvement_report.md")
         self.log(
-            f"📈 Coverage improved from {self.results['initial_coverage']:.1f}% to {self.results['final_coverage']:.1f}%"
+            f"📈 Coverage improved from {self.results['initial_coverage']:0.1f}% to {self.results['final_coverage']:0.1f}%"
         )
 
     def execute(self):
@@ -528,7 +528,7 @@ Generated: {datetime.now().isoformat()}
 
         # Get initial coverage
         self.results["initial_coverage"] = self.get_current_coverage()
-        self.log(f"📊 Initial coverage: {self.results['initial_coverage']:.1f}%")
+        self.log(f"📊 Initial coverage: {self.results['initial_coverage']:0.1f}%")
 
         # Execute improvement steps
         self.fix_import_errors()

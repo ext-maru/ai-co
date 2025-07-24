@@ -40,7 +40,7 @@ async def setup_pgvector():
     )
 
     try:
-        # 1. pgvector拡張機能の作成を試みる
+        # 1.0 pgvector拡張機能の作成を試みる
         print("📦 pgvector拡張機能の有効化...")
         try:
             await conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
@@ -53,7 +53,7 @@ async def setup_pgvector():
             print("その後、このスクリプトを再実行してください")
             return False
 
-        # 2. ベクトル検索用テーブルの作成
+        # 2.0 ベクトル検索用テーブルの作成
         print("\n📋 知識ベーステーブル作成中...")
         await conn.execute(
             """
@@ -81,7 +81,7 @@ async def setup_pgvector():
 
         print("✅ ベクトル検索テーブルを作成しました")
 
-        # 3. OpenAI APIでembedding生成テスト
+        # 3.0 OpenAI APIでembedding生成テスト
         print("\n🤖 OpenAI embedding生成テスト...")
         test_texts = [
             "エルダーズギルドは4賢者システムで構成される",
@@ -98,7 +98,7 @@ async def setup_pgvector():
             embeddings.append(embedding)
             print(f"✅ Embedding生成成功: {text[:30]}... (次元: {len(embedding)})")
 
-        # 4. データベースへの保存
+        # 4.0 データベースへの保存
         print("\n💾 ベクトルデータ保存中...")
         for i, (text, embedding) in enumerate(zip(test_texts, embeddings)):
             await conn.execute(
@@ -114,7 +114,7 @@ async def setup_pgvector():
             )
         print("✅ 3件のテストデータを保存しました")
 
-        # 5. ベクトル検索テスト
+        # 5.0 ベクトル検索テスト
         print("\n🔍 ベクトル検索テスト...")
         query_text = "4賢者について教えて"
 
@@ -142,10 +142,10 @@ async def setup_pgvector():
         print(f"\nクエリ: '{query_text}'")
         print("検索結果:")
         for row in results:
-            print(f"  - {row['title']} (類似度: {row['similarity']:.4f})")
+            print(f"  - {row['title']} (類似度: {row['similarity']:0.4f})")
             print(f"    内容: {row['content'][:60]}...")
 
-        # 6. 統計情報
+        # 6.0 統計情報
         count = await conn.fetchval(
             """
             SELECT COUNT(*) FROM knowledge_base.vector_documents
@@ -197,9 +197,9 @@ async def main():
     if success:
         print("\n✅ 知識のコア部分（ベクトル検索）が完全に動作しています！")
         print("\n📝 次のステップ:")
-        print("1. CLAUDE.mdなどの重要ドキュメントの移行")
-        print("2. 4賢者システムとの統合")
-        print("3. 本格的な知識ベース構築")
+        print("1.0 CLAUDE.mdなどの重要ドキュメントの移行")
+        print("2.0 4賢者システムとの統合")
+        print("3.0 本格的な知識ベース構築")
     else:
         print("\n⚠️  セットアップが未完了です")
         print("上記の指示に従って、pgvectorをインストールしてください")

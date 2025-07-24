@@ -23,8 +23,8 @@ def main():
     print("🤖 AI Command Executor Example")
     print("=" * 50)
 
-    # 1. システム情報取得コマンドを作成
-    print("\n1. Creating system info command...")
+    # 1.0 システム情報取得コマンドを作成
+    print("\n1.0 Creating system info command...")
     bash_cmd = """
 echo "=== System Information ==="
 echo "Hostname: $(hostname)"
@@ -40,8 +40,8 @@ ps aux | grep python | grep -v grep | wc -l
     result = helper.create_bash_command(bash_cmd, "system_info")
     print(result)
 
-    # 2. Pythonバージョン確認コマンド
-    print("\n2. Creating Python check command...")
+    # 2.0 Pythonバージョン確認コマンド
+    print("\n2.0 Creating Python check command...")
     python_cmd = """
 import sys
 import platform
@@ -64,8 +64,8 @@ for pkg in packages:
     result = helper.create_python_command(python_cmd, "python_check")
     print(result)
 
-    # 3. 保留中のコマンドを確認
-    print("\n3. Pending commands:")
+    # 3.0 保留中のコマンドを確認
+    print("\n3.0 Pending commands:")
     pending = helper.list_pending_commands()
     for cmd in pending:
         print(f"  - {cmd}")
@@ -77,8 +77,8 @@ for pkg in packages:
     # 実行を待つ
     time.sleep(10)
 
-    # 4. 結果を確認
-    print("\n4. Checking results...")
+    # 4.0 結果を確認
+    print("\n4.0 Checking results...")
 
     # システム情報の結果
     result = helper.check_results("system_info")
@@ -94,8 +94,8 @@ for pkg in packages:
         if "log_file" in result:
             print(f"Log file: {result['log_file']}")
 
-    # 5. 最新のログを表示
-    print("\n5. Latest log content:")
+    # 5.0 最新のログを表示
+    print("\n5.0 Latest log content:")
     print("-" * 50)
     latest_log = helper.get_latest_log()
     print(latest_log[:500] + "..." if len(latest_log) > 500 else latest_log)

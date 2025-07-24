@@ -140,7 +140,7 @@ class ElderFlowViolationResolver:
         if not self.violations_db.exists():
             return violations
 
-        conn = sqlite3.connect(self.violations_db)
+        conn = sqlite3connect(self.violations_db)
         cursor = conn.cursor()
 
         # テーブル構造確認
@@ -389,7 +389,6 @@ class ElderFlowViolationResolver:
     async def cleanup(self) -> None:
         """クリーンアップ処理"""
         self.logger.info(f"{self.__class__.__name__} クリーンアップ開始")
-
         try:
             # 実行中タスクのキャンセル
             if hasattr(self, 'active_tasks'):
@@ -417,7 +416,6 @@ class ElderFlowViolationResolver:
     async def initialize(self) -> None:
         """初期化処理"""
         self.logger.info(f"{self.__class__.__name__} 初期化開始")
-
         try:
             # 基本属性初期化
             self.running = False
@@ -454,7 +452,6 @@ class ElderFlowViolationResolver:
         await self.cleanup()
 
         self.logger.info(f"{self.__class__.__name__} 停止完了")'''
-
             else:
                 # その他のメソッドのデフォルト実装
                 impl = f'''
@@ -515,7 +512,7 @@ class ElderFlowViolationResolver:
         if not self.violations_db.exists():
             return
 
-        conn = sqlite3.connect(self.violations_db)
+        conn = sqlite3connect(self.violations_db)
         cursor = conn.cursor()
 
         for v in violations:
@@ -604,7 +601,6 @@ class ElderFlowViolationResolver:
     async def restart_quality_daemon(self) -> Dict[str, Any]:
         """品質デーモン再起動"""
         self.logger.info("🔄 品質デーモン再起動開始")
-
         result = {"status": "failed", "message": "", "daemon_pid": None}
 
         try:
@@ -639,7 +635,7 @@ class ElderFlowViolationResolver:
         violations = await self.analyze_violations()
 
         report = f"""
-# Elder Flow違反レポート
+# Elder Flow違反レポート:
 ## 生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 ### 📊 サマリー
@@ -674,11 +670,11 @@ class ElderFlowViolationResolver:
         # 推奨アクション
         report += """
 ### 🎯 推奨アクション
-1. **即座対応必要**: 全Critical違反の解決
-2. **アイデンティティ強化**: クロードエルダー自己認識の徹底
-3. **品質監視強化**: 品質デーモンの24時間稼働
-4. **自動修正**: Elder Flow Violation Resolverの定期実行
-5. **予防策**: 開発時のElder Flow遵守徹底
+1.0 **即座対応必要**: 全Critical違反の解決
+2.0 **アイデンティティ強化**: クロードエルダー自己認識の徹底
+3.0 **品質監視強化**: 品質デーモンの24時間稼働
+4.0 **自動修正**: Elder Flow Violation Resolverの定期実行
+5.0 **予防策**: 開発時のElder Flow遵守徹底
 """
 
         return report
@@ -696,24 +692,23 @@ class ElderFlowViolationResolver:
         }
 
         try:
-            # 1. 抽象メソッド違反解決
+            # 1.0 抽象メソッド違反解決
             self.logger.info("Phase 1: 抽象メソッド違反解決")
             results["abstract_methods"] = await self.resolve_abstract_violations()
 
-            # 2. アイデンティティ違反解決
+            # 2.0 アイデンティティ違反解決
             self.logger.info("Phase 2: アイデンティティ違反解決")
             results["identity"] = await self.resolve_identity_violations()
 
-            # 3. 品質デーモン再起動
+            # 3.0 品質デーモン再起動
             self.logger.info("Phase 3: 品質デーモン再起動")
             results["quality_daemon"] = await self.restart_quality_daemon()
 
-            # 4. レポート生成
+            # 4.0 レポート生成
             self.logger.info("Phase 4: レポート生成")
             report = await self.generate_violation_report()
 
-            report_path = f"knowledge_base/elder_flow_reports/violation_resolution_
-                f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+            report_path = f"knowledge_base/elder_flow_reports/violation_resolution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
             Path(report_path).parent.mkdir(parents=True, exist_ok=True)
 
             with open(report_path, "w") as f:

@@ -95,9 +95,9 @@ class TestDockerBuilds:
             
             # イメージサイズ検証 (軽量化確認)
             size_mb = image.attrs['Size'] / (1024 * 1024)
-            assert size_mb < 1000, f"Image too large: {size_mb:.1f}MB"
+            assert size_mb < 1000, f"Image too large: {size_mb:0.1f}MB"
             
-            print(f"FastAPI image built successfully: {size_mb:.1f}MB")
+            print(f"FastAPI image built successfully: {size_mb:0.1f}MB")
             
         except Exception as e:
             pytest.fail(f"FastAPI image build failed: {e}")
@@ -125,9 +125,9 @@ class TestDockerBuilds:
             
             # イメージサイズ検証
             size_mb = image.attrs['Size'] / (1024 * 1024)
-            assert size_mb < 1000, f"Image too large: {size_mb:.1f}MB"
+            assert size_mb < 1000, f"Image too large: {size_mb:0.1f}MB"
             
-            print(f"Celery image built successfully: {size_mb:.1f}MB")
+            print(f"Celery image built successfully: {size_mb:0.1f}MB")
             
         except Exception as e:
             pytest.fail(f"Celery image build failed: {e}")

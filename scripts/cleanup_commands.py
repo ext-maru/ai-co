@@ -82,9 +82,8 @@ class CommandCleaner:
                 return False
         return True
 
-    def clean_backup_files(self):
-        """*.bakファイルをクリーンアップ"""
-        print("\n🧹 バックアップファイル(.bak)のクリーンアップ...")
+    def clean_backup_files(self)print("\n🧹 バックアップファイル(.bak)のクリーンアップ...")
+    """*.bakファイルをクリーンアップ"""
 
         bak_files = []
         for dir_path in [
@@ -110,9 +109,8 @@ class CommandCleaner:
 
         print(f"  → {len(bak_files)}個のバックアップファイルを処理")
 
-    def clean_pycache(self):
-        """__pycache__ディレクトリをクリーンアップ"""
-        print("\n🧹 __pycache__ディレクトリのクリーンアップ...")
+    def clean_pycache(self)print("\n🧹 __pycache__ディレクトリのクリーンアップ...")
+    """__pycache__ディレクトリをクリーンアップ"""
 
         pycache_dirs = list(self.project_root.rglob("__pycache__"))
 
@@ -129,9 +127,8 @@ class CommandCleaner:
 
         print(f"  → {len(pycache_dirs)}個のキャッシュディレクトリを処理")
 
-    def consolidate_dialog_commands(self):
-        """対話型コマンドの整理"""
-        print("\n🔄 対話型コマンド(ai-dialog, ai-reply)の確認...")
+    def consolidate_dialog_commands(self)print("\n🔄 対話型コマンド(ai-dialog, ai-reply)の確認...")
+    """対話型コマンドの整理"""
 
         # 現在の実装状況を確認
         dialog_implementations = {
@@ -170,9 +167,8 @@ class CommandCleaner:
                         print(f"    → 古い実装の可能性")
                         self.deprecated_commands.append(cmd)
 
-    def check_duplicate_commands(self):
-        """重複機能のコマンドを確認"""
-        print("\n🔍 重複機能のチェック...")
+    def check_duplicate_commands(self)print("\n🔍 重複機能のチェック...")
+    """重複機能のコマンドを確認"""
 
         duplicates = {
             "ai-code": "ai-send のショートカット（code タスク専用）",
@@ -196,9 +192,8 @@ class CommandCleaner:
                 # ショートカットは便利なので保持
                 self.cleanup_summary["kept"].append(f"{cmd} (shortcut)")
 
-    def analyze_test_scripts(self):
-        """テストスクリプトの整理提案"""
-        print("\n🧪 テストスクリプトの分析...")
+    def analyze_test_scripts(self)print("\n🧪 テストスクリプトの分析...")
+    """テストスクリプトの整理提案"""
 
         test_scripts = []
         scripts_dir = self.project_root / "scripts"

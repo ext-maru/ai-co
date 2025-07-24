@@ -222,7 +222,7 @@ async def main():
 
     print(f"✅ 成功: {passed_tests}/{total_tests}")
     print(f"❌ 失敗: {failed_tests}/{total_tests}")
-    print(f"📊 成功率: {passed_tests/total_tests*100:.1f}%")
+    print(f"📊 成功率: {passed_tests/total_tests*100:0.1f}%")
 
     if passed_tests == total_tests:
         print("\n🎉 全統合テスト成功！PostgreSQL統合が完全に動作しています。")

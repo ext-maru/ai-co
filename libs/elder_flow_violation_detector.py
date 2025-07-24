@@ -3,11 +3,11 @@ Elder Flow Violation Detector
 グランドエルダーmaruの完了基準方針を厳格に適用するシステム
 
 完了と認められる条件:
-1. 本番環境で実際に動作する
-2. 全ての依存関係が実環境で検証済み
-3. エラーハンドリングが完備
-4. パフォーマンス基準を満たす
-5. セキュリティ要件を充足
+1.0 本番環境で実際に動作する
+2.0 全ての依存関係が実環境で検証済み
+3.0 エラーハンドリングが完備
+4.0 パフォーマンス基準を満たす
+5.0 セキュリティ要件を充足
 """
 
 import asyncio
@@ -262,7 +262,7 @@ class ElderFlowViolationDetector:
         violations = []
         warnings = []
 
-        # 1. 基本的な完了基準チェック
+        # 1.0 基本的な完了基準チェック
         criteria = CompletionCriteria()
 
         # テスト結果の検証
@@ -292,24 +292,24 @@ class ElderFlowViolationDetector:
             else:
                 violations.append("パフォーマンス基準を満たしていない")
 
-        # 2. コード品質チェック（シミュレーション）
+        # 2.0 コード品質チェック（シミュレーション）
         code_issues = await self._analyze_code_quality(implementation_path)
         if code_issues:
             violations.extend(code_issues)
 
-        # 3. セキュリティチェック
+        # 3.0 セキュリティチェック
         security_issues = await self._security_audit(implementation_path)
         if security_issues:
             violations.extend(security_issues)
 
-        # 4. ドキュメントチェック
+        # 4.0 ドキュメントチェック
         doc_issues = self._check_documentation(implementation_path)
         if doc_issues:
             warnings.extend(doc_issues)
         else:
             criteria.documentation_complete = True
 
-        # 5. 違反があれば例外を発生
+        # 5.0 違反があれば例外を発生
         if violations:
             self._log_violation(task_id, violations, warnings)
             raise ElderFlowViolation(
@@ -323,7 +323,7 @@ class ElderFlowViolationDetector:
                 )
             )
 
-        # 6. 承認記録を作成
+        # 6.0 承認記録を作成
         verification_record = {
             "task_id": task_id,
             "status": TaskCompletionStatus.COMPLETED.value,

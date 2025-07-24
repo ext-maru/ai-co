@@ -351,7 +351,7 @@ class SyntaxZeroCampaign:
             elapsed = time.time() - campaign_start
             remaining = self.target_duration - elapsed
             
-            print(f"\n🔄 Iteration {iteration} | ⏱️  {elapsed/60:.1f}min / {self.target_duration/60}min")
+            print(f"\n🔄 Iteration {iteration} | ⏱️  {elapsed/60:0.1f}min / {self.target_duration/60}min")
             
             # エラーファイル検出
             error_files = self.find_all_syntax_errors()
@@ -399,14 +399,14 @@ class SyntaxZeroCampaign:
         
         print("\n" + "=" * 60)
         print("🏁 SYNTAX ZERO CAMPAIGN - FINAL REPORT")
-        print(f"⏱️  Total Duration: {duration/60:.1f} minutes")
+        print(f"⏱️  Total Duration: {duration/60:0.1f} minutes")
         print(f"🔧 Total Files Fixed: {total_fixed}")
         print(f"📊 Remaining Errors: {len(final_errors)}")
         
         if len(final_errors) == 0:
             print("🎯 MISSION ACCOMPLISHED: ZERO SYNTAX ERRORS!")
         else:
-            print(f"📈 Success Rate: {total_fixed/(total_fixed + len(final_errors))*100:.1f}%")
+            print(f"📈 Success Rate: {total_fixed/(total_fixed + len(final_errors))*100:0.1f}%")
         
         # 詳細レポート保存
         report = {

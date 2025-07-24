@@ -95,7 +95,7 @@ class KnowledgeGrimoireAdapter:
                 grimoire_knowledge.append(
                     f"""
 ## 📜 {result.get('spell_name', result.get('id', 'unknown'))} (魔法書)
-スコア: {result.get('similarity_score', 0.5):.3f} | ソース: {result.get('source', 'mock_grimoire')}
+スコア: {result.get('similarity_score', 0.5):0.3f} | ソース: {result.get('source', 'mock_grimoire')}
 
 {result.get('content', '')}
 """

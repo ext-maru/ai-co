@@ -42,7 +42,7 @@ def test_monitoring_performance_improvement():
     assert monitor.monitoring_interval >= 1.0, "監視間隔が短すぎます"
     assert elapsed_time < 6.0, "処理時間が長すぎます"
     
-    print(f"✅ モニタリングパフォーマンス改善テスト成功 - 処理時間: {elapsed_time:.2f}秒")
+    print(f"✅ モニタリングパフォーマンス改善テスト成功 - 処理時間: {elapsed_time:0.2f}秒")
 
 
 def test_efficient_worker_check():
@@ -68,9 +68,9 @@ def test_efficient_worker_check():
     elapsed_time = time.time() - start_time
     
     # 100ワーカーのチェックが1秒以内に完了すること
-    assert elapsed_time < 1.0, f"ヘルスチェックが遅すぎます: {elapsed_time:.2f}秒"
+    assert elapsed_time < 1.0, f"ヘルスチェックが遅すぎます: {elapsed_time:0.2f}秒"
     
-    print(f"✅ 効率的ワーカーチェックテスト成功 - 100ワーカー/{elapsed_time:.2f}秒")
+    print(f"✅ 効率的ワーカーチェックテスト成功 - 100ワーカー/{elapsed_time:0.2f}秒")
 
 
 def test_async_monitoring():

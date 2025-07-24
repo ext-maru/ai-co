@@ -296,7 +296,7 @@ class RealityAdaptationEngine:
 
         logger.info(f"✨ 現実適応完了: {adaptation_id}")
         logger.info(f"🎭 適応成功: {adaptation_result.execution_success}")
-        logger.info(f"📊 効果: {adaptation_result.adaptation_effectiveness:.2f}")
+        logger.info(f"📊 効果: {adaptation_result.adaptation_effectiveness:0.2f}")
 
         return adaptation_result
 
@@ -342,8 +342,8 @@ class RealityAdaptationEngine:
         self.reality_snapshots[snapshot.snapshot_id] = snapshot
 
         logger.info(f"📸 現実スナップショット完了: {snapshot.snapshot_id}")
-        logger.info(f"⚖️ 安定性指標: {stability_index:.3f}")
-        logger.info(f"🌀 複雑度: {complexity_level:.3f}")
+        logger.info(f"⚖️ 安定性指標: {stability_index:0.3f}")
+        logger.info(f"🌀 複雑度: {complexity_level:0.3f}")
 
         return snapshot
 

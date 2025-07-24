@@ -164,7 +164,7 @@ class ProphecyDashboardCommand(BaseCommand):
                 self.info(f"   📋 {prophecy['prophecy_name']}")
                 self.info(f"      📊 {prophecy['lifecycle_stage']}")
                 self.info(f"      🎯 リスク: {prophecy['risk_level']}")
-                self.info(f"      ✅ 品質: {prophecy['quality_score']:.1%}")
+                self.info(f"      ✅ 品質: {prophecy['quality_score']:0.1%}")
                 self.info(f"      🔖 v{prophecy['latest_version']}")
                 self.info("")
 
@@ -212,10 +212,10 @@ class ProphecyDashboardCommand(BaseCommand):
 
             self.info("🎯 現在のメトリクス:")
             self.info(f"   📈 Git活動: {metrics.get('git_commits_7d', 0)}コミット (7日間)")
-            self.info(f"   ⚙️  Pre-commit: {metrics.get('precommit_success_rate', 0):.1f}% 成功率")
+            self.info(f"   ⚙️  Pre-commit: {metrics.get('precommit_success_rate', 0):0.1f}% 成功率")
             self.info(f"   🐍 Python: {metrics.get('python_syntax_errors', 0)}件の構文エラー")
-            self.info(f"   👥 チーム満足度: {metrics.get('team_satisfaction', 0):.1f}%")
-            self.info(f"   🔧 ツール理解度: {metrics.get('tool_understanding_black', 0):.1f}%")
+            self.info(f"   👥 チーム満足度: {metrics.get('team_satisfaction', 0):0.1f}%")
+            self.info(f"   🔧 ツール理解度: {metrics.get('tool_understanding_black', 0):0.1f}%")
 
             loop.close()
 
@@ -239,7 +239,7 @@ class ProphecyDashboardCommand(BaseCommand):
         self.info(f"   🏛️ 開催回数: {council_stats['total_council_sessions']}回")
         self.info(f"   🔧 調整実行: {council_stats['total_adjustments']}件")
         self.info(f"   📅 最近30日: {council_stats['recent_sessions_30d']}回")
-        self.info(f"   📈 調整率: {council_stats['adjustment_rate']:.1%}")
+        self.info(f"   📈 調整率: {council_stats['adjustment_rate']:0.1%}")
 
         if council_stats['last_session']:
             self.info(f"   ⏰ 最終開催: {council_stats['last_session']}")

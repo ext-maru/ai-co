@@ -12,7 +12,7 @@ sys.path.insert(0, str(project_root))
 
 print("🔍 改善内容のテスト...\n")
 
-# 1. 賢者の実装テスト
+# 1.0 賢者の実装テスト
 print("1️⃣ 賢者実装のテスト")
 try:
     from libs.task_sage import TaskSage
@@ -48,7 +48,7 @@ try:
 except Exception as e:
     print(f"❌ エラー: {e}")
 
-# 2. cronスクリプトの確認
+# 2.0 cronスクリプトの確認
 print("\n2️⃣ Cronスクリプトの改善確認")
 cron_script = Path("/home/aicompany/ai_co/scripts/enhanced_auto_pr_cron.sh")
 if cron_script.exists():
@@ -65,7 +65,7 @@ if cron_script.exists():
 else:
     print("❌ Cronスクリプトが見つかりません")
 
-# 3. Issue #141の状況
+# 3.0 Issue #141の状況
 print("\n3️⃣ Issue #141の解決状況")
 print("✅ Git操作エラーの修正: 完了")
 print("✅ 3賢者の実装: 完了")

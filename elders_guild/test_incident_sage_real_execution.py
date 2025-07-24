@@ -53,7 +53,7 @@ class IncidentSageRealExecution:
         """インシデント管理フロー検証"""
         print("\n🚨 === インシデント管理フロー検証 ===")
         
-        # 1. インシデント検知
+        # 1.0 インシデント検知
         print("\n1️⃣ インシデント検知テスト")
         detection_data = {
             "anomaly_data": {
@@ -79,9 +79,9 @@ class IncidentSageRealExecution:
             print(f"      - 重要度: {result['data']['severity']}")
             print(f"      - ステータス: {result['data']['status']}")
             print(f"      - 自動対応: {result['data']['auto_response_triggered']}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
             
-            # 2. インシデント対応
+            # 2.0 インシデント対応
             print("\n2️⃣ インシデント対応テスト")
             response_data = {"incident_id": incident_id}
             
@@ -92,11 +92,11 @@ class IncidentSageRealExecution:
             if response_result.get("success"):
                 print(f"   ✅ インシデント対応成功")
                 print(f"      - 対応状態: {response_result['data']['response_status']}")
-                print(f"      - 効果スコア: {response_result['data']['effectiveness_score']:.1f}")
+                print(f"      - 効果スコア: {response_result['data']['effectiveness_score']:0.1f}")
                 print(f"      - 実行ステップ: {len(response_result['data']['execution_steps'])}個")
-                print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
                 
-                # 3. 自動修復
+                # 3.0 自動修復
                 print("\n3️⃣ 自動修復テスト")
                 remediation_data = {"incident_id": incident_id}
                 
@@ -109,13 +109,13 @@ class IncidentSageRealExecution:
                     print(f"      - 修復状態: {remediation_result['data']['status']}")
                     if remediation_result['data']['status'] == "success":
                         print(f"      - 実行アクション: {', '.join(remediation_result['data']['actions_taken'])}")
-                    print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+                    print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
     
     async def test_quality_management_flow(self):
         """品質管理フロー検証"""
         print("\n\n📊 === 品質管理フロー検証 ===")
         
-        # 1. 品質基準登録
+        # 1.0 品質基準登録
         print("\n1️⃣ 品質基準登録テスト")
         standard_data = {
             "quality_standard": {
@@ -150,9 +150,9 @@ class IncidentSageRealExecution:
             print(f"   ✅ 品質基準登録成功")
             print(f"      - ID: {standard_id}")
             print(f"      - メトリクス数: {result['data']['metrics_count']}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
             
-            # 2. 品質評価
+            # 2.0 品質評価
             print("\n2️⃣ 品質評価テスト")
             assessment_data = {
                 "standard_id": standard_id,
@@ -171,16 +171,16 @@ class IncidentSageRealExecution:
             if assessment_result.get("success"):
                 print(f"   ✅ 品質評価完了")
                 print(f"      - 評価ID: {assessment_result['data']['assessment_id']}")
-                print(f"      - 総合スコア: {assessment_result['data']['overall_score']:.1f}%")
+                print(f"      - 総合スコア: {assessment_result['data']['overall_score']:0.1f}%")
                 print(f"      - コンプライアンス: {'✅' if assessment_result['data']['is_compliant'] else '❌'}")
                 print(f"      - 違反項目: {len(assessment_result['data']['violations'])}個")
-                print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
     
     async def test_alert_monitoring_flow(self):
         """アラート・監視フロー検証"""
         print("\n\n🚨 === アラート・監視フロー検証 ===")
         
-        # 1. アラートルール作成
+        # 1.0 アラートルール作成
         print("\n1️⃣ アラートルール作成テスト")
         alert_data = {
             "alert_rule": {
@@ -202,9 +202,9 @@ class IncidentSageRealExecution:
             self.alert_rule_ids.append(rule_id)
             print(f"   ✅ アラートルール作成成功")
             print(f"      - ID: {rule_id}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
             
-            # 2. アラートルール評価
+            # 2.0 アラートルール評価
             print("\n2️⃣ アラートルール評価テスト")
             eval_data = {
                 "metrics": {
@@ -225,9 +225,9 @@ class IncidentSageRealExecution:
                 if eval_result['data']['triggered_alerts']:
                     for alert in eval_result['data']['triggered_alerts']:
                         print(f"      - {alert['rule_name']} ({alert['severity']})")
-                print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 3. 監視対象登録
+        # 3.0 監視対象登録
         print("\n3️⃣ 監視対象登録テスト")
         monitor_data = {
             "target": {
@@ -248,9 +248,9 @@ class IncidentSageRealExecution:
             self.monitoring_target_ids.append(target_id)
             print(f"   ✅ 監視対象登録成功")
             print(f"      - ID: {target_id}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
             
-            # 4. ヘルスチェック
+            # 4.0 ヘルスチェック
             print("\n4️⃣ ヘルスチェックテスト")
             health_data = {"target_id": target_id}
             
@@ -262,8 +262,8 @@ class IncidentSageRealExecution:
                 print(f"   ✅ ヘルスチェック完了")
                 print(f"      - ステータス: {health_result['data']['status']}")
                 print(f"      - 応答時間: {health_result['data']['response_time_ms']}ms")
-                print(f"      - 稼働率: {health_result['data']['uptime_percentage']:.1f}%")
-                print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - 稼働率: {health_result['data']['uptime_percentage']:0.1f}%")
+                print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
     
     async def test_analytics_flow(self):
         """分析・学習フロー検証"""
@@ -280,7 +280,7 @@ class IncidentSageRealExecution:
                 }
             })
         
-        # 1. パターン学習
+        # 1.0 パターン学習
         print("\n1️⃣ インシデントパターン学習テスト")
         start_time = time.time()
         result = await self.processor.process_action("learn_incident_patterns", {})
@@ -292,9 +292,9 @@ class IncidentSageRealExecution:
             print(f"      - 学習パターン数: {result['data']['patterns_learned']}")
             if 'patterns_by_category' in result['data']:
                 print(f"      - カテゴリ別パターン: {json.dumps(result['data']['patterns_by_category'])}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 2. 相関分析
+        # 2.0 相関分析
         print("\n2️⃣ 相関分析テスト")
         start_time = time.time()
         result = await self.processor.process_action("analyze_correlations", {})
@@ -304,9 +304,9 @@ class IncidentSageRealExecution:
             print(f"   ✅ 相関分析完了")
             print(f"      - 分析インシデント数: {result['data']['analyzed_incidents']}")
             print(f"      - 相関検出数: {len(result['data']['correlations'])}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 3. 類似インシデント検索
+        # 3.0 類似インシデント検索
         print("\n3️⃣ 類似インシデント検索テスト")
         search_data = {"query": "payment service response time"}
         
@@ -319,15 +319,15 @@ class IncidentSageRealExecution:
             print(f"      - マッチ数: {result['data']['total_matches']}")
             if result['data']['similar_incidents']:
                 top_match = result['data']['similar_incidents'][0]
-                print(f"      - 最高類似度: {top_match['similarity']:.2f}")
+                print(f"      - 最高類似度: {top_match['similarity']:0.2f}")
                 print(f"      - 最類似: {top_match['title']}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
     
     async def test_statistics_flow(self):
         """統計・メトリクスフロー検証"""
         print("\n\n📊 === 統計・メトリクスフロー検証 ===")
         
-        # 1. 包括的統計
+        # 1.0 包括的統計
         print("\n1️⃣ 包括的統計取得テスト")
         start_time = time.time()
         result = await self.processor.process_action("get_statistics", {})
@@ -338,16 +338,16 @@ class IncidentSageRealExecution:
             print(f"   ✅ 統計取得成功")
             print(f"      【インシデント統計】")
             print(f"      - 総数: {stats['incident_statistics']['total_incidents']}")
-            print(f"      - 解決率: {stats['incident_statistics']['resolution_rate']:.1f}%")
-            print(f"      - 平均解決時間: {stats['incident_statistics']['average_resolution_time_minutes']:.1f}分")
+            print(f"      - 解決率: {stats['incident_statistics']['resolution_rate']:0.1f}%")
+            print(f"      - 平均解決時間: {stats['incident_statistics']['average_resolution_time_minutes']:0.1f}分")
             print(f"      【品質統計】")
             print(f"      - 評価数: {stats['quality_statistics']['total_assessments']}")
-            print(f"      - 平均スコア: {stats['quality_statistics']['average_quality_score']:.1f}%")
+            print(f"      - 平均スコア: {stats['quality_statistics']['average_quality_score']:0.1f}%")
             print(f"      【アラート統計】")
             print(f"      - アクティブルール: {stats['alert_statistics']['alert_rules_active']}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 2. 運用メトリクス
+        # 2.0 運用メトリクス
         print("\n2️⃣ 運用メトリクス取得テスト")
         start_time = time.time()
         result = await self.processor.process_action("get_operational_metrics", {})
@@ -362,9 +362,9 @@ class IncidentSageRealExecution:
             print(f"      - 品質評価実施数: {op_metrics.get('quality_assessments_performed', 0)}")
             print(f"      - パターン学習数: {op_metrics.get('pattern_learning_count', 0)}")
             print(f"      - 自動修復実行数: {op_metrics.get('automated_remediations', 0)}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 3. ヘルスチェック
+        # 3.0 ヘルスチェック
         print("\n3️⃣ システムヘルスチェックテスト")
         start_time = time.time()
         result = await self.processor.process_action("health_check", {})
@@ -376,7 +376,7 @@ class IncidentSageRealExecution:
             print(f"      - ステータス: {health['status']}")
             print(f"      - エージェント: {health['agent_name']}")
             print(f"      - 管理インシデント数: {health['incidents_managed']}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
     
     async def run_all_tests(self):
         """全テスト実行"""

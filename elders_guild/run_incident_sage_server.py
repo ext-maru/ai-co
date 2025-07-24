@@ -69,7 +69,7 @@ async def initialize_agent():
             logger.info(f"📊 Agent Info:")
             logger.info(f"   - Agent Name: {skills_info['agent_name']}")
             logger.info(f"   - Total Skills: {skills_info['total_skills']}")
-            logger.info(f"   - Categories: {json.dumps(skills_info['categories'], indent=2)}")
+            logger.info(f"   - Categories: {json.dumps(skills_info['categories'], indent}")
         else:
             logger.error("❌ Failed to initialize Incident Sage Agent")
             
@@ -175,7 +175,7 @@ def a2a_endpoint():
         skill_name = determine_skill(command_data)
         
         logger.info(f"🎯 Routing to skill: {skill_name}")
-        logger.info(f"📨 Command data: {json.dumps(command_data, ensure_ascii=False)}")
+        logger.info(f"📨 Command data: {json.dumps(command_data, ensure_ascii}")
         
         # スキル実行
         loop = get_or_create_event_loop()
@@ -328,9 +328,8 @@ def list_skills():
         }), 503
 
 
-def main():
-    """メイン実行"""
-    logger.info("🚨 Starting Incident Sage A2A Server...")
+def main()logger.info("🚨 Starting Incident Sage A2A Server...")
+"""メイン実行"""
     
     # エージェント初期化
     loop = get_or_create_event_loop()
@@ -341,7 +340,7 @@ def main():
         sys.exit(1)
     
     # サーバー起動
-    logger.info("🚀 Starting Flask server on port 8810...")
+    logger.info("🚀 Starting Flask server on port 8810.0..")
     logger.info("📡 A2A endpoint: http://localhost:8810/a2a")
     logger.info("🏥 Health check: http://localhost:8810/health")
     logger.info("📋 Skills list: http://localhost:8810/skills")

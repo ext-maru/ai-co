@@ -265,7 +265,7 @@ class EnhancedAutonomousLearningSystem:
     def _init_database(self):
         """強化版データベース初期化"""
         self.db_path.parent.mkdir(exist_ok=True)
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         cursor = conn.cursor()
 
         # 強化版学習パターンテーブル
@@ -970,7 +970,7 @@ class EnhancedAutonomousLearningSystem:
         self, analysis: Dict[str, Any], optimal_params: Dict[str, Any]
     ):
         """メタ学習セッションの記録"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         cursor = conn.cursor()
 
         try:
@@ -1336,6 +1336,7 @@ class EnhancedAutonomousLearningSystem:
 
 # デモ実行
 if __name__ == "__main__":
+    pass
 
     async def demo():
         """demoメソッド"""
@@ -1345,28 +1346,28 @@ if __name__ == "__main__":
         learning_system = EnhancedAutonomousLearningSystem()
 
         # システム初期化
-        print("1. Initializing enhanced learning system...")
+        print("1.0 Initializing enhanced learning system...")
         await learning_system.four_sages.initialize()
 
         # 学習レポート生成
-        print("2. Generating enhanced learning report...")
+        print("2.0 Generating enhanced learning report...")
         report = learning_system.get_enhanced_learning_report()
 
         print("\n📊 Enhanced Learning Report:")
         print(f"  🧠 Total Patterns: {report['learning_metrics']['total_patterns']}")
         print(
-            f"  ⚡ Learning Velocity: {report['learning_metrics']['learning_velocity']:.3f}"
+            f"  ⚡ Learning Velocity: {report['learning_metrics']['learning_velocity']:0.3f}"
         )
         print(
-            f"  🎯 Adaptation Efficiency: {report['learning_metrics']['adaptation_efficiency']:.3f}"
+            f"  🎯 Adaptation Efficiency: {report['learning_metrics']['adaptation_efficiency']:0.3f}"
         )
         print(f"  🏥 System Health: {report['predictive_analysis']['system_health']}")
 
         print("\n🔮 Predictive Analysis:")
         future_perf = report["predictive_analysis"]["future_performance"]
-        print(f"  📈 Predicted Accuracy: {future_perf['predicted_accuracy']:.3f}")
-        print(f"  📊 Trend: {future_perf['trend']:.3f}")
-        print(f"  🎯 Confidence: {future_perf['confidence']:.3f}")
+        print(f"  📈 Predicted Accuracy: {future_perf['predicted_accuracy']:0.3f}")
+        print(f"  📊 Trend: {future_perf['trend']:0.3f}")
+        print(f"  🎯 Confidence: {future_perf['confidence']:0.3f}")
 
         print("\n💡 Recommendations:")
         for i, rec in enumerate(report["recommendations"], 1):

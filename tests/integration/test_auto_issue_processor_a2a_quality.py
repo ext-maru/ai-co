@@ -15,10 +15,8 @@ class TestAutoIssueProcessorA2AQuality:
     """A2A実装の品質確認テスト"""
 
     @pytest.mark.asyncio
-    async def test_parallel_processing_performance(self):
-        """並列処理のパフォーマンステスト"""
-        with patch("libs.integrations.github.auto_issue_processor.Github") as mock_github:
-            with patch("libs.integrations.github.auto_issue_processor.ClaudeCLIExecutor") as mock_cli:
+    async def test_parallel_processing_performance(self)with patch("libs.integrations.github.auto_issue_processor.Github") as mock_githubwith patch("libs.integrations.github.auto_issue_processor.ClaudeCLIExecutor") as mock_cli:
+    """並列処理のパフォーマンステスト"""
                 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
                 
                 # モックの設定
@@ -58,13 +56,11 @@ class TestAutoIssueProcessorA2AQuality:
                 # （順次処理なら5秒かかる）
                 execution_time = end_time - start_time
                 assert execution_time < 1.5, f"Execution too slow: {execution_time}s"
-                print(f"✅ Parallel processing completed in {execution_time:.2f}s")
+                print(f"✅ Parallel processing completed in {execution_time:0.2f}s")
 
     @pytest.mark.asyncio
-    async def test_context_isolation(self):
-        """コンテキスト分離の確認"""
-        with patch("libs.integrations.github.auto_issue_processor.Github") as mock_github:
-            with patch("libs.integrations.github.auto_issue_processor.ClaudeCLIExecutor") as mock_cli:
+    async def test_context_isolation(self)with patch("libs.integrations.github.auto_issue_processor.Github") as mock_githubwith patch("libs.integrations.github.auto_issue_processor.ClaudeCLIExecutor") as mock_cli:
+    """コンテキスト分離の確認"""
                 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
                 
                 # モックの設定
@@ -107,10 +103,8 @@ class TestAutoIssueProcessorA2AQuality:
                 print("✅ Context isolation verified")
 
     @pytest.mark.asyncio
-    async def test_error_resilience(self):
-        """エラー耐性のテスト"""
-        with patch("libs.integrations.github.auto_issue_processor.Github") as mock_github:
-            with patch("libs.integrations.github.auto_issue_processor.ClaudeCLIExecutor") as mock_cli:
+    async def test_error_resilience(self)with patch("libs.integrations.github.auto_issue_processor.Github") as mock_githubwith patch("libs.integrations.github.auto_issue_processor.ClaudeCLIExecutor") as mock_cli:
+    """エラー耐性のテスト"""
                 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
                 
                 # モックの設定
@@ -158,9 +152,8 @@ class TestAutoIssueProcessorA2AQuality:
                 print("✅ Error resilience confirmed - partial failures don't stop other issues")
 
     @pytest.mark.asyncio
-    async def test_existing_pr_handling(self):
-        """既存PR処理の確認"""
-        with patch("libs.integrations.github.auto_issue_processor.Github") as mock_github:
+    async def test_existing_pr_handling(self)with patch("libs.integrations.github.auto_issue_processor.Github") as mock_github:
+    """既存PR処理の確認"""
             from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
             
             # モックの設定

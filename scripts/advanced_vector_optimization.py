@@ -271,13 +271,13 @@ async def test_advanced_optimization():
     await optimizer.connect()
 
     try:
-        # 1. テーブルセットアップ
+        # 1.0 テーブルセットアップ
         await optimizer.setup_advanced_tables()
 
         # 既存データクリア
         await optimizer.conn.execute("TRUNCATE knowledge_base.advanced_documents")
 
-        # 2. 高品質テストデータの投入
+        # 2.0 高品質テストデータの投入
         print("\n📝 高品質テストデータ投入中...")
 
         test_documents = [
@@ -319,7 +319,7 @@ async def test_advanced_optimization():
 
         print(f"✅ {len(test_documents)}件のドキュメントを投入完了")
 
-        # 3. 高度検索テスト
+        # 3.0 高度検索テスト
         print("\n🔍 高度検索テスト実行...")
 
         test_queries = [
@@ -340,34 +340,34 @@ async def test_advanced_optimization():
             if results:
                 top_score = results[0]["final_score"]
                 all_scores.append(top_score)
-                print(f"  🎯 最高スコア: {top_score:.4f}")
+                print(f"  🎯 最高スコア: {top_score:0.4f}")
 
                 for i, result in enumerate(results):
                     print(
-                        f"  {i+1}. {result['title']} (スコア: {result['final_score']:.4f})"
+                        f"  {i+1}. {result['title']} (スコア: {result['final_score']:0.4f})"
                     )
                     print(
-                        f"     ベクトル: {result['vector_total']:.4f}, テキスト: {result['text_total']:.4f}"
+                        f"     ベクトル: {result['vector_total']:0.4f}, テキスト: {result['text_total']:0.4f}"
                     )
 
-        # 4. 結果分析
+        # 4.0 結果分析
         if all_scores:
             avg_score = sum(all_scores) / len(all_scores)
             max_score = max(all_scores)
             min_score = min(all_scores)
 
             print(f"\n📊 検索精度分析:")
-            print(f"  平均スコア: {avg_score:.4f}")
-            print(f"  最高スコア: {max_score:.4f}")
-            print(f"  最低スコア: {min_score:.4f}")
+            print(f"  平均スコア: {avg_score:0.4f}")
+            print(f"  最高スコア: {max_score:0.4f}")
+            print(f"  最低スコア: {min_score:0.4f}")
 
             # 95%以上の類似度換算
             similarity_avg = avg_score * 100
             similarity_max = max_score * 100
 
             print(f"\n🎯 類似度換算:")
-            print(f"  平均類似度: {similarity_avg:.1f}%")
-            print(f"  最高類似度: {similarity_max:.1f}%")
+            print(f"  平均類似度: {similarity_avg:0.1f}%")
+            print(f"  最高類似度: {similarity_max:0.1f}%")
 
             if similarity_max >= 95.0:
                 print("\n🎉 目標達成！95%以上の類似度を実現しました！")
@@ -394,4 +394,4 @@ async def test_advanced_optimization():
 
 if __name__ == "__main__":
     max_similarity = asyncio.run(test_advanced_optimization())
-    print(f"\n🏆 最終達成類似度: {max_similarity:.1f}%")
+    print(f"\n🏆 最終達成類似度: {max_similarity:0.1f}%")

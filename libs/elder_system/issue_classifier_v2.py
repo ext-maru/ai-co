@@ -4,10 +4,10 @@ Issue Type Classifier V2
 Phase 2強化版: Elder Flow適用可否の明確な判定機能追加
 
 主な強化点:
-1. 設計系/実装系の明確な判定（Elder Flow適用可否）
-2. 信頼度スコアの精度向上
-3. 技術キーワード辞書の大幅拡充
-4. より詳細な推奨処理フロー
+1.0 設計系/実装系の明確な判定（Elder Flow適用可否）
+2.0 信頼度スコアの精度向上
+3.0 技術キーワード辞書の大幅拡充
+4.0 より詳細な推奨処理フロー
 """
 
 import re
@@ -81,9 +81,8 @@ class EnhancedClassificationResult:
 class IssueTypeClassifierV2:
     """Phase 2強化版Issue種別判定システム"""
     
-    def __init__(self, config:
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         """初期化メソッド"""
-    Optional[Dict[str, Any]] = None):
         self.config = config or {}
         self._initialize_enhanced_keywords()
         self._initialize_technology_patterns()
@@ -628,7 +627,7 @@ class IssueTypeClassifierV2:
 ## 基本分類
 - **カテゴリー**: {result.category.value}
 - **詳細タイプ**: {result.issue_type.value}
-- **信頼度**: {result.confidence:.2%}
+- **信頼度**: {result.confidence:0.2%}
 
 ## Elder Flow判定
 - **推奨**: {'✅ Yes' if result.elder_flow_recommended else '❌ No'}
@@ -636,7 +635,7 @@ class IssueTypeClassifierV2:
 
 ## 詳細情報
 - **優先度**: {result.priority}
-- **複雑度スコア**: {result.complexity_score:.1f}/100
+- **複雑度スコア**: {result.complexity_score:0.1f}/100
 - **リスクレベル**: {result.risk_level}
 - **推奨処理フロー**: {result.recommended_flow}
 
@@ -674,4 +673,4 @@ if __name__ == "__main__":
         print(f"\nIssue: {issue['title']}")
         print(f"Elder Flow推奨: {'Yes' if result.elder_flow_recommended else 'No'}")
         print(f"理由: {result.elder_flow_reason}")
-        print(f"信頼度: {result.confidence:.2%}")
+        print(f"信頼度: {result.confidence:0.2%}")

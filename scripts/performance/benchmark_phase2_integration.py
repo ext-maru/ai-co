@@ -110,7 +110,7 @@ class Phase2BenchmarkSuite:
         
         self.results['phase2_components']['adaptive_concurrency'] = results
         print(f"✅ Adaptive Concurrency: {results['scaling_events']} scaling events, "
-              f"avg decision time: {results['avg_decision_time_ms']:.2f}ms")
+              f"avg decision time: {results['avg_decision_time_ms']:0.2f}ms")
     
     async def benchmark_process_pool(self):
         """Benchmark advanced process pool"""
@@ -171,8 +171,8 @@ class Phase2BenchmarkSuite:
             pool.shutdown()
         
         self.results['phase2_components']['process_pool'] = results
-        print(f"✅ Process Pool: avg task time: {statistics.mean(results['task_times']):.2f}ms, "
-              f"warm pool benefit: {results['warm_pool_benefit']:.1f}%")
+        print(f"✅ Process Pool: avg task time: {statistics.mean(results['task_times']):0.2f}ms, "
+              f"warm pool benefit: {results['warm_pool_benefit']:0.1f}%")
     
     async def benchmark_queue_manager(self):
         """Benchmark distributed queue manager"""
@@ -232,8 +232,8 @@ class Phase2BenchmarkSuite:
         results['metrics'] = queue.export_stats()
         
         self.results['phase2_components']['queue_manager'] = results
-        print(f"✅ Queue Manager: avg enqueue: {statistics.mean(results['enqueue_times']):.2f}ms, "
-              f"priority accuracy: {results['priority_accuracy']:.1f}%")
+        print(f"✅ Queue Manager: avg enqueue: {statistics.mean(results['enqueue_times']):0.2f}ms, "
+              f"priority accuracy: {results['priority_accuracy']:0.1f}%")
     
     async def benchmark_integrated_system(self):
         """Benchmark integrated Phase 2 system"""
@@ -320,8 +320,8 @@ class Phase2BenchmarkSuite:
         
         # Print summary
         for test, data in results.items():
-            print(f"✅ {test}: {data['throughput']:.1f} issues/sec, "
-                  f"{data['time_per_issue']:.1f}ms per issue")
+            print(f"✅ {test}: {data['throughput']:0.1f} issues/sec, "
+                  f"{data['time_per_issue']:0.1f}ms per issue")
     
     async def compare_with_phase1(self):
         """Compare Phase 2 performance with Phase 1 baseline"""
@@ -350,10 +350,10 @@ class Phase2BenchmarkSuite:
         
         self.results['performance_comparison'] = comparison
         
-        print(f"✅ Phase 1 Best: {comparison['phase1_best']:.1f} issues/sec")
-        print(f"✅ Phase 2 Integrated: {comparison['phase2_integrated']:.1f} issues/sec")
-        print(f"✅ Improvement: {comparison['improvement_percent']:.1f}%")
-        print(f"✅ Target Achievement: {comparison['target_achievement']:.1f}%")
+        print(f"✅ Phase 1 Best: {comparison['phase1_best']:0.1f} issues/sec")
+        print(f"✅ Phase 2 Integrated: {comparison['phase2_integrated']:0.1f} issues/sec")
+        print(f"✅ Improvement: {comparison['improvement_percent']:0.1f}%")
+        print(f"✅ Target Achievement: {comparison['target_achievement']:0.1f}%")
     
     def generate_report(self):
         """Generate benchmark report"""
@@ -383,16 +383,16 @@ class Phase2BenchmarkSuite:
         
         if 'process_pool' in self.results['phase2_components']:
             pp = self.results['phase2_components']['process_pool']
-            print(f"Process Pool: {pp['warm_pool_benefit']:.1f}% warm pool benefit")
+            print(f"Process Pool: {pp['warm_pool_benefit']:0.1f}% warm pool benefit")
         
         if 'queue_manager' in self.results['phase2_components']:
             qm = self.results['phase2_components']['queue_manager']
-            print(f"Queue Manager: {qm['priority_accuracy']:.1f}% priority accuracy")
+            print(f"Queue Manager: {qm['priority_accuracy']:0.1f}% priority accuracy")
         
         if 'performance_comparison' in self.results:
             pc = self.results['performance_comparison']
-            print(f"\nPerformance Gain: {pc['improvement_percent']:.1f}% over Phase 1")
-            print(f"Target Achievement: {pc['target_achievement']:.1f}%")
+            print(f"\nPerformance Gain: {pc['improvement_percent']:0.1f}% over Phase 1")
+            print(f"Target Achievement: {pc['target_achievement']:0.1f}%")
 
 
 async def main():

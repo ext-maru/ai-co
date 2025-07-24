@@ -34,7 +34,7 @@ async def test_full_issue_processing():
     
     print(f"\n📊 初期状態:")
     print(f"  - 開始時刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"  - 初期メモリ: {start_memory:.1f} MB")
+    print(f"  - 初期メモリ: {start_memory:0.1f} MB")
     
     try:
         # AutoIssueProcessorの初期化
@@ -42,7 +42,7 @@ async def test_full_issue_processing():
         init_start = time.time()
         processor = AutoIssueProcessor()
         init_end = time.time()
-        print(f"  ✅ 初期化完了 ({init_end - init_start:.2f}秒)")
+        print(f"  ✅ 初期化完了 ({init_end - init_start:0.2f}秒)")
         
         # Issue #193を取得
         print("\n📋 Issue #193を取得中...")
@@ -57,7 +57,7 @@ async def test_full_issue_processing():
         issue = repo.get_issue(193)
         
         fetch_end = time.time()
-        print(f"  ✅ Issue取得完了 ({fetch_end - fetch_start:.2f}秒)")
+        print(f"  ✅ Issue取得完了 ({fetch_end - fetch_start:0.2f}秒)")
         print(f"  - タイトル: {issue.title}")
         print(f"  - 本文長: {len(issue.body or '')} 文字")
         
@@ -67,8 +67,8 @@ async def test_full_issue_processing():
         complexity = await processor.evaluator.evaluate(issue)
         eval_end = time.time()
         
-        print(f"  ✅ 複雑度評価完了 ({eval_end - eval_start:.2f}秒)")
-        print(f"  - 複雑度スコア: {complexity.score:.3f}")
+        print(f"  ✅ 複雑度評価完了 ({eval_end - eval_start:0.2f}秒)")
+        print(f"  - 複雑度スコア: {complexity.score:0.3f}")
         print(f"  - 処理可能: {'✅ Yes' if complexity.is_processable else '❌ No'}")
         
         # 4賢者相談（修正版）
@@ -77,7 +77,7 @@ async def test_full_issue_processing():
         sage_advice = await processor.consult_four_sages(issue)
         sage_end = time.time()
         
-        print(f"  ✅ 4賢者相談完了 ({sage_end - sage_start:.2f}秒)")
+        print(f"  ✅ 4賢者相談完了 ({sage_end - sage_start:0.2f}秒)")
         print(f"  - ナレッジ賢者: {len(sage_advice.get('knowledge', []))}件の知識")
         print(f"  - タスク賢者: {'✅ 計画作成' if sage_advice.get('plan') else '❌ 失敗'}")
         print(f"  - インシデント賢者: リスクレベル {sage_advice.get('risks', {}).get('risk_level', 'N/A')}")
@@ -168,7 +168,7 @@ async def test_full_issue_processing():
         
         codegen_end = time.time()
         
-        print(f"  ✅ コード生成完了 ({codegen_end - codegen_start:.2f}秒)")
+        print(f"  ✅ コード生成完了 ({codegen_end - codegen_start:0.2f}秒)")
         print(f"  - 生成ファイル数: {len(generated_files)}")
         for file in generated_files:
             print(f"    - {file['name']}: {file['lines']}行")
@@ -181,8 +181,8 @@ async def test_full_issue_processing():
             # 基本的な品質メトリクス
             quality_metrics = analyze_code_quality(code_content)
             
-            print(f"  - 型ヒント使用率: {quality_metrics['type_hints_ratio']:.1%}")
-            print(f"  - docstring使用率: {quality_metrics['docstring_ratio']:.1%}")
+            print(f"  - 型ヒント使用率: {quality_metrics['type_hints_ratio']:0.1%}")
+            print(f"  - docstring使用率: {quality_metrics['docstring_ratio']:0.1%}")
             print(f"  - エラーハンドリング: {'✅' if quality_metrics['has_error_handling'] else '❌'}")
             print(f"  - async/await使用: {'✅' if quality_metrics['uses_async'] else '❌'}")
             print(f"  - ロギング実装: {'✅' if quality_metrics['has_logging'] else '❌'}")
@@ -234,10 +234,10 @@ async def test_full_issue_processing():
         test_end = time.time()
         
         if test_code:
-            print(f"  ✅ テスト生成完了 ({test_end - test_start:.2f}秒)")
+            print(f"  ✅ テスト生成完了 ({test_end - test_start:0.2f}秒)")
             print(f"  - テストコード行数: {len(test_code.split('\n'))}行")
         else:
-            print(f"  ❌ テスト生成失敗 ({test_end - test_start:.2f}秒)")
+            print(f"  ❌ テスト生成失敗 ({test_end - test_start:0.2f}秒)")
         
         # 全体の性能サマリー
         total_time = time.time() - start_time
@@ -247,14 +247,14 @@ async def test_full_issue_processing():
         print("\n" + "=" * 80)
         print("📊 完全テスト結果サマリー")
         print("=" * 80)
-        print(f"  - 総処理時間: {total_time:.2f}秒")
-        print(f"  - 初期化時間: {init_end - init_start:.2f}秒")
-        print(f"  - Issue取得時間: {fetch_end - fetch_start:.2f}秒")
-        print(f"  - 複雑度評価時間: {eval_end - eval_start:.2f}秒")
-        print(f"  - 4賢者相談時間: {sage_end - sage_start:.2f}秒")
-        print(f"  - コード生成時間: {codegen_end - codegen_start:.2f}秒")
-        print(f"  - テスト生成時間: {test_end - test_start:.2f}秒")
-        print(f"  - メモリ使用量: {start_memory:.1f} MB → {end_memory:.1f} MB (+{memory_increase:.1f} MB)")
+        print(f"  - 総処理時間: {total_time:0.2f}秒")
+        print(f"  - 初期化時間: {init_end - init_start:0.2f}秒")
+        print(f"  - Issue取得時間: {fetch_end - fetch_start:0.2f}秒")
+        print(f"  - 複雑度評価時間: {eval_end - eval_start:0.2f}秒")
+        print(f"  - 4賢者相談時間: {sage_end - sage_start:0.2f}秒")
+        print(f"  - コード生成時間: {codegen_end - codegen_start:0.2f}秒")
+        print(f"  - テスト生成時間: {test_end - test_start:0.2f}秒")
+        print(f"  - メモリ使用量: {start_memory:0.1f} MB → {end_memory:0.1f} MB (+{memory_increase:0.1f} MB)")
         
         # 品質サマリー
         print("\n🎯 品質評価サマリー:")
@@ -264,7 +264,7 @@ async def test_full_issue_processing():
         
         if generated_files and quality_metrics:
             overall_quality = calculate_overall_quality(quality_metrics)
-            print(f"  - コード品質スコア: {overall_quality:.1f}/100")
+            print(f"  - コード品質スコア: {overall_quality:0.1f}/100")
             
             if overall_quality >= 80:
                 print("  ✅ Production Ready品質")

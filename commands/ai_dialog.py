@@ -12,7 +12,7 @@ from commands.base_command import BaseCommand
 
 class DialogCommand(BaseCommand):
     """DialogCommandクラス"""
-    # Main class implementation
+    # Main class implementation:
     def __init__(self):
         """初期化メソッド"""
         super().__init__(name="dialog", description="Elders Guild で対話型タスクを開始します")

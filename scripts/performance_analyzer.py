@@ -3,7 +3,7 @@
 Performance Analyzer - システムパフォーマンス分析ツール
 エルダーズギルドのシステム全体のパフォーマンス監視と最適化提案
 
-🔍 分析項目:
+"🔍" 分析項目:
 - CPU/メモリ使用率
 - プロセス分析
 - ディスク I/O
@@ -202,7 +202,7 @@ class PerformanceAnalyzer:
         # {top_proc.name} (PID: {top_proc.pid}, CPU: {top_proc.cpu_percent}%)\")\n \n # メモリ ボトルネック\n if
         # metrics.memory_percent > self.memory_warning_threshold:\n bottlenecks.append(f\"メモリ使用率が高い:
         # {metrics.memory_percent}%\")\n if top_memory:\n top_proc = top_memory[0]\n bottlenecks.append(f\"メモリ最大消費プロセス:
-        # {top_proc.name} (PID: {top_proc.pid}, Memory: {top_proc.memory_mb:.1f}MB)\")\n \n # ディスク ボトルネック\n if
+        # {top_proc.name} (PID: {top_proc.pid}, Memory: {top_proc.memory_mb:0.1f}MB)\")\n \n # ディスク ボトルネック\n if
         # metrics.disk_usage_percent > self.disk_warning_threshold:\n bottlenecks.append(f\"ディスク使用率が高い:
         # {metrics.disk_usage_percent}%\")\n \n # 負荷平均チェック\n cpu_count = psutil.cpu_count()\n if
         # metrics.load_average[0] > cpu_count * 1.5:\n bottlenecks.append(f\"システム負荷が高い: {metrics.load_average[0]}
@@ -250,19 +250,19 @@ class PerformanceAnalyzer:
         # {report_file}\")\n return str(report_file)\n \n def print_summary(self, analysis: PerformanceAnalysis):\n
         # \"\"\"分析結果サマリー表示\"\"\"\n print(\"\\n\" + \"=\"*60)\n print(\"🔍 Elders Guild Performance Analysis Report\")\n
         # print(\"=\"*60)\n \n # システムメトリクス\n print(f\"\\n📊 System Metrics (Health Score:
-        # {analysis.health_score}/100)\")\n print(f\" CPU Usage: {analysis.system_metrics.cpu_percent:.1f}%\")\n
-        # print(f\" Memory Usage: {analysis.system_metrics.memory_percent:.1f}%\")\n print(f\" Disk Usage:
-        # {analysis.system_metrics.disk_usage_percent:.1f}%\")\n print(f\" Load Average:
-        # {analysis.system_metrics.load_average}\")\n print(f\" Uptime: {analysis.system_metrics.uptime_hours:.1f}
+        # {analysis.health_score}/100)\")\n print(f\" CPU Usage: {analysis.system_metrics.cpu_percent:0.1f}%\")\n
+        # print(f\" Memory Usage: {analysis.system_metrics.memory_percent:0.1f}%\")\n print(f\" Disk Usage:
+        # {analysis.system_metrics.disk_usage_percent:0.1f}%\")\n print(f\" Load Average:
+        # {analysis.system_metrics.load_average}\")\n print(f\" Uptime: {analysis.system_metrics.uptime_hours:0.1f}
         # hours\")\n \n # ボトルネック\n if analysis.bottlenecks:\n print(f\"\\n🚨 Detected Bottlenecks
         # ({len(analysis.bottlenecks)}):\")\n for i, bottleneck in enumerate(analysis.bottlenecks, 1):\n print(f\" {i}.
         # {bottleneck}\")\n else:\n print(\"\\n✅ No Critical Bottlenecks Detected\")\n \n # トップCPUプロセス\n print(f\"\\n🔥
         # Top CPU Processes:\")\n for i, proc in enumerate(analysis.top_cpu_processes[:5], 1):\n print(f\" {i}.
-        # {proc.name} (PID: {proc.pid}) - CPU: {proc.cpu_percent:.1f}%, Memory: {proc.memory_mb:.1f}MB\")\n \n #
+        # {proc.name} (PID: {proc.pid}) - CPU: {proc.cpu_percent:0.1f}%, Memory: {proc.memory_mb:0.1f}MB\")\n \n #
         # エルダーズプロセス\n if analysis.elder_processes:\n print(f\"\\n🧙‍♂️ Elders Guild Processes
         # ({len(analysis.elder_processes)}):\")\n for i, proc in enumerate(analysis.elder_processes[:5], 1):\n
-        # print(f\" {i}. {proc.name} (PID: {proc.pid}) - CPU: {proc.cpu_percent:.1f}%, Memory:
-        # {proc.memory_mb:.1f}MB\")\n \n # 推奨事項\n print(f\"\\n💡 Optimization Recommendations:\")\n for i, rec in
+        # print(f\" {i}. {proc.name} (PID: {proc.pid}) - CPU: {proc.cpu_percent:0.1f}%, Memory:
+        # {proc.memory_mb:0.1f}MB\")\n \n # 推奨事項\n print(f\"\\n💡 Optimization Recommendations:\")\n for i, rec in
         # enumerate(analysis.recommendations, 1):\n print(f\" {i}. {rec}\")\n \n print(\"\\n\" + \"=\"*60)\n\ndef
         # main():\n \"\"\"メイン実行関数\"\"\"\n import argparse\n \n parser =
         # argparse.ArgumentParser(description=\"Performance Analyzer\")\n parser.add_argument(\"--analyze\",
@@ -273,10 +273,10 @@ class PerformanceAnalyzer:
         # \n analyzer = PerformanceAnalyzer()\n \n if args.metrics:\n metrics = analyzer.get_system_metrics()\n
         # print(json.dumps(asdict(metrics), indent=2, ensure_ascii=False))\n elif args.processes:\n top_cpu, top_memory
         # = analyzer.get_process_info()\n print(\"Top CPU Processes:\")\n for proc in top_cpu[:10]:\n print(f\"
-        # {proc.name} (PID: {proc.pid}) - CPU: {proc.cpu_percent}%, Memory: {proc.memory_mb:.1f}MB\")\n elif
+        # {proc.name} (PID: {proc.pid}) - CPU: {proc.cpu_percent}%, Memory: {proc.memory_mb:0.1f}MB\")\n elif
         # args.elders:\n elder_processes = analyzer.get_elder_processes()\n print(f\"Elders Guild Processes
         # ({len(elder_processes)}):\")\n for proc in elder_processes:\n print(f\" {proc.name} (PID: {proc.pid}) - CPU:
-        # {proc.cpu_percent}%, Memory: {proc.memory_mb:.1f}MB\")\n elif args.analyze:\n analysis =
+        # {proc.cpu_percent}%, Memory: {proc.memory_mb:0.1f}MB\")\n elif args.analyze:\n analysis =
         # analyzer.analyze_performance()\n analyzer.print_summary(analysis)\n \n if args.save:\n report_file =
         # analyzer.save_analysis_report(analysis)\n print(f\"\\n📄 Report saved: {report_file}\")\n else:\n print(\"🔍
         # Elders Guild Performance Analyzer\")\n print(\"使用方法:\")\n print(\" --analyze : 総合パフォーマンス分析\")\n print(\"

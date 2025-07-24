@@ -45,7 +45,7 @@ class KnightsErrorFixer:
             "proposed_solutions": []
         }
 
-        # 1. requirements.txt分析
+        # 1.0 requirements.txt分析
         req_file = Path("requirements.txt")
         if req_file.exists():
             with open(req_file, 'r') as f:
@@ -70,7 +70,7 @@ class KnightsErrorFixer:
                         "impact": "GitHub Actions failure"
                     })
 
-        # 2. GitHub Workflow分析
+        # 2.0 GitHub Workflow分析
         workflow_file = Path(".github/workflows/incident-knights-autofix.yml")
         if workflow_file.exists():
             analysis_result["root_causes"].append({
@@ -79,7 +79,7 @@ class KnightsErrorFixer:
                 "severity": "high"
             })
 
-        # 3. スクリプトエラーハンドリング分析
+        # 3.0 スクリプトエラーハンドリング分析
         script_file = Path("scripts/knights-github-action.py")
         if script_file.exists():
             with open(script_file, 'r') as f:
@@ -93,7 +93,7 @@ class KnightsErrorFixer:
                     "impact": "Script crashes when tools are missing"
                 })
 
-        # 4. 解決策の提案
+        # 4.0 解決策の提案
         analysis_result["proposed_solutions"] = [
             {
                 "action": "Update requirements.txt",
@@ -129,7 +129,7 @@ class KnightsErrorFixer:
             "validation_steps": []
         }
 
-        # 1. requirements.txt修正プラン
+        # 1.0 requirements.txt修正プラン
         missing_deps = [p for p in analysis["problems_detected"] if p["type"] == "missing_dependency"]
         if missing_deps:
             fix_plan["fixes_to_apply"].append({
@@ -138,7 +138,7 @@ class KnightsErrorFixer:
                 "dependencies": {p["tool"]: p["required_version"] for p in missing_deps}
             })
 
-        # 2. エラーハンドリング改善プラン
+        # 2.0 エラーハンドリング改善プラン
         fix_plan["fixes_to_apply"].append({
             "file": "scripts/knights-github-action.py",
             "action": "improve_error_handling",
@@ -149,7 +149,7 @@ class KnightsErrorFixer:
             ]
         })
 
-        # 3. CI/CD設定最適化
+        # 3.0 CI/CD設定最適化
         fix_plan["fixes_to_apply"].append({
             "file": ".github/workflows/incident-knights-autofix.yml",
             "action": "optimize_workflow",
@@ -159,7 +159,7 @@ class KnightsErrorFixer:
             ]
         })
 
-        # 4. 検証ステップ
+        # 4.0 検証ステップ
         fix_plan["validation_steps"] = [
             "Run knights-github-action.py locally",
             "Verify all dependencies are installed",
@@ -179,7 +179,7 @@ class KnightsErrorFixer:
             "files_modified": []
         }
 
-        # 1. requirements.txt更新
+        # 1.0 requirements.txt更新
         for fix in fix_plan["fixes_to_apply"]:
             if fix["file"] == "requirements.txt" and fix["action"] == "add_dependencies":
                 # Complex condition - consider breaking down
@@ -209,7 +209,7 @@ class KnightsErrorFixer:
                     else:
                         logger.warning("⚠️  requirements.txt: 一部の依存関係が不足しています")
 
-        # 2. エラーハンドリング確認
+        # 2.0 エラーハンドリング確認
         script_file = Path("scripts/knights-github-action.py")
         if script_file.exists():
             with open(script_file, 'r') as f:
@@ -236,7 +236,7 @@ class KnightsErrorFixer:
             "overall_status": "passed"
         }
 
-        # 1. 依存関係チェック
+        # 1.0 依存関係チェック
         req_file = Path("requirements.txt")
         if req_file.exists():
             with open(req_file, 'r') as f:
@@ -251,7 +251,7 @@ class KnightsErrorFixer:
                 "message": "All required tools in requirements.txt" if all_present else "Some tools missing"
             })
 
-        # 2. スクリプト実行テスト
+        # 2.0 スクリプト実行テスト
         script_file = Path("scripts/knights-github-action.py")
         if script_file.exists():
             try:
@@ -279,7 +279,7 @@ class KnightsErrorFixer:
                     "message": f"Execution error: {str(e)}"
                 })
 
-        # 3. 全体ステータス判定
+        # 3.0 全体ステータス判定
         if any(v["status"] == "failed" for v in validation_result["validations"]):
             # Complex condition - consider breaking down
             validation_result["overall_status"] = "failed"
@@ -291,30 +291,30 @@ class KnightsErrorFixer:
         print("\n🌊 Elder Flow - 騎士団GitHub Actionsエラー根本解決")
         print("="*60)
 
-        # 1. 問題分析
+        # 1.0 問題分析
         print("\n📊 Phase 1: 問題分析")
         analysis = await self.analyze_knights_problems()
         print(f"  検出された問題: {len(analysis['problems_detected'])}")
         print(f"  根本原因: {len(analysis['root_causes'])}")
         print(f"  提案された解決策: {len(analysis['proposed_solutions'])}")
 
-        # 2. 修正プラン作成
+        # 2.0 修正プラン作成
         print("\n📝 Phase 2: 修正プラン作成")
         fix_plan = await self.create_comprehensive_fix(analysis)
         print(f"  適用予定の修正: {len(fix_plan['fixes_to_apply'])}")
         print(f"  検証ステップ: {len(fix_plan['validation_steps'])}")
 
-        # 3. 修正適用
+        # 3.0 修正適用
         print("\n⚡ Phase 3: 修正適用")
         applied = await self.apply_fixes(fix_plan)
         print(f"  適用された修正: {len(applied['fixes_applied'])}")
 
-        # 4. 検証
+        # 4.0 検証
         print("\n✅ Phase 4: 修正検証")
         validation = await self.validate_fixes()
         print(f"  検証結果: {validation['overall_status'].upper()}")
 
-        # 5. レポート作成
+        # 5.0 レポート作成
         print("\n📊 Phase 5: レポート作成")
         report = {
             "task": "Knights GitHub Actions Error Fix",
@@ -338,7 +338,7 @@ class KnightsErrorFixer:
 
         print(f"\n📄 レポート保存: {report_file}")
 
-        # 6. Git自動化（成功時のみ）
+        # 6.0 Git自動化（成功時のみ）
         if validation['overall_status'] == 'passed':
             print("\n🚀 Phase 6: Git自動化")
             commit_message = """🌊 Elder Flow: 騎士団GitHub Actionsエラー根本解決完了
@@ -348,7 +348,7 @@ class KnightsErrorFixer:
 - エラーハンドリング改善確認
 - CI/CD動作検証完了
 
-🔍 検証結果:
+"🔍" 検証結果:
 - すべての必要ツールが正しく設定済み
 - エラーハンドリングが適切に実装済み
 - GitHub Actions環境での動作保証

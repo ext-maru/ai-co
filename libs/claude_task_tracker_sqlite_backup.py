@@ -166,8 +166,8 @@ class ClaudeTaskTracker:
     @contextmanager
     def _get_connection(self):
         """データベース接続コンテキストマネージャー"""
-        conn = sqlite3.connect(str(self.db_path))
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(str(self.db_path))
+        conn.row_factory = sqlite3Row
         try:
             yield conn
         finally:
@@ -370,7 +370,7 @@ class ClaudeTaskTracker:
                 conn.commit()
                 logger.info(f"依存関係追加: {task_id} -> {depends_on_task_id}")
                 return True
-            except sqlite3.IntegrityError:
+            except sqlite3IntegrityError:
                 logger.warning(f"依存関係追加失敗: {task_id} -> {depends_on_task_id}")
                 return False
 

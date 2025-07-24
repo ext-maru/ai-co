@@ -114,9 +114,9 @@ class TestEnhancedKnowledgeSage:
             Microservices architecture is a design pattern where applications are built
             as a collection of small, autonomous services. Each service is self-contained
             and implements a single business capability. Key benefits include:
-            1. Scalability - Services can be scaled independently
-            2. Flexibility - Different technologies can be used for different services
-            3. Resilience - Failure of one service doesn't bring down the entire system
+            1.0 Scalability - Services can be scaled independently
+            2.0 Flexibility - Different technologies can be used for different services
+            3.0 Resilience - Failure of one service doesn't bring down the entire system
 
             Implementation considerations:
             - Service discovery and registration

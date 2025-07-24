@@ -134,7 +134,7 @@ class ErrorPatternClassifier:
                 }
 
         # モデル評価（簡易）
-        accuracy = min(0.9, max(0.7, len(training_data) / 3.0))  # 最低0.7の精度を保証
+        accuracy = min(0.9, max(0.7, len(training_data) / 3))  # 最低0.7の精度を保証
 
         return {
             "success": True,
@@ -161,14 +161,14 @@ class ErrorPatternClassifier:
         if error_type1 == error_type2 and error_type1 != "UnknownError":
             base_similarity = 0.85  # わずかに高い値に調整
         else:
-            base_similarity = 0.0
+            base_similarity = 0
 
         # 単語ベースの類似度
         words1 = set(re.findall(r"\w+", error1.lower()))
         words2 = set(re.findall(r"\w+", error2.lower()))
 
         if not words1 and not words2:
-            return 1.0
+            return 1
         if not words1 or not words2:
             return base_similarity
 
@@ -503,29 +503,29 @@ class FailurePredictionSystem:
 
         # エラー率リスク
         error_rate = metrics.get("error_rate_last_hour", 0)
-        risk_factors["error_rate"] = min(1.0, error_rate * 5)  # 20%で最大リスク
+        risk_factors["error_rate"] = min(1, error_rate * 5)  # 20%で最大リスク
 
         # リソース使用量リスク
-        memory_usage = metrics.get("memory_usage", 0) / 100.0
-        cpu_usage = metrics.get("cpu_usage", 0) / 100.0
+        memory_usage = metrics.get("memory_usage", 0) / 100
+        cpu_usage = metrics.get("cpu_usage", 0) / 100
         resource_risk = max(memory_usage, cpu_usage)
         risk_factors["resource_usage"] = resource_risk
 
         # パフォーマンスリスク
         response_time = metrics.get("response_time_p95", 1000)
-        performance_risk = min(1.0, response_time / 5000.0)  # 5秒で最大リスク
+        performance_risk = min(1, response_time / 5000)  # 5秒で最大リスク
         risk_factors["performance"] = performance_risk
 
         # トレンドリスク
         trend = metrics.get("error_rate_trend", "stable")
-        trend_risk = {"stable": 0.1, "increasing": 0.7, "rapidly_increasing": 1.0}.get(
+        trend_risk = {"stable": 0.1, "increasing": 0.7, "rapidly_increasing": 1}.get(
             trend, 0.3
         )
         risk_factors["trend"] = trend_risk
 
         # 履歴リスク
         recent_errors = metrics.get("recent_errors", [])
-        historical_risk = min(1.0, len(recent_errors) / 10.0)
+        historical_risk = min(1, len(recent_errors) / 10)
         risk_factors["historical"] = historical_risk
 
         return risk_factors
@@ -871,7 +871,7 @@ class LearningKnowledgeBase:
 
         for solution_id, solution in self.solutions.items():
             # 簡易的な類似度計算
-            similarity_score = 0.0
+            similarity_score = 0
 
             solution_signature = solution.get("error_signature", "")
             if query_error_type in solution_signature:
@@ -979,7 +979,7 @@ class LearningKnowledgeBase:
             "avg_success_rate": avg_success_rate,
             "most_effective_strategies": most_effective[:5],
             "knowledge_coverage": min(
-                1.0, total_solutions / 100
+                1, total_solutions / 100
             ),  # 100解決策で完全カバレッジと仮定
             "learning_rate": 0.8,  # 簡易実装
         }
@@ -1192,5 +1192,5 @@ class RealTimeErrorAnalyzer:
         return {
             "detected": unique_services > 2,
             "affected_service_count": unique_services,
-            "cascade_likelihood": min(1.0, unique_services / 5.0),
+            "cascade_likelihood": min(1, unique_services / 5),
         }

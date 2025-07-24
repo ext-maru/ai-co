@@ -612,8 +612,8 @@ async def comprehensive_demo():
     four_sages = FourSagesIntegration(client)
 
     try:
-        # 1. ヘルスチェック
-        print("\n1. ヘルスチェック...")
+        # 1.0 ヘルスチェック
+        print("\n1.0 ヘルスチェック...")
         health_response = await client.health_check()
         print(f"   結果: {health_response.message}")
         if health_response.success:
@@ -622,16 +622,16 @@ async def comprehensive_demo():
                 f"   データベースサイズ: {health_response.data['database_size']:,} bytes"
             )
 
-        # 2. 基本検索テスト
-        print("\n2. 基本検索テスト...")
+        # 2.0 基本検索テスト
+        print("\n2.0 基本検索テスト...")
         search_response = await client.search("4賢者", limit=3)
         print(f"   結果: {search_response.message}")
         if search_response.success and search_response.data:
             for i, result in enumerate(search_response.data[:2]):
                 print(f"   #{i+1}: {result['title']}")
 
-        # 3. 新規データ保存テスト
-        print("\n3. 新規データ保存テスト...")
+        # 3.0 新規データ保存テスト
+        print("\n3.0 新規データ保存テスト...")
         test_metadata = {
             "section_title": "PostgreSQL MCP統合完成",
             "section_content": "PostgreSQL MCP統合が正常に動作しています。4賢者システムとの連携も成功しました。",
@@ -644,18 +644,18 @@ async def comprehensive_demo():
         store_response = await client.store("テストコンテンツ", test_metadata)
         print(f"   結果: {store_response.message}")
 
-        # 4. 統計情報取得
-        print("\n4. 統計情報取得...")
+        # 4.0 統計情報取得
+        print("\n4.0 統計情報取得...")
         stats_response = await client.get_stats()
         print(f"   結果: {stats_response.message}")
         if stats_response.success:
             basic = stats_response.data["basic_stats"]
             print(f"   総文書数: {basic['total_documents']}")
-            print(f"   平均文字数: {basic['avg_content_length']:.0f}")
+            print(f"   平均文字数: {basic['avg_content_length']:0.0f}")
             print(f"   MCP文書数: {stats_response.data['mcp_stats']['mcp_documents']}")
 
-        # 5. 4賢者システム統合テスト
-        print("\n5. 4賢者システム統合テスト...")
+        # 5.0 4賢者システム統合テスト
+        print("\n5.0 4賢者システム統合テスト...")
 
         # ナレッジ賢者
         knowledge_result = await four_sages.knowledge_sage_search("エルダーズギルド")

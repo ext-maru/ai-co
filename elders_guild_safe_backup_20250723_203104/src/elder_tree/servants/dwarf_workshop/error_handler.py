@@ -23,6 +23,7 @@ from ..base import DwarfServant, ServantCapability
 
 
 class ErrorHandlerServant(DwarfServant):
+    pass
 
 
 """
@@ -57,6 +58,7 @@ class ErrorHandlerServant(DwarfServant):
         self.error_registry: Dict[str, Dict] = {}
         
     def _init_recovery_strategies(self) -> Dict[str, List[Dict]]:
+        pass
 
         
     """標準的な復旧戦略を初期化""" [
@@ -208,11 +210,10 @@ class ErrorHandlerServant(DwarfServant):
             
         return True
         
-    def _suggest_syntax_fixes(self, error_data: Dict[str, Any]) -> List[Dict[str, str]]:
-        """構文エラーの修正提案を生成"""
-        message = error_data.get("message", "")
+    def _suggest_syntax_fixes(self, error_data: Dict[str, Any]) -> List[Dict[str, str]]message = error_data.get("message", "")
+    """構文エラーの修正提案を生成"""
         fixes = []
-        
+        :
         if "quote" in message or "unterminated" in message:
             fixes.append({
                 "description": "引用符を閉じる",
@@ -233,12 +234,11 @@ class ErrorHandlerServant(DwarfServant):
             
         return fixes
         
-    def _identify_missing_fields(self, error_data: Dict[str, Any]) -> List[str]:
-        """検証エラーから不足フィールドを特定"""
-        message = error_data.get("message", "")
+    def _identify_missing_fields(self, error_data: Dict[str, Any]) -> List[str]message = error_data.get("message", "")
+    """検証エラーから不足フィールドを特定"""
         field = error_data.get("field")
         
-        missing = []
+        missing = []:
         if field:
             missing.append(field)
             
@@ -397,6 +397,7 @@ class ErrorHandlerServant(DwarfServant):
         return hashlib.md5(features.encode()).hexdigest()[:12]
         
     async def analyze_patterns(self) -> Dict[str, Any]:
+        pass
 
         
     """エラーパターンを分析"""
@@ -776,11 +777,10 @@ class ErrorHandlerServant(DwarfServant):
                 "error": f"Failed to generate report: {str(e)}"
             }
             
-    async def perform_craft(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
-        """エラー処理の具体的な作業を実行"""
-        action = task_data.get("action")
+    async def perform_craft(self, task_data: Dict[str, Any]) -> Dict[str, Any]action = task_data.get("action")
+    """エラー処理の具体的な作業を実行"""
         data = task_data.get("data", {})
-        
+        :
         if action == "classify":
             return await self.classify_error(data)
         elif action == "suggest_recovery":

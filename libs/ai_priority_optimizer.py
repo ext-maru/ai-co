@@ -67,9 +67,8 @@ class PriorityScore:
 class SageEvaluator:
     """賢者評価基底クラス"""
 
-    def __init__(self, name:
+    def __init__(self, name: str):
         """初期化メソッド"""
-    str):
         self.name = name
         self.learning_data = []
 
@@ -307,10 +306,10 @@ class AIPriorityOptimizer:
 
         # 推論理由の生成
         reasoning = {
-            "business": f"ビジネス価値 {task.business_value:.1f} × プロジェクト重要度",
-            "technical": f"技術的複雑度 {task.technical_complexity:.1f} + 負債スコア",
-            "risk": f"リスクレベル {task.incident_risk:.1f} × インパクト範囲",
-            "resource": f"推定時間 {task.estimated_hours:.1f}h での効率性",
+            "business": f"ビジネス価値 {task.business_value:0.1f} × プロジェクト重要度",
+            "technical": f"技術的複雑度 {task.technical_complexity:0.1f} + 負債スコア",
+            "risk": f"リスクレベル {task.incident_risk:0.1f} × インパクト範囲",
+            "resource": f"推定時間 {task.estimated_hours:0.1f}h での効率性",
         }
 
         # 学習データとして記録
@@ -488,19 +487,19 @@ class AIPriorityOptimizer:
         """優先度決定の説明生成"""
         explanation = f"""
 🎯 タスク: {task.name}
-📊 優先度スコア: {score.total_score:.2f} (信頼度: {score.confidence:.0%})
+"📊" 優先度スコア: {score.total_score:0.2f} (信頼度: {score.confidence:0.0%})
 
 📋 評価内訳:
-- ビジネスインパクト: {score.business_impact:.2f}
+- ビジネスインパクト: {score.business_impact:0.2f}
   {score.reasoning['business']}
 
-- 技術的緊急度: {score.technical_urgency:.2f}
+- 技術的緊急度: {score.technical_urgency:0.2f}
   {score.reasoning['technical']}
 
-- リスク軽減: {score.risk_mitigation:.2f}
+- リスク軽減: {score.risk_mitigation:0.2f}
   {score.reasoning['risk']}
 
-- リソース効率: {score.resource_efficiency:.2f}
+- リソース効率: {score.resource_efficiency:0.2f}
   {score.reasoning['resource']}
 
 💡 この優先度は{len(self.learning_history)}件の学習データに基づいています。
@@ -563,8 +562,8 @@ async def demo():
 
     for i, (task, score) in enumerate(prioritized, 1):
         print(f"\n{i}位: {task.name}")
-        print(f"   スコア: {score.total_score:.2f}")
-        print(f"   信頼度: {score.confidence:.0%}")
+        print(f"   スコア: {score.total_score:0.2f}")
+        print(f"   信頼度: {score.confidence:0.0%}")
 
     # 説明生成
     top_task, top_score = prioritized[0]

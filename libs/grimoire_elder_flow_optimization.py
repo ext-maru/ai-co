@@ -147,9 +147,8 @@ class AdvancedCacheManager:
 class BatchEmbeddingProcessor:
     """バッチ埋め込み処理エンジン"""
 
-    def __init__(self, batch_size:
+    def __init__(self, batch_size: int = 50, max_workers: int = 4):
         """初期化メソッド"""
-    int = 50, max_workers: int = 4):
         self.batch_size = batch_size
         self.max_workers = max_workers
         self.processing_queue = []
@@ -224,9 +223,8 @@ class BatchEmbeddingProcessor:
 class DistributedGrimoireSystem:
     """分散魔法書システム"""
 
-    def __init__(self, node_count:
+    def __init__(self, node_count: int = 3):
         """初期化メソッド"""
-    int = 3):
         self.node_count = node_count
         self.nodes = {}
         self.load_balancer = DistributedLoadBalancer()
@@ -307,7 +305,7 @@ class GrimoireElderFlowBridge:
 
         # 4賢者に魔法書コンテキストを提供
         enhanced_wisdom = await self.elder_flow.execute_with_full_sages_wisdom(
-            f"{request}\n\n[魔法書関連知識]\n{json.dumps(related_knowledge, ensure_ascii=False, indent=2)}"
+            f"{request}\n\n[魔法書関連知識]\n{json.dumps(related_knowledge, ensure_ascii=False)}"
         )
 
         return enhanced_wisdom
@@ -610,7 +608,7 @@ class ComprehensiveGrimoireOptimizer:
         return {
             "optimization_summary": {
                 "total_components_optimized": len(results),
-                "average_improvement": f"{total_improvement:.1f}%",
+                "average_improvement": f"{total_improvement:0.1f}%",
                 "total_optimizations_applied": sum(
                     len(r.optimizations_applied) for r in results
                 ),
@@ -619,16 +617,16 @@ class ComprehensiveGrimoireOptimizer:
             "component_results": [
                 {
                     "component": r.component,
-                    "improvement": f"{r.improvement_percentage:.1f}%",
+                    "improvement": f"{r.improvement_percentage:0.1f}%",
                     "optimizations": r.optimizations_applied,
                     "before_performance": {
-                        "processing_time": f"{r.before_metrics.processing_time:.3f}s",
-                        "cache_hit_rate": f"{r.before_metrics.cache_hit_rate:.1%}",
+                        "processing_time": f"{r.before_metrics.processing_time:0.3f}s",
+                        "cache_hit_rate": f"{r.before_metrics.cache_hit_rate:0.1%}",
                         "queries_per_second": r.before_metrics.queries_per_second,
                     },
                     "after_performance": {
-                        "processing_time": f"{r.after_metrics.processing_time:.3f}s",
-                        "cache_hit_rate": f"{r.after_metrics.cache_hit_rate:.1%}",
+                        "processing_time": f"{r.after_metrics.processing_time:0.3f}s",
+                        "cache_hit_rate": f"{r.after_metrics.cache_hit_rate:0.1%}",
                         "queries_per_second": r.after_metrics.queries_per_second,
                     },
                 }

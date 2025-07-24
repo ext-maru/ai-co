@@ -38,7 +38,7 @@ class LoggingStandards:
     @staticmethod
     def format_task_complete(task_id: str, duration_seconds: float) -> str:
         """タスク完了ログ（数値データ含む）"""
-        return f"Task completed: {task_id} (duration: {duration_seconds:.2f}s)"
+        return f"Task completed: {task_id} (duration: {duration_seconds:0.2f}s)"
 
     @staticmethod
     def format_error(task_id: str, error: Exception, context: str) -> str:
@@ -86,7 +86,7 @@ class ProfessionalLogger:
 
         message = f"Task {task_id} completed"
         if duration:
-            message += f" (duration: {duration:.2f}s)"
+            message += f" (duration: {duration:0.2f}s)"
         if result_summary:
             # 結果の要約は簡潔に
             message += f" - {result_summary[:50]}"
@@ -127,10 +127,10 @@ LOG_BEST_PRACTICES = """
 # Elders Guild ログ出力ベストプラクティス
 
 ## 原則
-1. 客観的で技術的な情報を優先
-2. 数値データを含める（処理時間、件数、サイズ等）
-3. 誇張表現を避ける
-4. 絵文字は最小限（成功/失敗の記号程度）
+1.0 客観的で技術的な情報を優先
+2.0 数値データを含める（処理時間、件数、サイズ等）
+3.0 誇張表現を避ける
+4.0 絵文字は最小限（成功/失敗の記号程度）
 
 ## 推奨フォーマット
 

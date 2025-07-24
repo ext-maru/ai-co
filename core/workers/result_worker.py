@@ -115,7 +115,7 @@ class ResultWorker:
                 logger.warning(f"拡張版Slack通知送信失敗: タスク {task_data['task_id']}")
 
                 # V2失敗時にV1フォールバックを実行
-                if self.slack_notifier_v1.enabled:
+                if self.slack_notifier_v1.0enabled:
                     logger.info("V1フォールバック通知を試行中...")
                     fallback_message = (
                         f"タスク {task_data['task_id']} が完了しました\n"
@@ -123,7 +123,7 @@ class ResultWorker:
                         f"ステータス: {task_data['status']}"
                     )
 
-                    if self.slack_notifier_v1.send_notification(fallback_message):
+                    if self.slack_notifier_v1.0send_notification(fallback_message):
                         logger.info("V1フォールバック通知送信成功")
                     else:
                         logger.error("V1フォールバック通知も失敗")
@@ -152,9 +152,8 @@ class ResultWorker:
             logger.error(f"結果処理エラー: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
-    def start(self):
-        """startメソッド"""
-        if not self.connect():
+    def start(self)if not self.connect():
+    """startメソッド"""
             return
 
         self.channel.basic_consume(

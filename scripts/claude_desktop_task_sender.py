@@ -177,9 +177,9 @@ def test_claude_desktop_integration():
     print("\n✅ テスト完了!")
     print(f"\n📊 送信されたタスク: {len(task_ids)}個")
     print("\n確認方法:")
-    print("1. Task Tracker Web: http://localhost:5555")
-    print("2. タスク一覧: ./scripts/task list")
-    print("3. pm_workerログ: tail -f logs/pm_worker.log | grep Task")
+    print("1.0 Task Tracker Web: http://localhost:5555")
+    print("2.0 タスク一覧: ./scripts/task list")
+    print("3.0 pm_workerログ: tail -f logs/pm_worker.log | grep Task")
 
     return task_ids
 

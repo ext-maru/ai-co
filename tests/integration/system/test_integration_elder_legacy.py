@@ -193,7 +193,7 @@ class TestElderLegacyIntegration:
         task_worker = EnhancedTaskWorker(worker_id="flow-task-1")
         pm_worker = EnhancedPMWorker(worker_id="flow-pm-1")
         
-        # 1. 会話開始
+        # 1.0 会話開始
         conv_result = await conv_manager.process_request({
             "operation": "start_conversation",
             "task_id": "flow_test_1",
@@ -201,7 +201,7 @@ class TestElderLegacyIntegration:
         })
         conversation_id = conv_result["conversation_id"]
         
-        # 2. プロジェクト作成
+        # 2.0 プロジェクト作成
         project_result = await pm_worker.process_request({
             "operation": "create_project",
             "name": "Flow Test Project",
@@ -209,7 +209,7 @@ class TestElderLegacyIntegration:
         })
         project_id = project_result["project"]["id"]
         
-        # 3. タスク投入
+        # 3.0 タスク投入
         task_result = await task_worker.process_request({
             "operation": "submit_task",
             "task_type": "analysis",
@@ -220,7 +220,7 @@ class TestElderLegacyIntegration:
             }
         })
         
-        # 4. RAGに結果保存
+        # 4.0 RAGに結果保存
         rag_result = await rag_manager.process_request({
             "operation": "add_document",
             "content": f"タスク{task_result.get('task_id', 'unknown')}の実行結果",
@@ -232,7 +232,7 @@ class TestElderLegacyIntegration:
             }
         })
         
-        # 5. 会話完了
+        # 5.0 会話完了
         complete_result = await conv_manager.process_request({
             "operation": "complete_conversation",
             "conversation_id": conversation_id,

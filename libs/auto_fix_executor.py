@@ -25,9 +25,8 @@ from core import BaseManager
 class AutoFixExecutor(BaseManager):
     """エラーの自動修正を実行するクラス"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        super().__init__("AutoFixExecutor")
+    def __init__(self)super().__init__("AutoFixExecutor")
+    """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.stats = {
             "total_executions": 0,
@@ -111,7 +110,7 @@ class AutoFixExecutor(BaseManager):
             self.stats["execution_times"].append(execution_time)
 
             self.logger.info(
-                f"自動修正完了: {result['success']} " f"({execution_time:.2f}秒)"
+                f"自動修正完了: {result['success']} " f"({execution_time:0.2f}秒)"
             )
 
         except Exception as e:
@@ -638,9 +637,8 @@ class AutoFixExecutor(BaseManager):
             self.logger.error(f"コマンドロールバックエラー: {e}")
             return False
 
-    def get_statistics(self) -> Dict:
-        """統計情報を取得"""
-        stats = self.stats.copy()
+    def get_statistics(self) -> Dictstats = self.stats.copy()
+    """統計情報を取得"""
 
         if stats["execution_times"]:
             stats["avg_execution_time"] = sum(stats["execution_times"]) / len(
@@ -691,7 +689,7 @@ if __name__ == "__main__":
 
     print("=== AutoFixExecutor Test ===")
     result = executor.execute_fix(test_analysis, test_error_info)
-    print(f"Result: {json.dumps(result, indent=2, ensure_ascii=False)}")
+    print(f"Result: {json.dumps(result, indent}")
 
     print("\n=== Statistics ===")
     stats = executor.get_statistics()

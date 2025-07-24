@@ -74,7 +74,7 @@ def analyze_data():
 
     missing_pct = (missing_values / (shape[0] * shape[1])) * 100
     if missing_pct > 0:
-        insights.append(f"Dataset has {missing_pct:.1f}% missing values")
+        insights.append(f"Dataset has {missing_pct:0.1f}% missing values")
 
     if duplicate_rows > 0:
         insights.append(f"Found {duplicate_rows} duplicate rows")
@@ -99,8 +99,8 @@ def analyze_data():
 ## Dataset Overview
 - **File:** sample_data.csv
 - **Dimensions:** {shape[0]} rows × {shape[1]} columns
-- **Memory Usage:** {memory_usage:.1f} MB
-- **Missing Values:** {missing_values} ({missing_pct:.1f}%)
+- **Memory Usage:** {memory_usage:0.1f} MB
+- **Missing Values:** {missing_values} ({missing_pct:0.1f}%)
 - **Duplicate Rows:** {duplicate_rows}
 
 ## Column Types
@@ -125,14 +125,14 @@ def analyze_data():
     if correlations:
         report += "### Strong Correlations (>0.7)\n"
         for corr in correlations:
-            report += f"- {corr['col1']} ↔ {corr['col2']}: {corr['correlation']:.3f}\n"
+            report += f"- {corr['col1']} ↔ {corr['col2']}: {corr['correlation']:0.3f}\n"
         report += "\n"
 
     if outliers:
         report += "### Outliers Detected\n"
         for col, info in outliers.items():
             report += (
-                f"- **{col}:** {info['count']} outliers ({info['percentage']:.1f}%)\n"
+                f"- **{col}:** {info['count']} outliers ({info['percentage']:0.1f}%)\n"
             )
         report += "\n"
 
@@ -175,7 +175,7 @@ def analyze_data():
     # Print results
     print("🔍 Data Analysis Results:")
     print(f"Shape: {shape}")
-    print(f"Memory: {memory_usage:.1f} MB")
+    print(f"Memory: {memory_usage:0.1f} MB")
     print(f"Missing values: {missing_values}")
     print(f"Duplicates: {duplicate_rows}")
     print(f"Numeric columns: {len(numeric_columns)}")

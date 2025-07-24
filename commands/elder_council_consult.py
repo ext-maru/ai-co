@@ -300,7 +300,7 @@ class ElderCouncilConsultCommand(BaseCommand):
             self.info(f"  {response['name']}:")
             self.info(f"    💭 意見: {response['response']}")
             self.info(f"    🎯 推奨: {response['recommendation']}")
-            self.info(f"    📊 信頼度: {response['confidence']:.1%}")
+            self.info(f"    📊 信頼度: {response['confidence']:0.1%}")
             self.info("")
 
         # 評議会決定表示
@@ -321,7 +321,7 @@ class ElderCouncilConsultCommand(BaseCommand):
             self.info(f"    • {criteria}")
         self.info("")
 
-        self.info(f"  📊 評議会信頼度: {council_decision['council_confidence']:.1%}")
+        self.info(f"  📊 評議会信頼度: {council_decision['council_confidence']:0.1%}")
         self.info(f"  ✅ 承認状況: {council_decision['approval_status']}")
         self.info("")
 

@@ -38,6 +38,7 @@ from ..base_magic import AncientMagic, MagicCapability
 
 @dataclass
 class OptimizationMetadata:
+    pass
 
 
 """最適化メタデータのデータクラス""" str
@@ -52,6 +53,7 @@ class OptimizationMetadata:
 
 @dataclass
 class PerformanceMetrics:
+    pass
 
 
 
@@ -65,6 +67,7 @@ class PerformanceMetrics:
 
 @dataclass
 class CacheMetrics:
+    pass
 
 
 
@@ -78,6 +81,7 @@ class CacheMetrics:
 
 
 class OptimizationMagic(AncientMagic):
+    pass
 
 
 
@@ -1104,9 +1108,8 @@ class OptimizationMagic(AncientMagic):
             }
     
     # ヘルパーメソッド
-    def _optimize_data_structures_memory(self, data: Any) -> Any:
-        """データ構造のメモリ使用量を最適化"""
-        if isinstance(data, dict):
+    def _optimize_data_structures_memory(self, data: Any) -> Anyif isinstance(data, dict):
+    """データ構造のメモリ使用量を最適化"""
             # 大きな辞書の場合は弱参照を使用
             if len(data) > 1000:
                 return weakref.WeakValueDictionary()
@@ -1119,6 +1122,7 @@ class OptimizationMagic(AncientMagic):
         return data
     
     def _apply_memory_mapping_optimization(self):
+        pass
 
                 """メモリマッピング最適化を適用""" Any):
         """遅延読み込みを実装"""
@@ -1127,9 +1131,8 @@ class OptimizationMagic(AncientMagic):
             # 大きなデータセットに対する遅延読み込み
             pass
     
-    def _quicksort(self, arr: List) -> List:
-        """クイックソート実装"""
-        if len(arr) <= 1:
+    def _quicksort(self, arr: List) -> Listif len(arr) <= 1:
+    """クイックソート実装"""
             return arr
         
         pivot = arr[len(arr) // 2]
@@ -1139,9 +1142,8 @@ class OptimizationMagic(AncientMagic):
         
         return self._quicksort(left) + middle + self._quicksort(right)
     
-    def _mergesort(self, arr: List) -> List:
-        """マージソート実装"""
-        if len(arr) <= 1:
+    def _mergesort(self, arr: List) -> Listif len(arr) <= 1:
+    """マージソート実装"""
             return arr
         
         mid = len(arr) // 2
@@ -1194,10 +1196,9 @@ class OptimizationMagic(AncientMagic):
         
         return arr
     
-    def _binary_search(self, arr: List, target: Any) -> int:
-        """二分探索実装"""
-        left, right = 0, len(arr) - 1
-        
+    def _binary_search(self, arr: List, target: Any) -> intleft, right = 0, len(arr) - 1
+    """二分探索実装"""
+        :
         while left <= right:
             mid = (left + right) // 2
             if arr[mid] == target:
@@ -1943,19 +1944,19 @@ class OptimizationMagic(AncientMagic):
                     # メモリ使用量削減効果
                     improvement_ratio = 0.25  # 25%削減をシミュレート
                     final_metrics[metric_name] = baseline_value * (1 - improvement_ratio)
-                    improvement_summary[metric_name] = f"{improvement_ratio:.1%} reduction"
+                    improvement_summary[metric_name] = f"{improvement_ratio:0.1%} reduction"
                 
                 elif metric_name == "cpu_time":
                     # CPU時間短縮効果
                     speedup_ratio = 1.8  # 1.8倍高速化をシミュレート
                     final_metrics[metric_name] = baseline_value / speedup_ratio  
-                    improvement_summary[metric_name] = f"{speedup_ratio:.1f}x speedup"
+                    improvement_summary[metric_name] = f"{speedup_ratio:0.1f}x speedup"
                 
                 elif metric_name == "io_time":
                     # I/O時間改善効果
                     improvement_ratio = 0.35  # 35%改善をシミュレート
                     final_metrics[metric_name] = baseline_value * (1 - improvement_ratio)
-                    improvement_summary[metric_name] = f"{improvement_ratio:.1%} improvement"
+                    improvement_summary[metric_name] = f"{improvement_ratio:0.1%} improvement"
                 
                 else:
                     # その他のメトリクス
@@ -2133,6 +2134,6 @@ if __name__ == "__main__":
         print(f"Memory optimization result: {result['success']}")
         if result["success"]:
             memory_result = result["memory_optimization"]
-            print(f"Memory reduction: {memory_result['reduction_ratio']:.2%}")
+            print(f"Memory reduction: {memory_result['reduction_ratio']:0.2%}")
     
     asyncio.run(test_optimization_magic())

@@ -43,9 +43,8 @@ class CleanupStats:
 class LogCleanupSystem:
     """ログファイル自動クリーンアップシステム"""
 
-    def __init__(self, logs_dir:
+    def __init__(self, logs_dir: str = "/home/aicompany/ai_co/logs"):
         """初期化メソッド"""
-    str = "/home/aicompany/ai_co/logs"):
         self.logs_dir = Path(logs_dir)
         self.cleanup_rules = self._initialize_cleanup_rules()
 
@@ -162,9 +161,9 @@ class LogCleanupSystem:
                         new_file.unlink()
                     old_file.rename(new_file)
 
-            # 現在のファイルを.1にリネーム
+            # 現在のファイルを0.1にリネーム
             if base_path.exists():
-                rotated_file = base_path.with_suffix(".1")
+                rotated_file = base_path.with_suffix("0.1")
                 if rotated_file.exists():
                     rotated_file.unlink()
                 base_path.rename(rotated_file)
@@ -208,7 +207,7 @@ class LogCleanupSystem:
 
         if current_size <= target_size_mb:
             logger.info(
-                f"Current size {current_size:.1f}MB is within target {target_size_mb}MB"
+                f"Current size {current_size:0.1f}MB is within target {target_size_mb}MB"
             )
             return stats
 
@@ -269,18 +268,18 @@ class LogCleanupSystem:
             "after": {},
         }
 
-        # 1. サイズ閾値によるクリーンアップ
+        # 1.0 サイズ閾値によるクリーンアップ
         size_stats = self.cleanup_by_size_threshold(target_size_mb=300)
         cleanup_result["stats"] = size_stats
         cleanup_result["actions_taken"].append(
             f"サイズ最適化: {size_stats.files_processed}個処理"
         )
 
-        # 2. 古い圧縮ファイルの削除
+        # 2.0 古い圧縮ファイルの削除
         deleted_gz = self.delete_old_compressed_files(max_age_days=30)
         cleanup_result["actions_taken"].append(f"古い圧縮ファイル削除: {deleted_gz}個")
 
-        # 3. 特定パターンのクリーンアップ
+        # 3.0 特定パターンのクリーンアップ
         self._cleanup_specific_patterns()
         cleanup_result["actions_taken"].append("特定パターンクリーンアップ完了")
 
@@ -405,14 +404,14 @@ def main():
 
     print(f"\n📂 ログディレクトリ統計:")
     print(f"   総ファイル数: {report['summary']['total_files']}")
-    print(f"   総サイズ: {report['summary']['total_size_mb']:.1f}MB")
+    print(f"   総サイズ: {report['summary']['total_size_mb']:0.1f}MB")
     if report["summary"]["largest_file"]:
         print(f"   最大ファイル: {report['summary']['largest_file']}")
 
     print(f"\n📋 タイプ別統計:")
     for log_type, stats in report["type_statistics"].items():
         print(
-            f"   {log_type}: {stats['count']}個, {stats['total_size_mb']:.1f}MB, 平均{stats['avg_age_days']:.1f}日"
+            f"   {log_type}: {stats['count']}個, {stats['total_size_mb']:0.1f}MB, 平均{stats['avg_age_days']:0.1f}日"
         )
 
     print(f"\n💡 推奨事項:")
@@ -425,10 +424,10 @@ def main():
         cleanup_result = cleanup_system.execute_scheduled_cleanup()
 
         print(f"✅ クリーンアップ完了:")
-        print(f"   処理前: {cleanup_result['before']['total_size_mb']:.1f}MB")
-        print(f"   処理後: {cleanup_result['after']['total_size_mb']:.1f}MB")
-        print(f"   削減量: {cleanup_result['after']['reduction_mb']:.1f}MB")
-        print(f"   実行時間: {cleanup_result['execution_time_seconds']:.1f}秒")
+        print(f"   処理前: {cleanup_result['before']['total_size_mb']:0.1f}MB")
+        print(f"   処理後: {cleanup_result['after']['total_size_mb']:0.1f}MB")
+        print(f"   削減量: {cleanup_result['after']['reduction_mb']:0.1f}MB")
+        print(f"   実行時間: {cleanup_result['execution_time_seconds']:0.1f}秒")
 
         print(f"\n📋 実行されたアクション:")
         for action in cleanup_result["actions_taken"]:

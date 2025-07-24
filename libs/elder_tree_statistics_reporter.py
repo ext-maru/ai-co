@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Elder Tree Statistics Reporter
+"📊" Elder Tree Statistics Reporter
 Elder Tree稼働統計レポート生成システム
 
 機能:
@@ -78,7 +78,7 @@ class ElderTreeStatisticsReporter:
         """統計データベース初期化"""
         self.db_path.parent.mkdir(exist_ok=True)
 
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         cursor = conn.cursor()
 
         # ワーカー統計テーブル
@@ -377,7 +377,7 @@ class ElderTreeStatisticsReporter:
 
     async def _save_statistics(self, stats_data: Dict[str, Any]):
         """統計データ保存"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         cursor = conn.cursor()
         timestamp = datetime.now()
 
@@ -538,29 +538,29 @@ class ElderTreeStatisticsReporter:
         <h1>Elder Tree Statistics Report</h1>
         <p style="text-align: center; color: #7f8c8d;">Generated on {timestamp}</p>
 
-        <h2>📊 Executive Summary</h2>
+        <h2>"📊" Executive Summary</h2>
         <div class="summary-grid">
             <div class="summary-card">
                 <div class="label">Total Workers</div>
                 <div class="metric">{stats['workers']['total_workers']}</div>
                 <div class="label">Active: {stats['workers']['active_workers']} ({ \
-                    stats['workers']['availability_rate']*100:.1f}%)</div>
+                    stats['workers']['availability_rate']*100:0.1f}%)</div>
             </div>
             <div class="summary-card">
                 <div class="label">Messages Processed</div>
                 <div class="metric">{stats['workers']['total_messages']:,}</div>
-                <div class="label">Avg Error Rate: {stats['workers']['avg_error_rate']*100:.2f}%</div>
+                <div class="label">Avg Error Rate: {stats['workers']['avg_error_rate']*100:0.2f}%</div>
             </div>
             <div class="summary-card">
                 <div class="label">Four Sages Sessions</div>
                 <div class="metric">{stats['sages']['total_sessions']}</div>
-                <div class="label">Consensus Rate: {stats['sages']['avg_consensus_rate']*100:.1f}%</div>
+                <div class="label">Consensus Rate: {stats['sages']['avg_consensus_rate']*100:0.1f}%</div>
             </div>
             <div class="summary-card">
                 <div class="label">System Health</div>
                 <div class="metric status-{stats['sages']['four_sages_health']}">{ \
                     stats['sages']['four_sages_health'].upper()}</div>
-                <div class="label">Collaboration Score: {stats['sages']['avg_collaboration_score']:.2f}</div>
+                <div class="label">Collaboration Score: {stats['sages']['avg_collaboration_score']:0.2f}</div>
             </div>
         </div>
 
@@ -611,9 +611,9 @@ class ElderTreeStatisticsReporter:
                     <td>{wtype.replace('_', ' ').title()}</td>
                     <td>{summary['active']} / {summary['total']}</td>
                     <td>{summary['messages']:,}</td>
-                    <td>{avg_cpu:.1f}%</td>
-                    <td>{avg_memory:.0f}</td>
-                    <td>{avg_error*100:.2f}%</td>
+                    <td>{avg_cpu:0.1f}%</td>
+                    <td>{avg_memory:0.0f}</td>
+                    <td>{avg_error*100:0.2f}%</td>
                 </tr>
 """
 
@@ -644,10 +644,10 @@ class ElderTreeStatisticsReporter:
                     <td>{sage_type.replace('_', ' ').title()}</td>
                     <td class="{effectiveness_class}">{sage_data['effectiveness'].upper()}</td>
                     <td>{sage_data['total_sessions']}</td>
-                    <td>{sage_data['consensus_rate']*100:.1f}%</td>
-                    <td>{sage_data['avg_response_time']:.2f}s</td>
+                    <td>{sage_data['consensus_rate']*100:0.1f}%</td>
+                    <td>{sage_data['avg_response_time']:0.2f}s</td>
                     <td>{sage_data['knowledge_transfers']}</td>
-                    <td>{sage_data['collaboration_score']:.3f}</td>
+                    <td>{sage_data['collaboration_score']:0.3f}</td>
                 </tr>
 """
 
@@ -655,7 +655,7 @@ class ElderTreeStatisticsReporter:
             </tbody>
         </table>
 
-        <h2>📈 Performance Trends</h2>
+        <h2>"📈" Performance Trends</h2>
         <table>
             <thead>
                 <tr>
@@ -681,9 +681,9 @@ class ElderTreeStatisticsReporter:
             html_content += f"""
                 <tr>
                     <td>{metric_name.replace('_', ' ').title()}</td>
-                    <td>{trend_data['current_value']:.2f}</td>
-                    <td>{trend_data['baseline_value']:.2f}</td>
-                    <td>{trend_data['change_rate']:.1f}%</td>
+                    <td>{trend_data['current_value']:0.2f}</td>
+                    <td>{trend_data['baseline_value']:0.2f}</td>
+                    <td>{trend_data['change_rate']:0.1f}%</td>
                     <td class="{trend_class}">{trend_symbol} {trend.upper()}</td>
                 </tr>
 """
@@ -823,6 +823,7 @@ class ElderTreeStatisticsReporter:
 
 # デモ実行
 if __name__ == "__main__":
+    pass
 
     async def demo():
         """demoメソッド"""

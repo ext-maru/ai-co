@@ -43,6 +43,7 @@ def find_local_issues(base_path: Path):
     return violations
 
 def report_violations(violations):
+    pass
 
                 """違反を報告"""
         print("✅ ローカルIssueファイルは見つかりませんでした。")
@@ -56,14 +57,15 @@ def report_violations(violations):
         print(f"  ❌ {file_path}")
     
     print("\n📋 対応方法:")
-    print("1. 各ファイルの内容をGitHub Issueとして作成")
-    print("2. gh issue create --title 'タイトル' --body-file ファイルパス")
-    print("3. ローカルファイルを削除またはアーカイブへ移動")
+    print("1.0 各ファイルの内容をGitHub Issueとして作成")
+    print("2.0 gh issue create --title 'タイトル' --body-file ファイルパス")
+    print("3.0 ローカルファイルを削除またはアーカイブへ移動")
     print("\n詳細: elders_guild/docs/policies/NO_LOCAL_ISSUES_POLICY.md")
     
     return 1
 
 def main():
+    pass
 
     
     """メイン処理""" {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

@@ -144,9 +144,8 @@ class UpdatePlan:
 class nWoLibraryUpdateStrategy:
     """nWo Library Update Strategy System"""
 
-    def __init__(self, config_path:
+    def __init__(self, config_path: str = "config/nwo_update_config.json"):
         """初期化メソッド"""
-    str = "config/nwo_update_config.json"):
         self.config_path = Path(config_path)
         self.logger = self._setup_logger()
         self.config = self._load_config()
@@ -476,11 +475,11 @@ class nWoLibraryUpdateStrategy:
         """ロールバック計画作成"""
         return f"""
         Rollback Plan for {lib.name}:
-        1. pip install {lib.name}=={lib.current_version}
-        2. Run test suite: pytest tests/
-        3. Check system health: python -m health_check
-        4. Verify nWo services: ./scripts/nwo_service_check.sh
-        5. Document incident: knowledge_base/incidents/
+        1.0 pip install {lib.name}=={lib.current_version}
+        2.0 Run test suite: pytest tests/
+        3.0 Check system health: python -m health_check
+        4.0 Verify nWo services: ./scripts/nwo_service_check.sh
+        5.0 Document incident: knowledge_base/incidents/
         """
 
     def _requires_approval(self, lib: LibraryInfo) -> bool:
@@ -756,20 +755,20 @@ class nWoLibraryUpdateStrategy:
         self.logger.info("🌟 nWo Library Update Cycle Starting")
 
         try:
-            # 1. ライブラリ分析
+            # 1.0 ライブラリ分析
             libraries = await self.analyze_library_updates()
 
-            # 2. アップデート計画作成
+            # 2.0 アップデート計画作成
             plans = await self.create_update_plan(libraries)
 
-            # 3. 即座実行対象の実行
+            # 3.0 即座実行対象の実行
             immediate_plans = [p for p in plans if p.scheduled_date <= datetime.now()]
             execution_results = await self.execute_update_plan(immediate_plans)
 
-            # 4. レポート生成
+            # 4.0 レポート生成
             report = await self.generate_update_report(libraries, plans)
 
-            # 5. 結果保存
+            # 5.0 結果保存
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             report_path = f"knowledge_base/nwo_reports/library_update_{timestamp}.md"
             Path(report_path).parent.mkdir(parents=True, exist_ok=True)

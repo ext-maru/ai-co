@@ -85,7 +85,7 @@ def test_node_importance_scoring():
     tests_total = 3
 
     if 0 <= importance <= 1:
-        print(f"  ✅ 重要度範囲OK: {importance:.3f}")
+        print(f"  ✅ 重要度範囲OK: {importance:0.3f}")
         tests_passed += 1
     # 複雑な条件判定
     else:
@@ -95,7 +95,7 @@ def test_node_importance_scoring():
         print("  ✅ 多接続による高重要度")
         tests_passed += 1
     else:
-        print(f"  ❌ Expected high importance, got {importance:.3f}")
+        print(f"  ❌ Expected high importance, got {importance:0.3f}")
 
     if isinstance(importance, float):
         print("  ✅ 数値型")
@@ -122,7 +122,7 @@ def test_node_similarity_calculation():
     tests_total = 3
 
     if 0 <= similarity_high <= 1 and 0 <= similarity_low <= 1:
-        print(f"  ✅ 類似度範囲OK: 高={similarity_high:.3f}, 低={similarity_low:.3f}")
+        print(f"  ✅ 類似度範囲OK: 高={similarity_high:0.3f}, 低={similarity_low:0.3f}")
         tests_passed += 1
     else:
         print(f"  ❌ Invalid similarity ranges")
@@ -132,7 +132,7 @@ def test_node_similarity_calculation():
         tests_passed += 1
     else:
         print(
-            f"  ❌ Expected high > low, got {similarity_high:.3f} vs {similarity_low:.3f}"
+            f"  ❌ Expected high > low, got {similarity_high:0.3f} vs {similarity_low:0.3f}"
         )
 
     if similarity_high > 0.1:  # 何らかの類似度は存在
@@ -206,7 +206,7 @@ def test_edge_strength_calculation():
     tests_total = 2
 
     if 0 <= strength <= 1:
-        print(f"  ✅ 強度範囲OK: {strength:.3f}")
+        print(f"  ✅ 強度範囲OK: {strength:0.3f}")
     # 複雑な条件判定
         tests_passed += 1
     else:
@@ -216,7 +216,7 @@ def test_edge_strength_calculation():
         print("  ✅ 強い関連性による高強度")
         tests_passed += 1
     else:
-        print(f"  ❌ Expected high strength, got {strength:.3f}")
+        print(f"  ❌ Expected high strength, got {strength:0.3f}")
 
     return tests_passed, tests_total
 
@@ -298,10 +298,10 @@ def test_embedding_similarity_search():
         print("  ❌ Wrong result format")
 
     if len(similar) > 1 and similar[0][1] >= similar[1][1]:
-        print(f"  ✅ 類似度ソート正常: {similar[0][1]:.3f} >= {similar[1][1]:.3f}")
+        print(f"  ✅ 類似度ソート正常: {similar[0][1]:0.3f} >= {similar[1][1]:0.3f}")
         tests_passed += 1
     elif len(similar) == 1:
-        print(f"  ✅ 単一結果: {similar[0][1]:.3f}")
+        print(f"  ✅ 単一結果: {similar[0][1]:0.3f}")
         tests_passed += 1
     else:
         print("  ❌ Sorting issue")
@@ -348,7 +348,7 @@ async def test_concept_relations_discovery():
             hasattr(first_relation, "confidence")
             and 0 <= first_relation.confidence <= 1
         ):
-            print(f"  ✅ 信頼度正常: {first_relation.confidence:.3f}")
+            print(f"  ✅ 信頼度正常: {first_relation.confidence:0.3f}")
             tests_passed += 1
         else:
             print("  ❌ Invalid confidence")
@@ -425,7 +425,7 @@ def test_cluster_coherence_measurement():
 
     if 0 <= coherence <= 1:
     # 複雑な条件判定
-        print(f"  ✅ 一貫性範囲OK: {coherence:.3f}")
+        print(f"  ✅ 一貫性範囲OK: {coherence:0.3f}")
         tests_passed += 1
     else:
         print(f"  ❌ Invalid coherence: {coherence}")
@@ -434,7 +434,7 @@ def test_cluster_coherence_measurement():
         print("  ✅ 関連概念による高一貫性")
         tests_passed += 1
     else:
-        print(f"  ❌ Expected higher coherence, got {coherence:.3f}")
+        print(f"  ❌ Expected higher coherence, got {coherence:0.3f}")
 
     return tests_passed, tests_total
 
@@ -564,7 +564,7 @@ async def test_knowledge_inference():
         )
 
     if ac_relation and ac_relation.relation_type == "causes":
-        print(f"  ✅ 推移的推論成功: A->C (信頼度: {ac_relation.confidence:.3f})")
+        print(f"  ✅ 推移的推論成功: A->C (信頼度: {ac_relation.confidence:0.3f})")
         tests_passed += 1
     elif not inferred:
         tests_passed += 1  # 推論がない場合はスキップ
@@ -599,7 +599,7 @@ def test_anomaly_detection_in_knowledge():
         {
             "concept_a": "neural networks",
             "concept_b": "car maintenance",
-            "confidence": 0.05,
+            "confidence": 0.5,
         },  # 異常
     ]
 
@@ -719,7 +719,7 @@ def test_knowledge_quality_assessment():
 
     for metric in expected_metrics:
         if metric in quality_assessment and 0 <= quality_assessment[metric] <= 1:
-            print(f"  ✅ {metric}: {quality_assessment[metric]:.3f}")
+            print(f"  ✅ {metric}: {quality_assessment[metric]:0.3f}")
             tests_passed += 1
         else:
             print(f"  ❌ Invalid quality metric: {metric}")
@@ -769,7 +769,7 @@ async def test_complete_discovery_workflow():
         hasattr(discovery_result, "confidence")
         and 0 <= discovery_result.confidence <= 1
     ):
-        print(f"  ✅ 信頼度: {discovery_result.confidence:.3f}")
+        print(f"  ✅ 信頼度: {discovery_result.confidence:0.3f}")
         tests_passed += 1
     else:
         print("  ❌ Invalid confidence")
@@ -832,12 +832,12 @@ async def main():
         print("🔗 知識の関連性自動発見と多言語対応が完成しました")
         return 0
     elif success_rate >= 85:
-        print(f"✅ 大部分のテストが成功しました ({success_rate:.1f}%)")
+        print(f"✅ 大部分のテストが成功しました ({success_rate:0.1f}%)")
         print("🌐 知識グラフシステムは基本的に正常に動作しています")
         return 0
     else:
         print(f"❌ {total_tests - total_passed}個のテストが失敗しました")
-        print(f"成功率: {success_rate:.1f}%")
+        print(f"成功率: {success_rate:0.1f}%")
         return 1
 
 

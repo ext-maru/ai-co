@@ -204,7 +204,7 @@ class ElderCouncilIntegration:
         import sqlite3
 
         self.council_db_path.parent.mkdir(exist_ok=True)
-        conn = sqlite3.connect(str(self.council_db_path))
+        conn = sqlite3connect(str(self.council_db_path))
         cursor = conn.cursor()
 
         # エルダーメッセージテーブル
@@ -348,7 +348,7 @@ class ElderCouncilIntegration:
         """メッセージ保存"""
         import sqlite3
 
-        conn = sqlite3.connect(str(self.council_db_path))
+        conn = sqlite3connect(str(self.council_db_path))
         cursor = conn.cursor()
 
         try:
@@ -476,7 +476,7 @@ class ElderCouncilIntegration:
         """評議会決議保存"""
         import sqlite3
 
-        conn = sqlite3.connect(str(self.council_db_path))
+        conn = sqlite3connect(str(self.council_db_path))
         cursor = conn.cursor()
 
         try:
@@ -521,7 +521,7 @@ class ElderCouncilIntegration:
 
         import sqlite3
 
-        conn = sqlite3.connect(str(self.council_db_path))
+        conn = sqlite3connect(str(self.council_db_path))
         cursor = conn.cursor()
 
         try:
@@ -794,20 +794,20 @@ async def demonstrate_council_integration():
 
     council = ElderCouncilIntegration()
 
-    # 1. AI自動化完了報告
-    print("\n1. AI自動化システム完了報告...")
+    # 1.0 AI自動化完了報告
+    print("\n1.0 AI自動化システム完了報告...")
     completion_msg_id = await council.report_ai_automation_completion()
     print(f"✅ 完了報告送信: {completion_msg_id}")
 
-    # 2. 週次レポート生成
-    print("\n2. 評議会週次レポート生成...")
+    # 2.0 週次レポート生成
+    print("\n2.0 評議会週次レポート生成...")
     weekly_report = await council.generate_council_report("weekly")
     print(f"📊 週次レポート: {weekly_report['report_id']}")
     print(f"   - メッセージ統計: {len(weekly_report['message_statistics'])}項目")
-    print(f"   - 応答率: {weekly_report['response_rate_percent']:.1f}%")
+    print(f"   - 応答率: {weekly_report['response_rate_percent']:0.1f}%")
 
-    # 3. 緊急エスカレーション例
-    print("\n3. 緊急エスカレーション例...")
+    # 3.0 緊急エスカレーション例
+    print("\n3.0 緊急エスカレーション例...")
     escalation_id = await council.escalate_to_grand_elder(
         escalation_reason="システム臨界閾値到達",
         urgency=UrgencyLevel.CRITICAL,
@@ -820,8 +820,8 @@ async def demonstrate_council_integration():
     )
     print(f"🚨 緊急エスカレーション: {escalation_id}")
 
-    # 4. 承認要請例
-    print("\n4. 承認要請提出例...")
+    # 4.0 承認要請例
+    print("\n4.0 承認要請提出例...")
     approval_id = await council.submit_approval_request(
         requester_id="claude_elder",
         request_subject="次期フェーズ開発承認",

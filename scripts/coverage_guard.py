@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 テストカバレッジ監視騎士
+"📊" テストカバレッジ監視騎士
 指定されたカバレッジ閾値を守る
 """
 
@@ -46,7 +46,7 @@ class CoverageGuard:
         total_coverage = coverage_data.get("totals", {}).get("percent_covered", 0.0)
 
         # 結果表示
-        print(f"\n📊 総合カバレッジ: {total_coverage:.1f}%")
+        print(f"\n📊 総合カバレッジ: {total_coverage:0.1f}%")
 
         # 各ファイルのカバレッジを表示（低い順）
         files_data = coverage_data.get("files", {})
@@ -72,7 +72,7 @@ class CoverageGuard:
             print("\n✅ カバレッジ基準を満たしています")
         else:
             print("\n❌ カバレッジ基準を下回っています")
-            print(f"   必要: {self.min_coverage}%, 実際: {total_coverage:.1f}%")
+            print(f"   必要: {self.min_coverage}%, 実際: {total_coverage:0.1f}%")
 
         return passed, total_coverage, coverage_data
 
@@ -147,7 +147,7 @@ class CoverageGuard:
         badge_data = {
             "schemaVersion": 1,
             "label": "coverage",
-            "message": f"{coverage:.1f}%",
+            "message": f"{coverage:0.1f}%",
             "color": color,
         }
 
@@ -184,7 +184,7 @@ class CoverageGuard:
         for file_info in low_coverage_files[:5]:
             relative_path = Path(file_info["path"]).relative_to(PROJECT_ROOT)
             print(f"\n   📁 {relative_path}")
-            print(f"      現在: {file_info['coverage']:.1f}%")
+            print(f"      現在: {file_info['coverage']:0.1f}%")
             print(f"      未テスト行数: {file_info['missing_lines']}")
             print(f"      提案: test_{relative_path.stem}.py を作成/更新")
 

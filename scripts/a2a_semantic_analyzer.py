@@ -56,7 +56,7 @@ class A2ASemanticAnalyzer:
         print("📊 A2A通信パターンを分析中...")
 
         # SQLiteからA2A通信ログを取得
-        conn = sqlite3.connect(self.a2a_db_path)
+        conn = sqlite3connect(self.a2a_db_path)
         cursor = conn.cursor()
 
         # 最近の通信を取得
@@ -220,7 +220,7 @@ class A2ASemanticAnalyzer:
             return []
 
         # エラーログから類似パターンを検索
-        conn = sqlite3.connect(self.a2a_db_path)
+        conn = sqlite3connect(self.a2a_db_path)
         cursor = conn.cursor()
 
         # エラーのみ取得
@@ -346,7 +346,7 @@ class A2ASemanticAnalyzer:
 
     def _get_recent_patterns(self, limit: int = 100) -> List[Dict]:
         """最近の通信パターンを取得"""
-        conn = sqlite3.connect(self.a2a_db_path)
+        conn = sqlite3connect(self.a2a_db_path)
         cursor = conn.cursor()
 
         query = """
@@ -468,7 +468,7 @@ class A2ASemanticAnalyzer:
         for cat_id, stat in stats.items():
             if stat["percentage"] > 40:
                 recommendations.append(
-                    f"📊 {stat['name']}の通信が{stat['percentage']:.1f}%を占めています。"
+                    f"📊 {stat['name']}の通信が{stat['percentage']:0.1f}%を占めています。"
                     f"負荷分散を検討してください。"
                 )
 
@@ -502,7 +502,7 @@ def main():
     print("\n📈 通信カテゴリ分布")
     print("-" * 40)
     for cat_id, stat in report["categorization"].items():
-        print(f"{stat['name']}: {stat['count']}件 ({stat['percentage']:.1f}%)")
+        print(f"{stat['name']}: {stat['count']}件 ({stat['percentage']:0.1f}%)")
 
     print("\n💡 推奨事項")
     print("-" * 40)
@@ -532,7 +532,7 @@ def main():
             print(f"\n見つかった類似パターン: {len(results)}件")
             for i, result in enumerate(results[:5], 1):
                 print(
-                    f"{i}. {result['flow']} - {result['error_type']} (類似度: {result['similarity']:.2f})"
+                    f"{i}. {result['flow']} - {result['error_type']} (類似度: {result['similarity']:0.2f})"
                 )
         else:
             print("類似パターンが見つかりませんでした。")

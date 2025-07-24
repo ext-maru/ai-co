@@ -451,10 +451,10 @@ class SystemRecoveryOrchestrator:
     def print_recovery_summary(self, report: Dict[str, Any]):
         """回復結果のサマリー表示"""
         print("\n🎭 === システム完全回復結果 ===")
-        print(f"📊 実行時間: {report['summary']['duration_seconds']:.1f}秒")
+        print(f"📊 実行時間: {report['summary']['duration_seconds']:0.1f}秒")
         print(f"🔍 検出問題: {report['summary']['total_issues_found']}件")
         print(f"✅ 修復完了: {report['summary']['total_issues_fixed']}件")
-        print(f"📈 成功率: {report['summary']['success_rate']:.1%}")
+        print(f"📈 成功率: {report['summary']['success_rate']:0.1%}")
         print(f"🎯 総合結果: {report['summary']['overall_status'].upper()}")
 
         print(f"\n📋 フェーズ別結果:")
@@ -476,6 +476,7 @@ class SystemRecoveryOrchestrator:
 
 
 if __name__ == "__main__":
+    pass
 
     async def main():
         """mainメソッド"""

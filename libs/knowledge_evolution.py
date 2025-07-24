@@ -5,7 +5,7 @@ Knowledge Evolution Mechanism - 知識進化メカニズム
 
 4賢者との連携:
 📚 ナレッジ賢者: 知識の相互接続と継承パターンの構築
-🔍 RAG賢者: 意味的関連性に基づく知識ネットワーク形成
+"🔍" RAG賢者: 意味的関連性に基づく知識ネットワーク形成
 📋 タスク賢者: 知識の価値と活用頻度による優先順位付け
 🚨 インシデント賢者: 知識の整合性と過度な複雑化の防止
 """
@@ -47,14 +47,14 @@ class KnowledgeAnalyzer:
 
         quality_score = (
             confidence * 0.4
-            + min(evidence_count / 100, 1.0) * 0.3
+            + min(evidence_count / 100, 1) * 0.3
             + usage_frequency * 0.3
         )
 
         return {
             "quality_score": quality_score,
             "confidence_level": confidence,
-            "evidence_strength": min(evidence_count / 100, 1.0),
+            "evidence_strength": min(evidence_count / 100, 1),
             "usage_relevance": usage_frequency,
         }
 
@@ -119,11 +119,11 @@ class GraphBuilder:
     ) -> float:
         """意味的類似度を計算"""
         # 簡単な実装: タイプとドメインの一致度
-        type_match = 1.0 if node1["type"] == node2["type"] else 0.5
+        type_match = 1 if node1["type"] == node2["type"] else 0.5
 
         domain1 = node1.get("metadata", {}).get("domain", "")
         domain2 = node2.get("metadata", {}).get("domain", "")
-        domain_match = 1.0 if domain1 == domain2 else 0.3
+        domain_match = 1 if domain1 == domain2 else 0.3
 
         # コンテンツの単語重複
         content1_words = set(node1["content"].lower().split())
@@ -378,7 +378,7 @@ class ConsistencyChecker:
         """一貫性スコアを計算"""
         total_issues = len(contradictions) + len(conflicts) + len(inconsistencies)
         if total_issues == 0:
-            return 1.0
+            return 1
 
         # 重要度による重み付け
         weighted_issues = sum(
@@ -392,7 +392,7 @@ class ConsistencyChecker:
             ]
         )
 
-        return max(0, 1.0 - (weighted_issues / 10))
+        return max(0, 1 - (weighted_issues / 10))
 
     def _generate_resolution_recommendations(
         self, contradictions: List[Dict[str, Any]]
@@ -504,7 +504,7 @@ class KnowledgeEvolutionMechanism:
                 "weak_knowledge_areas": [],
                 "outdated_knowledge_areas": [],
                 "priority_gaps": [],
-                "gap_analysis_score": 0.0,
+                "gap_analysis_score": 0,
                 "error": str(e),
             }
 
@@ -758,7 +758,7 @@ class KnowledgeEvolutionMechanism:
             original_time = current_structure.get("access_patterns", {}).get(
                 "average_retrieval_time", 2.5
             )
-            target_time = optimization_goals.get("target_retrieval_time", 1.0)
+            target_time = optimization_goals.get("target_retrieval_time", 1)
             improvement = max(0, (original_time - target_time) / original_time)
             performance_improvements["retrieval_time_improvement"] = improvement
 
@@ -1048,10 +1048,10 @@ class KnowledgeEvolutionMechanism:
         """ギャップ分析スコアを計算"""
         total_gaps = len(missing) + len(weak) + len(outdated)
         if total_gaps == 0:
-            return 1.0
+            return 1
 
         weighted_gaps = len(missing) * 3 + len(weak) * 2 + len(outdated) * 1
-        return max(0, 1.0 - (weighted_gaps / 20))
+        return max(0, 1 - (weighted_gaps / 20))
 
     def _analyze_semantic_relationships(
         self, graph_data: Dict[str, Any]
@@ -1097,7 +1097,7 @@ class KnowledgeEvolutionMechanism:
         context_changes = len(knowledge_data.get("context_changes", []))
 
         # 使用頻度の影響（低いほど陳腐化）
-        usage_factor = 1.0 - usage_frequency
+        usage_factor = 1 - usage_frequency
 
         # 成功率の推移（下降傾向ほど陳腐化）
         if len(success_rates) > 1:
@@ -1111,13 +1111,13 @@ class KnowledgeEvolutionMechanism:
             trend_factor = 0
 
         # コンテキスト変化の影響
-        context_factor = min(1.0, context_changes / 2.0)  # より敏感に
+        context_factor = min(1, context_changes / 2)  # より敏感に
 
         # 特別に低い使用頻度への追加ペナルティ
         if usage_frequency <= 0.1:  # 10%以下
             usage_factor += 0.2
 
-        score = min(1.0, usage_factor * 0.4 + trend_factor * 0.4 + context_factor * 0.2)
+        score = min(1, usage_factor * 0.4 + trend_factor * 0.4 + context_factor * 0.2)
 
         # legacy_optimizationの特別処理（テスト用）
         if context_changes >= 2 and usage_frequency <= 0.05:
@@ -1193,7 +1193,7 @@ class KnowledgeEvolutionMechanism:
         # アクセスパターンの改善
         if "access_patterns" in optimized:
             optimized["access_patterns"]["average_retrieval_time"] = (
-                optimization_goals.get("target_retrieval_time", 1.0)
+                optimization_goals.get("target_retrieval_time", 1)
             )
 
         return optimized
@@ -1348,7 +1348,7 @@ class KnowledgeEvolutionMechanism:
         evolved_kb = current_kb.copy()
 
         # バージョン更新
-        current_version = evolved_kb.get("version", "1.0")
+        current_version = evolved_kb.get("version", "1")
         version_parts = current_version.split(".")
         evolved_kb["version"] = f"{version_parts[0]}.{int(version_parts[1]) + 1}"
 
@@ -1406,7 +1406,7 @@ class KnowledgeEvolutionMechanism:
         )
 
         if current_patterns == 0:
-            return 0.0
+            return 0
 
         return (evolved_patterns - current_patterns) / current_patterns
 

@@ -216,10 +216,10 @@ class RetryIssueReporter:
         
         comment = f"""## {emoji} Auto Issue Processor 処理{status}
 
-**📊 処理サマリー**:
+**"📊" 処理サマリー**:
 - **🔧 操作**: {session['operation']}
 - **🔄 試行回数**: {attempt_count}回
-- **⏰ 処理時間**: {duration:.1f}秒
+- **⏰ 処理時間**: {duration:0.1f}秒
 - **📅 期間**: {start_time.strftime("%H:%M:%S")} → {end_time.strftime("%H:%M:%S")}
 
 """

@@ -120,6 +120,7 @@ from tests.mock_utils import (
 
 # Import worker under test
 try:
+    pass
 except ImportError as e:
     print(f"Import error: {{e}}")
     # Try alternative import

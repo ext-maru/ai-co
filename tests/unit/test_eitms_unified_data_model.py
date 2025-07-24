@@ -607,7 +607,7 @@ class TestEitmsIntegration:
             manager = EitmsUnifiedManager(db_path)
             await manager.initialize()
             
-            # 1. 計画タスク作成
+            # 1.0 計画タスク作成
             planning_id = await manager.create_task(
                 title="新機能設計書作成",
                 description="新機能のアーキテクチャ設計",
@@ -615,7 +615,7 @@ class TestEitmsIntegration:
                 priority=Priority.HIGH
             )
             
-            # 2. Issue作成（計画から派生）
+            # 2.0 Issue作成（計画から派生）
             issue_id = await manager.create_task(
                 title="新機能実装",
                 description="設計に基づく実装",
@@ -624,7 +624,7 @@ class TestEitmsIntegration:
             )
             await manager.link_github_issue(issue_id, 456)
             
-            # 3. プロジェクトタスク作成（Issueから派生）
+            # 3.0 プロジェクトタスク作成（Issueから派生）
             project_id = await manager.create_task(
                 title="フロントエンド実装",
                 description="UI/UX実装",
@@ -632,7 +632,7 @@ class TestEitmsIntegration:
                 priority=Priority.MEDIUM
             )
             
-            # 4. TODO作成（プロジェクトタスクから派生）
+            # 4.0 TODO作成（プロジェクトタスクから派生）
             todo_id = await manager.create_task(
                 title="ボタンコンポーネント実装",
                 description="再利用可能なボタンコンポーネント",
@@ -640,19 +640,19 @@ class TestEitmsIntegration:
                 priority=Priority.MEDIUM
             )
             
-            # 5. ワークフロー実行
+            # 5.0 ワークフロー実行
             await manager.update_task_status(planning_id, TaskStatus.COMPLETED)
             await manager.update_task_status(issue_id, TaskStatus.IN_PROGRESS)
             await manager.update_task_status(project_id, TaskStatus.IN_PROGRESS)
             await manager.update_task_status(todo_id, TaskStatus.COMPLETED)
             
-            # 6. 統計確認
+            # 6.0 統計確認
             stats = await manager.db.get_stats()
             assert stats['total_tasks'] == 4
             assert stats['status_distribution']['completed'] == 2
             assert stats['status_distribution']['in_progress'] == 2
             
-            # 7. ダッシュボード確認
+            # 7.0 ダッシュボード確認
             dashboard = await manager.get_dashboard_data()
             assert len(dashboard['in_progress_tasks']) == 2
             

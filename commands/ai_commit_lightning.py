@@ -180,7 +180,7 @@ class LightningCommitCLI:
         # 複雑度情報
         complexity = context.get("complexity", 0)
         if complexity > 0.5:
-            enhanced_message += f"\n⚠️ Complexity: {complexity:.1f}"
+            enhanced_message += f"\n⚠️ Complexity: {complexity:0.1f}"
 
         # エルダーズ署名
         enhanced_message += "\n\n🤖 Generated with Lightning Protocol"
@@ -195,11 +195,11 @@ class LightningCommitCLI:
         start_time = asyncio.get_event_loop().time()
 
         try:
-            # 1. Git状態分析
+            # 1.0 Git状態分析
             git_changes = self.get_git_changes()
             print(f"📊 変更ファイル: {git_changes['total_files']}個")
 
-            # 2. 自動ステージング（必要に応じて）
+            # 2.0 自動ステージング（必要に応じて）
             if not git_changes["staged"] and (
                 git_changes["unstaged"] or git_changes["untracked"]
             ):
@@ -216,7 +216,7 @@ class LightningCommitCLI:
                 # 再取得
                 git_changes = self.get_git_changes()
 
-            # 3. コンテキスト作成
+            # 3.0 コンテキスト作成
             all_files = git_changes["staged"] + (args.files if args.files else [])
             complexity = self.analyze_complexity(all_files)
 
@@ -237,9 +237,9 @@ class LightningCommitCLI:
                 "git_changes": git_changes,
             }
 
-            print(f"🎯 判定: 緊急度={urgency.value}, 複雑度={complexity:.2f}")
+            print(f"🎯 判定: 緊急度={urgency.value}, 複雑度={complexity:0.2f}")
 
-            # 4. レイヤー判定
+            # 4.0 レイヤー判定
             layer = self.lightning_system.determine_layer(context)
             print(f"📋 実行レイヤー: {layer.value}")
 
@@ -248,10 +248,10 @@ class LightningCommitCLI:
                 print(f"   推奨: ai-commit-{layer.value}")
                 return False
 
-            # 5. 強化コミットメッセージ
+            # 5.0 強化コミットメッセージ
             enhanced_message = self.create_enhanced_commit_message(message, context)
 
-            # 6. Lightning実行
+            # 6.0 Lightning実行
             print("⚡ Lightning実行中...")
             success = await self.lightning_system.execute_lightning_commit(
                 enhanced_message, context
@@ -260,17 +260,17 @@ class LightningCommitCLI:
             elapsed = asyncio.get_event_loop().time() - start_time
 
             if success:
-                print(f"✅ Lightning Commit成功! ({elapsed:.1f}秒)")
+                print(f"✅ Lightning Commit成功! ({elapsed:0.1f}秒)")
                 print(f"🚀 コミット完了: 超高速開発実現")
                 return True
             else:
-                print(f"❌ Lightning Commit失敗 ({elapsed:.1f}秒)")
+                print(f"❌ Lightning Commit失敗 ({elapsed:0.1f}秒)")
                 return False
 
         except Exception as e:
             # Handle specific exception case
             elapsed = asyncio.get_event_loop().time() - start_time
-            print(f"💥 Lightning Protocol エラー ({elapsed:.1f}秒): {e}")
+            print(f"💥 Lightning Protocol エラー ({elapsed:0.1f}秒): {e}")
             return False
 
 
@@ -322,7 +322,7 @@ def main():
         git_changes = cli.get_git_changes()
         complexity = cli.analyze_complexity(git_changes.get("staged", []))
         print(f"📊 変更ファイル: {git_changes['total_files']}個")
-        print(f"🎯 複雑度: {complexity:.2f}")
+        print(f"🎯 複雑度: {complexity:0.2f}")
 
         context = {
             "urgency": CommitUrgency.EMERGENCY

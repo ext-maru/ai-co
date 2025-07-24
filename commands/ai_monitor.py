@@ -149,9 +149,9 @@ class AIMonitorCommand(BaseCommand):
 
             # システムリソース
             lines.append("\n💻 システムリソース:")
-            lines.append(f"  CPU: {status_data['system']['cpu_percent']:.1f}%")
-            lines.append(f"  メモリ: {status_data['system']['memory_percent']:.1f}%")
-            lines.append(f"  ディスク: {status_data['system']['disk_percent']:.1f}%")
+            lines.append(f"  CPU: {status_data['system']['cpu_percent']:0.1f}%")
+            lines.append(f"  メモリ: {status_data['system']['memory_percent']:0.1f}%")
+            lines.append(f"  ディスク: {status_data['system']['disk_percent']:0.1f}%")
 
             # ワーカー状態
             lines.append("\n👷 ワーカー状態:")
@@ -452,8 +452,8 @@ class AIMonitorCommand(BaseCommand):
             base_data.update(
                 {
                     "uptime": str(datetime.now() - self.start_time),
-                    "memory_usage": f"{psutil.virtual_memory().percent:.1f}%",
-                    "cpu_usage": f"{psutil.cpu_percent():.1f}%",
+                    "memory_usage": f"{psutil.virtual_memory().percent:0.1f}%",
+                    "cpu_usage": f"{psutil.cpu_percent():0.1f}%",
                 }
             )
             return base_data
@@ -469,11 +469,11 @@ class AIMonitorCommand(BaseCommand):
 
         issues = []
         if cpu_percent > 90:
-            issues.append(f"CPU使用率が高い: {cpu_percent:.1f}%")
+            issues.append(f"CPU使用率が高い: {cpu_percent:0.1f}%")
         if memory_percent > 90:
-            issues.append(f"メモリ使用率が高い: {memory_percent:.1f}%")
+            issues.append(f"メモリ使用率が高い: {memory_percent:0.1f}%")
         if disk_percent > 90:
-            issues.append(f"ディスク使用率が高い: {disk_percent:.1f}%")
+            issues.append(f"ディスク使用率が高い: {disk_percent:0.1f}%")
 
         return {
             "healthy": len(issues) == 0,
@@ -531,11 +531,11 @@ class AIMonitorCommand(BaseCommand):
         metrics = self._get_system_metrics()
 
         info = f"""
-CPU使用率: {metrics['cpu_percent']:.1f}% {'🔴' \
+CPU使用率: {metrics['cpu_percent']:0.1f}% {'🔴' \
     if metrics['cpu_percent'] > 80 \
     else '🟡' if metrics['cpu_percent'] > 50 else '🟢'}
-メモリ: {metrics['memory_percent']:.1f}% ({metrics['memory_used_mb']}MB / {metrics['memory_total_mb']}MB)
-ディスク: {metrics['disk_percent']:.1f}% ({metrics['disk_used_gb']}GB / {metrics['disk_total_gb']}GB)
+メモリ: {metrics['memory_percent']:0.1f}% ({metrics['memory_used_mb']}MB / {metrics['memory_total_mb']}MB)
+ディスク: {metrics['disk_percent']:0.1f}% ({metrics['disk_used_gb']}GB / {metrics['disk_total_gb']}GB)
 監視時間: {datetime.now() - self.start_time}
 """
         return Panel(info.strip(), title="💻 システムリソース", border_style="green")

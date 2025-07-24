@@ -7,7 +7,7 @@
 📚 ナレッジ賢者: 知識をPostgreSQLに永続化、高速検索
 📋 タスク賢者: タスク履歴をPostgreSQLで管理、分析
 🚨 インシデント賢者: インシデントログをPostgreSQLで追跡
-🔍 RAG賢者: ベクトル検索をpgvectorで高速化
+"🔍" RAG賢者: ベクトル検索をpgvectorで高速化
 """
 
 import sys
@@ -824,20 +824,20 @@ async def demo_four_sages_postgres_mcp():
     four_sages = FourSagesPostgresMCPIntegration()
 
     try:
-        # 1. MCP統合初期化
-        print("\n1. MCP統合初期化...")
+        # 1.0 MCP統合初期化
+        print("\n1.0 MCP統合初期化...")
         init_result = await four_sages.initialize_mcp_integration()
         print(f"   結果: {'成功' if init_result['success'] else '失敗'}")
 
-        # 2. ナレッジ賢者検索テスト
-        print("\n2. ナレッジ賢者検索テスト...")
+        # 2.0 ナレッジ賢者検索テスト
+        print("\n2.0 ナレッジ賢者検索テスト...")
         knowledge_result = await four_sages.knowledge_sage_search("4賢者システム")
         print(f"   結果: {knowledge_result['status']}")
         if knowledge_result["status"] == "success":
             print(f"   発見件数: {knowledge_result['total_found']}")
 
-        # 3. タスク賢者管理テスト
-        print("\n3. タスク賢者管理テスト...")
+        # 3.0 タスク賢者管理テスト
+        print("\n3.0 タスク賢者管理テスト...")
         task_request = {
             "id": "task_001",
             "title": "PostgreSQL MCP統合テスト",
@@ -848,8 +848,8 @@ async def demo_four_sages_postgres_mcp():
         task_result = await four_sages.task_sage_management(task_request)
         print(f"   結果: {task_result['status']}")
 
-        # 4. インシデント賢者監視テスト
-        print("\n4. インシデント賢者監視テスト...")
+        # 4.0 インシデント賢者監視テスト
+        print("\n4.0 インシデント賢者監視テスト...")
         incident_data = {
             "id": "incident_001",
             "type": "system_test",
@@ -859,8 +859,8 @@ async def demo_four_sages_postgres_mcp():
         incident_result = await four_sages.incident_sage_monitoring(incident_data)
         print(f"   結果: {incident_result['status']}")
 
-        # 5. RAG賢者拡張検索テスト
-        print("\n5. RAG賢者拡張検索テスト...")
+        # 5.0 RAG賢者拡張検索テスト
+        print("\n5.0 RAG賢者拡張検索テスト...")
         rag_result = await four_sages.rag_sage_enhanced_search(
             "PostgreSQL", "データベース統合"
         )
@@ -868,8 +868,8 @@ async def demo_four_sages_postgres_mcp():
         if rag_result["status"] == "success":
             print(f"   発見件数: {rag_result['total_found']}")
 
-        # 6. 4賢者協調分析テスト
-        print("\n6. 4賢者協調分析テスト...")
+        # 6.0 4賢者協調分析テスト
+        print("\n6.0 4賢者協調分析テスト...")
         analysis_request = {
             "title": "PostgreSQL MCP統合評価",
             "query": "MCP統合",
@@ -886,8 +886,8 @@ async def demo_four_sages_postgres_mcp():
                 f"   コンセンサス: {collaborative_result['consensus_result']['consensus_reached']}"
             )
 
-        # 7. 統合状況確認
-        print("\n7. 統合状況確認...")
+        # 7.0 統合状況確認
+        print("\n7.0 統合状況確認...")
         status_result = await four_sages.get_integration_status()
         print(f"   MCP接続: {status_result['integration_status']['mcp_connected']}")
         print(f"   賢者統合: {status_result['integration_status']['sages_integrated']}")

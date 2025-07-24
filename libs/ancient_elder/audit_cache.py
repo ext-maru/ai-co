@@ -43,9 +43,8 @@ class AuditCache:
         # SHA256ハッシュでキーを生成
         return hashlib.sha256(combined.encode()).hexdigest()
     
-    def get(self, auditor: str, target: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """キャッシュから結果を取得"""
-        cache_key = self._generate_cache_key(auditor, target)
+    def get(self, auditor: str, target: Dict[str, Any]) -> Optional[Dict[str, Any]]cache_key = self._generate_cache_key(auditor, target)
+    """キャッシュから結果を取得"""
         cache_file = self.cache_dir / f"{cache_key}.json"
         
         if not cache_file.exists():
@@ -74,9 +73,8 @@ class AuditCache:
             self.stats["misses"] += 1
             return None
     
-    def set(self, auditor: str, target: Dict[str, Any], result: Dict[str, Any]):
-        """結果をキャッシュに保存"""
-        cache_key = self._generate_cache_key(auditor, target)
+    def set(self, auditor: str, target: Dict[str, Any], result: Dict[str, Any])cache_key = self._generate_cache_key(auditor, target)
+    """結果をキャッシュに保存"""
         cache_file = self.cache_dir / f"{cache_key}.json"
         
         try:
@@ -145,7 +143,7 @@ class AuditCache:
             "hits": self.stats["hits"],
             "misses": self.stats["misses"],
             "evictions": self.stats["evictions"],
-            "hit_rate": f"{hit_rate:.1f}%",
+            "hit_rate": f"{hit_rate:0.1f}%",
             "total_requests": total_requests,
             "cache_size": len(list(self.cache_dir.glob("*.json")))
         }
@@ -170,16 +168,15 @@ class AuditCache:
 class CachedAuditEngine:
     """キャッシュ機能付き監査エンジンラッパー"""
     
-    def __init__(self, engine, cache:
+    def __init__(self, engine, cache: Optional[AuditCache] = None):
         """初期化メソッド"""
-    Optional[AuditCache] = None):
         self.engine = engine
         self.cache = cache or AuditCache()
         
     async def run_comprehensive_audit(self, target: Dict[str, Any]) -> Dict[str, Any]:
         """キャッシュを使用した包括的監査"""
         # キャッシュキーとして使用
-        cache_key = f"comprehensive_{json.dumps(target, sort_keys=True)}"
+        cache_key = f"comprehensive_{json.dumps(target, sort_keys}"
         
         # キャッシュチェック
         cached_result = self.cache.get("comprehensive", target)

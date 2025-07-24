@@ -25,9 +25,8 @@ class MockConnection:
 
 
     """MockConnectionクラス"""
-def create_mock_pika():
-    """Create mock pika module"""
-    mock_pika = Mock()
+def create_mock_pika()mock_pika = Mock()
+"""Create mock pika module"""
     mock_pika.BlockingConnection = Mock(return_value=MockConnection())
     mock_pika.ConnectionParameters = Mock()
     return mock_pika
@@ -45,9 +44,8 @@ class MockSlackClient:
         self.users_list = AsyncMock(return_value={"ok": True, "members": []})
 
 
-def create_mock_slack():
-    """Create mock slack_sdk module"""
-    mock_slack = Mock()
+def create_mock_slack()mock_slack = Mock()
+"""Create mock slack_sdk module"""
     mock_slack.web.async_client.AsyncWebClient = Mock(return_value=MockSlackClient())
     return mock_slack
 
@@ -57,9 +55,8 @@ class MockRedis:
     def __init__(self):
         self.data = {}
 
-    def get(self, key):
+    def get(self, key)return self.data.get(key)
     """MockRedisクラス"""
-        return self.data.get(key)
 
     def set(self, key, value, ex=None):
         self.data[key] = value
@@ -73,9 +70,8 @@ class MockRedis:
         return 0
 
 
-def create_mock_redis():
-    """Create mock redis module"""
-    mock_redis = Mock()
+def create_mock_redis()mock_redis = Mock()
+"""Create mock redis module"""
     mock_redis.Redis = Mock(return_value=MockRedis())
     return mock_redis
 
@@ -91,17 +87,15 @@ class MockCursor:
 
 
 class MockConnection:
-    def __init__(self):
+    def __init__(self)self.cursor = Mock(return_value=MockCursor())
     """MockConnectionクラス"""
-        self.cursor = Mock(return_value=MockCursor())
         self.commit = Mock()
         self.rollback = Mock()
         self.close = Mock()
 
 
-def create_mock_sqlite():
-    """Create mock sqlite3 module"""
-    mock_sqlite = Mock()
+def create_mock_sqlite()mock_sqlite = Mock()
+"""Create mock sqlite3 module"""
     mock_sqlite.connect = Mock(return_value=MockConnection())
     return mock_sqlite
 

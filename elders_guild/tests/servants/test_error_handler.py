@@ -216,25 +216,25 @@ class TestErrorHandlerServant:
             "timestamp": datetime.now().isoformat()
         }
         
-        # 1. エラー報告
+        # 1.0 エラー報告
         report_result = await error_handler.report_error(error)
         assert report_result["success"] is True
         error_id = report_result["error_id"]
         
-        # 2. エラー分類
+        # 2.0 エラー分類
         classify_result = await error_handler.classify_error(error)
         assert classify_result["success"] is True
         
-        # 3. 復旧提案
+        # 3.0 復旧提案
         recovery_result = await error_handler.suggest_recovery(error)
         assert recovery_result["success"] is True
         
-        # 4. 復旧実行
+        # 4.0 復旧実行
         recovery_action = recovery_result["suggestions"][0]
         execute_result = await error_handler.execute_recovery(error_id, recovery_action)
         assert execute_result["success"] is True
         
-        # 5. 結果確認
+        # 5.0 結果確認
         status_result = await error_handler.get_error_status(error_id)
         assert status_result["success"] is True
         assert status_result["status"] in ["resolved", "mitigated", "monitoring"]

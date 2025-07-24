@@ -193,7 +193,7 @@ class ElderFlowQualityGate:
             
         else:
             gate_result['gate_decision'] = 'approved'
-            logger.info(f"✅ Quality gate PASSED: Score {quality_results['overall_quality_score']:.1f}")
+            logger.info(f"✅ Quality gate PASSED: Score {quality_results['overall_quality_score']:0.1f}")
             
         return gate_result
         

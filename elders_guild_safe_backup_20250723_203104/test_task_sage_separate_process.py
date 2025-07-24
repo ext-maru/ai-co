@@ -16,11 +16,12 @@ import os
 from python_a2a import A2AClient, Message, TextContent, MessageRole
 
 async def test_task_sage_separate_process_communication():
+    pass
 
 
 """別プロセスでのTask Sage A2A通信テスト"""
-        # 1. Task Sage A2Aサーバーを別プロセスで起動
-        print("\n🚀 1. Task Sage A2Aサーバー起動中...")
+        # 1.0 Task Sage A2Aサーバーを別プロセスで起動
+        print("\n🚀 1.0 Task Sage A2Aサーバー起動中...")
         
         # サーバー起動コマンド（Task Sage専用）
         cmd = [
@@ -71,8 +72,8 @@ asyncio.run(run_server())
             print(f"   stderr: {stderr}")
             return False
         
-        # 2. Task Sage特化機能テスト
-        print("\n📋 2. Task Sage機能テスト...")
+        # 2.0 Task Sage特化機能テスト
+        print("\n📋 2.0 Task Sage機能テスト...")
         
         # HTTPクライアントでTask Sage機能をテスト
         import httpx
@@ -103,8 +104,8 @@ asyncio.run(run_server())
                 print(f"     ⚠️ 直接HTTP接続試行: {e}")
                 print("     💡 これは正常です（A2AサーバーはHTTPサーバーではないため）")
         
-        # 3. プロセス監視テスト（Task Sage特化）
-        print("\n🔍 3. Task Sageプロセス監視テスト...")
+        # 3.0 プロセス監視テスト（Task Sage特化）
+        print("\n🔍 3.0 Task Sageプロセス監視テスト...")
         
         # プロセス情報確認
         print(f"   Task SageサーバープロセスID: {server_process.pid}")
@@ -118,15 +119,15 @@ asyncio.run(run_server())
             memory_info = process.memory_info()
             
             print(f"   CPU使用率: {cpu_percent}%")
-            print(f"   メモリ使用量: {memory_info.rss / 1024 / 1024:.1f}MB")
+            print(f"   メモリ使用量: {memory_info.rss / 1024 / 1024:0.1f}MB")
             
         except ImportError:
             print("   ⚠️ psutil未利用可能、詳細監視スキップ")
         except Exception as e:
             print(f"   ⚠️ プロセス監視エラー: {e}")
         
-        # 4. Task Sage負荷テスト（軽量版）
-        print("\n⚡ 4. Task Sage軽量負荷テスト...")
+        # 4.0 Task Sage負荷テスト（軽量版）
+        print("\n⚡ 4.0 Task Sage軽量負荷テスト...")
         
         # Task Sage特化の負荷テスト
         start_time = time.time()
@@ -141,10 +142,10 @@ asyncio.run(run_server())
                 break
         else:
             end_time = time.time()
-            print(f"   ✅ 15回の生存確認完了: {(end_time - start_time):.3f}秒")
+            print(f"   ✅ 15回の生存確認完了: {(end_time - start_time):0.3f}秒")
         
-        # 5. Task Sage機能統合確認
-        print("\n🔧 5. Task Sage機能統合確認...")
+        # 5.0 Task Sage機能統合確認
+        print("\n🔧 5.0 Task Sage機能統合確認...")
         
         # Task Sage特有の機能が正常に動作しているかの簡易確認
         
@@ -187,8 +188,8 @@ asyncio.run(run_server())
         except Exception as e:
             print(f"     ⚠️ A2Aエージェントテストエラー: {e}")
         
-        # 6. 結果サマリー
-        print("\n📊 6. Task Sage別プロセステスト結果サマリー")
+        # 6.0 結果サマリー
+        print("\n📊 6.0 Task Sage別プロセステスト結果サマリー")
         print("=" * 70)
         
         final_status = server_process.poll() is None
@@ -234,6 +235,7 @@ asyncio.run(run_server())
                 print(f"   ⚠️ プロセス終了エラー: {e}")
 
 async def main():
+    pass
 
 
 """メイン実行"""

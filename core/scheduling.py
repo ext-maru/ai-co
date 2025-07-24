@@ -257,7 +257,7 @@ class ScheduleManager:
         """データベース初期化"""
         self.db_path.parent.mkdir(exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS schedules (
@@ -291,7 +291,7 @@ class ScheduleManager:
 
     def save_schedule(self, task: ScheduledTask):
         """スケジュールを保存"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT OR REPLACE INTO schedules
@@ -316,7 +316,7 @@ class ScheduleManager:
         """スケジュールを読み込む"""
         schedules = []
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT task_id, name, schedule_type, schedule_config, task_data,
@@ -347,7 +347,7 @@ class ScheduleManager:
         self, task_id: str, success: bool, error_message: Optional[str] = None
     ):
         """実行履歴を記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO schedule_history (task_id, success, error_message)
@@ -358,7 +358,7 @@ class ScheduleManager:
 
     def get_schedule_stats(self) -> Dict[str, Any]:
         """スケジュール統計を取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # アクティブなスケジュール数
             active_count = conn.execute(
                 "SELECT COUNT(*) FROM schedules WHERE enabled = 1"

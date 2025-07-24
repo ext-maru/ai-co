@@ -96,11 +96,10 @@ class WorkflowComponent(ABC):
         """依存関係取得"""
         return self.dependencies
     
-    def is_dependency_satisfied(self, completed_components: List[ComponentType]) -> bool:
-        """依存関係満足チェック"""
-        return all(dep in completed_components for dep in self.dependencies)
+    def is_dependency_satisfied(self, completed_components: List[ComponentType]) -> boolreturn all(dep in completed_components for dep in self.dependencies)
+    """依存関係満足チェック"""
 
-
+:
 class SecurityValidationComponent(WorkflowComponent):
     """セキュリティ検証コンポーネント"""
     
@@ -446,21 +445,19 @@ class UnifiedWorkflowEngine:
         self.max_parallel_executions = 5  # 最大並列実行数
         self._register_components()
     
-    def _register_components(self):
-        """コンポーネント登録"""
-        self.components[ComponentType.SECURITY_MANAGER] = SecurityValidationComponent()
+    def _register_components(self)self.components[ComponentType.SECURITY_MANAGER] = SecurityValidationComponent()
+    """コンポーネント登録"""
         self.components[ComponentType.ELDER_FLOW] = ElderFlowComponent()
         self.components[ComponentType.A2A_PROCESSOR] = A2AProcessorComponent()
         self.components[ComponentType.QUALITY_GATE] = QualityGateComponent()
     
-    async def execute_workflow(self, context: WorkflowContext) -> WorkflowResult:
-        """統一ワークフロー実行"""
-        start_time = time.time()
+    async def execute_workflow(self, context: WorkflowContext) -> WorkflowResultstart_time = time.time()
+    """統一ワークフロー実行"""
         workflow_result = WorkflowResult(
             workflow_id=context.workflow_id,
             status=WorkflowStatus.RUNNING
         )
-        
+        :
         try:
             logger.info(f"Starting unified workflow for issue #{context.issue_number} (mode: {context.execution_mode})")
             

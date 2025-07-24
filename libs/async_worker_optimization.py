@@ -785,9 +785,8 @@ class MemoryOptimizer:
 class _RepeatedString:
     """繰り返し文字列の最適化表現"""
 
-    def __init__(self, string:
+    def __init__(self, string: str, count: int):
         """初期化メソッド"""
-    str, count: int):
         self.string = string
         self.count = count
 
@@ -810,9 +809,8 @@ class _RepeatedString:
 class _SparseList:
     """スパースリストの最適化表現"""
 
-    def __init__(self, size:
+    def __init__(self, size: int, non_none_items: List[Tuple[int, Any]]):
         """初期化メソッド"""
-    int, non_none_items: List[Tuple[int, Any]]):
         self.size = size
         self.data = dict(non_none_items)
 

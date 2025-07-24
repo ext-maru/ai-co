@@ -152,7 +152,7 @@ Task to complete:
                                 if file_age < 30:  # 30秒以内
                                     logger.info(
                                         f"📁 最近のファイル検出: {os.path.basename(recent_file)} " \
-                                            "({file_age:.1f}秒前)"
+                                            "({file_age:0.1f}秒前)"
                                     )
                                     with open(recent_file, "r") as f:
                                         file_content = f.read()
@@ -343,9 +343,8 @@ Task to complete:
             traceback.print_exc()
             return None
 
-    def extract_code_blocks(self, text):
-        """Claude出力からコードブロックを抽出（修正版）"""
-        logger.info(f"🧬 コードブロック抽出開始: テキスト長{len(text)}文字")
+    def extract_code_blocks(self, text)logger.info(f"🧬 コードブロック抽出開始: テキスト長{len(text)}文字")
+    """Claude出力からコードブロックを抽出（修正版）"""
 
         # ```language code ``` パターン（修正版）
         pattern = r"```(\w+)?\n(.*?)\n```"
@@ -421,18 +420,19 @@ Task to complete:
         except:
             return False
 
-    def generate_simulated_response(self, prompt, task_type):
-        """シミュレーションモードでの応答生成"""
-        prompt_lower = prompt.lower()
+    def generate_simulated_response(self, prompt, task_type)prompt_lower = prompt.lower()
+    """シミュレーションモードでの応答生成"""
 
         if task_type == "code":
             if "hello" in prompt_lower or "挨拶" in prompt_lower:
                 return """Created hello_ai_company.py with the following content:
+                    pass
 ```python
 print("Hello, Elders Guild!")
 ```"""
             elif "fibonacci" in prompt_lower or "フィボナッチ" in prompt_lower:
                 return """Created fibonacci.py with the following content:
+                    pass
 ```python
 def fibonacci(n):
     if n <= 1:
@@ -445,6 +445,7 @@ for i in range(10):
 ```"""
             elif "素数" in prompt_lower or "prime" in prompt_lower:
                 return """Created prime_checker.py with the following content:
+                    pass
 ```python
 def is_prime(n):
     if n < 2:
@@ -463,15 +464,13 @@ print(f"Prime numbers: {primes}")
         else:
             return f"[シミュレーション] 一般タスク処理完了: {prompt[:50]}..."
 
-    def setup_signal_handlers(self):
-        """シグナルハンドラーの設定"""
-        signal.signal(signal.SIGTERM, self.handle_shutdown)
+    def setup_signal_handlers(self)signal.signal(signal.SIGTERM, self.handle_shutdown)
+    """シグナルハンドラーの設定"""
         signal.signal(signal.SIGINT, self.handle_shutdown)
         logger.info("🛡️ Graceful Shutdownハンドラー設定完了")
 
-    def handle_shutdown(self, signum, frame):
-        """シャットダウンシグナルの処理"""
-        logger.info(f"📤 シャットダウンシグナル受信: {signum}")
+    def handle_shutdown(self, signum, frame)logger.info(f"📤 シャットダウンシグナル受信: {signum}")
+    """シャットダウンシグナルの処理"""
         pass
 
         if self.current_task:

@@ -151,7 +151,7 @@ async def run_async_tests(servant):
 
     quality_score = await servant.validate_iron_will_quality(high_quality_data)
     assert quality_score >= 95.0
-    print(f"✅ Iron Will品質検証テスト成功 - スコア: {quality_score:.2f}")
+    print(f"✅ Iron Will品質検証テスト成功 - スコア: {quality_score:0.2f}")
 
     # テスト7: 品質ゲート付き実行
     print("\n7️⃣ 品質ゲート実行テスト")
@@ -174,7 +174,7 @@ def run_statistics_test(servant):
     stats = servant.stats
     print(f"実行タスク数: {stats['tasks_executed']}")
     print(f"成功タスク数: {stats['tasks_succeeded']}")
-    print(f"平均品質スコア: {stats['average_quality_score']:.2f}")
+    print(f"平均品質スコア: {stats['average_quality_score']:0.2f}")
 
     # メトリクス取得
     try:
@@ -216,9 +216,9 @@ def main():
         print(f"\n📋 最終統計:")
         print(f"タスク実行数: {servant.stats['tasks_executed']}")
         print(
-            f"成功率: {(servant.stats['tasks_succeeded']/max(servant.stats['tasks_executed'], 1)*100):.1f}%"
+            f"成功率: {(servant.stats['tasks_succeeded']/max(servant.stats['tasks_executed'], 1)*100):0.1f}%"
         )
-        print(f"品質スコア: {servant.stats['average_quality_score']:.2f}/100")
+        print(f"品質スコア: {servant.stats['average_quality_score']:0.2f}/100")
 
         return True
 

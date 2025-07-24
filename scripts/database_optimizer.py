@@ -60,7 +60,7 @@ class DatabaseOptimizer:
         self.logger.info(f"🔍 検出完了: {len(databases)}個のデータベース")
         for db in databases:
             size_kb = db.stat().st_size / 1024
-            self.logger.debug(f"  {db.name}: {size_kb:.1f} KB")
+            self.logger.debug(f"  {db.name}: {size_kb:0.1f} KB")
 
         return databases
 
@@ -81,7 +81,7 @@ class DatabaseOptimizer:
         }
 
         try:
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3connect(db_path)
             cursor = conn.cursor()
 
             # テーブル情報取得
@@ -157,7 +157,7 @@ class DatabaseOptimizer:
             self.logger.info(f"💾 バックアップ作成: {backup_path.name}")
 
             # データベース接続
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3connect(db_path)
             cursor = conn.cursor()
 
             # VACUUM実行（断片化解消）
@@ -185,7 +185,7 @@ class DatabaseOptimizer:
                 result["size_before_kb"] - result["size_after_kb"]
             )
 
-            self.logger.info(f"✅ 最適化完了: {result['space_saved_kb']:.1f}KB削減")
+            self.logger.info(f"✅ 最適化完了: {result['space_saved_kb']:0.1f}KB削減")
 
         except Exception as e:
             result["error"] = str(e)
@@ -207,7 +207,7 @@ class DatabaseOptimizer:
         }
 
         try:
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3connect(db_path)
             cursor = conn.cursor()
 
             # テーブル一覧取得
@@ -297,7 +297,7 @@ class DatabaseOptimizer:
         }
 
         try:
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3connect(db_path)
             cursor = conn.cursor()
 
             # 整合性チェック
@@ -403,7 +403,7 @@ class DatabaseOptimizer:
 
         results["end_time"] = datetime.now().isoformat()
         self.logger.info(
-            f"✅ 全データベース最適化完了: {results['total_space_saved_kb']:.1f}KB削減"
+            f"✅ 全データベース最適化完了: {results['total_space_saved_kb']:0.1f}KB削減"
         )
 
         return results
@@ -417,7 +417,7 @@ class DatabaseOptimizer:
         print("\n📊 Summary:")
         print(f"  Databases found: {results['databases_found']}")
         print(f"  Databases optimized: {results['databases_optimized']}")
-        print(f"  Total space saved: {results['total_space_saved_kb']:.1f} KB")
+        print(f"  Total space saved: {results['total_space_saved_kb']:0.1f} KB")
 
         if results["optimizations"]:
             print("\n⚡ Optimizations:")
@@ -425,7 +425,7 @@ class DatabaseOptimizer:
                 if not opt["error"]:
                     db_name = Path(opt["database"]).name
                     saved = opt["space_saved_kb"]
-                    print(f"  {db_name}: {saved:.1f}KB saved")
+                    print(f"  {db_name}: {saved:0.1f}KB saved")
 
         if results["integrity_checks"]:
             good_dbs = sum(
@@ -485,10 +485,10 @@ def main():
         for db_path in databases[:5]:  # 最初の5個のみ
             analysis = optimizer.analyze_database(db_path)
             print(f"\n📊 {db_path.name}:")
-            print(f"  Size: {analysis['size_kb']:.1f} KB")
+            print(f"  Size: {analysis['size_kb']:0.1f} KB")
             print(f"  Tables: {len(analysis['tables'])}")
             print(f"  Total rows: {analysis['total_rows']}")
-            print(f"  Fragmentation: {analysis['fragmentation_percent']:.1f}%")
+            print(f"  Fragmentation: {analysis['fragmentation_percent']:0.1f}%")
     elif args.integrity_check:
         databases = optimizer.find_databases()
         for db_path in databases[:5]:  # 最初の5個のみ

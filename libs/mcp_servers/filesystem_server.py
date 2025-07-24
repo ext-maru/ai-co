@@ -33,10 +33,8 @@ FILE_PLACEMENT_RULES = {
 class AICompanyFileSystemServer:
     """Elders Guild専用FileSystem MCPサーバー"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        self.server = Server("ai-company-filesystem")
-        self.setup_tools()
+    def __init__(self)self.setup_tools()
+    """初期化メソッド"""
 
     def setup_tools(self):
         """ツールの定義"""
@@ -101,11 +99,8 @@ class AICompanyFileSystemServer:
             """プロジェクト構造を取得"""
             structure = []
 
-            def scan_directory(path:
-                """scan_directoryメソッド"""
-            Path, prefix: str = ""):
-                for item in sorted(path.iterdir()):
-                    if item.name.startswith(".") and item.name not in [
+            def scan_directory(path: Path, prefix: str = "")for item in sorted(path.iterdir())if item.name.startswith(".") and item.name not in [
+    """scan_directoryメソッド"""
                         ".env",
                         ".gitignore",
                     ]:
@@ -178,9 +173,8 @@ class {name.title()}Worker(BaseWorker):
         self.config = get_config()
         self.logger.info(f"{{EMOJI['robot']}} {name.title()}Worker initialized")
 
-    def process_message(self, ch, method, properties, body):
-        """メッセージ処理"""
-        task_id = body.get('task_id', 'unknown')
+    def process_message(self, ch, method, properties, body)task_id = body.get('task_id', 'unknown')
+    """メッセージ処理"""
 
         try:
             self.logger.info(f"Processing task: {{task_id}}")
@@ -248,9 +242,8 @@ class {name.title()}Manager(BaseManager):
         self.config = get_config()
         self.logger = logging.getLogger(f'ai_company.{{name}}_manager')
 
-    def initialize(self):
-        """初期化処理"""
-        self.logger.info(f"{{name.title()}}Manager initialized")
+    def initialize(self)self.logger.info(f"{{name.title()}}Manager initialized")
+    """初期化処理"""
 
     # TODO: マネージャー固有のメソッドを実装
 
@@ -259,10 +252,8 @@ class {name.title()}Manager(BaseManager):
 {name}_manager = {name.title()}Manager()
 '''
 
-    async def run(self):
-        """サーバーを起動"""
-        async with stdio_server() as (read_stream, write_stream):
-            await self.server.run(read_stream, write_stream)
+    async def run(self)async with stdio_server() as (read_stream, write_stream)await self.server.run(read_stream, write_stream)
+    """サーバーを起動"""
 
 
 if __name__ == "__main__":

@@ -53,7 +53,7 @@ def quick_check():
 
     print()
     print(f"📈 達成基準: {passed}/{total}")
-    print(f"📊 総合進捗: {passed/total:.1%}")
+    print(f"📊 総合進捗: {passed/total:0.1%}")
 
     if passed == total:
         print("🎉 ✅ Gate 1 突破準備完了！")

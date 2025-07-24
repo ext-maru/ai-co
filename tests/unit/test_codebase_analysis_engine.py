@@ -100,7 +100,7 @@ from botocore.exceptions import ClientError
 
 class S3Manager:
     def __init__(self):
-        self.s3_client = boto3.client('s3')
+        self.s3_client = boto3client('s3')
     
     def create_bucket(self, bucket_name: str):
         try:
@@ -362,7 +362,7 @@ class TestCodebaseAnalysisEngine:
         """AWS関連ファイルフィルタリングのテスト"""
         # AWSファイル作成
         aws_file = Path(self.temp_dir) / "aws_service.py"
-        aws_file.write_text("import boto3\ns3_client = boto3.client('s3')")
+        aws_file.write_text("import boto3\ns3_client = boto3client('s3')")
         
         general_file = Path(self.temp_dir) / "general.py"
         general_file.write_text("import os\nprint('hello')")
@@ -387,7 +387,7 @@ from botocore.exceptions import ClientError
 
 class S3Service:
     def __init__(self):
-        self.client = boto3.client('s3')
+        self.client = boto3client('s3')
     
     def create_bucket(self, name: str):
         try:
@@ -420,10 +420,10 @@ def test_endpoint():
         """AWS類似実装検索のテスト"""
         # AWS関連ファイル作成
         aws_file1 = Path(self.temp_dir) / "s3_manager.py"
-        aws_file1.write_text("import boto3\ns3 = boto3.client('s3')")
+        aws_file1.write_text("import boto3\ns3 = boto3client('s3')")
         
         aws_file2 = Path(self.temp_dir) / "dynamo_service.py"
-        aws_file2.write_text("import boto3\ndynamodb = boto3.resource('dynamodb')")
+        aws_file2.write_text("import boto3\ndynamodb = boto3resource('dynamodb')")
         
         general_file = Path(self.temp_dir) / "utils.py"
         general_file.write_text("import os\nprint('utility')")

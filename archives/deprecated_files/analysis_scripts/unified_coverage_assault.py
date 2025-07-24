@@ -364,7 +364,7 @@ def test_{test_name}_file_exists():
 
         # Get initial coverage
         initial_coverage = self.get_current_coverage()
-        self.log_progress(f"Initial Coverage: {initial_coverage:.2f}%")
+        self.log_progress(f"Initial Coverage: {initial_coverage:0.2f}%")
 
         # Deploy all Elder Servants
         knights_count = self.deploy_coverage_knights()
@@ -390,9 +390,9 @@ def test_{test_name}_file_exists():
         # Final report
         self.log_progress("=" * 80)
         self.log_progress("🏛️ ELDER COUNCIL UNIFIED ASSAULT SUMMARY")
-        self.log_progress(f"Initial Coverage: {initial_coverage:.2f}%")
-        self.log_progress(f"Final Coverage: {final_coverage:.2f}%")
-        self.log_progress(f"Coverage Gain: {coverage_gain:.2f}%")
+        self.log_progress(f"Initial Coverage: {initial_coverage:0.2f}%")
+        self.log_progress(f"Final Coverage: {final_coverage:0.2f}%")
+        self.log_progress(f"Coverage Gain: {coverage_gain:0.2f}%")
         self.log_progress(f"Coverage Knights: {knights_count} tests")
         self.log_progress(f"Dwarf Workshop: {dwarf_count} tests")
         self.log_progress(f"RAG Wizards: {wizard_count} tests")
@@ -406,7 +406,7 @@ def test_{test_name}_file_exists():
             self.log_progress("🏛️ ALL ELDER SERVANTS HAVE UNIFIED TO ACHIEVE VICTORY!")
         else:
             progress_pct = (final_coverage / self.target_coverage) * 100
-            self.log_progress(f"📈 Progress: {progress_pct:.1f}% towards 60% target")
+            self.log_progress(f"📈 Progress: {progress_pct:0.1f}% towards 60% target")
             self.log_progress("⚔️ Significant progress made by unified Elder Servants")
 
         return success, final_coverage, coverage_gain, total_generated
@@ -424,17 +424,17 @@ def main():
 
     if success:
         print(
-            f"\n🏛️ Elder Council Unified Assault: SUCCESS - {final_coverage:.2f}% coverage " \
+            f"\n🏛️ Elder Council Unified Assault: SUCCESS - {final_coverage:0.2f}% coverage " \
                 "achieved!"
         )
         sys.exit(0)
     else:
         print(
-            f"\n⚔️ Elder Council Unified Assault: PROGRESS - {final_coverage:.2f}% coverage " \
+            f"\n⚔️ Elder Council Unified Assault: PROGRESS - {final_coverage:0.2f}% coverage " \
                 "achieved"
         )
         print(
-            f"Coverage gain: {coverage_gain:.2f}% | Tests generated: {total_generated}"
+            f"Coverage gain: {coverage_gain:0.2f}% | Tests generated: {total_generated}"
         )
         sys.exit(1)
 

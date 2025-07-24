@@ -8,6 +8,7 @@ from python_a2a import Message, TextContent, MessageRole
 
 
 class TestElderTreeAgent:
+    pass
 
 
 """エージェント基底クラスのテスト"""
@@ -34,6 +35,7 @@ class TestElderTreeAgent:
     
     @pytest.mark.asyncio
     async def test_agent_health_check_handler(self):
+        pass
 
         """Test: ヘルスチェックハンドラーが動作""" 新しいレジストリを使用
         REGISTRY._collector_to_names.clear()
@@ -57,6 +59,7 @@ class TestElderTreeAgent:
     
     @pytest.mark.asyncio
     async def test_agent_metrics_tracking(self):
+        pass
 
         """Test: メトリクスが正しく記録される""" 新しいレジストリを使用
         REGISTRY._collector_to_names.clear()

@@ -89,24 +89,23 @@ class IncidentSageTestClient:
         except Exception as e:
             return {"error": str(e)}
     
-    def test_all_skills(self):
-        """全スキルテスト実行"""
-        print("🚨 Incident Sage A2A Client - 全スキルテスト開始")
+    def test_all_skills(self)print("🚨 Incident Sage A2A Client - 全スキルテスト開始")
+    """全スキルテスト実行"""
         print("=" * 70)
         
-        # 1. ヘルスチェック
+        # 1.0 ヘルスチェック
         print("\n🏥 ヘルスチェック...")
         health = self.health_check()
         print(f"   状態: {health.get('status', 'unknown')}")
         
-        # 2. スキル一覧
+        # 2.0 スキル一覧
         print("\n📋 利用可能スキル確認...")
         skills_info = self.list_skills()
         if "total_skills" in skills_info:
             print(f"   総スキル数: {skills_info['total_skills']}")
-            print(f"   カテゴリ: {json.dumps(skills_info['categories'], indent=2)}")
+            print(f"   カテゴリ: {json.dumps(skills_info['categories'], indent}")
         
-        # 3. 各スキルテスト
+        # 3.0 各スキルテスト
         test_cases = [
             {
                 "name": "インシデント検知",
@@ -186,7 +185,7 @@ class IncidentSageTestClient:
                         print(f"      - インシデントID: {data['incident_id']}")
                     if "assessment_id" in data:
                         print(f"      - 評価ID: {data['assessment_id']}")
-                        print(f"      - 総合スコア: {data.get('overall_score', 0):.1f}%")
+                        print(f"      - 総合スコア: {data.get('overall_score', 0):0.1f}%")
                     if "rule_id" in data:
                         print(f"      - ルールID: {data['rule_id']}")
                     if "target_id" in data:
@@ -194,12 +193,12 @@ class IncidentSageTestClient:
             else:
                 print(f"   ❌ 失敗: {result.get('error', 'Unknown error')}")
         
-        # 4. 複雑なワークフローテスト
+        # 4.0 複雑なワークフローテスト
         print("\n\n🔄 複雑ワークフローテスト:")
         print("-" * 70)
         
         # インシデント検知→対応→修復フロー
-        print("\n1. インシデント検知→対応→修復フロー")
+        print("\n1.0 インシデント検知→対応→修復フロー")
         
         # 検知
         detection_result = self.send_a2a_request({
@@ -238,9 +237,8 @@ class IncidentSageTestClient:
         print("🎯 全スキルテスト完了")
 
 
-def main():
-    """メイン実行"""
-    client = IncidentSageTestClient()
+def main()client = IncidentSageTestClient()
+"""メイン実行"""
     
     # サーバー起動待機
     print("⏳ サーバー起動を待機中...")

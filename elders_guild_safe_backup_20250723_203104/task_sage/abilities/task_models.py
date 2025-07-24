@@ -12,6 +12,7 @@ from uuid import uuid4
 
 
 class TaskStatus(Enum):
+    pass
 
 
 """タスクステータス"""
@@ -25,6 +26,7 @@ class TaskStatus(Enum):
 
 @dataclass
 class TaskSpec:
+    pass
 
     """タスク仕様（作成時のパラメータ）""" str
     description: str = ""
@@ -38,6 +40,7 @@ class TaskSpec:
     complexity_factors: Dict[str, Any] = field(default_factory=dict)
     
     def __post_init__(self):
+        pass
 
     
     """バリデーション"""
@@ -48,6 +51,7 @@ class TaskSpec:
 
 @dataclass
 class Task:
+    pass
 
             """タスクエンティティ""" str
     title: str
@@ -95,6 +99,7 @@ class Task:
 
 @dataclass
 class TaskUpdate:
+    pass
 
         """タスク更新情報""" Optional[TaskStatus] = None
     priority: Optional[TaskPriority] = None
@@ -106,6 +111,7 @@ class TaskUpdate:
     description: Optional[str] = None
     
     def to_dict(self) -> Dict[str, Any]:
+        pass
 
     
     """辞書形式に変換（Noneを除外）""" v for k, v in self.__dict__.items() if v is not None}
@@ -113,6 +119,7 @@ class TaskUpdate:
 
 @dataclass
 class EffortEstimate:
+    pass
 
 
 
@@ -122,6 +129,7 @@ class EffortEstimate:
     factors: Dict[str, Any] = field(default_factory=dict)
     
     def __post_init__(self):
+        pass
 
     
     """バリデーション"""
@@ -132,6 +140,7 @@ class EffortEstimate:
 
 @dataclass
 class ProjectSpec:
+    pass
 
             """プロジェクト仕様""" str
     description: str = ""
@@ -140,6 +149,7 @@ class ProjectSpec:
     tags: List[str] = field(default_factory=list)
     
     def __post_init__(self):
+        pass
 
     
     """バリデーション"""
@@ -148,6 +158,7 @@ class ProjectSpec:
 
 @dataclass
 class Project:
+    pass
 
             """プロジェクトエンティティ""" str
     name: str
@@ -176,6 +187,7 @@ class Project:
 
 @dataclass
 class ProjectPlan:
+    pass
 
         """プロジェクト計画""" str
     total_estimated_hours: float
@@ -187,6 +199,7 @@ class ProjectPlan:
 
 @dataclass
 class Milestone:
+    pass
 
 
 
@@ -200,6 +213,7 @@ class Milestone:
 
 @dataclass
 class ProgressReport:
+    pass
 
 
 
@@ -216,6 +230,7 @@ class ProgressReport:
     
     @property
     def on_track(self) -> bool:
+        pass
 
     
     """スケジュール通りかどうか"""
@@ -224,6 +239,7 @@ class ProgressReport:
     edges: Dict[str, List[str]]  # task_id -> [dependent_task_ids]
     
     def get_execution_order(self) -> List[str]:
+        pass
 
     
     """実行順序を取得（トポロジカルソート）"""

@@ -8,6 +8,7 @@ import os
 from collections import defaultdict
 
 def ultimate_analysis():
+    pass
 
 
 """残り33件の完全分析"""

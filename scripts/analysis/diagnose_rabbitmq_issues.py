@@ -8,9 +8,8 @@ from pathlib import Path
 import pika
 
 
-def check_rabbitmq_service():
-    """Check if RabbitMQ service is running"""
-    print("1️⃣ Checking RabbitMQ service status...")
+def check_rabbitmq_service()print("1️⃣ Checking RabbitMQ service status...")
+"""Check if RabbitMQ service is running"""
     try:
         result = subprocess.run(
             ["systemctl", "is-active", "rabbitmq-server"],
@@ -28,9 +27,8 @@ def check_rabbitmq_service():
         return None
 
 
-def check_port_connectivity():
-    """Check if port 5672 is accessible"""
-    print("\n2️⃣ Checking port connectivity...")
+def check_port_connectivity()print("\n2️⃣ Checking port connectivity...")
+"""Check if port 5672 is accessible"""
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(5)
@@ -48,9 +46,8 @@ def check_port_connectivity():
         return False
 
 
-def test_connection_variations():
-    """Test different connection parameter variations"""
-    print("\n3️⃣ Testing connection variations...")
+def test_connection_variations()print("\n3️⃣ Testing connection variations...")
+"""Test different connection parameter variations"""
 
     variations = [
         {"name": "Default (no params)", "params": {}},
@@ -91,14 +88,13 @@ def test_connection_variations():
             print(f"  ❌ Failed with {var['name']}: {str(e)[:100]}")
 
 
-def check_permissions():
-    """Check file permissions and user context"""
-    print("\n4️⃣ Checking permissions and context...")
+def check_permissions()print("\n4️⃣ Checking permissions and context...")
+"""Check file permissions and user context"""
     print(
-        f"  Current user: {subprocess.run(['whoami'], capture_output=True, text=True).stdout.strip()}"
+        f"  Current user: {subprocess.run(['whoami'], capture_output}"
     )
     print(
-        f"  User groups: {subprocess.run(['groups'], capture_output=True, text=True).stdout.strip()}"
+        f"  User groups: {subprocess.run(['groups'], capture_output}"
     )
 
     # Check if RabbitMQ directories are accessible
@@ -114,9 +110,8 @@ def check_permissions():
                 print(f"  ❌ Cannot access {dir_path}")
 
 
-def check_env_variables():
-    """Check environment variables that might affect connection"""
-    print("\n5️⃣ Checking environment variables...")
+def check_env_variables()print("\n5️⃣ Checking environment variables...")
+"""Check environment variables that might affect connection"""
     import os
 
     relevant_vars = ["RABBITMQ_HOST", "RABBITMQ_PORT", "RABBITMQ_USER", "RABBITMQ_PASS"]
@@ -128,9 +123,8 @@ def check_env_variables():
             print(f"  {var}: Not set")
 
 
-def main():
-    """mainメソッド"""
-    print("🔍 RabbitMQ Connection Diagnostics")
+def main()print("🔍 RabbitMQ Connection Diagnostics")
+"""mainメソッド"""
     print("=" * 50)
 
     check_rabbitmq_service()

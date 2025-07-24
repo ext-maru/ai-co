@@ -211,7 +211,7 @@ class ErrorClassifier:
         error_str = str(error).lower()
         error_type_name = type(error).__name__.lower()
         
-        # 規則ベースの分類
+        # 規則ベースの分類:
         for error_type, rules in ErrorClassifier.CLASSIFICATION_RULES.items():
             if ErrorClassifier._matches_rules(error_str, error_type_name, rules):
                 return error_type
@@ -224,8 +224,6 @@ class ErrorClassifier:
         error_match = any(keyword in error_str for keyword in rules['error_keywords'])
         type_match = any(keyword in error_type_name for keyword in rules['type_keywords'])
         return error_match or type_match
-
-
 class ResourceCleaner:
     """リソースクリーンアップ"""
     
@@ -428,8 +426,6 @@ class CircuitBreaker:
             return asyncio.run(self.call(func, *args, **kwargs))
         
         return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
-
-
 class RetryStrategy:
     """リトライ戦略"""
     
@@ -489,17 +485,15 @@ class RecoveryStrategy(ABC):
 class GitHubAPIRecoveryStrategy(RecoveryStrategy):
     """GitHub API エラー回復戦略"""
     
-    async def can_handle(self, context:
+    async def can_handle(self, context: ErrorContext) -> bool:
         """handle可能性判定メソッド"""
-    ErrorContext) -> bool:
         return context.error_type == ErrorType.GITHUB_API_ERROR
     
-    async def recover(self, context:
+    async def recover(self, context: ErrorContext) -> RecoveryResult:
         """recoverメソッド"""
-    ErrorContext) -> RecoveryResult:
         error_str = str(context.original_error).lower()
         
-        # レート制限エラー
+        # レート制限エラー:
         if "rate limit" in error_str:
             return RecoveryResult(
                 success=True,
@@ -540,17 +534,15 @@ class GitOperationRecoveryStrategy(RecoveryStrategy):
         """初期化メソッド"""
         self.git_ops = git_ops
     
-    async def can_handle(self, context:
+    async def can_handle(self, context: ErrorContext) -> bool:
         """handle可能性判定メソッド"""
-    ErrorContext) -> bool:
         return context.error_type == ErrorType.GIT_OPERATION_ERROR
     
-    async def recover(self, context:
+    async def recover(self, context: ErrorContext) -> RecoveryResult:
         """recoverメソッド"""
-    ErrorContext) -> RecoveryResult:
         error_str = str(context.original_error).lower()
         
-        # マージコンフリクト
+        # マージコンフリクト:
         if "conflict" in error_str:
             return RecoveryResult(
                 success=False,
@@ -621,14 +613,12 @@ class GitOperationRecoveryStrategy(RecoveryStrategy):
 class NetworkRecoveryStrategy(RecoveryStrategy):
     """ネットワークエラー回復戦略"""
     
-    async def can_handle(self, context:
+    async def can_handle(self, context: ErrorContext) -> bool:
         """handle可能性判定メソッド"""
-    ErrorContext) -> bool:
         return context.error_type == ErrorType.NETWORK_ERROR
     
-    async def recover(self, context:
+    async def recover(self, context: ErrorContext) -> RecoveryResult:
         """recoverメソッド"""
-    ErrorContext) -> RecoveryResult:
         if context.retry_count < RetryStrategy.get_max_retries(context.error_type):
             delay = RetryStrategy.get_retry_delay(context.error_type, context.retry_count)
             return RecoveryResult(
@@ -784,9 +774,8 @@ def with_error_recovery(git_ops=None):
 class ErrorReporter:
     """エラーレポート機能"""
     
-    def __init__(self, report_dir:
+    def __init__(self, report_dir: str = "/tmp/error_reports"):
         """初期化メソッド"""
-    str = "/tmp/error_reports"):
         self.report_dir = report_dir
         self.error_history: List[ErrorReport] = []
         
@@ -827,7 +816,7 @@ class ErrorReporter:
         """エラーの重要度を判定"""
         error_str = str(error).lower()
         
-        # 重要度判定ルール
+        # 重要度判定ルール:
         if category == ErrorCategory.SYSTEM:
             return ErrorSeverity.CRITICAL
         elif category == ErrorCategory.GITHUB_API and "rate limit" in error_str:
@@ -889,7 +878,7 @@ class ErrorReporter:
         """エラーパターンを分析"""
         error_groups = defaultdict(list)
         
-        # エラータイプごとにグループ化
+        # エラータイプごとにグループ化:
         for report in self.error_history:
             key = f"{report.error_type}_{report.error_category.value}"
             error_groups[key].append(report)

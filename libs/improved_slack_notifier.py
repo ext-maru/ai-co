@@ -68,7 +68,7 @@ class ImprovedSlackNotifier:
             details_parts = []
 
             if duration is not None:
-                details_parts.append(f"Duration: {duration:.2f}s")
+                details_parts.append(f"Duration: {duration:0.2f}s")
 
             if details:
                 # 技術的に重要な情報のみ
@@ -102,7 +102,7 @@ class ImprovedSlackNotifier:
         metric_parts = []
         for key, value in metrics.items():
             if isinstance(value, float):
-                metric_parts.append(f"{key}: {value:.2f}")
+                metric_parts.append(f"{key}: {value:0.2f}")
             else:
                 metric_parts.append(f"{key}: {value}")
 
@@ -195,8 +195,8 @@ Before: "📊 素晴らしいパフォーマンス！🌟"
 After: "System metrics: queue_length: 5 | active_workers: 3 | memory_mb: 256.4"
 
 ## 原則
-1. 事実のみを報告
-2. 数値データを含める
-3. 技術者が必要とする情報を優先
-4. モバイルでも読みやすい簡潔さ
+1.0 事実のみを報告
+2.0 数値データを含める
+3.0 技術者が必要とする情報を優先
+4.0 モバイルでも読みやすい簡潔さ
 """

@@ -520,7 +520,7 @@ class KnowledgeSageGrimoireVectorization:
 
         current_idx = 0
 
-        # 1. コンテンツセマンティック埋め込み
+        # 1.0 コンテンツセマンティック埋め込み
         content_vector = await self._generate_content_semantic_vector(
             knowledge_data.get("content", "")
         )
@@ -529,7 +529,7 @@ class KnowledgeSageGrimoireVectorization:
         )
         current_idx += self.dimensions.content_semantic
 
-        # 2. 概念間関係性
+        # 2.0 概念間関係性
         concept_vector = await self._generate_concept_relations_vector(
             metadata.related_concepts
         )
@@ -538,14 +538,14 @@ class KnowledgeSageGrimoireVectorization:
         )
         current_idx += self.dimensions.concept_relations
 
-        # 3. 手順・プロセス情報
+        # 3.0 手順・プロセス情報
         procedural_vector = await self._generate_procedural_vector(knowledge_data)
         vector[current_idx : current_idx + self.dimensions.procedural_steps] = (
             procedural_vector
         )
         current_idx += self.dimensions.procedural_steps
 
-        # 4. コンテキスト埋め込み
+        # 4.0 コンテキスト埋め込み
         contextual_vector = await self._generate_contextual_vector(
             knowledge_data, metadata
         )
@@ -554,7 +554,7 @@ class KnowledgeSageGrimoireVectorization:
         )
         current_idx += self.dimensions.contextual_embedding
 
-        # 5. 知恵の進化履歴
+        # 5.0 知恵の進化履歴
         wisdom_vector = await self._generate_wisdom_evolution_vector(metadata)
         vector[current_idx : current_idx + self.dimensions.wisdom_evolution] = (
             wisdom_vector
@@ -864,9 +864,9 @@ async def test_knowledge_sage_system():
             TDD is a software development methodology where tests are written before code.
 
             ## Steps:
-            1. Write a failing test (Red)
-            2. Write minimal code to pass (Green)
-            3. Refactor and improve (Refactor)
+            1.0 Write a failing test (Red)
+            2.0 Write minimal code to pass (Green)
+            3.0 Refactor and improve (Refactor)
 
             ## Best Practices:
             - Keep tests simple and focused

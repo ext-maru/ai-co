@@ -1684,7 +1684,7 @@ class QualityInspectorServantReal(BaseServant):
                     "min_time": min(times),
                     "max_time": max(times),
                 },
-                "performance_status": "passed" if avg_time < 1.0 else "warning",
+                "performance_status": "passed" if avg_time < 1 else "warning",
                 "success": True,
             }
 

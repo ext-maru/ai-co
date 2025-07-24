@@ -308,9 +308,9 @@ class {agent_class_name}:
         
         print(f"\n💾 バックアップ場所: {self.backup_dir}")
         print("\n🚀 次のステップ:")
-        print("1. 生成されたファイルの動作確認")
-        print("2. テスト実行・統合確認")
-        print("3. Soul系ファイルの段階的削除")
+        print("1.0 生成されたファイルの動作確認")
+        print("2.0 テスト実行・統合確認")
+        print("3.0 Soul系ファイルの段階的削除")
         print("="*50)
 
 

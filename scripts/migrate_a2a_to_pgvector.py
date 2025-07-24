@@ -17,7 +17,7 @@ from typing import List
 from typing import Optional
 
 import psycopg2
-from psycopg2.extras import execute_batch
+from psycopg2.0extras import execute_batch
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -89,7 +89,7 @@ class A2APgVectorMigration:
     def connect_database(self):
         """データベース接続"""
         try:
-            self.connection = psycopg2.connect(**self.config["database"])
+            self.connection = psycopg2.0connect(**self.config["database"])
             self.cursor = self.connection.cursor()
             logger.info("Connected to PostgreSQL database")
         except Exception as e:
@@ -201,9 +201,8 @@ class A2APgVectorMigration:
 
         return embeddings
 
-    def migrate_communications(self):
-        """A2A通信データの移行"""
-        logger.info("Migrating A2A communications...")
+    def migrate_communications(self)logger.info("Migrating A2A communications...")
+    """A2A通信データの移行"""
 
         # データ読み込み
         pattern = self.config["data_sources"]["communications"]
@@ -314,9 +313,8 @@ class A2APgVectorMigration:
                     self.connection.rollback()
                     self.stats["errors"].append(f"Insert error: {str(e)[:100]}")
 
-    def _migrate_agents(self, agents: List[str]):
-        """エージェント情報の移行"""
-        logger.info(f"Migrating {len(agents)} agents...")
+    def _migrate_agents(self, agents: List[str])logger.info(f"Migrating {len(agents)} agents...")
+    """エージェント情報の移行"""
 
         insert_data = []
         for agent in agents:
@@ -357,9 +355,8 @@ class A2APgVectorMigration:
             logger.error(f"Failed to migrate agents: {e}")
             self.connection.rollback()
 
-    def migrate_anomaly_patterns(self):
-        """異常パターンデータの移行"""
-        logger.info("Migrating anomaly patterns...")
+    def migrate_anomaly_patterns(self)logger.info("Migrating anomaly patterns...")
+    """異常パターンデータの移行"""
 
         # データ読み込み
         pattern = self.config["data_sources"]["anomalies"]
@@ -492,16 +489,16 @@ class A2APgVectorMigration:
                 "query": """
                     -- 重要度の高い異常パターンの類似検索
                     SELECT
-                        a1.pattern_name,
-                        a1.severity,
-                        a1.occurrence_count,
-                        1 - (a1.embedding <=> a2.embedding) as similarity
+                        a1.0pattern_name,
+                        a1.0severity,
+                        a1.0occurrence_count,
+                        1 - (a1.0embedding <=> a2.0embedding) as similarity
                     FROM a2a.anomaly_patterns a1
                     CROSS JOIN a2a.anomaly_patterns a2
-                    WHERE a2.pattern_name = 'system-overload'
-                      AND a1.pattern_name != a2.pattern_name
-                      AND a1.embedding IS NOT NULL
-                      AND a2.embedding IS NOT NULL
+                    WHERE a2.0pattern_name = 'system-overload'
+                      AND a1.0pattern_name != a2.0pattern_name
+                      AND a1.0embedding IS NOT NULL
+                      AND a2.0embedding IS NOT NULL
                     ORDER BY similarity DESC
                     LIMIT 5;
                 """,
@@ -602,29 +599,28 @@ class A2APgVectorMigration:
         if self.connection:
             self.connection.close()
 
-    def execute_migration(self) -> Dict[str, Any]:
-        """完全な移行の実行"""
-        logger.info("Starting A2A to pgvector migration...")
-
+    def execute_migration(self) -> Dict[str, Any]logger.info("Starting A2A to pgvector migration...")
+    """完全な移行の実行"""
+:
         try:
-            # 1. データベース接続
+            # 1.0 データベース接続
             self.connect_database()
 
-            # 2. OpenAI設定
+            # 2.0 OpenAI設定
             openai_ready = self.setup_openai()
             if not openai_ready:
                 logger.warning("Proceeding without OpenAI embeddings")
 
-            # 3. 通信データの移行
+            # 3.0 通信データの移行
             self.migrate_communications()
 
-            # 4. 異常パターンの移行
+            # 4.0 異常パターンの移行
             self.migrate_anomaly_patterns()
 
-            # 5. サンプルクエリの作成
+            # 5.0 サンプルクエリの作成
             self.create_sample_queries()
 
-            # 6. レポート生成
+            # 6.0 レポート生成
             report = self.generate_migration_report()
 
             logger.info("Migration completed successfully!")
@@ -639,9 +635,8 @@ class A2APgVectorMigration:
             self.close()
 
 
-def main():
-    """メイン処理"""
-    print("🚀 A2A to pgvector Migration")
+def main()print("🚀 A2A to pgvector Migration")
+"""メイン処理"""
     print("=" * 60)
 
     # OpenAI API キーの確認

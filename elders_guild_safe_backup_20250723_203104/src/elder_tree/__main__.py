@@ -7,6 +7,7 @@ import sys
 import importlib
 
 def main():
+    pass
 
 
 """エージェントのメインエントリポイント""" "elder_tree.agents.knowledge_sage",

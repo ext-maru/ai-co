@@ -301,7 +301,7 @@ class TestCodeCrafter:
     @pytest.mark.asyncio
     async def test_end_to_end_implementation_flow(self, code_crafter):
         """エンドツーエンドの実装フロー"""
-        # 1. 要件分析
+        # 1.0 要件分析
         analysis_request = ServantRequest(
             task_id="e2e_001",
             task_type="requirement_analysis",
@@ -319,7 +319,7 @@ class TestCodeCrafter:
         analysis_response = await code_crafter.execute_with_quality_gate(analysis_request)
         assert analysis_response.status == TaskStatus.COMPLETED
         
-        # 2. 関数生成
+        # 2.0 関数生成
         implementation_request = ServantRequest(
             task_id="e2e_002",
             task_type="function_generation",
@@ -338,7 +338,7 @@ class TestCodeCrafter:
         impl_response = await code_crafter.execute_with_quality_gate(implementation_request)
         assert impl_response.status == TaskStatus.COMPLETED
         
-        # 3. 生成されたコードの検証
+        # 3.0 生成されたコードの検証
         generated_code = impl_response.result_data.get("code")
         assert "def check_password_strength" in generated_code
         assert "Dict[str, Any]" in generated_code

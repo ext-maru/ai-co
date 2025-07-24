@@ -92,7 +92,7 @@ class SlackPollingWorker(BaseWorker):
         """メッセージ履歴DBの初期化"""
         self.db_path.parent.mkdir(exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS processed_messages (
@@ -244,7 +244,7 @@ class SlackPollingWorker(BaseWorker):
         if not messages:
             return []
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 既存のメッセージIDを取得
             placeholders = ",".join("?" * len(messages))
             ts_list = [msg["ts"] for msg in messages]
@@ -430,7 +430,7 @@ class SlackPollingWorker(BaseWorker):
 
     def _mark_as_processed(self, message):
         """メッセージを処理済みとして記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT OR IGNORE INTO processed_messages
@@ -468,7 +468,7 @@ class SlackPollingWorker(BaseWorker):
     def _send_processing_notification(self, message, task_id):
         """処理開始をSlackに通知（リアクション＋メッセージ）- 旧版"""
         try:
-            # 1. リアクションを追加
+            # 1.0 リアクションを追加
             url = "https://slack.com/api/reactions.add"
             data = {
                 "channel": self.channel_id,
@@ -480,7 +480,7 @@ class SlackPollingWorker(BaseWorker):
             if response.status_code == 200:
                 self.logger.debug(f"リアクション追加成功: {task_id}")
 
-            # 2. 受信確認メッセージを送信
+            # 2.0 受信確認メッセージを送信
             from libs.slack_notifier import SlackNotifier
 
             notifier = SlackNotifier()
@@ -543,7 +543,7 @@ class SlackPollingWorker(BaseWorker):
                     # Complex condition - consider breaking down
                     # 古いレコードを削除（7日以上前）
                     cutoff_date = datetime.now() - timedelta(days=7)
-                    with sqlite3.connect(self.db_path) as conn:
+                    with sqlite3connect(self.db_path) as conn:
                         conn.execute(
                             "DELETE FROM processed_messages WHERE processed_at < ?",
                             (cutoff_date,)
@@ -688,7 +688,7 @@ class SlackPollingWorker(BaseWorker):
             
             # データベース接続テスト
             try:
-                with sqlite3.connect(self.db_path) as conn:
+                with sqlite3connect(self.db_path) as conn:
                     cursor = conn.execute("SELECT COUNT(*) FROM processed_messages")
                     count = cursor.fetchone()[0]
                     self.logger.info(f"📊 データベース接続確認: {count}件の処理済みメッセージ")
@@ -1025,10 +1025,10 @@ class SlackPollingWorker(BaseWorker):
                 if self.messages_processed > 0:
                     error_rate = (self.errors_count / self.messages_processed) * 100
                     if error_rate > 20:
-                        validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:.1f}%")
+                        validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:0.1f}%")
                         validation_result["recommendations"].append("Slack API設定とネットワーク接続を確認してください")
                     elif error_rate > 10:
-                        validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:.1f}%")
+                        validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:0.1f}%")
             
             # 成功時の追加情報
             if validation_result["is_valid"]:
@@ -1157,16 +1157,16 @@ class SlackPollingWorker(BaseWorker):
     def _format_uptime(self, uptime_seconds: float) -> str:
         """アップタイムを人間が読みやすい形式にフォーマット"""
         if uptime_seconds < 60:
-            return f"{uptime_seconds:.0f}秒"
+            return f"{uptime_seconds:0.0f}秒"
         elif uptime_seconds < 3600:
             minutes = uptime_seconds / 60
-            return f"{minutes:.1f}分"
+            return f"{minutes:0.1f}分"
         elif uptime_seconds < 86400:
             hours = uptime_seconds / 3600
-            return f"{hours:.1f}時間"
+            return f"{hours:0.1f}時間"
         else:
             days = uptime_seconds / 86400
-            return f"{days:.1f}日"
+            return f"{days:0.1f}日"
 
     def _calculate_processing_rate(self, uptime_seconds: float) -> float:
         """1時間あたりの処理率を計算"""
@@ -1192,7 +1192,7 @@ class SlackPollingWorker(BaseWorker):
         try:
             if hasattr(self, 'db_path') and self.db_path.exists():
                 # Complex condition - consider breaking down
-                with sqlite3.connect(self.db_path) as conn:
+                with sqlite3connect(self.db_path) as conn:
                     cursor = conn.execute("SELECT COUNT(*) FROM processed_messages")
                     return cursor.fetchone()[0]
         except Exception as e:

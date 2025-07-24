@@ -330,22 +330,22 @@ def metrics():
         metrics_info = [
             (
                 "Test Coverage",
-                f"{latest_metrics.get('test_coverage', 0):.2%}",
+                f"{latest_metrics.get('test_coverage', 0):0.2%}",
                 get_coverage_status(latest_metrics.get("test_coverage", 0)),
             ),
             (
                 "Worker Health",
-                f"{latest_metrics.get('worker_health_score', 0):.2%}",
+                f"{latest_metrics.get('worker_health_score', 0):0.2%}",
                 get_health_status(latest_metrics.get("worker_health_score", 0)),
             ),
             (
                 "Memory Usage",
-                f"{latest_metrics.get('memory_usage', 0):.2%}",
+                f"{latest_metrics.get('memory_usage', 0):0.2%}",
                 get_memory_status(latest_metrics.get("memory_usage", 0)),
             ),
             (
                 "CPU Usage",
-                f"{latest_metrics.get('cpu_usage', 0):.2%}",
+                f"{latest_metrics.get('cpu_usage', 0):0.2%}",
                 get_cpu_status(latest_metrics.get("cpu_usage", 0)),
             ),
             (
@@ -355,19 +355,19 @@ def metrics():
             ),
             (
                 "Error Rate",
-                f"{latest_metrics.get('error_rate', 0):.2%}",
+                f"{latest_metrics.get('error_rate', 0):0.2%}",
                 get_error_status(latest_metrics.get("error_rate", 0)),
             ),
             (
                 "4 Sages Consensus",
-                f"{latest_metrics.get('four_sages_consensus_rate', 0):.2%}",
+                f"{latest_metrics.get('four_sages_consensus_rate', 0):0.2%}",
                 get_consensus_status(
                     latest_metrics.get("four_sages_consensus_rate", 0)
                 ),
             ),
             (
                 "Learning Velocity",
-                f"{latest_metrics.get('learning_velocity', 0):.2f}",
+                f"{latest_metrics.get('learning_velocity', 0):0.2f}",
                 get_learning_status(latest_metrics.get("learning_velocity", 0)),
             ),
         ]
@@ -452,15 +452,15 @@ def create_metrics_panel(metrics):
     content = f"""
 **System Evolution Metrics**
 
-🧠 Test Coverage: {metrics.get('test_coverage', 0):.2%}
-👷 Worker Health: {metrics.get('worker_health_score', 0):.2%}
-💾 Memory Usage: {metrics.get('memory_usage', 0):.2%}
-⚡ CPU Usage: {metrics.get('cpu_usage', 0):.2%}
+🧠 Test Coverage: {metrics.get('test_coverage', 0):0.2%}
+👷 Worker Health: {metrics.get('worker_health_score', 0):0.2%}
+💾 Memory Usage: {metrics.get('memory_usage', 0):0.2%}
+⚡ CPU Usage: {metrics.get('cpu_usage', 0):0.2%}
 📊 Queue Backlog: {metrics.get('queue_backlog', 0)}
-❌ Error Rate: {metrics.get('error_rate', 0):.2%}
-🧙‍♂️ 4 Sages Consensus: {metrics.get('four_sages_consensus_rate', 0):.2%}
-📈 Learning Velocity: {metrics.get('learning_velocity', 0):.2f}
-🏗️ System Complexity: {metrics.get('system_complexity_score', 0):.2%}
+❌ Error Rate: {metrics.get('error_rate', 0):0.2%}
+🧙‍♂️ 4 Sages Consensus: {metrics.get('four_sages_consensus_rate', 0):0.2%}
+📈 Learning Velocity: {metrics.get('learning_velocity', 0):0.2f}
+🏗️ System Complexity: {metrics.get('system_complexity_score', 0):0.2%}
 
 *Updated: {metrics.get('timestamp', 'Unknown')}*
 """

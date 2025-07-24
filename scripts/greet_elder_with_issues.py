@@ -52,7 +52,7 @@ class ElderGreetingWithIssues:
         """現在の課題を4賢者から収集"""
         issues = {"timestamp": datetime.now().isoformat(), "sages_report": {}}
 
-        # 1. タスク賢者から進行中タスクと問題を収集
+        # 1.0 タスク賢者から進行中タスクと問題を収集
         try:
             task_issues = self._collect_task_issues()
             issues["sages_report"]["task_oracle"] = task_issues
@@ -62,7 +62,7 @@ class ElderGreetingWithIssues:
                 "message": str(e),
             }
 
-        # 2. インシデント賢者から現在の問題を収集
+        # 2.0 インシデント賢者から現在の問題を収集
         try:
             incident_issues = self._collect_incident_issues()
             issues["sages_report"]["crisis_sage"] = incident_issues
@@ -72,7 +72,7 @@ class ElderGreetingWithIssues:
                 "message": str(e),
             }
 
-        # 3. ナレッジ賢者から最近の学習課題を収集
+        # 3.0 ナレッジ賢者から最近の学習課題を収集
         try:
             knowledge_issues = self._collect_knowledge_issues()
             issues["sages_report"]["knowledge_sage"] = knowledge_issues
@@ -82,7 +82,7 @@ class ElderGreetingWithIssues:
                 "message": str(e),
             }
 
-        # 4. システム全体の健康状態を収集
+        # 4.0 システム全体の健康状態を収集
         try:
             system_health = self._collect_system_health()
             issues["sages_report"]["system_health"] = system_health

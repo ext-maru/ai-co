@@ -33,19 +33,19 @@ class QuickBenchmark:
         print("⚡ Elder Soul Quick Performance Assessment")
         print("=" * 55)
 
-        # 1. システム初期化速度
+        # 1.0 システム初期化速度
         await self._test_initialization_speed()
 
-        # 2. エージェント登録速度
+        # 2.0 エージェント登録速度
         await self._test_agent_registration_speed()
 
-        # 3. メモリ効率
+        # 3.0 メモリ効率
         await self._test_memory_efficiency()
 
-        # 4. 通信性能
+        # 4.0 通信性能
         await self._test_communication_performance()
 
-        # 5. 強制実行システム性能
+        # 5.0 強制実行システム性能
         await self._test_enforcement_performance()
 
         # 結果表示
@@ -66,7 +66,7 @@ class QuickBenchmark:
             duration = (end_time - start_time) * 1000  # ms
             times.append(duration)
 
-            print(f"  Run {i+1}: {duration:.1f}ms")
+            print(f"  Run {i+1}: {duration:0.1f}ms")
 
         avg_time = statistics.mean(times)
         self.results["initialization"] = {
@@ -104,8 +104,8 @@ class QuickBenchmark:
         total_time = (end_time - start_time) * 1000  # ms
         avg_per_agent = total_time / 10
 
-        print(f"  10 agents registered in {total_time:.1f}ms")
-        print(f"  Average per agent: {avg_per_agent:.1f}ms")
+        print(f"  10 agents registered in {total_time:0.1f}ms")
+        print(f"  Average per agent: {avg_per_agent:0.1f}ms")
 
         # クリーンアップ
         for i in range(10):
@@ -151,9 +151,9 @@ class QuickBenchmark:
         memory_delta = current_memory - baseline_memory
         memory_per_agent = memory_delta / 50
 
-        print(f"  Baseline memory: {baseline_memory:.1f}MB")
-        print(f"  With 50 agents: {current_memory:.1f}MB")
-        print(f"  Memory per agent: {memory_per_agent:.2f}MB")
+        print(f"  Baseline memory: {baseline_memory:0.1f}MB")
+        print(f"  With 50 agents: {current_memory:0.1f}MB")
+        print(f"  Memory per agent: {memory_per_agent:0.2f}MB")
 
         # クリーンアップ
         for i in range(50):
@@ -205,8 +205,8 @@ class QuickBenchmark:
         throughput = 1000000 / avg_latency  # messages/sec
 
         print(f"  1000 messages processed")
-        print(f"  Average latency: {avg_latency:.1f}μs")
-        print(f"  Throughput: {throughput:.0f} msgs/sec")
+        print(f"  Average latency: {avg_latency:0.1f}μs")
+        print(f"  Throughput: {throughput:0.0f} msgs/sec")
 
         self.results["communication"] = {
             "avg_latency_us": avg_latency,
@@ -237,8 +237,8 @@ class QuickBenchmark:
         total_time = (scan_end - start_time) * 1000  # ms
         scan_time = (scan_end - scan_start) * 1000  # ms
 
-        print(f"  Total initialization + scan: {total_time:.1f}ms")
-        print(f"  Scan only: {scan_time:.1f}ms")
+        print(f"  Total initialization + scan: {total_time:0.1f}ms")
+        print(f"  Scan only: {scan_time:0.1f}ms")
 
         self.results["enforcement"] = {
             "total_time_ms": total_time,
@@ -259,32 +259,32 @@ class QuickBenchmark:
         # 初期化性能
         init = self.results["initialization"]
         print(f"\n🔧 System Initialization: {init['rating']}")
-        print(f"   Average: {init['average_ms']:.1f}ms")
-        print(f"   Range: {init['min_ms']:.1f}-{init['max_ms']:.1f}ms")
+        print(f"   Average: {init['average_ms']:0.1f}ms")
+        print(f"   Range: {init['min_ms']:0.1f}-{init['max_ms']:0.1f}ms")
 
         # エージェント登録性能
         reg = self.results["agent_registration"]
         print(f"\n👥 Agent Registration: {reg['rating']}")
-        print(f"   Per agent: {reg['avg_per_agent_ms']:.1f}ms")
-        print(f"   Throughput: {reg['agents_per_second']:.1f} agents/sec")
+        print(f"   Per agent: {reg['avg_per_agent_ms']:0.1f}ms")
+        print(f"   Throughput: {reg['agents_per_second']:0.1f} agents/sec")
 
         # メモリ効率
         mem = self.results["memory_efficiency"]
         print(f"\n💾 Memory Efficiency: {mem['rating']}")
-        print(f"   Per agent: {mem['memory_per_agent_mb']:.2f}MB")
-        print(f"   Total overhead: {mem['total_overhead_mb']:.1f}MB")
+        print(f"   Per agent: {mem['memory_per_agent_mb']:0.2f}MB")
+        print(f"   Total overhead: {mem['total_overhead_mb']:0.1f}MB")
 
         # 通信性能
         comm = self.results["communication"]
         print(f"\n📡 Communication: {comm['rating']}")
-        print(f"   Latency: {comm['avg_latency_us']:.1f}μs")
-        print(f"   Throughput: {comm['throughput_msg_per_sec']:.0f} msgs/sec")
+        print(f"   Latency: {comm['avg_latency_us']:0.1f}μs")
+        print(f"   Throughput: {comm['throughput_msg_per_sec']:0.0f} msgs/sec")
 
         # 強制実行性能
         enf = self.results["enforcement"]
         print(f"\n🛡️ Enforcement System: {enf['rating']}")
-        print(f"   Scan time: {enf['scan_time_ms']:.1f}ms")
-        print(f"   Total time: {enf['total_time_ms']:.1f}ms")
+        print(f"   Scan time: {enf['scan_time_ms']:0.1f}ms")
+        print(f"   Total time: {enf['total_time_ms']:0.1f}ms")
 
         # 総合評価
         ratings = [r["rating"] for r in self.results.values()]

@@ -402,7 +402,7 @@ class CacheManager:
         
         return {
             **self.stats,
-            "hit_rate": f"{hit_rate:.2f}%",
+            "hit_rate": f"{hit_rate:0.2f}%",
             "memory_usage": f"{len(self.memory_cache)}/{self.memory_size}",
             "disk_files": len(list(self.disk_cache_dir.glob("*.cache"))),
             "warming_tasks": len(self.warming_tasks)
@@ -466,9 +466,8 @@ async def example_usage():
     cache = CacheManager(memory_size=100)
     
     # 基本的な使用
-    async def fetch_user_data(user_id:
+    async def fetch_user_data(user_id: int):
         """fetch_user_dataメソッド"""
-    int):
         # 実際のAPI呼び出しをシミュレート
         await asyncio.sleep(1)
         return {"id": user_id, "name": f"User {user_id}"}

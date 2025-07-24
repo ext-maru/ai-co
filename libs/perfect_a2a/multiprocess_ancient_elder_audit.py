@@ -92,11 +92,10 @@ class AncientElderAuditor:
             {"focus": ["general"], "threshold": 0.90, "weight": 1.0},
         )
 
-    def audit_implementation(self, target_path: str) -> Dict[str, Any]:
-        """実装を監査"""
-        start_time = time.time()
+    def audit_implementation(self, target_path: str) -> Dict[str, Any]start_time = time.time()
+    """実装を監査"""
 
-        audit_result = {
+        audit_result = {:
             "elder_id": self.elder_id,
             "elder_name": self.name,
             "specialization": self.specialization,
@@ -513,11 +512,10 @@ class AncientElderAuditor:
 
         return weighted_sum / total_weight if total_weight > 0 else 0
 
-    def _make_verdict(self, metrics: Dict[str, Any]) -> str:
-        """判定を下す"""
-        weighted_score = metrics.get("weighted_score", 0)
+    def _make_verdict(self, metrics: Dict[str, Any]) -> strweighted_score = metrics.get("weighted_score", 0)
+    """判定を下す"""
         critical_issues = metrics.get("critical_issues", 0)
-
+:
         if critical_issues > 0:
             return "REJECTED"
         elif weighted_score >= self.audit_criteria["threshold"]:
@@ -570,10 +568,8 @@ class AncientElderAuditor:
 class MultiProcessAncientElderAudit:
     """マルチプロセスAncient Elder監査システム"""
 
-    def __init__(self):
-        """初期化"""
-        self.process_count = min(mp.cpu_count(), 5)  # 最大5プロセス
-        self.executor = ProcessPoolExecutor(max_workers=self.process_count)
+    def __init__(self)self.executor = ProcessPoolExecutor(max_workers=self.process_count)
+    """初期化"""
 
         # 5人のAncient Elder専門分野
         self.elder_specializations = [
@@ -589,12 +585,11 @@ class MultiProcessAncientElderAudit:
                 "process_count} elders"
         )
 
-    async def execute_parallel_audit(self, target_path: str) -> Dict[str, Any]:
-        """並列監査を実行"""
-        start_time = time.time()
+    async def execute_parallel_audit(self, target_path: str) -> Dict[str, Any]start_time = time.time()
+    """並列監査を実行"""
         audit_id = str(uuid.uuid4())
 
-        results = {
+        results = {:
             "audit_id": audit_id,
             "start_time": datetime.now().isoformat(),
             "target": target_path,
@@ -719,13 +714,12 @@ class MultiProcessAncientElderAudit:
 
         return consensus
 
-    def _make_final_verdict(self, consensus: Dict[str, Any]) -> str:
-        """最終判定を下す"""
-        majority_verdict = consensus.get("majority_verdict", "ERROR")
+    def _make_final_verdict(self, consensus: Dict[str, Any]) -> strmajority_verdict = consensus.get("majority_verdict", "ERROR")
+    """最終判定を下す"""
         average_score = consensus.get("average_score", 0)
 
         # 全員一致でAPPROVEDの場合のみ承認
-        verdict_distribution = consensus.get("verdict_distribution", {})
+        verdict_distribution = consensus.get("verdict_distribution", {}):
         if verdict_distribution.get("APPROVED", 0) == 5:
             return "UNANIMOUSLY_APPROVED"
         elif verdict_distribution.get("APPROVED", 0) >= 3:
@@ -851,14 +845,13 @@ class MultiProcessAncientElderAudit:
 
         return report
 
-    def _save_results(self, results: Dict[str, Any]) -> None:
-        """結果を保存"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    def _save_results(self, results: Dict[str, Any]) -> Nonetimestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    """結果を保存"""
 
         # JSON形式で保存
         output_file = f"audit_reports/ancient_elder_audit_{timestamp}.json"
         os.makedirs("audit_reports", exist_ok=True)
-
+:
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(results, f, ensure_ascii=False, indent=2)
 
@@ -878,20 +871,20 @@ class MultiProcessAncientElderAudit:
             f.write(f"**Audit ID**: {results['audit_id']}\n")
             f.write(f"**Date**: {results['start_time']}\n")
             f.write(f"**Target**: {results['target']}\n")
-            f.write(f"**Execution Time**: {results['execution_time']:.2f} seconds\n\n")
+            f.write(f"**Execution Time**: {results['execution_time']:0.2f} seconds\n\n")
 
             f.write(f"## 🎯 Final Verdict: **{results['final_verdict']}**\n\n")
 
             # コンセンサス
             consensus = results.get("consensus", {})
             f.write("## 📊 Consensus Results\n\n")
-            f.write(f"- **Average Score**: {consensus.get('average_score', 0):.2%}\n")
+            f.write(f"- **Average Score**: {consensus.get('average_score', 0):0.2%}\n")
             f.write(
                 f"- **Score Range**: {consensus.get(
                     'min_score',
-                    0):.2%} - {consensus.get('max_score',
+                    0):0.2%} - {consensus.get('max_score',
                     0
-                ):.2%}\n"
+                ):0.2%}\n"
             )
             f.write(f"- **Total Findings**: {consensus.get('total_findings', 0)}\n\n")
 
@@ -935,23 +928,20 @@ class MultiProcessAncientElderAudit:
                     f"- **Iron Will Compliance**: {'✅' if summary.get('iron_will_compliance') else '❌'}\n"
                 )
                 f.write(
-                    f"- **Test Success Rate**: {summary.get('test_success_rate', 0):.1f}%\n"
+                    f"- **Test Success Rate**: {summary.get('test_success_rate', 0):0.1f}%\n"
                 )
                 f.write(
-                    f"- **Consensus Score**: {summary.get('consensus_score', 0):.2%}\n"
+                    f"- **Consensus Score**: {summary.get('consensus_score', 0):0.2%}\n"
                 )
 
         logger.info(f"📄 Markdown report saved to {report_file}")
 
-    def __del__(self):
-        """クリーンアップ"""
-        if hasattr(self, "executor"):
-            self.executor.shutdown(wait=True)
+    def __del__(self)if hasattr(self, "executor")self.executor.shutdown(wait=True)
+    """クリーンアップ"""
 
 
-async def main():
-    """メイン実行関数"""
-    logger.info("🏛️ Starting Multi-Process Ancient Elder Audit System")
+async def main()logger.info("🏛️ Starting Multi-Process Ancient Elder Audit System")
+"""メイン実行関数"""
 
     # 監査対象を指定
     target_path = "libs/integrations/github"
@@ -963,8 +953,8 @@ async def main():
     # 結果サマリー
     logger.info("=" * 60)
     logger.info(f"🎯 FINAL VERDICT: {results['final_verdict']}")
-    logger.info(f"📊 Consensus Score: {results['consensus']['average_score']:.2%}")
-    logger.info(f"⏱️ Total Execution Time: {results['execution_time']:.2f} seconds")
+    logger.info(f"📊 Consensus Score: {results['consensus']['average_score']:0.2%}")
+    logger.info(f"⏱️ Total Execution Time: {results['execution_time']:0.2f} seconds")
     logger.info("=" * 60)
 
     return results

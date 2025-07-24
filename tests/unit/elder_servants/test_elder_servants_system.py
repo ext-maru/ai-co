@@ -15,9 +15,8 @@ from libs.elder_servants.dwarf_workshop.code_crafter import CodeCrafter
 from libs.elder_servants.dwarf_workshop.test_forge import TestForge
 
 
-async def test_elders_legacy_integration():
-    """EldersLegacy統合テスト"""
-    print("=== EldersLegacy統合テスト ===")
+async def test_elders_legacy_integration()print("=== EldersLegacy統合テスト ===")
+"""EldersLegacy統合テスト"""
     
     # CodeCrafterインスタンス作成
     code_crafter = CodeCrafter()
@@ -47,7 +46,7 @@ async def test_elders_legacy_integration():
     response = await code_crafter.process_request(request)
     print(f"✓ 統一リクエスト処理: {response.status.value}")
     print(f"✓ 品質スコア: {response.quality_score}")
-    print(f"✓ 実行時間: {response.execution_time_ms:.2f}ms")
+    print(f"✓ 実行時間: {response.execution_time_ms:0.2f}ms")
     
     assert response.status == TaskStatus.COMPLETED
     assert response.quality_score >= 95.0
@@ -55,9 +54,8 @@ async def test_elders_legacy_integration():
     print("\nEldersLegacy統合テスト: 成功")
 
 
-async def test_servant_registry_updated():
-    """更新されたサーバントレジストリのテスト"""
-    print("\n=== 更新サーバントレジストリテスト ===")
+async def test_servant_registry_updated()print("\n=== 更新サーバントレジストリテスト ===")
+"""更新されたサーバントレジストリのテスト"""
     
     # 新しいレジストリ作成
     registry = ServantRegistry()
@@ -118,9 +116,8 @@ async def test_servant_registry_updated():
     print("\n更新サーバントレジストリテスト: 成功")
 
 
-async def test_iron_will_compliance():
-    """Iron Will品質基準準拠テスト"""
-    print("\n=== Iron Will品質基準準拠テスト ===")
+async def test_iron_will_compliance()print("\n=== Iron Will品質基準準拠テスト ===")
+"""Iron Will品質基準準拠テスト"""
     
     test_forge = TestForge()
     
@@ -153,7 +150,7 @@ class Calculator:
     
     response = await test_forge.process_request(high_quality_request)
     
-    print(f"✓ Iron Will基準チェック: {response.quality_score >= 95.0}")
+    print(f"✓ Iron Will基準チェック: {response.quality_score >}")
     print(f"✓ 品質スコア: {response.quality_score}")
     print(f"✓ タスクステータス: {response.status.value}")
     
@@ -174,9 +171,8 @@ class Calculator:
     print("\nIron Will品質基準準拠テスト: 成功")
 
 
-async def test_error_handling_robustness():
-    """エラーハンドリング堅牢性テスト"""
-    print("\n=== エラーハンドリング堅牢性テスト ===")
+async def test_error_handling_robustness()print("\n=== エラーハンドリング堅牢性テスト ===")
+"""エラーハンドリング堅牢性テスト"""
     
     code_crafter = CodeCrafter()
     
@@ -214,9 +210,8 @@ async def test_error_handling_robustness():
     print("\nエラーハンドリング堅牢性テスト: 成功")
 
 
-async def test_performance_metrics():
-    """パフォーマンスメトリクステスト"""
-    print("\n=== パフォーマンスメトリクステスト ===")
+async def test_performance_metrics()print("\n=== パフォーマンスメトリクステスト ===")
+"""パフォーマンスメトリクステスト"""
     
     test_forge = TestForge()
     
@@ -252,9 +247,9 @@ async def test_performance_metrics():
     
     print(f"✓ 並列実行タスク数: {len(tasks)}")
     print(f"✓ 成功タスク数: {successful_tasks}")
-    print(f"✓ 総実行時間: {total_time:.2f}ms")
-    print(f"✓ 平均品質スコア: {average_quality:.1f}")
-    print(f"✓ タスクあたり平均時間: {total_time/len(tasks):.2f}ms")
+    print(f"✓ 総実行時間: {total_time:0.2f}ms")
+    print(f"✓ 平均品質スコア: {average_quality:0.1f}")
+    print(f"✓ タスクあたり平均時間: {total_time/len(tasks):0.2f}ms")
     
     assert successful_tasks == len(tasks)
     assert average_quality >= 95.0
@@ -263,9 +258,8 @@ async def test_performance_metrics():
     print("\nパフォーマンスメトリクステスト: 成功")
 
 
-async def test_capability_discovery():
-    """能力検出テスト"""
-    print("\n=== 能力検出テスト ===")
+async def test_capability_discovery()print("\n=== 能力検出テスト ===")
+"""能力検出テスト"""
     
     code_crafter = CodeCrafter()
     test_forge = TestForge()
@@ -299,9 +293,8 @@ async def test_capability_discovery():
     print("\n能力検出テスト: 成功")
 
 
-async def test_workflow_integration():
-    """ワークフロー統合テスト"""
-    print("\n=== ワークフロー統合テスト ===")
+async def test_workflow_integration()print("\n=== ワークフロー統合テスト ===")
+"""ワークフロー統合テスト"""
     
     # レジストリとサーバント準備
     registry = ServantRegistry()
@@ -324,7 +317,7 @@ async def test_workflow_integration():
                 "docstring": "Validate email format",
                 "body": '''
     import re
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+    pattern = r'^[a-zA-Z0-9.0_%+-]+@[a-zA-Z0-9.0-]+\\.[a-zA-Z]{2,}$'
     return bool(re.match(pattern, email))'''
             }
         }
@@ -371,18 +364,17 @@ async def test_workflow_integration():
         coverage_response.quality_score
     ) / 3
     
-    print(f"✓ ワークフロー全体品質: {overall_quality:.1f}%")
+    print(f"✓ ワークフロー全体品質: {overall_quality:0.1f}%")
     print(f"✓ 総実行時間: {func_response.execution_time_ms " \
-        "+ test_response.execution_time_ms + coverage_response.execution_time_ms:.2f}ms")
+        "+ test_response.execution_time_ms + coverage_response.execution_time_ms:0.2f}ms")
     
     assert overall_quality >= 95.0
     
     print("\nワークフロー統合テスト: 成功")
 
 
-async def main():
-    """メインテスト実行"""
-    print("🧝‍♂️ エルダーサーバントシステム総合テスト開始")
+async def main()print("🧝‍♂️ エルダーサーバントシステム総合テスト開始")
+"""メインテスト実行"""
     print("="*60)
     
     try:

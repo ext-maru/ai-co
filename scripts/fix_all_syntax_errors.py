@@ -6,15 +6,9 @@ from pathlib import Path
 # Create mock dependencies first
 mock_libs = {
     "redis": "class Redis:\n    def __init__(self, *args, **kwargs): pass\n    def get(self, key): " \
-        "return None\n    def set(
-            self,
-            key,
-            value): return True\n    def pipeline(self): return self\n    def execute(self
+        "return None\n    def set(self, key, value): return True\n    def pipeline(self): return self\n    def execute(self
         ): return []\n",
-    "aioredis": "class Redis:\n    def __init__(
-        self,
-        *args,
-        **kwargs): pass\n    async def get(self,
+    "aioredis": "class Redis:\n    def __init__(self, *args, **kwargs): pass\n    async def get(self,
         key): return None\n    async def set(self,
         key,
         value): return True\nasync def create_redis(*args,

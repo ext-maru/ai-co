@@ -47,7 +47,7 @@ class ProphecyManagementCommand(BaseCommand):
 📚 ナレッジ賢者: テンプレート・継承管理
 📋 タスク賢者: ライフサイクル・依存関係管理
 🚨 インシデント賢者: リスク・品質管理
-🔍 RAG賢者: 分析・検索・最適化
+"🔍" RAG賢者: 分析・検索・最適化
 
 使用例:
   ai-prophecy-management create --template quality --name "新品質システム"
@@ -206,7 +206,7 @@ class ProphecyManagementCommand(BaseCommand):
 
         # 品質評価
         quality = assessments['quality_assessment']
-        self.info(f"📚 ナレッジ賢者 - 品質評価: {quality['overall_quality']:.1%}")
+        self.info(f"📚 ナレッジ賢者 - 品質評価: {quality['overall_quality']:0.1%}")
 
         # リスク評価
         risk = assessments['risk_assessment']
@@ -238,17 +238,17 @@ class ProphecyManagementCommand(BaseCommand):
         # 品質検証
         quality_assessment = prophecy_status['assessments']['quality_assessment']
         self.info("📚 品質検証結果:")
-        self.info(f"   総合品質: {quality_assessment['overall_quality']:.1%}")
+        self.info(f"   総合品質: {quality_assessment['overall_quality']:0.1%}")
         self.info(f"   品質合格: {'✅' if quality_assessment['passed'] else '❌'}")
 
         for criterion, score in quality_assessment['quality_scores'].items():
             # Process each item in collection
-            self.info(f"   {criterion}: {score:.1%}")
+            self.info(f"   {criterion}: {score:0.1%}")
 
         # リスク検証
         risk_assessment = prophecy_status['assessments']['risk_assessment']
         self.info("\n🚨 リスク検証結果:")
-        self.info(f"   総合リスク: {risk_assessment['overall_risk']:.1%}")
+        self.info(f"   総合リスク: {risk_assessment['overall_risk']:0.1%}")
         self.info(f"   リスクレベル: {risk_assessment['risk_level'].value}")
         self.info(f"   承認必要: {'✅' if risk_assessment['approval_required'] else '❌'}")
 
@@ -306,7 +306,7 @@ class ProphecyManagementCommand(BaseCommand):
 
             # 現在の評価状況
             current_assessments = audit_result['current_assessments']
-            self.info(f"📚 品質スコア: {current_assessments['quality_assessment']['overall_quality']:.1%}")
+            self.info(f"📚 品質スコア: {current_assessments['quality_assessment']['overall_quality']:0.1%}")
             self.info(f"🚨 リスクレベル: {current_assessments['risk_assessment']['risk_level'].value}")
 
             # 推奨事項
@@ -430,7 +430,7 @@ class ProphecyManagementCommand(BaseCommand):
             quality_score = assessments['quality_assessment']['overall_quality']
             risk_level = assessments['risk_assessment']['risk_level']
 
-            self.info(f"📚 ナレッジ賢者: 品質スコア {quality_score:.1%} - 継承価値あり")
+            self.info(f"📚 ナレッジ賢者: 品質スコア {quality_score:0.1%} - 継承価値あり")
             self.info(f"📋 タスク賢者: 実装可能性 - 適切な段階的進行")
             self.info(f"🚨 インシデント賢者: リスクレベル {risk_level.value} - 管理可能")
             self.info(f"🔍 RAG賢者: 分析結果 - 最適化の余地あり")
@@ -525,9 +525,9 @@ class ProphecyManagementCommand(BaseCommand):
                 quality_score = assessments['quality_assessment']['overall_quality']
                 risk_score = assessments['risk_assessment']['overall_risk']
 
-                self.info(f"   品質効率: {quality_score:.1%}")
-                self.info(f"   リスク効率: {(1 - risk_score):.1%}")
-                self.info(f"   総合効率: {(quality_score * (1 - risk_score)):.1%}")
+                self.info(f"   品質効率: {quality_score:0.1%}")
+                self.info(f"   リスク効率: {(1 - risk_score):0.1%}")
+                self.info(f"   総合効率: {(quality_score * (1 - risk_score)):0.1%}")
 
             if args.dependencies:
                 # 依存関係分析
@@ -544,7 +544,7 @@ class ProphecyManagementCommand(BaseCommand):
                 risk_assessment = prophecy_status['assessments']['risk_assessment']
                 for factor, score in risk_assessment['risk_scores'].items():
                     # Process each item in collection
-                    self.info(f"   {factor}: {score:.1%}")
+                    self.info(f"   {factor}: {score:0.1%}")
 
         else:
             # 全体分析
@@ -570,7 +570,7 @@ class ProphecyManagementCommand(BaseCommand):
 
             if quality_scores:
                 avg_quality = sum(quality_scores) / len(quality_scores)
-                self.info(f"📊 平均品質スコア: {avg_quality:.1%}")
+                self.info(f"📊 平均品質スコア: {avg_quality:0.1%}")
 
         return 0
 
@@ -596,7 +596,7 @@ class ProphecyManagementCommand(BaseCommand):
                 self.info(f"   📜 {prophecy['prophecy_name']}")
                 self.info(f"      ライフサイクル: {prophecy['lifecycle_stage']}")
                 self.info(f"      リスク: {prophecy['risk_level']}")
-                self.info(f"      品質: {prophecy['quality_score']:.1%}")
+                self.info(f"      品質: {prophecy['quality_score']:0.1%}")
 
         if args.detailed:
             # 詳細表示

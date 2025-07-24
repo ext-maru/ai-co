@@ -182,7 +182,7 @@ class PgVectorAutoSystem:
             relative_path = os.path.relpath(file_path, self.config['knowledge_base_path'])
             
             # SQLiteから削除
-            conn = sqlite3.connect(self.config['sqlite_db'])
+            conn = sqlite3connect(self.config['sqlite_db'])
             cursor = conn.execute(
                 "DELETE FROM knowledge_documents WHERE source_file = ?",
                 [relative_path]
@@ -200,7 +200,7 @@ class PgVectorAutoSystem:
     async def _update_sqlite_record(self, source_file: str, content: str, file_hash: str):
         """SQLiteレコード更新"""
         try:
-            conn = sqlite3.connect(self.config['sqlite_db'])
+            conn = sqlite3connect(self.config['sqlite_db'])
             
             # 既存レコード確認
             cursor = conn.execute(

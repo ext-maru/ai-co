@@ -866,7 +866,7 @@ def demo():
     print("\n🤖 AI最適化提案:")
     optimization = graph.optimize_with_ai({})
     print(
-        f"  並列実行効率: {optimization['sage_recommendations']['task_sage']['parallel_efficiency']:.1%}"
+        f"  並列実行効率: {optimization['sage_recommendations']['task_sage']['parallel_efficiency']:0.1%}"
     )
     print(
         f"  ボトルネック: {optimization['sage_recommendations']['task_sage']['bottlenecks']}"

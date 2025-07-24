@@ -192,9 +192,8 @@ class Test{resource.capitalize()}API:
     """Test {resource} API endpoints"""
 
     @pytest.fixture
-    def mock_db(self):
-        """Mock database session"""
-        with patch("api.database.get_db") as mock:
+    def mock_db(self)with patch("api.database.get_db") as mock:
+    """Mock database session"""
             yield mock
     '''
 
@@ -206,18 +205,16 @@ class Test{resource.capitalize()}API:
         return {"Authorization": "Bearer test-token"}
 
     @pytest.fixture
-    def mock_user(self):
-        """Mock authenticated user"""
-        with patch("api.auth.get_current_user") as mock:
+    def mock_user(self)with patch("api.auth.get_current_user") as mock:
+    """Mock authenticated user"""
             mock.return_value = {"id": 1, "username": "testuser"}
             yield mock
 '''
 
         if "list" in operations:
             test_content += f'''
-    def test_list_{resource}s(self, mock_db{", mock_user, auth_headers" if auth else ""}):
-        """Test listing {resource}s"""
-        response = client.get("/{resource}s/"{", headers=auth_headers" if auth else ""})
+    def test_list_{resource}s(self, mock_db{", mock_user, auth_headers" if auth else ""})response = client.get("/{resource}s/"{", headers=auth_headers" if auth else ""})
+    """Test listing {resource}s"""
         assert response.status_code == 200
         assert isinstance(response.json(), list)
 '''
@@ -345,10 +342,9 @@ api.add_resource({resource.capitalize()}Detail, '/<int:{resource}_id>')
 
         return {f"blueprints/{resource}.py": blueprint_content}
 
-    def generate(self, params: Dict[str, Any]) -> Dict[str, str]:
-        """テンプレートからコードを生成"""
-        framework = params.get("framework", "fastapi")
-
+    def generate(self, params: Dict[str, Any]) -> Dict[str, str]framework = params.get("framework", "fastapi")
+    """テンプレートからコードを生成"""
+:
         if framework == "fastapi":
             return self.generate_fastapi(params)
         elif framework == "flask":

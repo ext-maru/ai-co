@@ -35,7 +35,7 @@ class IndentationFixer:
             (r"(\s*)finally:\s*\n(?=\s*\S)", r"\g<0>\1    pass\n"),
             # Pattern for empty else blocks
             (r"(\s*)else:\s*\n(?=\s*\S)", r"\g<0>\1    pass\n"),
-            # Pattern for empty class definitions
+            # Pattern for empty class definitions:
             (r"(\s*)class\s+[^:]+:\s*\n(?=\s*(?:class|def|\S))", r"\g<0>\1    pass\n"),
             # Pattern for empty function definitions
             (
@@ -105,9 +105,8 @@ class IndentationFixer:
             print(f"Error fixing {filepath}: {e}")
             return False
 
-    def find_and_fix_errors(self):
-        """Find and fix all indentation errors"""
-        print("Searching for Python files with indentation errors...")
+    def find_and_fix_errors(self)print("Searching for Python files with indentation errors...")
+    """Find and fix all indentation errors"""
 
         # List of files known to have indentation errors from the test output
         problem_files = [

@@ -412,9 +412,8 @@ class UTTDataManager(EldersServiceLegacy):
     EldersServiceLegacy準拠・Iron Will品質基準対応
     """
 
-    def __init__(self, database_url:
+    def __init__(self, database_url: str = "sqlite:///utt_system.db"):
         """初期化メソッド"""
-    str = "sqlite:///utt_system.db"):
         super().__init__()
         self.engine = create_engine(database_url, echo=False)
         Base.metadata.create_all(self.engine)

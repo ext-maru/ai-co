@@ -3,12 +3,12 @@
 Next Generation RAG Strategy System
 Elder Flow統合による革新的RAGシステム
 
-🌊 Elder Flow Integration + 🔍 Advanced RAG + 🧠 Mind Reading = 🚀 Ultimate RAG
+🌊 Elder Flow Integration + "🔍" Advanced RAG + 🧠 Mind Reading = 🚀 Ultimate RAG
 
 3つの革新戦略:
-1. 階層化コンテキスト管理 (Hierarchical Context Management)
-2. ストリーミングRAG (Real-time Knowledge Streaming)
-3. 証拠トレーサビリティ (Evidence Traceability System)
+1.0 階層化コンテキスト管理 (Hierarchical Context Management)
+2.0 ストリーミングRAG (Real-time Knowledge Streaming)
+3.0 証拠トレーサビリティ (Evidence Traceability System)
 """
 
 import asyncio
@@ -486,7 +486,7 @@ class StreamingRAGEngine:
             self.logger.warning(f"⚠️ Large update queue: {queue_size} items")
 
         if success_rate < 0.9:  # 成功率が低い場合
-            self.logger.warning(f"⚠️ Low success rate: {success_rate:.2%}")
+            self.logger.warning(f"⚠️ Low success rate: {success_rate:0.2%}")
 
 
 class EvidenceTraceabilitySystem:
@@ -532,7 +532,7 @@ class EvidenceTraceabilitySystem:
         """証拠データベース設定"""
         Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
 
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -621,7 +621,7 @@ class EvidenceTraceabilitySystem:
     async def _get_source_credibility(self, source_id: str) -> float:
         """ソースの信頼性スコア取得"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -650,7 +650,7 @@ class EvidenceTraceabilitySystem:
     ):
         """新しいソースの信頼性初期化"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -674,7 +674,7 @@ class EvidenceTraceabilitySystem:
         """証拠チェーンの検証"""
         verification_scores = []
 
-        # 1. ソース信頼性
+        # 1.0 ソース信頼性
         credibility_scores = [e["credibility_score"] for e in evidence_chain]
         avg_credibility = (
             sum(credibility_scores) / len(credibility_scores)
@@ -685,19 +685,19 @@ class EvidenceTraceabilitySystem:
             avg_credibility * self.verification_rules["source_credibility"]
         )
 
-        # 2. 情報の新鮮度（簡易版）
+        # 2.0 情報の新鮮度（簡易版）
         freshness_score = 0.8  # 仮の値
         verification_scores.append(
             freshness_score * self.verification_rules["information_freshness"]
         )
 
-        # 3. クロスリファレンス数
+        # 3.0 クロスリファレンス数
         cross_ref_score = min(len(evidence_chain) / 5, 1.0)  # 5つ以上で満点
         verification_scores.append(
             cross_ref_score * self.verification_rules["cross_reference_count"]
         )
 
-        # 4. 一貫性スコア
+        # 4.0 一貫性スコア
         consistency_score = await self._calculate_consistency(evidence_chain, response)
         verification_scores.append(
             consistency_score * self.verification_rules["consistency_score"]
@@ -738,7 +738,7 @@ class EvidenceTraceabilitySystem:
     async def _save_evidence_trace(self, trace: EvidenceTrace):
         """証拠トレースをデータベースに保存"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             # 幻覚リスク計算
@@ -777,7 +777,7 @@ class EvidenceTraceabilitySystem:
     async def get_hallucination_risk(self, trace_id: str) -> float:
         """幻覚リスクの取得"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -878,17 +878,17 @@ class NextGenerationRAGStrategy:
         self.logger.info(f"🎯 Processing strategic query: {query[:50]}...")
 
         try:
-            # 1. Mind Readingによる意図理解
+            # 1.0 Mind Readingによる意図理解
             intent_result = None
             if self.mind_reader:
                 intent_result = await self.mind_reader.understand_intent(query)
 
-            # 2. 階層化コンテキスト検索
+            # 2.0 階層化コンテキスト検索
             hierarchical_contexts = await self.context_manager.get_prioritized_contexts(
                 query
             )
 
-            # 3. Advanced RAG検索（Elder Flow統合）
+            # 3.0 Advanced RAG検索（Elder Flow統合）
             advanced_results = []
             if self.advanced_rag:
                 # サンプル文書でテスト
@@ -903,7 +903,7 @@ class NextGenerationRAGStrategy:
                 await self.advanced_rag.initialize_document_store(sample_docs)
                 advanced_results = await self.advanced_rag.hybrid_search(query, top_k=5)
 
-            # 4. 証拠トレーサビリティ生成
+            # 4.0 証拠トレーサビリティ生成
             evidence_sources = []
             for context in hierarchical_contexts[:3]:
                 evidence_sources.append(
@@ -925,22 +925,22 @@ class NextGenerationRAGStrategy:
                     }
                 )
 
-            # 5. 統合回答生成
+            # 5.0 統合回答生成
             response = await self._generate_integrated_response(
                 query, intent_result, hierarchical_contexts, advanced_results
             )
 
-            # 6. 証拠トレース作成
+            # 6.0 証拠トレース作成
             evidence_trace_id = await self.evidence_system.create_evidence_trace(
                 query, response, evidence_sources
             )
 
-            # 7. 幻覚リスク評価
+            # 7.0 幻覚リスク評価
             hallucination_risk = await self.evidence_system.get_hallucination_risk(
                 evidence_trace_id
             )
 
-            # 8. 統計更新
+            # 8.0 統計更新
             processing_time = time.time() - start_time
             await self._update_strategy_stats(
                 processing_time,
@@ -966,7 +966,7 @@ class NextGenerationRAGStrategy:
                 ),
             }
 
-            self.logger.info(f"✅ Strategic query processed in {processing_time:.2f}s")
+            self.logger.info(f"✅ Strategic query processed in {processing_time:0.2f}s")
             return result
 
         except Exception as e:
@@ -1137,12 +1137,12 @@ async def demo_next_generation_rag():
 
             if "error" not in result:
                 print(f"   🧠 Intent: {result['intent']}")
-                print(f"   📊 Confidence: {result['confidence']:.2%}")
+                print(f"   📊 Confidence: {result['confidence']:0.2%}")
                 print(f"   🔄 Contexts: {result['hierarchical_contexts']}")
                 print(f"   🔍 RAG Results: {result['advanced_results']}")
-                print(f"   🛡️ Hallucination Risk: {result['hallucination_risk']:.1%}")
+                print(f"   🛡️ Hallucination Risk: {result['hallucination_risk']:0.1%}")
                 print(f"   ✅ Status: {result['verification_status']}")
-                print(f"   ⏱️ Time: {result['processing_time']:.2f}s")
+                print(f"   ⏱️ Time: {result['processing_time']:0.2f}s")
                 print(f"   💬 Response: {result['response'][:100]}...")
             else:
                 print(f"   ❌ Error: {result['error']}")
@@ -1170,11 +1170,11 @@ async def demo_next_generation_rag():
             f"   🎯 Total Queries: {strategy_data['overall_performance']['total_queries']}"
         )
         print(
-            f"   ⚡ Avg Response Time: {strategy_data['overall_performance']['average_response_time']:.2f}s"
+            f"   ⚡ Avg Response Time: {strategy_data['overall_performance']['average_response_time']:0.2f}s"
         )
         print(
             f"   🛡️ Hallucination Prevention: {strategy_data['overall_performance']['halluci \
-                nation_prevention_rate']:.1%}"
+                nation_prevention_rate']:0.1%}"
         )
 
         # 革新要素まとめ

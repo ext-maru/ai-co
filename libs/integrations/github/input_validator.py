@@ -70,7 +70,7 @@ class GitHubInputValidator:
 
             # GitHub repository name pattern - supports owner/repo format
             # Valid characters: alphanumeric, hyphens, underscores, dots, and forward slash
-            if not re.match(r"^[a-zA-Z0-9._/-]+$", name):
+            if not re.match(r"^[a-zA-Z0-9.0_/-]+$", name):
                 raise ValidationError("Repository name contains invalid characters")
 
             # Check if it's in owner/repo format
@@ -226,7 +226,7 @@ class GitHubInputValidator:
                 )
 
             # Git branch name validation
-            if not re.match(r"^[a-zA-Z0-9._/-]+$", branch_name):
+            if not re.match(r"^[a-zA-Z0-9.0_/-]+$", branch_name):
                 raise ValidationError("Branch name contains invalid characters")
 
             if branch_name.startswith(".") or branch_name.endswith("."):

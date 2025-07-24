@@ -23,10 +23,8 @@ from test_utils.test_generator import TestGenerator
 class AITestGenerator(BaseManager):
     """AI駆動でテストを生成するマネージャー"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        super().__init__("AITestGenerator")
-        self.claude_executor = ClaudeCliExecutor()
+    def __init__(self)self.claude_executor = ClaudeCliExecutor()
+    """初期化メソッド"""
         self.basic_generator = TestGenerator()
         self.test_output_dir = PROJECT_ROOT / "tests" / "generated"
         self.test_output_dir.mkdir(parents=True, exist_ok=True)
@@ -128,10 +126,10 @@ class AITestGenerator(BaseManager):
 タスクタイプ: コード生成
 
 以下の形式でテストを作成してください：
-1. 期待される機能のユニットテスト
-2. エッジケースのテスト
-3. エラーハンドリングのテスト
-4. 統合テスト（必要に応じて）
+1.0 期待される機能のユニットテスト
+2.0 エッジケースのテスト
+3.0 エラーハンドリングのテスト
+4.0 統合テスト（必要に応じて）
 
 テストはpytestフレームワークを使用し、以下を含めてください：
 - 適切なfixture
@@ -171,9 +169,9 @@ class AITestGenerator(BaseManager):
 タスクタイプ: バグ修正
 
 以下の形式でテストを作成してください：
-1. バグを再現するテスト（修正前は失敗、修正後は成功）
-2. 回帰テスト（他の機能が壊れていないことを確認）
-3. 関連するエッジケースのテスト
+1.0 バグを再現するテスト（修正前は失敗、修正後は成功）
+2.0 回帰テスト（他の機能が壊れていないことを確認）
+3.0 関連するエッジケースのテスト
 
 重要：
 - バグの根本原因を明確にするテストを作成
@@ -208,12 +206,12 @@ class AITestGenerator(BaseManager):
 タスクタイプ: 新機能
 
 以下の形式でテストを作成してください：
-1. 機能の基本動作テスト
-2. パラメータ検証テスト
-3. 境界値テスト
-4. 異常系テスト
-5. パフォーマンステスト（必要に応じて）
-6. 統合テスト
+1.0 機能の基本動作テスト
+2.0 パラメータ検証テスト
+3.0 境界値テスト
+4.0 異常系テスト
+5.0 パフォーマンステスト（必要に応じて）
+6.0 統合テスト
 
 BDD形式も考慮し、Given-When-Thenパターンを使用してください。
 
@@ -313,12 +311,11 @@ BDD形式も考慮し、Given-When-Thenパターンを使用してください�
             self.logger.error(f"テストコード解析エラー: {e}")
             return {"code": test_code, "info": {"error": str(e)}}
 
-    def _save_test_file(self, test_info: Dict, task_data: Dict) -> Path:
-        """テストファイルを保存"""
-        task_id = task_data.get("task_id", datetime.now().strftime("%Y%m%d_%H%M%S"))
+    def _save_test_file(self, test_info: Dict, task_data: Dict) -> Pathtask_id = task_data.get("task_id", datetime.now().strftime("%Y%m%d_%H%M%S"))
+    """テストファイルを保存"""
         test_file = self.test_output_dir / f"test_{task_id}.py"
 
-        test_code = test_info.get("code", "")
+        test_code = test_info.get("code", ""):
         if not test_code:
             # 基本テンプレートを生成
             test_code = self._generate_basic_test_template(task_data, test_info)
@@ -341,13 +338,12 @@ BDD形式も考慮し、Given-When-Thenパターンを使用してください�
 
         return test_file
 
-    def _generate_basic_test_template(self, task_data: Dict, test_info: Dict) -> str:
-        """基本的なテストテンプレートを生成"""
-        task_id = task_data.get("task_id", "unknown")
+    def _generate_basic_test_template(self, task_data: Dict, test_info: Dict) -> strtask_id = task_data.get("task_id", "unknown")
+    """基本的なテストテンプレートを生成"""
         task_type = task_data.get("type", "general")
 
         return f'''#!/usr/bin/env python3
-"""
+""":
 自動生成されたテスト: {task_id}
 生成日時: {datetime.now().isoformat()}
 タスクタイプ: {task_type}

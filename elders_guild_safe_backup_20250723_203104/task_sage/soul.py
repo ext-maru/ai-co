@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class TaskSageSoul(BaseSoul):
+    pass
 
 
 """
@@ -52,6 +53,7 @@ class TaskSageSoul(BaseSoul):
         self._initialize_abilities()
         
     def _initialize_abilities(self):
+        pass
 
         
         """魂固有の能力を初期化""" 0.01,  # 1行あたりの基本時間
@@ -70,6 +72,7 @@ class TaskSageSoul(BaseSoul):
         }
     
     async def initialize(self) -> None:
+        pass
 
             """魂の初期化処理"""
         """魂のシャットダウン処理"""
@@ -106,10 +109,9 @@ class TaskSageSoul(BaseSoul):
             logger.error(f"Error processing message: {e}")
             return self._create_error_response(message, str(e))
     
-    async def _handle_request(self, message: Dict[str, Any]) -> Dict[str, Any]:
-        """リクエスト処理"""
-        action = message.get("action")
-        
+    async def _handle_request(self, message: Dict[str, Any]) -> Dict[str, Any]action = message.get("action")
+    """リクエスト処理"""
+        :
         if action == "estimate_task":
             task_data = message.get("task_data", {})
             # 簡易的な見積もり
@@ -566,6 +568,7 @@ class TaskSageSoul(BaseSoul):
 
 
 async def main():
+    pass
 
         """魂のメインループ"""
     asyncio.run(main())

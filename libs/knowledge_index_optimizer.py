@@ -129,7 +129,7 @@ class IndexShard:
 
     def _init_db(self):
         """データベース初期化"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         cursor = conn.cursor()
 
         cursor.execute(
@@ -166,7 +166,7 @@ class IndexShard:
             metadata_json = json.dumps(metadata or {})
             compressed_metadata = zlib.compress(metadata_json.encode('utf-8'))
 
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -188,7 +188,7 @@ class IndexShard:
             return None
 
         with self.lock:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute("SELECT doc_ids FROM index_entries WHERE term = ?", (term,))
@@ -208,7 +208,7 @@ class IndexShard:
     def optimize(self):
         """シャード最適化"""
         with self.lock:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # VACUUM実行
@@ -269,7 +269,7 @@ class KnowledgeIndexOptimizer:
 
     def _init_metadata_db(self):
         """メタデータDB初期化"""
-        conn = sqlite3.connect(str(self.meta_db_path))
+        conn = sqlite3connect(str(self.meta_db_path))
         cursor = conn.cursor()
 
         cursor.execute(
@@ -358,7 +358,7 @@ class KnowledgeIndexOptimizer:
 
         self._save_stats()
 
-        logger.info(f"Index built in {elapsed_time:.2f} seconds")
+        logger.info(f"Index built in {elapsed_time:0.2f} seconds")
         logger.info(
             f"Indexed {doc_count} documents with {len(term_doc_map)} unique terms"
         )
@@ -549,7 +549,7 @@ class KnowledgeIndexOptimizer:
 
         search_time = time.time() - start_time
         logger.debug(
-            f"Search completed in {search_time:.3f}s (cache hit rate: {self._get_cache_hit_rate():.2%})"
+            f"Search completed in {search_time:0.3f}s (cache hit rate: {self._get_cache_hit_rate():0.2%})"
         )
 
         return results
@@ -575,7 +575,7 @@ class KnowledgeIndexOptimizer:
 
     def _save_document_metadata(self, doc_id: str, metadata: Dict[str, Any]):
         """ドキュメントメタデータ保存"""
-        conn = sqlite3.connect(str(self.meta_db_path))
+        conn = sqlite3connect(str(self.meta_db_path))
         cursor = conn.cursor()
 
         cursor.execute(
@@ -600,7 +600,7 @@ class KnowledgeIndexOptimizer:
 
     def _get_document_metadata(self, doc_id: str) -> Optional[Dict[str, Any]]:
         """ドキュメントメタデータ取得"""
-        conn = sqlite3.connect(str(self.meta_db_path))
+        conn = sqlite3connect(str(self.meta_db_path))
         cursor = conn.cursor()
 
         cursor.execute(
@@ -650,7 +650,7 @@ class KnowledgeIndexOptimizer:
 
     def _save_stats(self):
         """統計情報保存"""
-        conn = sqlite3.connect(str(self.meta_db_path))
+        conn = sqlite3connect(str(self.meta_db_path))
         cursor = conn.cursor()
 
         for key, value in self.stats.items():
@@ -667,7 +667,7 @@ class KnowledgeIndexOptimizer:
 
     def _load_stats(self) -> Dict[str, Any]:
         """統計情報ロード"""
-        conn = sqlite3.connect(str(self.meta_db_path))
+        conn = sqlite3connect(str(self.meta_db_path))
         cursor = conn.cursor()
 
         cursor.execute("SELECT key, value FROM index_stats")
@@ -751,4 +751,4 @@ if __name__ == "__main__":
 
     # レポート
     report = optimizer.get_optimization_report()
-    print(f"Optimization report: {json.dumps(report, indent=2, default=str)}")
+    print(f"Optimization report: {json.dumps(report, indent=2)}")

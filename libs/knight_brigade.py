@@ -5,13 +5,13 @@
 
 4賢者システム統合:
 📚 ナレッジ賢者: 戦術知識の継承と戦略立案
-🔍 RAG賢者: 脅威情報の検索と分析
+"🔍" RAG賢者: 脅威情報の検索と分析
 📋 タスク賢者: 作戦優先度と資源配分管理
 🚨 インシデント賢者: 緊急事態対応と危機管理
 
 🔨 ドワーフ工房連携:
 ⚒️ 武具供給: 最高の武器・防具を自動供給
-📊 情報共有: リアルタイム戦場情報と最適化機会
+"📊" 情報共有: リアルタイム戦場情報と最適化機会
 🛡️ 共同防衛: 工房防護と生産継続保証
 """
 
@@ -1125,7 +1125,7 @@ class WeaponryManager:
 
         logger.info(
             f"⚔️ Received {len(received_items)} weapons/tools from workshop (Quality: " \
-                "{avg_quality:.2f})"
+                "{avg_quality:0.2f})"
         )
 
         return {
@@ -1198,7 +1198,7 @@ class WeaponryManager:
 
         logger.info(
             f"⚔️ Deployed {weapon_type} to squad {squad_id} (Effectiveness: " \
-                "{estimated_effectiveness:.2f})"
+                "{estimated_effectiveness:0.2f})"
         )
 
         return {
@@ -1466,7 +1466,7 @@ class TacticalCoordinator:
 
         logger.info(
             f"🎯 Coordinated response planned: {operation_id} (Success rate: " \
-                "{success_probability:.2f})"
+                "{success_probability:0.2f})"
         )
 
         return response_plan
@@ -1588,7 +1588,7 @@ class TacticalCoordinator:
         }
 
         logger.info(
-            f"🚨 Emergency protocol executed: {protocol_type} ({response_time:.1f}s)"
+            f"🚨 Emergency protocol executed: {protocol_type} ({response_time:0.1f}s)"
         )
 
         return {
@@ -2549,7 +2549,7 @@ if __name__ == "__main__":
 
     print(f"\n🏰 Brigade Status:")
     status = brigade.get_brigade_status()
-    print(f"  Brigade Readiness: {status['brigade_readiness']:.2f}")
+    print(f"  Brigade Readiness: {status['brigade_readiness']:0.2f}")
     print(f"  Active Squads: {len(status['squad_status'])}")
     print(f"  Threat Level: {status['current_threat_level']}")
 
@@ -2599,7 +2599,7 @@ if __name__ == "__main__":
         f"  Request Submitted: {'SUCCESS' if emergency_response['request_submitted'] else 'FAILED'}"
     )
     print(
-        f"  Estimated Delivery: {emergency_response['estimated_delivery_time']:.1f} minutes"
+        f"  Estimated Delivery: {emergency_response['estimated_delivery_time']:0.1f} minutes"
     )
 
     print("\n🎉 Knight Brigade System Test Complete!")

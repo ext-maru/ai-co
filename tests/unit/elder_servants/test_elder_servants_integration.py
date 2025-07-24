@@ -40,7 +40,7 @@ class TestElderServantsIntegration:
         improvement = result.get('performance_comparison', {}).get('improvement_percentage', 0)
         target = 50.0  # 50%改善目標
         
-        assert improvement >= target, f"Performance improvement {improvement:.1f}% did not meet target {target}%"
+        assert improvement >= target, f"Performance improvement {improvement:0.1f}% did not meet target {target}%"
         assert result.get('meets_target', False), "Performance target not achieved"
     
     @pytest.mark.asyncio
@@ -55,7 +55,7 @@ class TestElderServantsIntegration:
         
         # 成功率確認
         success_rate = result.get('test_execution_summary', {}).get('overall_success_rate', 0)
-        assert success_rate >= 99.0, f"Success rate {success_rate:.1f}% below minimum 99%"
+        assert success_rate >= 99.0, f"Success rate {success_rate:0.1f}% below minimum 99%"
     
     @pytest.mark.asyncio
     async def test_integration_completeness(self, test_suite):

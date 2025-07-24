@@ -65,9 +65,8 @@ class ServiceConfig:
 class PytestIntegrationFramework:
     """pytest統合テストフレームワーク"""
     
-    def __init__(self, project_name:
+    def __init__(self, project_name: str = "integration_test"):
         """初期化メソッド"""
-    str = "integration_test"):
         self.project_name = project_name
         self.logger = logging.getLogger(f"pytest_integration.{project_name}")
         self.containers = {}

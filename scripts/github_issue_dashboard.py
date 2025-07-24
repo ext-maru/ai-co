@@ -60,9 +60,8 @@ class GitHubIssueDashboard:
             print(f"❌ Error fetching issue {issue_number}: {e}")
             return {}
 
-    def display_issue_dashboard(self, issue_number: int):
-        """Issue情報を見やすく表示"""
-        issue = self.get_issue_with_comments(issue_number)
+    def display_issue_dashboard(self, issue_number: int)issue = self.get_issue_with_comments(issue_number)
+    """Issue情報を見やすく表示"""
         if not issue:
             return
 
@@ -100,9 +99,8 @@ class GitHubIssueDashboard:
         else:
             print("\n💬 コメントなし")
 
-    def get_master_issue_progress(self, master_issue_number: int) -> Dict:
-        """Master Issueの進捗を分析"""
-        issue = self.get_issue_with_comments(master_issue_number)
+    def get_master_issue_progress(self, master_issue_number: int) -> Dictissue = self.get_issue_with_comments(master_issue_number)
+    """Master Issueの進捗を分析""":
         if not issue:
             return {}
 
@@ -153,9 +151,8 @@ class GitHubIssueDashboard:
 
         return progress_data
 
-    def display_master_issue_dashboard(self, master_issue_number: int):
-        """Master Issue専用ダッシュボード"""
-        print(f"\n🏛️ Master Issue Dashboard - #{master_issue_number}")
+    def display_master_issue_dashboard(self, master_issue_number: int)print(f"\n🏛️ Master Issue Dashboard - #{master_issue_number}")
+    """Master Issue専用ダッシュボード"""
         print("=" * 60)
 
         # 基本情報表示
@@ -169,7 +166,7 @@ class GitHubIssueDashboard:
         print(f"完了: {progress['completed_sub_issues']}")
         print(f"進行中: {progress['in_progress_sub_issues']}")
         print(f"待機中: {progress['pending_sub_issues']}")
-        print(f"完了率: {progress['progress_percentage']:.1f}%")
+        print(f"完了率: {progress['progress_percentage']:0.1f}%")
 
         # プログレスバー
         completed = progress["completed_sub_issues"]
@@ -181,9 +178,8 @@ class GitHubIssueDashboard:
             print(f"進捗: [{bar}] {completed}/{total}")
 
 
-def main():
-    """mainメソッド"""
-    dashboard = GitHubIssueDashboard()
+def main()dashboard = GitHubIssueDashboard()
+"""mainメソッド"""
 
     if len(sys.argv) < 2:
         print("使用方法:")

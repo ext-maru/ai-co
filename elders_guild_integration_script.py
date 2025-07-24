@@ -51,7 +51,7 @@ def fix_imports_in_file(file_path: Path) -> Tuple[bool, List[str]]:
         return False, [f"エラー: {e}"]
 
 def integrate_elders_guild():
-
+    pass  # Placeholder implementation
 
 """Elders Guild統合処理""" テストファイルのimport修正
     test_files = list(base_path.rglob("test_*.py"))

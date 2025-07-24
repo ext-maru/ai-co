@@ -124,7 +124,7 @@ class QualityGate:
         """Initialize quality gate database"""
         try:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Quality gate enforcement log
@@ -686,7 +686,7 @@ class QualityGate:
     async def _log_enforcement_result(self, gate_decision: QualityGateEnforcement):
         """Log enforcement result to database"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -900,7 +900,7 @@ class QualityGate:
             end_date = datetime.now()
             start_date = end_date - timedelta(days=time_range_days)
 
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Get enforcement statistics
@@ -1082,7 +1082,7 @@ def main():
             # Check single file
             result = await quality_gate.enforce_quality_gate(args.file)
             print(f"\nQuality Gate Result: {result.gate_result.value}")
-            print(f"Quality Score: {result.quality_score:.2f}")
+            print(f"Quality Score: {result.quality_score:0.2f}")
             print(f"Elder Decision: {result.elder_decision}")
 
             if result.issues_found:
@@ -1114,7 +1114,7 @@ def main():
                 f"Total Enforcements: {report['enforcement_summary']['total_enforcements']}"
             )
             print(
-                f"Approval Rate: {report['enforcement_summary']['approval_rate']:.1%}"
+                f"Approval Rate: {report['enforcement_summary']['approval_rate']:0.1%}"
             )
             print(
                 f"Current Enforcement Level: {report['system_health']['current_enforcement_level']}"

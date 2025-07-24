@@ -258,14 +258,14 @@ class EmergencySyntaxFixer:
                 original_line = line
                 
                 # よくある問題を修正
-                # 1. 不正な演算子
+                # 1.0 不正な演算子
                 line = re.sub(r'===', '==', line)
                 line = re.sub(r'!==', '!=', line)
                 
-                # 2. セミコロンを削除
+                # 2.0 セミコロンを削除
                 line = re.sub(r';$', '', line)
                 
-                # 3. 未閉じの括弧
+                # 3.0 未閉じの括弧
                 open_parens = line.count('(') - line.count(')')
                 if open_parens > 0:
                     line += ')' * open_parens
@@ -278,7 +278,7 @@ class EmergencySyntaxFixer:
                 if open_braces > 0:
                     line += '}' * open_braces
                 
-                # 4. 不正な引用符の修正
+                # 4.0 不正な引用符の修正
                 if line.count('"') % 2 == 1:
                     line += '"'
                 if line.count("'") % 2 == 1:

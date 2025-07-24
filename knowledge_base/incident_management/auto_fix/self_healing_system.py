@@ -1055,6 +1055,7 @@ def main():
     self_healing = SelfHealingSystem()
 
     if args.action == "start":
+        pass
 
         async def start_system():
             self_healing._start_time = datetime.now()
@@ -1079,6 +1080,7 @@ def main():
         print(json.dumps(stats, indent=2))
 
     elif args.action == "test":
+        pass
 
         async def test_healing():
             """test_healingメソッド"""

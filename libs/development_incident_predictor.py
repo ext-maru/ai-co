@@ -4,10 +4,10 @@ Development Incident Predictor
 開発時インシデント予測システム - インポートエラー・テスト失敗の事前予測
 
 インシデント賢者の機能を開発時まで拡張し、以下を予測・防止：
-1. Pythonインポートエラー
-2. テスト実行時の失敗
-3. 依存関係の問題
-4. 環境設定エラー
+1.0 Pythonインポートエラー
+2.0 テスト実行時の失敗
+3.0 依存関係の問題
+4.0 環境設定エラー
 """
 
 import ast
@@ -596,7 +596,7 @@ def demo_development_prediction():
     # 現在のプロジェクトを分析
     results = predictor.predict_development_risks()
 
-    print(f"\n📊 Overall Risk Score: {results['overall_risk_score']:.2f}")
+    print(f"\n📊 Overall Risk Score: {results['overall_risk_score']:0.2f}")
     print(f"📁 Import Issues: {len(results['import_issues'])}")
     print(f"🧪 Test Predictions: {len(results['test_predictions'])}")
     print(f"⚠️ Development Risks: {len(results['development_risks'])}")

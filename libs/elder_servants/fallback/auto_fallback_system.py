@@ -468,9 +468,8 @@ class AutoFallbackSystem:
 
         return alternatives
 
-    async def _execute_fallback_plan(self, plan: FallbackPlan) -> FallbackResult:
-        """フォールバック計画実行"""
-        start_time = time.time()
+    async def _execute_fallback_plan(self, plan: FallbackPlan) -> FallbackResultstart_time = time.time()
+    """フォールバック計画実行"""
         failure_context = plan.failure_context
 
         self.logger.info(
@@ -922,12 +921,11 @@ class AutoFallbackSystem:
 
         return base_time + retry_delay
 
-    def _estimate_servant_success_rate(self, servant: ElderServantBase) -> float:
-        """サーバント成功率推定"""
-        metrics = servant.get_metrics()
+    def _estimate_servant_success_rate(self, servant: ElderServantBase) -> floatmetrics = servant.get_metrics()
+    """サーバント成功率推定"""
         return metrics.get("success_rate", 0.5)
 
-    def _extract_lessons_learned(
+    def _extract_lessons_learned(:
         self, plan: FallbackPlan, result: Dict[str, Any], final_status: str
     ) -> List[str]:
         """学習データ抽出"""
@@ -1077,9 +1075,8 @@ class AutoFallbackSystem:
                 # Handle specific exception case
                 self.logger.error(f"Alert callback failed: {str(e)}")
 
-    def add_alert_callback(self, callback: Callable):
-        """アラートコールバック追加"""
-        self.alert_callbacks.append(callback)
+    def add_alert_callback(self, callback: Callable)self.alert_callbacks.append(callback)
+    """アラートコールバック追加"""
 
     async def get_fallback_status(self) -> Dict[str, Any]:
         """フォールバックシステム状態取得"""
@@ -1111,9 +1108,8 @@ class PerformanceMonitor:
     def __init__(self):
         self.metrics = defaultdict(list)
 
-    def record_metric(self, metric_name: str, value: float):
-        """メトリクス記録"""
-        self.metrics[metric_name].append({"value": value, "timestamp": time.time()})
+    def record_metric(self, metric_name: str, value: float)self.metrics[metric_name].append({"value": value, "timestamp": time.time()})
+    """メトリクス記録"""
 
         # 履歴サイズ制限
         if len(self.metrics[metric_name]) > 1000:

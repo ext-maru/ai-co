@@ -99,7 +99,7 @@ class ContainerCrafter(DwarfServant):
     EldersServiceLegacy準拠・Iron Will品質基準対応
     """
 
-    def __init__(self):
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         """初期化メソッド"""
         capabilities = [
             ServantCapability(
@@ -184,11 +184,17 @@ class ContainerCrafter(DwarfServant):
         # Docker client simulation
         self.docker_available = False
         self.k8s_available = False
+        
+        # Apply configuration if provided
+        self.config = config or {}
+        self.is_initialized = False
 
     async def initialize(self) -> bool:
         """Initialize the ContainerCrafter servant"""
         try:
-            await super().initialize()
+            # Initialize base servant if method exists
+            if hasattr(super(), 'initialize'):
+                await super().initialize()
 
             # Check Docker availability
             self.docker_available = await self._check_docker_availability()
@@ -200,7 +206,8 @@ class ContainerCrafter(DwarfServant):
                 f"🐳 ContainerCrafter initialized - "
                 f"Docker: {self.docker_available}, K8s: {self.k8s_available}"
             )
-
+            
+            self.is_initialized = True
             return True
 
         except Exception as e:
@@ -208,15 +215,15 @@ class ContainerCrafter(DwarfServant):
             self.logger.error(f"❌ Failed to initialize ContainerCrafter: {e}")
             return False
 
-    def get_capabilities(self) -> List[ServantCapability]:
+    def get_capabilities(self) -> List[str]:
         """Get ContainerCrafter capabilities"""
         return [
-            ServantCapability.CONTAINER_BUILD,
-            ServantCapability.IMAGE_OPTIMIZATION,
-            ServantCapability.REGISTRY_MANAGEMENT,
-            ServantCapability.ORCHESTRATION_DEPLOYMENT,
-            ServantCapability.SCALING_MANAGEMENT,
-            ServantCapability.HEALTH_MONITORING,
+            "container_build",
+            "image_optimization", 
+            "registry_management",
+            "orchestration_deployment",
+            "scaling_management",
+            "health_monitoring",
         ]
 
     def supports_platform(self, platform: str) -> bool:
@@ -625,7 +632,7 @@ class ContainerCrafter(DwarfServant):
             return {
                 "success": True,
                 "load_balancer_name": lb_name,
-                "load_balancer_dns": f"{lb_name}-1234567890.us-east-1.elb.amazonaws.com",
+                "load_balancer_dns": f"{lb_name}-1234567890.0us-east-1.0elb.amazonaws.com",
                 "target_groups": target_groups,
                 "health_checks_configured": True,
             }
@@ -1144,7 +1151,7 @@ class ContainerCrafter(DwarfServant):
         return {
             "knowledge_sage": {
                 "recommendation": "Use distroless or alpine base images",
-                "references": ["best_practices_2025.md"],
+                "references": ["best_practices_2025.0md"],
             },
             "task_sage": {"priority": "high", "estimated_time": "2 hours"},
             "incident_sage": {

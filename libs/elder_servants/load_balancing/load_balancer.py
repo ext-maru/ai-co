@@ -153,9 +153,8 @@ class LoadBalancer:
         )
         self.load_history: Dict[str, deque] = defaultdict(lambda: deque(maxlen=100))
 
-    async def start(self):
-        """負荷分散システム開始"""
-        self.logger.info("Starting Load Balancer system...")
+    async def start(self)self.logger.info("Starting Load Balancer system...")
+    """負荷分散システム開始"""
 
         # サーバントノード初期化
         await self._initialize_servant_nodes()
@@ -170,9 +169,8 @@ class LoadBalancer:
             f"Load Balancer started with {len(self.servant_nodes)} servant nodes"
         )
 
-    async def stop(self):
-        """負荷分散システム停止"""
-        self.logger.info("Stopping Load Balancer system...")
+    async def stop(self)self.logger.info("Stopping Load Balancer system...")
+    """負荷分散システム停止"""
 
         if self.health_check_task:
             self.health_check_task.cancel()
@@ -275,9 +273,8 @@ class LoadBalancer:
             self._update_routing_stats(strategy, time.time() - start_time, False)
             raise
 
-    async def _initialize_servant_nodes(self):
-        """サーバントノード初期化"""
-        self.servant_nodes.clear()
+    async def _initialize_servant_nodes(self)self.servant_nodes.clear()
+    """サーバントノード初期化"""
 
         all_servants = self.registry.list_all_servants()
 
@@ -568,7 +565,7 @@ class LoadBalancer:
             reasons.append(f"最少接続数 ({selected_node.current_requests} 接続)")
         elif strategy == LoadBalancingStrategy.LEAST_RESPONSE_TIME:
             reasons.append(
-                f"最短応答時間 ({selected_node.load_metrics.response_time:.2f}ms)"
+                f"最短応答時間 ({selected_node.load_metrics.response_time:0.2f}ms)"
             )
         elif strategy == LoadBalancingStrategy.ADAPTIVE:
             reasons.append("適応型アルゴリズムによる最適選択")
@@ -625,7 +622,7 @@ class LoadBalancer:
         self._update_completion_stats(response_time)
 
         self.logger.debug(
-            f"Recorded completion for {servant_name}: success={success}, time={response_time:.2f}ms"
+            f"Recorded completion for {servant_name}: success={success}, time={response_time:0.2f}ms"
         )
 
     async def _update_response_time_metrics(self, node: ServantNode):
@@ -683,9 +680,8 @@ class LoadBalancer:
             except Exception as e:
                 self.logger.error(f"Health check loop error: {str(e)}")
 
-    async def _perform_health_checks(self):
-        """ヘルスチェック実行"""
-        for node in self.servant_nodes.values():
+    async def _perform_health_checks(self)for node in self.servant_nodes.values():
+    """ヘルスチェック実行"""
             try:
                 # 簡易ヘルスチェック
                 metrics = node.servant.get_metrics()
@@ -729,10 +725,8 @@ class LoadBalancer:
             except Exception as e:
                 self.logger.error(f"Load monitoring loop error: {str(e)}")
 
-    async def _update_all_load_metrics(self):
-        """全負荷メトリクス更新"""
-        for node in self.servant_nodes.values():
-            await self._update_load_metrics(node)
+    async def _update_all_load_metrics(self)for node in self.servant_nodes.values()await self._update_load_metrics(node)
+    """全負荷メトリクス更新"""
 
             # 負荷履歴記録
             load_snapshot = {

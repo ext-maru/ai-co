@@ -19,8 +19,8 @@ from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from libs.auto_issue_processor import AutoIssueProcessor, ProcessorConfig
-from libs.auto_issue_processor.utils import ProcessLock
+from libs.optimized_auto_issue_processor import AutoIssueProcessor, ProcessorConfig
+# from libs.auto_issue_processor.utils import ProcessLock
 
 
 class ComprehensiveTest:
@@ -75,14 +75,14 @@ class ComprehensiveTest:
         test_name = "設定検証"
         print(f"\n⚙️ {test_name}")
         
-        # 1. 正常な設定
+        # 1.0 正常な設定
         config = ProcessorConfig()
         if config.validate():
             self.results["passed"].append(f"✅ {test_name}: 正常設定の検証OK")
         else:
             self.results["failed"].append(f"❌ {test_name}: 正常設定が無効判定")
         
-        # 2. 異常な設定
+        # 2.0 異常な設定
         invalid_config = ProcessorConfig()
         invalid_config.processing.max_issues_per_run = 0
         
@@ -159,9 +159,9 @@ class ComprehensiveTest:
         gc.collect()
         
         if memory_per_instance < 0.5:  # 0.5MB以下
-            self.results["passed"].append(f"✅ {test_name}: {memory_per_instance:.2f}MB/インスタンス")
+            self.results["passed"].append(f"✅ {test_name}: {memory_per_instance:0.2f}MB/インスタンス")
         else:
-            self.results["warnings"].append(f"⚠️ {test_name}: {memory_per_instance:.2f}MB/インスタンス（やや多い）")
+            self.results["warnings"].append(f"⚠️ {test_name}: {memory_per_instance:0.2f}MB/インスタンス（やや多い）")
     
     async def test_file_operations(self):
         """ファイル操作テスト"""
@@ -242,7 +242,7 @@ class ComprehensiveTest:
         test_name = "基本セキュリティ"
         print(f"\n🔐 {test_name}")
         
-        # 1. トークンの露出チェック
+        # 1.0 トークンの露出チェック
         config = ProcessorConfig()
         config.github.token = "ghp_secret_token_123"
         
@@ -255,7 +255,7 @@ class ComprehensiveTest:
         else:
             self.results["failed"].append(f"❌ {test_name}: トークンが露出")
         
-        # 2. パスインジェクション基礎チェック
+        # 2.0 パスインジェクション基礎チェック
         dangerous_paths = ["../../../etc/passwd", "..\\..\\windows"]
         
         for path in dangerous_paths:

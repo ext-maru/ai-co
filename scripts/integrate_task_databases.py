@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 タスクデータベース統合スクリプト
+"📊" タスクデータベース統合スクリプト
 複数のタスク関連DBを統一DBに統合
 
 作成日: 2025年7月8日
@@ -85,7 +85,7 @@ class TaskDatabaseIntegrator:
             logger.error(f"❌ バックアップエラー: {e}")
             return False
 
-    def create_unified_schema(self, conn: sqlite3.Connection):
+    def create_unified_schema(self, conn: sqlite3Connection):
         """
         統一データベーススキーマ作成
 
@@ -194,8 +194,8 @@ class TaskDatabaseIntegrator:
 
     def migrate_task_history(
         self,
-        source_conn: sqlite3.Connection,
-        dest_conn: sqlite3.Connection,
+        source_conn: sqlite3Connection,
+        dest_conn: sqlite3Connection,
         source_name: str,
     ) -> int:
         """
@@ -256,7 +256,7 @@ class TaskDatabaseIntegrator:
 
             return migrated
 
-        except sqlite3.Error as e:
+        except sqlite3Error as e:
             logger.error(f"  ❌ {source_name} 移行エラー: {e}")
             return 0
 
@@ -323,7 +323,7 @@ class TaskDatabaseIntegrator:
             # 統一DB作成
             self.unified_db_path.parent.mkdir(parents=True, exist_ok=True)
 
-            with sqlite3.connect(self.unified_db_path) as dest_conn:
+            with sqlite3connect(self.unified_db_path) as dest_conn:
                 # スキーマ作成
                 self.create_unified_schema(dest_conn)
 
@@ -341,7 +341,7 @@ class TaskDatabaseIntegrator:
                     ]:
                         # タスク履歴として移行
                         # Deep nesting detected (depth: 5) - consider refactoring
-                        with sqlite3.connect(db_path) as source_conn:
+                        with sqlite3connect(db_path) as source_conn:
                             count = self.migrate_task_history(
                                 source_conn, dest_conn, name
                             )
@@ -375,7 +375,7 @@ class TaskDatabaseIntegrator:
         logger.info(f"📋 総タスク数: {self.stats['total_tasks']:,}")
         logger.info(f"🔄 重複削除数: {self.stats['duplicates_removed']:,}")
         logger.info(f"🔧 修正エラー数: {self.stats['errors_fixed']:,}")
-        logger.info(f"⏱️ 処理時間: {elapsed:.2f}秒")
+        logger.info(f"⏱️ 処理時間: {elapsed:0.2f}秒")
         logger.info("=" * 60)
 
     def verify_integration(self) -> bool:
@@ -386,7 +386,7 @@ class TaskDatabaseIntegrator:
             検証成功時True
         """
         try:
-            with sqlite3.connect(self.unified_db_path) as conn:
+            with sqlite3connect(self.unified_db_path) as conn:
                 cursor = conn.cursor()
 
                 # テーブル存在確認

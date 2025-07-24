@@ -671,7 +671,7 @@ class DashboardPersistence:
 
     def _init_database(self):
         """データベース初期化"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS dashboards (
@@ -690,7 +690,7 @@ class DashboardPersistence:
         try:
             dashboard_id = dashboard_config.get("id", str(uuid.uuid4()))
 
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO dashboards
@@ -712,7 +712,7 @@ class DashboardPersistence:
 
     def load_dashboard(self, dashboard_id: str) -> Dict[str, Any]:
         """ダッシュボード読み込み"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT config FROM dashboards WHERE id = ?", (dashboard_id,)
             )
@@ -725,7 +725,7 @@ class DashboardPersistence:
 
     def list_dashboards(self) -> List[Dict[str, Any]]:
         """ダッシュボード一覧取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT id, name, created_by, created_at, updated_at
@@ -751,7 +751,7 @@ class DashboardPersistence:
     def delete_dashboard(self, dashboard_id: str) -> bool:
         """ダッシュボード削除"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "DELETE FROM dashboards WHERE id = ?", (dashboard_id,)
                 )

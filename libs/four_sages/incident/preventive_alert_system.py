@@ -105,9 +105,8 @@ class PreventiveAlert:
 class PreventiveAlertSystem(EldersServiceLegacy):
     """予防的アラートシステム"""
 
-    def __init__(self, incident_sage:
+    def __init__(self, incident_sage: IncidentSage):
         """初期化メソッド"""
-    IncidentSage):
         super().__init__(name="PreventiveAlertSystem", service_type="monitoring")
         self.incident_sage = incident_sage
         self.alert_rules: Dict[str, Dict[str, Any]] = {}
@@ -379,7 +378,7 @@ class PreventiveAlertSystem(EldersServiceLegacy):
                 )
 
                 # 有意な上昇トレンド検出
-                if p_value < 0.05 and slope > 0:
+                if p_value < 0.5 and slope > 0:
                     # 現在の増加率を計算
                     current_rate = slope * 60  # 分あたりの増加
 
@@ -437,11 +436,11 @@ class PreventiveAlertSystem(EldersServiceLegacy):
         current_value = context.get("current_value", 0)
 
         messages = {
-            "quality_degradation": f"Quality score degraded to {current_value:.2f}",
-            "failure_rate": f"Failure rate increased to {current_value:.2%}",
-            "response_time": f"Response time increased to {current_value:.2f}s",
-            "error_spike": f"Error rate spiked to {current_value:.0f} errors/min",
-            "resource_exhaustion": f"Resource usage at {current_value:.1%}",
+            "quality_degradation": f"Quality score degraded to {current_value:0.2f}",
+            "failure_rate": f"Failure rate increased to {current_value:0.2%}",
+            "response_time": f"Response time increased to {current_value:0.2f}s",
+            "error_spike": f"Error rate spiked to {current_value:0.f} errors/min",
+            "resource_exhaustion": f"Resource usage at {current_value:0.1%}",
         }
 
         base_message = messages.get(alert_type, f"{metric} alert triggered")
@@ -450,7 +449,7 @@ class PreventiveAlertSystem(EldersServiceLegacy):
             predicted = context.get("predicted_value", 0)
             minutes = context.get("time_to_threshold", 0)
             base_message = f"{metric} trending up, will reach critical in {minutes} minutes (predicted: " \
-                "{predicted:.2f})"
+                "{predicted:0.2f})"
 
         return f"[{severity.value.upper()}] {base_message}"
 

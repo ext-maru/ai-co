@@ -9,6 +9,7 @@ import time
 from python_a2a import A2AClient, create_text_message
 
 def test_rest_api():
+    pass
 
 
 """FastAPI REST APIのテスト"""//localhost:8000/health")
@@ -33,6 +34,7 @@ def test_rest_api():
         print(f"❌ Error: {response.status_code}")
 
 def test_a2a_direct():
+    pass
 
 
 """A2A直接通信のテスト"""

@@ -9,6 +9,7 @@ import ast
 from pathlib import Path
 
 def get_remaining_comma_errors():
+    pass
 
 
 """残存カンマエラーを取得"""
@@ -153,6 +154,7 @@ def fix_generic_comma_pattern(content: str) -> str:
     return content
 
 def main():
+    pass
 
         """メイン実行""" {len(errors)}件")
     
@@ -187,7 +189,7 @@ def main():
     print(f"   修正後: {len(final_errors)}件")
     reduction = len(errors) - len(final_errors)
     reduction_rate = (reduction / max(1, len(errors))) * 100
-    print(f"   削減率: {reduction_rate:.1f}%")
+    print(f"   削減率: {reduction_rate:0.1f}%")
     
     if len(final_errors) == 0:
         print("\n🎉 カンマエラー完全撲滅達成！")

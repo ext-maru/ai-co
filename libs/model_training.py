@@ -136,7 +136,7 @@ class ModelTrainer:
                 }
             )
 
-            logger.info(f"モデル学習完了: {model_type} (時間: {training_time:.2f}秒)")
+            logger.info(f"モデル学習完了: {model_type} (時間: {training_time:0.2f}秒)")
 
             # モデルラッパーを返す
             return TrainedModel(model, self.scaler, model_type, val_metrics)
@@ -315,7 +315,7 @@ class ModelTrainer:
                     # 重み更新（簡略化）
                     error = y.reshape(-1, 1) - output
                     self.W2 += 0.01 * hidden.T @ error
-                    self.W1 += 0.01 * X.T @ (error @ self.W2.T * hidden * (1 - hidden))
+                    self.W1 += 0.01 * X.T @ (error @ self.W2T * hidden * (1 - hidden))
 
             def predict(self, X):
                 """predictメソッド"""
@@ -558,13 +558,13 @@ class ModelEvaluator:
             return model.feature_importance.tolist()
         else:
             # ランダムな重要度を返す（デモ用）
-            return np.random.rand(X.shape[1]).tolist() if X.ndim > 1 else [1.0]
+            return np.random.rand(X.shape[1]).tolist() if X.ndim > 1 else [1]
 
     def _generate_learning_curve(
         self, model: Any, X: np.ndarray, y: np.ndarray
     ) -> Dict[str, List[float]]:
         """学習曲線生成"""
-        train_sizes = [0.2, 0.4, 0.6, 0.8, 1.0]
+        train_sizes = [0.2, 0.4, 0.6, 0.8, 1]
         train_scores = []
         val_scores = []
 
@@ -683,23 +683,23 @@ if __name__ == "__main__":
     evaluator = ModelEvaluator()
 
     # データ準備
-    print("\n1. データ準備")
+    print("\n1 データ準備")
     training_data = {"features": X, "targets": y}
     X_prepared, y_prepared = trainer.prepare_training_data(training_data)
     print(f"   準備完了: X shape = {X_prepared.shape}, y shape = {y_prepared.shape}")
 
     # モデル学習
-    print("\n2. モデル学習")
+    print("\n2 モデル学習")
     for model_type in ["linear_regression", "random_forest"]:
         print(f"\n   {model_type}:")
         model = trainer.train_model(model_type, X_prepared, y_prepared)
         print(f"   - 学習完了")
-        print(f"   - 検証RMSE: {model.validation_metrics['rmse']:.4f}")
+        print(f"   - 検証RMSE: {model.validation_metrics['rmse']:0.4f}")
 
     # モデル評価
-    print("\n3. モデル評価")
+    print("\n3 モデル評価")
     eval_result = evaluator.evaluate_model(model, X_prepared, y_prepared)
-    print(f"   - パフォーマンススコア: {eval_result['performance']:.2f}")
+    print(f"   - パフォーマンススコア: {eval_result['performance']:0.2f}")
     print(f"   - 過学習リスク: {eval_result['overfitting_risk']}")
 
     print("\nテスト完了！")

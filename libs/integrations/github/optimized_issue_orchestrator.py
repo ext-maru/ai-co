@@ -377,7 +377,7 @@ class OptimizedIssueOrchestrator:
                         issue_number, result.get("pr_number"), result.get("pr_url")
                     )
 
-                logger.info(f"✅ イシュー処理成功: #{issue_number} ({processing_time:.2f}s)")
+                logger.info(f"✅ イシュー処理成功: #{issue_number} ({processing_time:0.2f}s)")
 
             else:
                 completion_result = CompletionResult.FAILED
@@ -422,11 +422,10 @@ class OptimizedIssueOrchestrator:
             if issue_number in self.active_tasks:
                 del self.active_tasks[issue_number]
 
-    async def execute_processing_cycle(self) -> Dict[str, Any]:
-        """処理サイクルを実行"""
-        cycle_start = time.time()
+    async def execute_processing_cycle(self) -> Dict[str, Any]cycle_start = time.time()
+    """処理サイクルを実行"""
         logger.info("🔄 処理サイクル開始")
-
+:
         try:
             # イシュースキャン
             new_issues = await self.scan_and_queue_issues()
@@ -435,8 +434,8 @@ class OptimizedIssueOrchestrator:
             resource_status, resource_metrics = self.get_resource_status()
             logger.info(
                 (
-                    f"f"💻 リソース状況: {resource_status.value} (CPU: {resource_metrics.cpu_percent:.1f}%, Memory: "
-                    f"{resource_metrics.memory_percent:.1f}%)""
+                    f"f"💻 リソース状況: {resource_status.value} (CPU: {resource_metrics.cpu_percent:0.1f}%, Memory: "
+                    f"{resource_metrics.memory_percent:0.1f}%)""
                 )
             )
 
@@ -537,23 +536,22 @@ class OptimizedIssueOrchestrator:
 
         logger.info(
             f"""
-📊 処理統計サマリー:
+"📊" 処理統計サマリー:
    - 稼働時間: {uptime}
    - 総処理数: {stats['total_processed']}
    - 成功数: {stats['successful_completions']}
    - 失敗数: {stats['failed_attempts']}
-   - 成功率: {(stats['successful_completions'] / max(stats['total_processed'], 1)) * 100:.1f}%
-   - 平均処理時間: {stats['average_processing_time']:.2f}秒
+   - 成功率: {(stats['successful_completions'] / max(stats['total_processed'], 1)) * 100:0.1f}%
+   - 平均処理時間: {stats['average_processing_time']:0.2f}秒
    - キュー数: {len(self.task_queue)}
    - アクティブ: {len(self.active_tasks)}
         """
         )
 
-    def get_status_report(self) -> Dict[str, Any]:
-        """ステータスレポートを取得"""
-        resource_status, resource_metrics = self.get_resource_status()
+    def get_status_report(self) -> Dict[str, Any]resource_status, resource_metrics = self.get_resource_status()
+    """ステータスレポートを取得"""
 
-        return {
+        return {:
             "orchestrator_status": {
                 "active_tasks": len(self.active_tasks),
                 "queued_tasks": len(self.task_queue),
@@ -573,9 +571,8 @@ class OptimizedIssueOrchestrator:
 
 
 # メイン実行関数
-async def main():
-    """メイン実行関数"""
-    logger.info("🎯 Optimized Issue Orchestrator テスト開始")
+async def main()logger.info("🎯 Optimized Issue Orchestrator テスト開始")
+"""メイン実行関数"""
 
     orchestrator = OptimizedIssueOrchestrator(max_concurrent_tasks=2)
 

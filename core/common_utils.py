@@ -177,9 +177,9 @@ def format_filesize(size_bytes: int) -> str:
     """
     for unit in ["B", "KB", "MB", "GB", "TB"]:
         if size_bytes < 1024.0:
-            return f"{size_bytes:.2f} {unit}"
+            return f"{size_bytes:0.2f} {unit}"
         size_bytes /= 1024.0
-    return f"{size_bytes:.2f} PB"
+    return f"{size_bytes:0.2f} PB"
 
 
 def format_duration(seconds: float) -> str:
@@ -193,16 +193,16 @@ def format_duration(seconds: float) -> str:
         フォーマットされた時間
     """
     if seconds < 60:
-        return f"{seconds:.1f}秒"
+        return f"{seconds:0.1f}秒"
     elif seconds < 3600:
         minutes = seconds / 60
-        return f"{minutes:.1f}分"
+        return f"{minutes:0.1f}分"
     elif seconds < 86400:
         hours = seconds / 3600
-        return f"{hours:.1f}時間"
+        return f"{hours:0.1f}時間"
     else:
         days = seconds / 86400
-        return f"{days:.1f}日"
+        return f"{days:0.1f}日"
 
 
 def truncate_text(text: str, max_length: int = 100, suffix: str = "...") -> str:

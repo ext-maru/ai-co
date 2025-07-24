@@ -451,6 +451,7 @@ def manage_tasks():
         # 連携不足のシナリオをテスト
         with patch.object(self.overseer.consultation_tracker, 'track_sage_consultations') as mock_consultation:
             with patch.object(self.overseer.activity_analyzer, 'analyze_sage_activity_quality') as mock_activity:
+                pass
                 
                 # 連携不足のレスポンス設定
                 mock_consultation.return_value = {

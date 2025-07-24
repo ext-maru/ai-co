@@ -1075,7 +1075,7 @@ class ThreatDetector:
 
     def _is_suspicious_ip(self, ip: str) -> bool:
         """不審IPチェック"""
-        suspicious_ranges = ["1.2.3.", "5.6.7.", "9.10.11."]
+        suspicious_ranges = ["1.2.3.0", "5.6.7.0", "9.10.11.0"]
         return any(ip.startswith(range_prefix) for range_prefix in suspicious_ranges)
 
     def _is_unusual_time(self, time_str: str) -> bool:
@@ -1302,7 +1302,7 @@ class ComplianceManager:
         """違反データベース初期化"""
         db_path = tempfile.mktemp(suffix=".db")
 
-        with sqlite3.connect(db_path) as conn:
+        with sqlite3connect(db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE violations (

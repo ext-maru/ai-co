@@ -97,7 +97,7 @@ class ErrorIntelligenceManager(BaseManager):
         """エラーパターンデータベースの初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS error_patterns (
@@ -142,7 +142,7 @@ class ErrorIntelligenceManager(BaseManager):
 
     def _load_patterns(self):
         """既知のパターンをキャッシュに読み込む"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT error_type, category, severity, fix_strategy FROM error_patterns"
             )
@@ -308,7 +308,7 @@ class ErrorIntelligenceManager(BaseManager):
 
     def _record_error_pattern(self, error_text: str, analysis: Dict):
         """エラーパターンをデータベースに記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 既存のパターンを確認
             cursor = conn.execute(
                 "SELECT id, occurrence_count FROM error_patterns WHERE error_type = ?",
@@ -340,7 +340,7 @@ class ErrorIntelligenceManager(BaseManager):
     def _check_learned_patterns(self, error_text: str) -> Optional[Dict]:
         """学習済みパターンから類似のエラーを検索"""
         # 簡易的な類似度チェック（将来的にはより高度な実装）
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """SELECT error_type, category, severity, fix_strategy
                 FROM error_patterns
@@ -365,7 +365,7 @@ class ErrorIntelligenceManager(BaseManager):
 
     def get_error_statistics(self) -> Dict:
         """エラー統計情報を取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             stats = {
                 "total_errors": 0,
                 "by_category": {},
@@ -411,7 +411,7 @@ class ErrorIntelligenceManager(BaseManager):
 
     def record_fix_result(self, pattern_id: int, command: str, success: bool):
         """修正結果を記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 "INSERT INTO error_fixes (pattern_id, fix_command, success) VALUES (?, ?, ?)",
                 (pattern_id, command, success),

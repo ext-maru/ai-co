@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 プロジェクト品質レポーター
+"📊" プロジェクト品質レポーター
 エルダーズギルド品質基準に基づく総合レポート生成
 
 HTML/JSON/Markdown形式での出力対応
@@ -443,7 +443,7 @@ class ProjectQualityReporter:
                     "category": "testing",
                     "priority": "high",
                     "title": "テストカバレッジ向上",
-                    "description": f"現在のカバレッジ {coverage:.1f}% を80%以上に向上させることを推奨します",
+                    "description": f"現在のカバレッジ {coverage:0.1f}% を80%以上に向上させることを推奨します",
                     "actions": [
                         "未テストのクリティカルパスを特定",
                         "ユニットテストの追加",
@@ -517,10 +517,10 @@ class ProjectQualityReporter:
 
 | メトリクス | スコア |
 |-----------|--------|
-| テストカバレッジ | {data['quality_metrics']['test_coverage']:.1f}% |
+| テストカバレッジ | {data['quality_metrics']['test_coverage']:0.1f}% |
 | コード品質 | {data['quality_metrics']['code_quality_score']}/100 |
-| ドキュメント | {data['quality_metrics']['documentation_coverage']:.1f}% |
-| 型カバレッジ | {data['quality_metrics']['type_coverage']:.1f}% |
+| ドキュメント | {data['quality_metrics']['documentation_coverage']:0.1f}% |
+| 型カバレッジ | {data['quality_metrics']['type_coverage']:0.1f}% |
 | セキュリティ | {data['quality_metrics']['security_score']}/100 |
 | パフォーマンス | {data['quality_metrics']['performance_score']}/100 |
 
@@ -530,7 +530,7 @@ class ProjectQualityReporter:
 - **成功**: {data['test_results']['passed']} ✅
 - **失敗**: {data['test_results']['failed']} ❌
 - **スキップ**: {data['test_results']['skipped']} ⏭️
-- **実行時間**: {data['test_results']['duration_seconds']:.2f}秒
+- **実行時間**: {data['test_results']['duration_seconds']:0.2f}秒
 
 ## 🔄 PDCA状況
 
@@ -634,17 +634,17 @@ class ProjectQualityReporter:
 </head>
 <body>
     <div class="header">
-        <h1>📊 プロジェクト品質レポート</h1>
+        <h1>"📊" プロジェクト品質レポート</h1>
         <h2>{data['project_name']}</h2>
         <p>生成日時: {data['generated_at']}</p>
     </div>
 
     <div class="metric-card">
-        <h3>📈 品質スコアサマリー</h3>
+        <h3>"📈" 品質スコアサマリー</h3>
         <div class="metric-grid">
             <div>
                 <div class="metric-label">テストカバレッジ</div>
-                <div class="metric-value">{data['quality_metrics']['test_coverage']:.1f}%</div>
+                <div class="metric-value">{data['quality_metrics']['test_coverage']:0.1f}%</div>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: {data['quality_metrics']['test_coverage']}%"></div>
                 </div>
@@ -738,7 +738,7 @@ class ProjectQualityReporter:
         table.add_column("推奨事項", style="red")
 
         for project in all_projects:
-            coverage = f"{project['quality_metrics']['test_coverage']:.1f}%"
+            coverage = f"{project['quality_metrics']['test_coverage']:0.1f}%"
             quality = f"{project['quality_metrics']['code_quality_score']}/100"
             compliance = f"{project['elders_compliance']['compliance_score']}%"
             recommendations = str(len(project["recommendations"]))

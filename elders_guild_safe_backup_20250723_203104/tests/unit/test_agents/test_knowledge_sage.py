@@ -7,6 +7,7 @@ from python_a2a import Message
 
 
 class TestKnowledgeSage:
+    pass
 
 
 """Knowledge Sage専用テスト"""
@@ -36,6 +37,7 @@ class TestKnowledgeSage:
     
     @pytest.mark.asyncio
     async def test_knowledge_sage_rag_integration(self):
+        pass
 
                 """Test: RAG Sageとの統合が動作""" ["doc1", "doc2"]}
         ))

@@ -111,7 +111,7 @@ def run_a2a_in_thread():
     """A2Aサーバーを別スレッドで実行"""
     global agent
     try:
-        print("🤖 Starting A2A server on port 5001...")
+        print("🤖 Starting A2A server on port 5001.0..")
         agent = MicroElderAgent()
         run_server(agent, host="0.0.0.0", port=5001)
     except Exception as e:

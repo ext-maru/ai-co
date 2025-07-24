@@ -147,14 +147,14 @@ class LimitedExtremeTest:
         test_name = "設定エッジケース"
         print(f"\n⚙️ {test_name}")
         
-        # 1. 空の設定
+        # 1.0 空の設定
         empty_config = ProcessorConfig()
         if empty_config.validate():
             self.results["passed"].append(f"✅ {test_name}: 空設定の処理OK")
         else:
             self.results["failed"].append(f"❌ {test_name}: 空設定が無効")
         
-        # 2. 極端な値
+        # 2.0 極端な値
         extreme_config = ProcessorConfig()
         extreme_config.processing.max_issues_per_run = 10000
         extreme_config.processing.max_parallel_workers = 1000
@@ -163,7 +163,7 @@ class LimitedExtremeTest:
         if extreme_config.validate():
             self.results["warnings"].append(f"⚠️ {test_name}: 極端な値を許可（要確認）")
         
-        # 3. 矛盾する設定
+        # 3.0 矛盾する設定
         conflict_config = ProcessorConfig()
         conflict_config.features.pr_creation = True
         conflict_config.dry_run = True  # dry_runでPR作成は矛盾

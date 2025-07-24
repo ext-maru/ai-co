@@ -60,7 +60,7 @@ def run_coverage_test():
 
         print("\n📊 Coverage Results:")
         print("=" * 60)
-        print(f"Overall Coverage: {total_coverage:.1f}%")
+        print(f"Overall Coverage: {total_coverage:0.1f}%")
 
         # Show key module coverage
         files = coverage_data.get("files", {})
@@ -77,14 +77,14 @@ def run_coverage_test():
         for module in key_modules:
             if module in files:
                 module_cov = files[module]["summary"]["percent_covered"]
-                print(f"  {module}: {module_cov:.1f}%")
+                print(f"  {module}: {module_cov:0.1f}%")
 
         print("\n📈 Coverage Analysis:")
         if total_coverage >= 30:
-            print(f"✅ SUCCESS! Target of 30% achieved: {total_coverage:.1f}%")
+            print(f"✅ SUCCESS! Target of 30% achieved: {total_coverage:0.1f}%")
         else:
-            print(f"⚠️  Current: {total_coverage:.1f}% (Target: 30%)")
-            print(f"   Need {30 - total_coverage:.1f}% more coverage")
+            print(f"⚠️  Current: {total_coverage:0.1f}% (Target: 30%)")
+            print(f"   Need {30 - total_coverage:0.1f}% more coverage")
 
     else:
         # Fallback to parsing terminal output

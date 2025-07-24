@@ -35,9 +35,8 @@ class Phase3BenchmarkSuite:
             'timestamp': datetime.now().isoformat()
         }
     
-    async def run_all_benchmarks(self):
-        """Run all Phase 3 benchmarks"""
-        print("🚀 Starting Phase 3 Integration Benchmark")
+    async def run_all_benchmarks(self)print("🚀 Starting Phase 3 Integration Benchmark")
+    """Run all Phase 3 benchmarks"""
         print("=" * 60)
         
         # Component benchmarks
@@ -59,9 +58,8 @@ class Phase3BenchmarkSuite:
         # Generate report
         self.generate_report()
     
-    async def benchmark_memory_stream_optimizer(self):
-        """Benchmark memory stream optimizer"""
-        print("\n📊 Testing Memory Stream Optimizer...")
+    async def benchmark_memory_stream_optimizer(self)print("\n📊 Testing Memory Stream Optimizer...")
+    """Benchmark memory stream optimizer"""
         
         optimizer = MemoryStreamOptimizer(
             chunk_size=4096,
@@ -125,12 +123,11 @@ class Phase3BenchmarkSuite:
         self.results['phase3_components']['memory_stream_optimizer'] = results
         
         best_compression = min(results['compression_ratios'].values(), key=lambda x: x['ratio'])
-        print(f"✅ Memory Optimizer: {best_compression['savings_percent']:.1f}% compression, "
-              f"{results['throughput']:.1f} items/sec")
+        print(f"✅ Memory Optimizer: {best_compression['savings_percent']:0.1f}% compression, "
+              f"{results['throughput']:0.1f} items/sec")
     
-    async def benchmark_connection_pool_optimizer(self):
-        """Benchmark connection pool optimizer"""
-        print("\n📊 Testing Connection Pool Optimizer...")
+    async def benchmark_connection_pool_optimizer(self)print("\n📊 Testing Connection Pool Optimizer...")
+    """Benchmark connection pool optimizer"""
         
         optimizer = ConnectionPoolOptimizer(
             max_connections=20,
@@ -194,12 +191,11 @@ class Phase3BenchmarkSuite:
         
         self.results['phase3_components']['connection_pool_optimizer'] = results
         
-        print(f"✅ Connection Optimizer: {results['connection_efficiency']['requests_per_second']:.1f} req/sec, "
-              f"{results['concurrent_performance']['speedup_factor']:.1f}x speedup")
+        print(f"✅ Connection Optimizer: {results['connection_efficiency']['requests_per_second']:0.1f} req/sec, "
+              f"{results['concurrent_performance']['speedup_factor']:0.1f}x speedup")
     
-    async def benchmark_phase3_integration(self):
-        """Benchmark integrated Phase 3 system"""
-        print("\n📊 Testing Phase 3 Integration...")
+    async def benchmark_phase3_integration(self)print("\n📊 Testing Phase 3 Integration...")
+    """Benchmark integrated Phase 3 system"""
         
         # Initialize all components
         memory_optimizer = MemoryStreamOptimizer(chunk_size=8192, enable_compression=True)
@@ -215,14 +211,12 @@ class Phase3BenchmarkSuite:
                 self.concurrency_ctrl = concurrency_ctrl
                 self.processed_count = 0
             
-            async def process_issues_optimized(self, issue_count: int):
-                """Process issues with all Phase 3 optimizations"""
-                start_time = time.time()
+            async def process_issues_optimized(self, issue_count: int)start_time = time.time()
+    """Process issues with all Phase 3 optimizations"""
                 
                 # Generate test issues
-                async def issue_generator():
-                    """issue_generatorメソッド"""
-                    for i in range(issue_count):
+                async def issue_generator()for i in range(issue_count):
+    """issue_generatorメソッド"""
                         issue_data = {
                             'id': i,
                             'title': f'Issue {i}',
@@ -290,12 +284,11 @@ class Phase3BenchmarkSuite:
         
         # Print summary
         for scale, data in results.items():
-            print(f"✅ {scale}: {data['throughput']:.1f} issues/sec, "
-                  f"{data['memory_savings_percent']:.1f}% memory saved")
+            print(f"✅ {scale}: {data['throughput']:0.1f} issues/sec, "
+                  f"{data['memory_savings_percent']:0.1f}% memory saved")
     
-    async def benchmark_memory_efficiency(self):
-        """Benchmark memory efficiency improvements"""
-        print("\n📊 Testing Memory Efficiency...")
+    async def benchmark_memory_efficiency(self)print("\n📊 Testing Memory Efficiency...")
+    """Benchmark memory efficiency improvements"""
         
         optimizer = MemoryStreamOptimizer(memory_limit_mb=50)
         
@@ -332,11 +325,10 @@ class Phase3BenchmarkSuite:
         self.results['memory_efficiency'] = memory_results
         
         avg_memory_increase = statistics.mean([r['memory_increase'] for r in memory_results.values()])
-        print(f"✅ Memory Efficiency: {avg_memory_increase:.1f}% avg memory increase")
+        print(f"✅ Memory Efficiency: {avg_memory_increase:0.1f}% avg memory increase")
     
-    async def benchmark_network_optimization(self):
-        """Benchmark network optimization features"""
-        print("\n📊 Testing Network Optimization...")
+    async def benchmark_network_optimization(self)print("\n📊 Testing Network Optimization...")
+    """Benchmark network optimization features"""
         
         optimizer = ConnectionPoolOptimizer(max_connections=15)
         
@@ -396,11 +388,10 @@ class Phase3BenchmarkSuite:
         self.results['network_optimization'] = network_results
         
         improvement = network_results['connection_warming']['improvement_percent']
-        print(f"✅ Network Optimization: {improvement:.1f}% faster with warm connections")
+        print(f"✅ Network Optimization: {improvement:0.1f}% faster with warm connections")
     
-    async def compare_with_previous_phases(self):
-        """Compare Phase 3 with previous phases"""
-        print("\n📊 Comparing with Previous Phases...")
+    async def compare_with_previous_phases(self)print("\n📊 Comparing with Previous Phases...")
+    """Compare Phase 3 with previous phases"""
         
         # Baseline performance (simulated from previous phases)
         baseline_performance = {
@@ -427,10 +418,10 @@ class Phase3BenchmarkSuite:
         
         self.results['comparison_with_phase2'] = comparison
         
-        print(f"✅ Phase 1: {comparison['phase1_baseline']:.1f} issues/sec")
-        print(f"✅ Phase 2: {comparison['phase2_optimized']:.1f} issues/sec")
-        print(f"✅ Phase 3: {comparison['phase3_integrated']:.1f} issues/sec")
-        print(f"✅ Total Improvement: {comparison['improvement_over_phase1']:.1f}%")
+        print(f"✅ Phase 1: {comparison['phase1_baseline']:0.1f} issues/sec")
+        print(f"✅ Phase 2: {comparison['phase2_optimized']:0.1f} issues/sec")
+        print(f"✅ Phase 3: {comparison['phase3_integrated']:0.1f} issues/sec")
+        print(f"✅ Total Improvement: {comparison['improvement_over_phase1']:0.1f}%")
     
     def generate_report(self):
         """Generate comprehensive benchmark report"""
@@ -463,18 +454,18 @@ class Phase3BenchmarkSuite:
             mso = self.results['phase3_components']['memory_stream_optimizer']
             if 'compression_ratios' in mso and mso['compression_ratios']:
                 best_comp = min(mso['compression_ratios'].values(), key=lambda x: x['ratio'])
-                print(f"Memory Optimizer: {best_comp['savings_percent']:.1f}% compression savings")
+                print(f"Memory Optimizer: {best_comp['savings_percent']:0.1f}% compression savings")
         
         if 'connection_pool_optimizer' in self.results['phase3_components']:
             cpo = self.results['phase3_components']['connection_pool_optimizer']
             if 'concurrent_performance' in cpo:
                 speedup = cpo['concurrent_performance']['speedup_factor']
-                print(f"Connection Optimizer: {speedup:.1f}x concurrent speedup")
+                print(f"Connection Optimizer: {speedup:0.1f}x concurrent speedup")
         
         if 'comparison_with_phase2' in self.results:
             comp = self.results['comparison_with_phase2']
-            print(f"\nTotal Performance Gain: {comp['improvement_over_phase1']:.1f}% over Phase 1")
-            print(f"Phase 3 Target Achievement: {comp['target_achievement']:.1f}%")
+            print(f"\nTotal Performance Gain: {comp['improvement_over_phase1']:0.1f}% over Phase 1")
+            print(f"Phase 3 Target Achievement: {comp['target_achievement']:0.1f}%")
 
 
 async def async_generator(items):
@@ -483,9 +474,8 @@ async def async_generator(items):
         yield item
 
 
-async def main():
-    """Run Phase 3 benchmarks"""
-    benchmark = Phase3BenchmarkSuite()
+async def main()benchmark = Phase3BenchmarkSuite()
+"""Run Phase 3 benchmarks"""
     await benchmark.run_all_benchmarks()
 
 

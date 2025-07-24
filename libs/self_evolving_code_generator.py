@@ -327,31 +327,31 @@ class GeneticOperators:
 
         try:
             child1_code, child2_code = crossover_func(
-                parent1.code_snippet, parent2.code_snippet
+                parent1code_snippet, parent2code_snippet
             )
 
             # 子遺伝子作成
             child1 = CodeGene(
-                gene_id=f"cross_{parent1.gene_id}_{parent2.gene_id}_{int(time.time())}_1",
+                gene_id=f"cross_{parent1gene_id}_{parent2gene_id}_{int(time.time())}_1",
                 code_snippet=child1_code,
-                function_name=parent1.function_name,
-                gene_type=parent1.gene_type,
+                function_name=parent1function_name,
+                gene_type=parent1gene_type,
                 fitness_scores={},
-                generation=max(parent1.generation, parent2.generation) + 1,
-                parent_genes=[parent1.gene_id, parent2.gene_id],
+                generation=max(parent1generation, parent2generation) + 1,
+                parent_genes=[parent1gene_id, parent2gene_id],
                 mutation_history=[],
                 performance_metrics={},
                 created_at=datetime.now().isoformat(),
             )
 
             child2 = CodeGene(
-                gene_id=f"cross_{parent1.gene_id}_{parent2.gene_id}_{int(time.time())}_2",
+                gene_id=f"cross_{parent1gene_id}_{parent2gene_id}_{int(time.time())}_2",
                 code_snippet=child2_code,
-                function_name=parent2.function_name,
-                gene_type=parent2.gene_type,
+                function_name=parent2function_name,
+                gene_type=parent2gene_type,
                 fitness_scores={},
-                generation=max(parent1.generation, parent2.generation) + 1,
-                parent_genes=[parent1.gene_id, parent2.gene_id],
+                generation=max(parent1generation, parent2generation) + 1,
+                parent_genes=[parent1gene_id, parent2gene_id],
                 mutation_history=[],
                 performance_metrics={},
                 created_at=datetime.now().isoformat(),
@@ -526,12 +526,12 @@ class FitnessEvaluator:
                 metric.value: score for metric, score in scores.items()
             }
 
-            self.logger.info(f"📊 Fitness evaluated: {total_fitness:.3f}")
+            self.logger.info(f"📊 Fitness evaluated: {total_fitness:0.3f}")
             return total_fitness
 
         except Exception as e:
             self.logger.error(f"Fitness evaluation error: {e}")
-            return 0.0
+            return 0
 
     async def _evaluate_performance(self, gene: CodeGene) -> float:
         """性能評価"""
@@ -549,7 +549,7 @@ class FitnessEvaluator:
             execution_time = time.time() - start_time
 
             # 実行時間が短いほど高スコア
-            performance_score = max(0.0, 1.0 - execution_time * 10)
+            performance_score = max(0, 1 - execution_time * 10)
 
             return performance_score
 
@@ -587,7 +587,7 @@ class FitnessEvaluator:
         ):
             readability_score += 0.1
 
-        return max(0.0, min(1.0, readability_score))
+        return max(0, min(1, readability_score))
 
     def _evaluate_maintainability(self, gene: CodeGene) -> float:
         """保守性評価"""
@@ -622,7 +622,7 @@ class FitnessEvaluator:
         if '"""' in code or "'''" in code:
             maintainability_score += 0.1
 
-        return max(0.0, min(1.0, maintainability_score))
+        return max(0, min(1, maintainability_score))
 
     def _evaluate_memory_efficiency(self, gene: CodeGene) -> float:
         """メモリ効率評価"""
@@ -649,7 +649,7 @@ class FitnessEvaluator:
                 if int(match) > 10000:
                     memory_score -= 0.1
 
-        return max(0.0, min(1.0, memory_score))
+        return max(0, min(1, memory_score))
 
     def _evaluate_cpu_efficiency(self, gene: CodeGene) -> float:
         """CPU効率評価"""
@@ -677,7 +677,7 @@ class FitnessEvaluator:
         if "@lru_cache" in code or "@cache" in code:
             cpu_score += 0.2
 
-        return max(0.0, min(1.0, cpu_score))
+        return max(0, min(1, cpu_score))
 
     def _evaluate_complexity(self, gene: CodeGene) -> float:
         """複雑度評価（低いほど良い）"""
@@ -699,7 +699,7 @@ class FitnessEvaluator:
         complexity = sum(code.count(indicator) for indicator in complexity_indicators)
 
         # 複雑度が低いほど高スコア
-        complexity_score = max(0.0, 1.0 - complexity * 0.1)
+        complexity_score = max(0, 1 - complexity * 0.1)
 
         return complexity_score
 
@@ -718,7 +718,7 @@ class FitnessEvaluator:
         if "test_" in code or "def test" in code:
             test_score += 0.4
 
-        return min(1.0, test_score)
+        return min(1, test_score)
 
 
 class SelfEvolvingCodeGenerator:
@@ -737,7 +737,7 @@ class SelfEvolvingCodeGenerator:
         self.mutation_rate = 0.1
         self.crossover_rate = 0.8
         self.elite_ratio = 0.1
-        self.selection_pressure = 2.0
+        self.selection_pressure = 2
 
         # 進化履歴
         self.evolution_history: List[EvolutionResult] = []
@@ -838,7 +838,7 @@ class SelfEvolvingCodeGenerator:
 
         self.evolution_history.append(result)
 
-        self.logger.info(f"✅ Evolution completed: {result.best_fitness:.3f} fitness")
+        self.logger.info(f"✅ Evolution completed: {result.best_fitness:0.3f} fitness")
 
         return result
 
@@ -985,7 +985,7 @@ def {target_function}(data):
         ]
 
         if not fitness_values:
-            fitness_values = [0.0]
+            fitness_values = [0]
 
         # 多様性スコア計算
         diversity_score = self._calculate_diversity(population)
@@ -1003,7 +1003,7 @@ def {target_function}(data):
         )
 
         self.logger.info(
-            f"📊 Gen {generation}: Best={stats.best_fitness:.3f}, Avg={stats.average_fitness:.3f}"
+            f"📊 Gen {generation}: Best={stats.best_fitness:0.3f}, Avg={stats.average_fitness:0.3f}"
         )
 
         return stats
@@ -1011,7 +1011,7 @@ def {target_function}(data):
     def _calculate_diversity(self, population: List[CodeGene]) -> float:
         """個体群多様性計算"""
         if len(population) < 2:
-            return 0.0
+            return 0
 
         # コード類似度基づく多様性
         unique_codes = set(gene.code_snippet for gene in population)
@@ -1022,16 +1022,16 @@ def {target_function}(data):
     def _calculate_convergence_rate(self, fitness_values: List[float]) -> float:
         """収束率計算"""
         if not fitness_values:
-            return 0.0
+            return 0
 
         fitness_std = np.std(fitness_values)
         fitness_mean = np.mean(fitness_values)
 
         if fitness_mean == 0:
-            return 0.0
+            return 0
 
-        convergence_rate = 1.0 - (fitness_std / fitness_mean)
-        return max(0.0, convergence_rate)
+        convergence_rate = 1 - (fitness_std / fitness_mean)
+        return max(0, convergence_rate)
 
     def _check_convergence(self, fitness_history: List[float]) -> bool:
         """収束判定"""
@@ -1111,7 +1111,7 @@ def {target_function}(data):
         if stats.diversity_score < 0.3:
             self.selection_pressure = max(1.5, self.selection_pressure * 0.9)
         elif stats.diversity_score > 0.8:
-            self.selection_pressure = min(3.0, self.selection_pressure * 1.1)
+            self.selection_pressure = min(3, self.selection_pressure * 1.1)
 
     def _calculate_optimization_metrics(
         self, population: List[CodeGene]
@@ -1130,9 +1130,9 @@ def {target_function}(data):
             "fitness_variance": np.var(fitness_values),
             "population_diversity": self._calculate_diversity(population),
             "evolution_efficiency": max(fitness_values)
-            / max(1.0, np.mean(fitness_values)),
+            / max(1, np.mean(fitness_values)),
             "convergence_stability": (
-                1.0 - np.std(fitness_values[-10:]) if len(fitness_values) >= 10 else 0.0
+                1 - np.std(fitness_values[-10:]) if len(fitness_values) >= 10 else 0
             ),
         }
 
@@ -1192,9 +1192,9 @@ def {target_function}(data):
 
             with open(filepath, "w", encoding="utf-8") as f:
                 f.write(f"# Evolved code for {result.target_function}\n")
-                f.write(f"# Fitness: {result.best_fitness:.3f}\n")
+                f.write(f"# Fitness: {result.best_fitness:0.3f}\n")
                 f.write(f"# Generations: {result.generations}\n")
-                f.write(f"# Evolution time: {result.evolution_time:.2f}s\n\n")
+                f.write(f"# Evolution time: {result.evolution_time:0.2f}s\n\n")
                 f.write(result.evolved_code)
 
         self.logger.info(
@@ -1224,8 +1224,8 @@ async def demo_self_evolving_code_generator():
     print(f"\n📊 Evolution Results:")
     print(f"   Target Function: {result.target_function}")
     print(f"   Generations: {result.generations}")
-    print(f"   Best Fitness: {result.best_fitness:.3f}")
-    print(f"   Evolution Time: {result.evolution_time:.2f}s")
+    print(f"   Best Fitness: {result.best_fitness:0.3f}")
+    print(f"   Evolution Time: {result.evolution_time:0.2f}s")
     print(f"   Convergence Gen: {result.convergence_generation}")
 
     print(f"\n🧬 Evolved Code:")
@@ -1246,16 +1246,16 @@ async def demo_self_evolving_code_generator():
     print(f"\n📊 Parallel Evolution Results:")
     for i, result in enumerate(parallel_results):
         print(f"   Function {i+1}: {result.target_function}")
-        print(f"     Fitness: {result.best_fitness:.3f}")
+        print(f"     Fitness: {result.best_fitness:0.3f}")
         print(f"     Generations: {result.generations}")
-        print(f"     Time: {result.evolution_time:.2f}s")
+        print(f"     Time: {result.evolution_time:0.2f}s")
 
     # 進化サマリー
     print(f"\n📈 Evolution Summary:")
     summary = generator.get_evolution_summary()
     for key, value in summary.items():
         if isinstance(value, float):
-            print(f"   {key}: {value:.3f}")
+            print(f"   {key}: {value:0.3f}")
         else:
             print(f"   {key}: {value}")
 

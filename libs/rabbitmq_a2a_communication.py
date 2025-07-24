@@ -131,11 +131,10 @@ class RabbitMQA2AMessage:
             reply_to=data.get("reply_to"),
         )
 
-    def to_amqp_message(self, encryption_key: Optional[str] = None) -> Message:
-        """AMQP Messageに変換"""
-        message_data = self.to_dict()
+    def to_amqp_message(self, encryption_key: Optional[str] = None) -> Messagemessage_data = self.to_dict()
+    """AMQP Messageに変換"""
 
-        # 暗号化
+        # 暗号化:
         if encryption_key:
             fernet = Fernet(encryption_key.encode())
             payload_json = json.dumps(message_data["payload"])
@@ -195,9 +194,8 @@ class RabbitMQA2AMessage:
 class RabbitMQA2AClient:
     """RabbitMQ A2A通信クライアント"""
 
-    def __init__(self, agent_id:
+    def __init__(self, agent_id: str, use_encryption: bool = True):
         """初期化メソッド"""
-    str, use_encryption: bool = True):
         self.agent_id = agent_id
         self.use_encryption = use_encryption
 
@@ -339,10 +337,8 @@ class RabbitMQA2AClient:
 
         self._running = True
 
-        async def message_handler(message:
-            """message_handlerメソッド"""
-        aio_pika.IncomingMessage):
-            async with message.process():
+        async def message_handler(message: aio_pika.IncomingMessage)async with message.process():
+    """message_handlerメソッド"""
                 try:
                     # A2Aメッセージに復元
                     a2a_message = RabbitMQA2AMessage.from_amqp_message(
@@ -368,9 +364,8 @@ class RabbitMQA2AClient:
             await self.queue.cancel()
         logger.info(f"Stopped consuming messages for {self.agent_id}")
 
-    async def _handle_message(self, message: RabbitMQA2AMessage):
-        """メッセージハンドリング"""
-        handler = self._message_handlers.get(message.message_type)
+    async def _handle_message(self, message: RabbitMQA2AMessage)handler = self._message_handlers.get(message.message_type)
+    """メッセージハンドリング"""
 
         if handler:
             try:
@@ -392,15 +387,11 @@ class RabbitMQFourSagesA2A:
         for sage_id in self.SAGE_IDS:
             self.clients[sage_id] = RabbitMQA2AClient(sage_id)
 
-    async def connect_all(self):
-        """全賢者クライアントを接続"""
-        for client in self.clients.values():
-            await client.connect()
+    async def connect_all(self)for client in self.clients.values()await client.connect()
+    """全賢者クライアントを接続"""
 
-    async def disconnect_all(self):
-        """全賢者クライアントを切断"""
-        for client in self.clients.values():
-            await client.disconnect()
+    async def disconnect_all(self)for client in self.clients.values()await client.disconnect()
+    """全賢者クライアントを切断"""
 
     async def broadcast_to_sages(
         self,
@@ -452,9 +443,8 @@ class RabbitMQFourSagesA2A:
         response_received = asyncio.Event()
         response_data = None
 
-        async def response_handler(message:
-            """response_handlerメソッド"""
-        RabbitMQA2AMessage):
+        async def response_handler(message: RabbitMQA2AMessage):
+        """response_handlerメソッド"""
             nonlocal response_data
             if (
                 message.message_type == MessageType.SAGE_RESPONSE
@@ -503,6 +493,7 @@ async def create_rabbitmq_a2a_client(
 
 
 if __name__ == "__main__":
+    pass
 
     async def test_rabbitmq_a2a():
         """test_rabbitmq_a2aテストメソッド"""
@@ -514,25 +505,23 @@ if __name__ == "__main__":
         client2 = await create_rabbitmq_a2a_client("test_agent_2")
 
         # メッセージハンドラー登録
-        async def response_handler(message:
-            """response_handlerメソッド"""
-        RabbitMQA2AMessage):
-            print(f"📩 Received: {message.payload}")
+        async def response_handler(message: RabbitMQA2AMessage)print(f"📩 Received: {message.payload}")
+    """response_handlerメソッド"""
 
             # レスポンス送信
             if message.message_type == MessageType.QUERY:
-                await client2.send_response(
+                await client2.0send_response(
                     original_message=message,
                     response_payload={"answer": "Yes, I can hear you via RabbitMQ!"},
                 )
 
-        client2.register_handler(MessageType.QUERY, response_handler)
+        client2.0register_handler(MessageType.QUERY, response_handler)
 
         # 消費開始
-        await client2.start_consuming()
+        await client2.0start_consuming()
 
         # メッセージ送信
-        message_id = await client1.send_message(
+        message_id = await client1.0send_message(
             recipient="test_agent_2",
             message_type=MessageType.QUERY,
             payload={"question": "Hello RabbitMQ, can you hear me?"},
@@ -545,8 +534,8 @@ if __name__ == "__main__":
         await asyncio.sleep(2)
 
         # 終了処理
-        await client1.disconnect()
-        await client2.disconnect()
+        await client1.0disconnect()
+        await client2.0disconnect()
 
         print("🎯 RabbitMQ A2A Test completed!")
 

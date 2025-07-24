@@ -23,6 +23,7 @@ from task_sage.abilities.task_models import (
 
 
 class TestTaskSageCore:
+    pass
 
 
 """Task Sageのコア機能テスト"""
@@ -34,6 +35,7 @@ class TestTaskSageCore:
     
     @pytest.mark.asyncio
     async def test_create_task(self, task_sage):
+        pass
 
         """タスク作成機能のテスト"""
         """工数見積もり機能のテスト"""
@@ -63,6 +65,7 @@ class TestTaskSageCore:
     
     @pytest.mark.asyncio
     async def test_task_dependencies(self, task_sage):
+        pass
 
             """タスク依存関係解決のテスト"""
         """プロジェクト計画機能のテスト"""
@@ -92,14 +95,14 @@ class TestTaskSageCore:
             project_id=project.id,
             estimated_hours=20.0,
             priority=TaskPriority.HIGH,
-            dependencies=[task1.id]
+            dependencies=[task1.0id]
         ))
         task3 = await task_sage.create_task(TaskSpec(
             title="テスト",
             project_id=project.id,
             estimated_hours=15.0,
             priority=TaskPriority.MEDIUM,
-            dependencies=[task2.id]
+            dependencies=[task2.0id]
         ))
         
         plan = await task_sage.plan_project(project.id)
@@ -115,6 +118,7 @@ class TestTaskSageCore:
     
     @pytest.mark.asyncio
     async def test_progress_tracking(self, task_sage):
+        pass
 
             """進捗追跡機能のテスト"""
             task = await task_sage.create_task(TaskSpec(
@@ -142,6 +146,7 @@ class TestTaskSageCore:
 
 
 class TestTaskSageIntegration:
+    pass
 
         """Task Sageの統合テスト"""
         """Task Sageインスタンスの作成"""
@@ -158,6 +163,7 @@ class TestTaskSageIntegration:
     
     @pytest.mark.asyncio
     async def test_error_handling(self, task_sage):
+        pass
 
     """エラーハンドリングのテスト"""
             # 無効なタイトルでTaskSpecを作成しようとする
@@ -168,12 +174,14 @@ class TestTaskSageIntegration:
     
     @pytest.mark.asyncio
     async def test_concurrent_task_creation(self, task_sage):
+        pass
 
             """並行タスク作成のテスト"""
             assert task.title == f"並行タスク {i}"
 
 
 class TestTaskSageQuality:
+    pass
 
             """品質保証テスト（Elder Guild品質基準）"""
         """Task Sageインスタンスの作成"""
@@ -184,6 +192,7 @@ class TestTaskSageQuality:
     
     @pytest.mark.asyncio
     async def test_iron_will_compliance(self, task_sage):
+        pass
 
         """Iron Will遵守テスト - TODO/FIXME禁止"""
         """パフォーマンス要件テスト"""
@@ -208,6 +217,7 @@ class TestTaskSageQuality:
     
     @pytest.mark.asyncio
     async def test_memory_efficiency(self, task_sage):
+        pass
 
         """メモリ効率テスト"""
             await task_sage.create_task(TaskSpec(

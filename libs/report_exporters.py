@@ -532,21 +532,21 @@ if __name__ == "__main__":
     output_dir.mkdir(exist_ok=True)
 
     # 各形式でエクスポート
-    print("\n1. PDFエクスポート...")
+    print("\n1.0 PDFエクスポート...")
     pdf_exporter = PDFExporter()
     pdf_path = pdf_exporter.export(
         "<html><body>Test</body></html>", test_data, "test_pdf", output_dir
     )
     print(f"   生成: {pdf_path}")
 
-    print("\n2. Excelエクスポート...")
+    print("\n2.0 Excelエクスポート...")
     excel_exporter = ExcelExporter()
     excel_path = excel_exporter.export(
         "<html><body>Test</body></html>", test_data, "test_excel", output_dir
     )
     print(f"   生成: {excel_path}")
 
-    print("\n3. Markdownエクスポート...")
+    print("\n3.0 Markdownエクスポート...")
     md_exporter = MarkdownExporter()
     md_path = md_exporter.export(
         "<html><body>Test</body></html>", test_data, "test_markdown", output_dir

@@ -256,7 +256,7 @@ class PMEnhancedWorker:
 
             message = f"🔄 PM品質評価 - 再試行要請\n"
             message += f"タスク: {task_id}\n"
-            message += f"総合スコア: {overall_score:.1f}%\n"
+            message += f"総合スコア: {overall_score:0.1f}%\n"
             message += f"フィードバック: {evaluation_result.get('feedback_message', '')}\n"
             message += "改善後に再処理されます。"
 
@@ -281,7 +281,7 @@ class PMEnhancedWorker:
 
             message = f"❌ PM品質評価 - 最終却下\n"
             message += f"タスク: {task_id}\n"
-            message += f"総合スコア: {overall_score:.1f}%\n"
+            message += f"総合スコア: {overall_score:0.1f}%\n"
             message += f"理由: {evaluation_result.get('feedback_message', '')}\n"
             message += "最大再試行回数に達しました。"
 
@@ -489,8 +489,8 @@ class PMEnhancedWorker:
                     message += f"アクティブタスク: {stats['active_tasks']}\n"
                     message += f"再試行タスク: {stats['retry_tasks']}\n"
                     quality_stats = stats.get("quality_stats", {})
-                    message += f"承認率: {quality_stats.get('approval_rate', 0.0):.1f}%\n"
-                    message += f"平均スコア: {quality_stats.get('average_score', 0.0):.1f}%"
+                    message += f"承認率: {quality_stats.get('approval_rate', 0.0):0.1f}%\n"
+                    message += f"平均スコア: {quality_stats.get('average_score', 0.0):0.1f}%"
 
                     self.slack.send_task_completion_simple(
                         task_id=f"feedback_stats_{task_id}",

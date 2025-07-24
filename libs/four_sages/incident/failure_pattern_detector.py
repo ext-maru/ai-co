@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 Failure Pattern Detector - 失敗パターン検出システム
+"🔍" Failure Pattern Detector - 失敗パターン検出システム
 Phase 26: Incident Sage統合実装
 Created: 2025-07-17
 Author: Claude Elder
@@ -146,8 +146,8 @@ class FailurePatternDetector(EldersAILegacy):
         cutoff_date = datetime.now() - timedelta(days=days_back)
 
         try:
-            conn = sqlite3.connect(self.tracking_db_path)
-            conn.row_factory = sqlite3.Row
+            conn = sqlite3connect(self.tracking_db_path)
+            conn.row_factory = sqlite3Row
 
             # 失敗した実行詳細を取得
             cursor = conn.execute(

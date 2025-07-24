@@ -70,7 +70,7 @@ def test_quantum_amplitude_operations():
         magnitude = amplitude.magnitude
         expected_magnitude = math.sqrt(0.8**2 + 0.6**2)  # = 1.0
         if abs(magnitude - expected_magnitude) < 1e-10:
-            print(f"  ✅ 振幅の大きさ: {magnitude:.3f}")
+            print(f"  ✅ 振幅の大きさ: {magnitude:0.3f}")
             tests_passed += 1
         else:
             print(f"  ❌ 振幅の大きさ失敗: {magnitude}")
@@ -82,7 +82,7 @@ def test_quantum_amplitude_operations():
         phase = amplitude.phase
         expected_phase = math.atan2(0.6, 0.8)
         if abs(phase - expected_phase) < 1e-10:
-            print(f"  ✅ 位相: {phase:.3f}")
+            print(f"  ✅ 位相: {phase:0.3f}")
             tests_passed += 1
         else:
             print(f"  ❌ 位相失敗: {phase}")
@@ -127,7 +127,7 @@ def test_quantum_amplitude_operations():
         amp2 = QuantumAmplitude(0.3, 0.4)
         combined_magnitude = amp1.magnitude + amp2.magnitude
         if combined_magnitude > 0:
-            print(f"  ✅ 複数振幅組み合わせ: {combined_magnitude:.3f}")
+            print(f"  ✅ 複数振幅組み合わせ: {combined_magnitude:0.3f}")
             tests_passed += 1
         else:
             print("  ❌ 複数振幅組み合わせ失敗")
@@ -193,7 +193,7 @@ def test_quantum_superposition_operations():
             normalized = superposition.normalize()
             total_magnitude = sum(amp.magnitude for amp in normalized.amplitudes)
             if total_magnitude > 0:
-                print(f"  ✅ 正規化: 総振幅{total_magnitude:.3f}")
+                print(f"  ✅ 正規化: 総振幅{total_magnitude:0.3f}")
                 tests_passed += 1
             else:
                 print(f"  ❌ 正規化失敗: 総振幅{total_magnitude}")
@@ -239,7 +239,7 @@ def test_quantum_superposition_operations():
         if hasattr(superposition, "calculate_coherence"):
             coherence = superposition.calculate_coherence()
             if 0 <= coherence <= 1:
-                print(f"  ✅ コヒーレンス: {coherence:.3f}")
+                print(f"  ✅ コヒーレンス: {coherence:0.3f}")
                 tests_passed += 1
             # 複雑な条件判定
             else:
@@ -404,7 +404,7 @@ def test_quantum_engine_comprehensive():
             coherence = engine._calculate_quantum_coherence(test_superposition)
             if 0 <= coherence <= 1:
             # 複雑な条件判定
-                print(f"  ✅ コヒーレンス計算: {coherence:.3f}")
+                print(f"  ✅ コヒーレンス計算: {coherence:0.3f}")
                 tests_passed += 1
             else:
                 print(f"  ❌ コヒーレンス範囲外: {coherence}")
@@ -672,12 +672,12 @@ async def main():
         print("🚀 量子協調エンジンのカバレッジが大幅に向上しました")
         return 0
     elif success_rate >= 80:
-        print(f"✅ 大部分のテストが成功しました ({success_rate:.1f}%)")
+        print(f"✅ 大部分のテストが成功しました ({success_rate:0.1f}%)")
         print("🚀 カバレッジが大幅に向上しました")
         return 0
     else:
         print(f"❌ {total_tests - total_passed}個のテストが失敗しました")
-        print(f"成功率: {success_rate:.1f}%")
+        print(f"成功率: {success_rate:0.1f}%")
         return 1
 
 

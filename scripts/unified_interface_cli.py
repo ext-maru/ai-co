@@ -116,7 +116,7 @@ class UnifiedInterfaceCLI:
                 print(f"   総タスク: {learning_status.get('total_tasks', 0)}")
                 print(f"   アクティブタスク: {learning_status.get('active_tasks', 0)}")
                 print(f"   完了タスク: {learning_status.get('completed_tasks', 0)}")
-                print(f"   成功率: {learning_status.get('success_rate', 0):.2%}")
+                print(f"   成功率: {learning_status.get('success_rate', 0):0.2%}")
 
             # システム稼働時間
             uptime_start = interface_stats.get("uptime_start")
@@ -138,14 +138,14 @@ class UnifiedInterfaceCLI:
 
         try:
             # 検索APIテスト
-            print("1. 検索APIテスト...")
+            print("1.0 検索APIテスト...")
             search_result = await self.interface_system.handle_search_request(
                 {"query": "4賢者システム", "search_type": "hybrid", "limit": 3}
             )
             print(f"   検索結果: {search_result.get('total_found', 0)}件")
 
             # 4賢者分析APIテスト
-            print("\n2. 4賢者分析APIテスト...")
+            print("\n2.0 4賢者分析APIテスト...")
             analysis_result = await self.interface_system.handle_sages_analysis(
                 {
                     "title": "APIテスト分析",
@@ -156,7 +156,7 @@ class UnifiedInterfaceCLI:
             print(f"   分析結果: {analysis_result.get('status', 'unknown')}")
 
             # 学習タスクAPIテスト
-            print("\n3. 学習タスクAPIテスト...")
+            print("\n3.0 学習タスクAPIテスト...")
             learning_result = await self.interface_system.handle_learning_task(
                 {
                     "task_type": "supervised",
@@ -167,7 +167,7 @@ class UnifiedInterfaceCLI:
             print(f"   学習タスク: {learning_result.get('task_id', 'unknown')}")
 
             # システム状況APIテスト
-            print("\n4. システム状況APIテスト...")
+            print("\n4.0 システム状況APIテスト...")
             status_result = await self.interface_system.get_system_status()
             print(f"   状況取得: {'成功' if status_result else '失敗'}")
 
@@ -215,12 +215,12 @@ class UnifiedInterfaceCLI:
 
         try:
             # システム初期化
-            print("1. システム初期化...")
+            print("1.0 システム初期化...")
             if not await self.initialize():
                 return
 
             # 各種機能テスト
-            print("\n2. 機能テスト...")
+            print("\n2.0 機能テスト...")
 
             # テンプレート作成
             await self.create_templates()
@@ -244,7 +244,7 @@ class UnifiedInterfaceCLI:
 
         try:
             # システム初期化チェック
-            print("1. システム初期化チェック...")
+            print("1.0 システム初期化チェック...")
             init_success = await self.initialize()
             print(f"   初期化: {'✅' if init_success else '❌'}")
 
@@ -252,7 +252,7 @@ class UnifiedInterfaceCLI:
                 return
 
             # 各コンポーネントのチェック
-            print("\n2. コンポーネントチェック...")
+            print("\n2.0 コンポーネントチェック...")
 
             # 4賢者システム
             try:

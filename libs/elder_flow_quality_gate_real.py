@@ -126,7 +126,7 @@ class UnitTestCheckerReal(BaseQualityChecker):
                 recommendations.append(f"Fix {failed_tests} failing tests")
             if coverage < 80:
                 recommendations.append(
-                    f"Improve test coverage from {coverage:.1f}% to 80%+"
+                    f"Improve test coverage from {coverage:0.1f}% to 80%+"
                 )
             if total_tests < 50:
                 recommendations.append(
@@ -345,7 +345,7 @@ class CodeQualityCheckerReal(BaseQualityChecker):
             recommendations = []
             if pylint_score < 8:
                 recommendations.append(
-                    f"Improve Pylint score from {pylint_score:.1f} to 8.0+"
+                    f"Improve Pylint score from {pylint_score:0.1f} to 8.0+"
                 )
             if flake8_issues > 10:
                 recommendations.append(

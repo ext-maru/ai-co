@@ -7,7 +7,7 @@ AI学習・進化における4賢者の協調連携システム
 📚 ナレッジ賢者: 学習データの知識化・蓄積
 📋 タスク賢者: 学習タスクの優先順位・スケジューリング
 🚨 インシデント賢者: 学習プロセスの監視・異常検知
-🔍 RAG賢者: 学習パターンの検索・類似性分析
+"🔍" RAG賢者: 学習パターンの検索・類似性分析
 
 エルダーツリー階層:
 グランドエルダーmaru → クロードエルダー → 4賢者 → 評議会 → サーバント
@@ -301,7 +301,7 @@ class FourSagesIntegration:
         """4賢者統合用データベース初期化"""
         try:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # 賢者間通信ログテーブル
@@ -1133,7 +1133,7 @@ class FourSagesIntegration:
     def _save_learning_session(self, session_data: Dict[str, Any]):
         """学習セッションの保存"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -1168,7 +1168,7 @@ class FourSagesIntegration:
     ):
         """賢者間通信ログ"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -1398,7 +1398,7 @@ class FourSagesIntegration:
 
     def _create_database_tables(self):
         """データベーステーブル作成（同期処理）"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         try:
             # 4賢者統合テーブル作成
             conn.execute(

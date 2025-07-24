@@ -157,12 +157,11 @@ class OptimizedMetricsCollector:
             'average_quality': 0.0
         }
     
-    async def collect_optimized_metrics(self, differential: bool = True) -> Dict[str, Any]:
-        """Collect metrics using optimized parallel analysis"""
-        start_time = time.time()
+    async def collect_optimized_metrics(self, differential: bool = True) -> Dict[str, Any]start_time = time.time()
+    """Collect metrics using optimized parallel analysis"""
         logger.info("🚀 Starting optimized metrics collection")
         
-        metrics = {
+        metrics = {:
             'collection_start': datetime.now().isoformat(),
             'analysis_mode': 'differential' if differential else 'full',
             'optimization_enabled': True,
@@ -209,7 +208,7 @@ class OptimizedMetricsCollector:
             metrics['collection_time'] = time.time() - start_time
             metrics['performance_stats'] = self.performance_stats.copy()
             
-            logger.info(f"✅ Optimized metrics collection completed in {metrics['collection_time']:.2f}s")
+            logger.info(f"✅ Optimized metrics collection completed in {metrics['collection_time']:0.2f}s")
             return metrics
             
         except Exception as e:
@@ -430,9 +429,8 @@ class OptimizedQualityDaemon:
         self.last_full_analysis = None
         self.consecutive_errors = 0
     
-    async def run_monitoring_cycle(self):
-        """Run optimized monitoring cycle"""
-        cycle_start = datetime.now()
+    async def run_monitoring_cycle(self)cycle_start = datetime.now()
+    """Run optimized monitoring cycle"""
         logger.info(f"🚀 Optimized monitoring cycle started: {cycle_start.strftime('%H:%M:%S')}")
         
         try:
@@ -533,9 +531,8 @@ class OptimizedQualityDaemon:
         except Exception as e:
             logger.warning(f"Could not save status: {e}")
     
-    def _log_cycle_performance(self, metrics: Dict[str, Any], duration: float):
-        """Log cycle performance information"""
-        collection_time = metrics.get('collection_time', 0)
+    def _log_cycle_performance(self, metrics: Dict[str, Any], duration: float)collection_time = metrics.get('collection_time', 0)
+    """Log cycle performance information"""
         files_analyzed = metrics.get('files_analyzed', 0)
         quality_score = metrics.get('code_quality_score', 0)
         
@@ -544,17 +541,16 @@ class OptimizedQualityDaemon:
         cache_hit_rate = performance_stats.get('cache_hit_rate', 0) * 100
         
         logger.info("📊 Cycle Performance Summary:")
-        logger.info(f"   Total cycle time: {duration:.2f}s")
-        logger.info(f"   Analysis time: {collection_time:.2f}s")
+        logger.info(f"   Total cycle time: {duration:0.2f}s")
+        logger.info(f"   Analysis time: {collection_time:0.2f}s")
         logger.info(f"   Files analyzed: {files_analyzed}")
-        logger.info(f"   Processing speed: {files_per_sec:.1f} files/sec")
-        logger.info(f"   Cache hit rate: {cache_hit_rate:.1f}%")
-        logger.info(f"   Quality score: {quality_score:.1f}/100")
+        logger.info(f"   Processing speed: {files_per_sec:0.1f} files/sec")
+        logger.info(f"   Cache hit rate: {cache_hit_rate:0.1f}%")
+        logger.info(f"   Quality score: {quality_score:0.1f}/100")
         logger.info(f"   Analysis mode: {metrics.get('analysis_mode', 'unknown')}")
     
-    async def run_forever(self):
-        """Main daemon loop with optimizations"""
-        logger.info("🚀 Optimized Elder Guild Quality Daemon starting")
+    async def run_forever(self)logger.info("🚀 Optimized Elder Guild Quality Daemon starting")
+    """Main daemon loop with optimizations"""
         logger.info(f"⚙️ Configuration: {
             self.monitoring_interval}s interval,
             differential={self.differential_analysis
@@ -580,14 +576,12 @@ class OptimizedQualityDaemon:
                 await asyncio.sleep(60)  # 1 minute recovery delay
 
 # Convenience functions
-async def run_optimized_quality_check():
-    """Run a single optimized quality check"""
-    daemon = OptimizedQualityDaemon()
+async def run_optimized_quality_check()daemon = OptimizedQualityDaemon()
+"""Run a single optimized quality check"""
     await daemon.run_monitoring_cycle()
 
-async def benchmark_performance():
-    """Benchmark the optimized quality system"""
-    logger.info("🏁 Starting performance benchmark")
+async def benchmark_performance()logger.info("🏁 Starting performance benchmark")
+"""Benchmark the optimized quality system"""
     
     project_root = PROJECT_ROOT
     
@@ -597,8 +591,8 @@ async def benchmark_performance():
     result = await quick_quality_check(project_root, max_files=20)
     end_time = time.time()
     
-    print(f"✅ Quick check completed in {end_time - start_time:.2f}s")
-    print(f"📊 Overall score: {result['overall_score']:.1f}/100")
+    print(f"✅ Quick check completed in {end_time - start_time:0.2f}s")
+    print(f"📊 Overall score: {result['overall_score']:0.1f}/100")
     print(f"📈 Performance improvement: {result['performance_improvement']}")
     print()
     
@@ -609,7 +603,7 @@ async def benchmark_performance():
     await daemon.run_monitoring_cycle()
     end_time = time.time()
     
-    print(f"✅ Differential analysis completed in {end_time - start_time:.2f}s")
+    print(f"✅ Differential analysis completed in {end_time - start_time:0.2f}s")
     print()
     
     print("🎯 Performance benchmark completed!")

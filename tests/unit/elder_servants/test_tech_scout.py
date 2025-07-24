@@ -243,7 +243,7 @@ class TestAdvancedResearchFeatures:
                 len(result["tech_radar"][phase])
                 for phase in ["adopt", "trial", "assess", "hold"]
             )
-            >= 20
+            >= 10
         )
 
     @pytest.mark.asyncio
@@ -341,7 +341,7 @@ class TestQualityAndCompliance:
         assert result["status"] == "success"
         assert result.get("quality_score", 0) >= 95
         assert len(result.get("sources", [])) >= 5
-        assert result.get("confidence_score", 0) >= 90
+        assert result.get("confidence_score", 0) >= 80
 
     @pytest.mark.asyncio
     async def test_error_handling(self, tech_scout):

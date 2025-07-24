@@ -140,7 +140,7 @@ class LogMaintenanceSystem:
 
             if size_mb > self.max_file_size_mb:
                 self.logger.info(
-                    f"📦 ローテーション: {log_file.name} ({size_mb:.1f}MB)"
+                    f"📦 ローテーション: {log_file.name} ({size_mb:0.1f}MB)"
                 )
 
                 # タイムスタンプ付きファイル名

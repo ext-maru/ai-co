@@ -5,7 +5,7 @@ Performance Optimizer - パフォーマンス最適化システム
 
 4賢者との連携:
 📚 ナレッジ賢者: 最適化パターンの永続化と知識体系化
-🔍 RAG賢者: 類似最適化パターンの検索と参照
+"🔍" RAG賢者: 類似最適化パターンの検索と参照
 📋 タスク賢者: 最適化タスクの優先順位付けと実行管理
 🚨 インシデント賢者: エラーパターンに基づく予防的最適化
 """
@@ -38,7 +38,7 @@ class PerformanceOptimizer:
 
         # 最適化設定
         self.optimization_config = {
-            "bottleneck_threshold": 70.0,  # %
+            "bottleneck_threshold": 70,  # %
             "improvement_threshold": 0.1,  # 10% improvement required
             "rollback_threshold": -0.05,  # 5% degradation triggers rollback
             "confidence_threshold": 0.7,
@@ -115,7 +115,7 @@ class PerformanceOptimizer:
             return {
                 "bottlenecks": [],
                 "optimization_targets": [],
-                "performance_score": 0.0,
+                "performance_score": 0,
                 "trends": {},
                 "anomalies": [],
             }
@@ -253,7 +253,7 @@ class PerformanceOptimizer:
                 for m in metric_improvements.values()
                 if m["improved"]
             ]
-            overall_impact = statistics.mean(improvements) if improvements else 0.0
+            overall_impact = statistics.mean(improvements) if improvements else 0
 
             # 成功率計算
             improved_count = sum(
@@ -291,9 +291,9 @@ class PerformanceOptimizer:
         except Exception as e:
             logger.error(f"Impact measurement failed: {e}")
             return {
-                "overall_impact": 0.0,
+                "overall_impact": 0,
                 "metric_improvements": {},
-                "success_rate": 0.0,
+                "success_rate": 0,
                 "recommendation": "monitor",
                 "statistical_significance": {},
             }
@@ -445,7 +445,7 @@ class PerformanceOptimizer:
             logger.error(f"Success prediction failed: {e}")
             return {
                 "success_probability": 0.5,
-                "confidence_score": 0.0,
+                "confidence_score": 0,
                 "risk_factors": [],
                 "similar_cases_analysis": {},
                 "recommendation": "reconsider",
@@ -505,7 +505,7 @@ class PerformanceOptimizer:
                     task.get("impact", "low"), 1
                 )
 
-                priority_score = urgency_score * impact_score / 9.0  # 正規化
+                priority_score = urgency_score * impact_score / 9  # 正規化
 
                 task_with_priority = task.copy()
                 task_with_priority["priority_score"] = priority_score
@@ -571,7 +571,7 @@ class PerformanceOptimizer:
             ]
 
             # 期待されるエラー削減率
-            total_reduction = 1.0
+            total_reduction = 1
             for strategy in preventive_strategies:
                 total_reduction *= 1 - strategy.get("expected_error_reduction", 0)
             expected_error_reduction = 1 - total_reduction
@@ -588,7 +588,7 @@ class PerformanceOptimizer:
             return {
                 "preventive_strategies": [],
                 "priority_actions": [],
-                "expected_error_reduction": 0.0,
+                "expected_error_reduction": 0,
             }
 
     def enable_continuous_learning(
@@ -643,11 +643,11 @@ class PerformanceOptimizer:
                 # 精度調整
                 if abs(difference) < 0.05:  # 5%以内の誤差
                     self.learning_model["accuracy"] = min(
-                        1.0, self.learning_model["accuracy"] + 0.01
+                        1, self.learning_model["accuracy"] + 0.01
                     )
                 else:
                     self.learning_model["accuracy"] = max(
-                        0.0, self.learning_model["accuracy"] - 0.02
+                        0, self.learning_model["accuracy"] - 0.02
                     )
 
                 model_updated = True
@@ -822,7 +822,7 @@ class PerformanceOptimizer:
             throughput_score = min(100, (app_metrics["throughput"] / 1500) * 100)
             scores.append(throughput_score)
 
-        return statistics.mean(scores) if scores else 50.0
+        return statistics.mean(scores) if scores else 50
 
     def _analyze_trends(self) -> Dict[str, str]:
         """トレンド分析"""
@@ -937,7 +937,7 @@ class PerformanceOptimizer:
         return {
             "performance_gain": min(total_performance_gain, 0.5),  # 最大50%
             "resource_savings": min(total_resource_savings, 0.4),  # 最大40%
-            "stability_improvement": 0.3 if strategies else 0.0,
+            "stability_improvement": 0.3 if strategies else 0,
         }
 
     def _assess_optimization_risks(
@@ -951,7 +951,7 @@ class PerformanceOptimizer:
             risk_level = {"low": 0.1, "medium": 0.3, "high": 0.5}.get(difficulty, 0.3)
             risk_levels.append(risk_level)
 
-        overall_risk = statistics.mean(risk_levels) if risk_levels else 0.0
+        overall_risk = statistics.mean(risk_levels) if risk_levels else 0
 
         return {
             "overall_risk": overall_risk,
@@ -1076,14 +1076,14 @@ class PerformanceOptimizer:
         if context_similarity > 0:
             similarity_scores.append(context_similarity)
 
-        return statistics.mean(similarity_scores) if similarity_scores else 0.0
+        return statistics.mean(similarity_scores) if similarity_scores else 0
 
     def _compare_contexts(
         self, context1: Dict[str, Any], context2: Dict[str, Any]
     ) -> float:
         """コンテキスト比較"""
         if not context1 or not context2:
-            return 0.0
+            return 0
 
         matches = 0
         total = 0
@@ -1093,7 +1093,7 @@ class PerformanceOptimizer:
             if context1.get(key) == context2.get(key):
                 matches += 1
 
-        return matches / total if total > 0 else 0.0
+        return matches / total if total > 0 else 0
 
     def _search_knowledge_base(
         self, search_query: Dict[str, Any]
@@ -1221,14 +1221,14 @@ class PerformanceOptimizer:
         success_rate = similar_cases.get("success_rate", 0.5)
         confidence_adjustment = (success_rate - 0.5) * 0.4
 
-        return max(0.0, min(1.0, base_confidence + confidence_adjustment))
+        return max(0, min(1, base_confidence + confidence_adjustment))
 
     def _calculate_accuracy_improvement(
         self, recent_feedbacks: List[Dict[str, Any]]
     ) -> float:
         """精度改善計算"""
         if len(recent_feedbacks) < 2:
-            return 0.0
+            return 0
 
         # 初期と最近のフィードバックの精度比較
         early_feedbacks = recent_feedbacks[:20]
@@ -1242,7 +1242,7 @@ class PerformanceOptimizer:
     def _calculate_feedback_accuracy(self, feedbacks: List[Dict[str, Any]]) -> float:
         """フィードバック精度計算"""
         if not feedbacks:
-            return 0.0
+            return 0
 
         accuracies = []
         for feedback in feedbacks:
@@ -1252,7 +1252,7 @@ class PerformanceOptimizer:
                 accuracy = 1 - abs(actual - expected) / expected
                 accuracies.append(max(0, accuracy))
 
-        return statistics.mean(accuracies) if accuracies else 0.0
+        return statistics.mean(accuracies) if accuracies else 0
 
     def _get_relevant_historical_patterns(
         self, scenario: Dict[str, Any]

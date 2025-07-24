@@ -61,9 +61,8 @@ class GitViolationType:
 class GitBranchAnalyzer:
     """Gitブランチ戦略分析システム"""
     
-    def __init__(self, project_root:
+    def __init__(self, project_root: Optional[Path] = None):
         """初期化メソッド"""
-    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("GitBranchAnalyzer")
         
@@ -355,9 +354,8 @@ class GitBranchAnalyzer:
 class GitCommitAnalyzer:
     """Gitコミットメッセージ・規約分析システム"""
     
-    def __init__(self, project_root:
+    def __init__(self, project_root: Optional[Path] = None):
         """初期化メソッド"""
-    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("GitCommitAnalyzer")
         
@@ -619,9 +617,8 @@ class GitCommitAnalyzer:
 class GitChronicle(AncientElderBase):
     """Git年代記魔法 - 総合Git監査システム"""
     
-    def __init__(self, project_root:
+    def __init__(self, project_root: Optional[Path] = None):
         """初期化メソッド"""
-    Optional[Path] = None):
         super().__init__(specialty="git_chronicle")
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("GitChronicle")
@@ -652,22 +649,22 @@ class GitChronicle(AncientElderBase):
         try:
             self.logger.info(f"📜 Starting Git Chronicle audit for: {target_path}")
             
-            # 1. ブランチ戦略分析
+            # 1.0 ブランチ戦略分析
             branch_result = self.branch_analyzer.analyze_branch_strategy()
             violations.extend(branch_result.get("naming_violations", []))
             violations.extend(branch_result.get("protected_violations", []))
             metrics["branch_score"] = branch_result.get("overall_branch_score", 0)
             
-            # 2. コミット品質分析
+            # 2.0 コミット品質分析
             commit_result = self.commit_analyzer.analyze_commit_quality()
             violations.extend(commit_result.get("quality_violations", []))
             metrics["commit_score"] = commit_result.get("overall_commit_score", 0)
             
-            # 3. 総合Gitスコア計算
+            # 3.0 総合Gitスコア計算
             overall_score = self._calculate_overall_git_score(metrics)
             metrics["overall_git_score"] = overall_score
             
-            # 4. 改善提案生成
+            # 4.0 改善提案生成
             recommendations = self._generate_git_improvement_recommendations(
                 branch_result, commit_result, violations
             )
@@ -675,7 +672,7 @@ class GitChronicle(AncientElderBase):
             execution_time = (datetime.now() - start_time).total_seconds()
             metrics["execution_time"] = execution_time
             
-            self.logger.info(f"✅ Git Chronicle audit completed in {execution_time:.2f}s")
+            self.logger.info(f"✅ Git Chronicle audit completed in {execution_time:0.2f}s")
             
             return AuditResult(
                 auditor_name="GitChronicle",

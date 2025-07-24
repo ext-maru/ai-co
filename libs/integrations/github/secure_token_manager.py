@@ -61,14 +61,14 @@ class SecureTokenManager:
         Returns:
             復号化されたトークン
         """
-        # 1. 環境変数から取得を試みる
+        # 1.0 環境変数から取得を試みる
         env_key = f"{token_type.upper()}_TOKEN"
         token = os.getenv(env_key)
 
         if token:
             return token
 
-        # 2. 暗号化された設定ファイルから取得
+        # 2.0 暗号化された設定ファイルから取得
         if os.path.exists(self.config_path):
             try:
                 with open(self.config_path, "r") as f:
@@ -81,7 +81,7 @@ class SecureTokenManager:
             except Exception as e:
                 logger.error(f"Failed to read encrypted token: {e}")
 
-        # 3. GitHub CLIから取得を試みる
+        # 3.0 GitHub CLIから取得を試みる
         if token_type == "github":
             token = self._get_from_gh_cli()
             if token:

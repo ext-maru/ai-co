@@ -552,7 +552,7 @@ class AccessControlGateway:
                         if not met:
                             matched = False
                             reasons.append(
-                                f"Resource usage {cpu_usage:.2f} exceeds threshold " \
+                                f"Resource usage {cpu_usage:0.2f} exceeds threshold " \
                                     "{condition_value}"
                             )
                     else:
@@ -859,7 +859,7 @@ class AccessControlGateway:
                 violation_rate = violations / total_recent
                 if violation_rate > 0.1:  # 10%以上の違反率
                     self.logger.warning(
-                        f"⚠️ High compliance violation rate: {violation_rate:.1%}"
+                        f"⚠️ High compliance violation rate: {violation_rate:0.1%}"
                     )
 
         except Exception as e:
@@ -955,7 +955,7 @@ if __name__ == "__main__":
             print(f"   Granted: {response.granted}")
             print(f"   Action: {response.action_taken}")
             print(f"   Policies Applied: {len(response.policies_applied)}")
-            print(f"   Processing Time: {response.processing_time_ms:.1f}ms")
+            print(f"   Processing Time: {response.processing_time_ms:0.1f}ms")
 
             if response.restrictions:
                 print(f"   Restrictions: {len(response.restrictions)}")
@@ -969,7 +969,7 @@ if __name__ == "__main__":
             print(f"   Active Sessions: {status['active_sessions']}")
             print(f"   Total Requests: {status['metrics']['total_requests']}")
             print(
-                f"   Average Response Time: {status['metrics']['average_response_time_ms']:.1f}ms"
+                f"   Average Response Time: {status['metrics']['average_response_time_ms']:0.1f}ms"
             )
 
             print("\n✅ AccessControlGateway test completed successfully")

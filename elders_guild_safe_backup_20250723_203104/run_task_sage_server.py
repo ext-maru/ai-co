@@ -12,6 +12,7 @@ from python_a2a import run_server
 from task_sage.a2a_agent import TaskSageAgent
 
 def main():
+    pass
 
 
 """Task Sage A2A Server起動"""
@@ -23,7 +24,7 @@ def main():
         return
     
     print(f"✅ Agent initialized: {agent.agent_name}")
-    print(f"🌐 Starting Flask server on port 8808...")
+    print(f"🌐 Starting Flask server on port 8808.0..")
     
     try:
         # python-a2a標準のrun_serverでサーバー起動

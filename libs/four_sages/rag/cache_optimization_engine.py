@@ -75,9 +75,8 @@ class OptimizationStrategy:
 class LRUCache:
     """LRU + 予測キャッシュ"""
 
-    def __init__(self, max_size:
+    def __init__(self, max_size: int = 1000):
         """初期化メソッド"""
-    int = 1000):
         self.max_size = max_size
         self.cache = OrderedDict()
         self.access_patterns = defaultdict(int)
@@ -199,25 +198,25 @@ class CacheOptimizationEngine(EldersServiceLegacy):
 
         logger.info(f"⚡ キャッシュ最適化開始: {cache_name}")
 
-        # 1. 使用状況分析
+        # 1.0 使用状況分析
         usage_analysis = await self._analyze_usage_patterns(cache_name, usage_data)
 
-        # 2. 最適化戦略決定
+        # 2.0 最適化戦略決定
         optimal_strategy = await self._determine_optimal_strategy(usage_analysis)
 
-        # 3. キャッシュ設定適用
+        # 3.0 キャッシュ設定適用
         optimization_result = await self._apply_optimization_strategy(
             cache_name, optimal_strategy
         )
 
-        # 4. プリフェッチ実行
+        # 4.0 プリフェッチ実行
         if optimal_strategy.prefetch_enabled:
             prefetch_result = await self._execute_prefetch(
                 {"cache_name": cache_name, "strategy": optimal_strategy}
             )
             optimization_result["prefetch"] = prefetch_result
 
-        # 5. メトリクス更新
+        # 5.0 メトリクス更新
         await self._update_optimization_metrics(cache_name, optimal_strategy)
 
         return {

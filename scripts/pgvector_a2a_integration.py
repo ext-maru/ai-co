@@ -19,7 +19,7 @@ from typing import Optional
 
 import numpy as np
 import psycopg2
-from psycopg2.extras import RealDictCursor
+from psycopg2extras import RealDictCursor
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -580,8 +580,8 @@ def demo_analysis():
         analyzer.connect()
         analyzer.setup_openai()
 
-        # 1. 類似通信検索
-        print("\n1. Similarity Search Demo")
+        # 1 類似通信検索
+        print("\n1 Similarity Search Demo")
         print("-" * 40)
 
         similarity_query = SemanticQuery(
@@ -593,11 +593,11 @@ def demo_analysis():
 
         result = analyzer.execute_analysis(similarity_query)
         print(f"Found {len(result.results)} similar communications")
-        print(f"Average similarity: {result.insights.get('avg_similarity', 0):.3f}")
-        print(f"Query time: {result.performance_metrics['query_time_ms']:.2f}ms")
+        print(f"Average similarity: {result.insights.get('avg_similarity', 0):0.3f}")
+        print(f"Query time: {result.performance_metrics['query_time_ms']:0.2f}ms")
 
-        # 2. 異常検出
-        print("\n2. Anomaly Detection Demo")
+        # 2 異常検出
+        print("\n2 Anomaly Detection Demo")
         print("-" * 40)
 
         anomaly_query = SemanticQuery(
@@ -613,8 +613,8 @@ def demo_analysis():
             f"Severity distribution: {result.insights.get('severity_distribution', {})}"
         )
 
-        # 3. エージェント行動分析
-        print("\n3. Agent Behavior Analysis Demo")
+        # 3 エージェント行動分析
+        print("\n3 Agent Behavior Analysis Demo")
         print("-" * 40)
 
         # まずエージェントリストを取得
@@ -635,8 +635,8 @@ def demo_analysis():
                 print(f"Total messages: {stats.get('total_messages', 0)}")
                 print(f"Unique interactions: {stats.get('unique_interactions', 0)}")
 
-        # 4. 時系列分析
-        print("\n4. Temporal Analysis Demo")
+        # 4 時系列分析
+        print("\n4 Temporal Analysis Demo")
         print("-" * 40)
 
         temporal_query = SemanticQuery(
@@ -647,7 +647,7 @@ def demo_analysis():
         print(f"Trend: {result.insights.get('trend', 'unknown')}")
         print(f"Spike count: {result.insights.get('spike_count', 0)}")
         print(
-            f"Mean messages per period: {result.insights.get('mean_messages', 0):.2f}"
+            f"Mean messages per period: {result.insights.get('mean_messages', 0):0.2f}"
         )
 
     except Exception as e:
@@ -701,7 +701,7 @@ def main():
             print("=" * 60)
             print(f"Query type: {result.query.query_type.value}")
             print(f"Results found: {len(result.results)}")
-            print(f"Query time: {result.performance_metrics['query_time_ms']:.2f}ms")
+            print(f"Query time: {result.performance_metrics['query_time_ms']:0.2f}ms")
 
             print("\n💡 Insights:")
             for key, value in result.insights.items():
@@ -720,7 +720,7 @@ def main():
                             continue  # Early return to reduce nesting
                         # Reduced nesting - original condition satisfied
                         if "similarity" in res:
-                            print(f"   Similarity: {res.get('similarity', 0):.3f}")
+                            print(f"   Similarity: {res.get('similarity', 0):0.3f}")
                     else:
                         print(f"\n{i}. {res}")
 

@@ -34,25 +34,25 @@ class CommandExecutorDiagnostic:
         """完全な診断を実行"""
         print("🔍 AI Command Executor 診断開始...\n")
 
-        # 1. プロセス状態確認
+        # 1.0 プロセス状態確認
         process_status = self.check_process_status()
 
-        # 2. ディレクトリ状態確認
+        # 2.0 ディレクトリ状態確認
         dir_status = self.check_directories()
 
-        # 3. ログ確認
+        # 3.0 ログ確認
         log_status = self.check_logs()
 
-        # 4. tmuxセッション確認
+        # 4.0 tmuxセッション確認
         tmux_status = self.check_tmux_session()
 
-        # 5. 実行テスト
+        # 5.0 実行テスト
         test_status = self.test_execution()
 
-        # 6. 結果サマリー
+        # 6.0 結果サマリー
         self.print_summary()
 
-        # 7. 自動修正
+        # 7.0 自動修正
         if self.issues:
             self.auto_fix_issues()
 
@@ -132,7 +132,7 @@ class CommandExecutorDiagnostic:
 
             print(f"✅ ログファイル存在: {self.log_file}")
             print(
-                f"   最終更新: {mtime.strftime('%Y-%m-%d %H:%M:%S')} ({age.total_seconds():.0f}秒前)"
+                f"   最終更新: {mtime.strftime('%Y-%m-%d %H:%M:%S')} ({age.total_seconds():0.0f}秒前)"
             )
 
             if age > timedelta(minutes=10):

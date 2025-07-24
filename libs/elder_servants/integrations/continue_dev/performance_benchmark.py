@@ -186,7 +186,7 @@ class TaskManager:
 
     def benchmark_flake8(self) -> Dict[str, Any]:
         """Flake8 OSS linter のベンチマーク"""
-        print("🐍 Testing Flake8...")
+        print("🐍 Testing Flake8.0..")
 
         results = {}
 
@@ -535,9 +535,9 @@ def test_to_json():
                         winner = "🏆 OSS Tool (faster)"
                         ratio = elder_time / oss_time
 
-                    report_lines.append(f"Elder System: {elder_time:.3f}s")
-                    report_lines.append(f"OSS Tool: {oss_time:.3f}s")
-                    report_lines.append(f"Winner: {winner} ({ratio:.1f}x)")
+                    report_lines.append(f"Elder System: {elder_time:0.3f}s")
+                    report_lines.append(f"OSS Tool: {oss_time:0.3f}s")
+                    report_lines.append(f"Winner: {winner} ({ratio:0.1f}x)")
                 else:
                     report_lines.append("⚠️ Performance comparison unavailable")
 

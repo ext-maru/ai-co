@@ -34,7 +34,7 @@ def main():
 
     if stats["total_errors"] > 0:
         fix_rate = (stats["auto_fixed"] / stats["total_errors"]) * 100
-        print(f"  自動修正率: {fix_rate:.1f}%")
+        print(f"  自動修正率: {fix_rate:0.1f}%")
 
     print("\n📈 カテゴリ別:")
     for category, count in stats["by_category"].items():

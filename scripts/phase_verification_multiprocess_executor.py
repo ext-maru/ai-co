@@ -661,7 +661,7 @@ class PhaseVerificationExecutor:
 ## 🎯 実装完成度
 - **実装率**: {results['summary']['real_components'] / results['summary']['total_components'] * 100 \
     if results['summary']['total_components'] > 0 \
-    else 0:.1f}%
+    else 0:0.1f}%
 
 ## 📋 Phase別検証結果
 
@@ -674,7 +674,7 @@ class PhaseVerificationExecutor:
             )
             report += f"""### {phase}
 - **検証ステータス**: {data['verification_status']}
-- **実装完成度**: {completion_rate:.1f}%
+- **実装完成度**: {completion_rate:0.1f}%
 - **実装済み**: {len(data.get('real_components', []))}個
 - **未実装**: {len(data.get('missing_components', []))}個
 
@@ -709,9 +709,9 @@ class PhaseVerificationExecutor:
         report += """## 🔧 次のアクション
 
 ### 最優先タスク
-1. 未実装コンポーネントの実装
-2. スタブコンポーネントの実装化
-3. 統合テストの実行
+1.0 未実装コンポーネントの実装
+2.0 スタブコンポーネントの実装化
+3.0 統合テストの実行
 
 ### 昇天プロセス状況
 - 各Phase検証プロセスが順次昇天
@@ -754,7 +754,7 @@ async def main():
         print(f"全体ステータス: {results['overall_status']}")
         print(
             f"実装率: {results['summary']['real_components'] / results['summary']['total_components'] \
-                * 100 if results['summary']['total_components'] > 0 else 0:.1f}%"
+                * 100 if results['summary']['total_components'] > 0 else 0:0.1f}%"
         )
         print(f"検証レポート: {report_path}")
         print("=" * 60)

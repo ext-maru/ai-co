@@ -73,13 +73,13 @@ def main():
 
     for category, count in sorted_categories:
         percentage = (count / total_errors * 100) if total_errors > 0 else 0
-        print(f"   {category}: {count:,}件 ({percentage:.1f}%)")
+        print(f"   {category}: {count:,}件 ({percentage:0.1f}%)")
 
     # 改善提案生成
     print(f"\n💡 改善提案:")
     if sorted_categories:
         top_category, top_count = sorted_categories[0]
-        print(f"   1. 最多の{top_category}エラー({top_count:,}件)の対策を優先実施")
+        print(f"   1.0 最多の{top_category}エラー({top_count:,}件)の対策を優先実施")
 
         if top_category == "system":
             print("      → 依存関係とファイルパスの確認")
@@ -93,8 +93,8 @@ def main():
             print("      → 未分類エラーの詳細調査と新パターン追加")
 
     if len(sorted_categories) > 1:
-        print("   2. 複数カテゴリのエラーに対する包括的対策")
-        print("   3. エラー予防システムの実装")
+        print("   2.0 複数カテゴリのエラーに対する包括的対策")
+        print("   3.0 エラー予防システムの実装")
 
     # 結果をファイルに保存（ClassifiedErrorオブジェクトを辞書に変換）
     simplified_analysis = []
@@ -146,9 +146,9 @@ def main():
 
     print("🎉 エラー分類システム実行完了！")
     print("\n📋 次のステップ:")
-    print("1. 最多エラーカテゴリの対策実施")
-    print("2. 自動修正スクリプトの開発")
-    print("3. 予防的監視システムの構築")
+    print("1.0 最多エラーカテゴリの対策実施")
+    print("2.0 自動修正スクリプトの開発")
+    print("3.0 予防的監視システムの構築")
 
     return True
 

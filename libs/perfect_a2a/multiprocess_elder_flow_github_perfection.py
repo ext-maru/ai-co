@@ -46,9 +46,8 @@ logger = logging.getLogger(__name__)
 class MultiProcessA2AElderFlow:
     """マルチプロセスA2A Elder Flow実装"""
 
-    def __init__(self):
-        """初期化"""
-        self.process_count = mp.cpu_count()
+    def __init__(self)self.process_count = mp.cpu_count()
+    """初期化"""
         self.executor = ProcessPoolExecutor(max_workers=self.process_count)
         self.thread_executor = ThreadPoolExecutor(max_workers=self.process_count * 2)
         self.iron_will = IronWillExecutionSystem()
@@ -64,9 +63,8 @@ class MultiProcessA2AElderFlow:
                 "processes and A2A sage instances"
         )
 
-    async def execute_perfect_github_integration(self) -> Dict[str, Any]:
-        """GitHub統合の完全実装実行"""
-        start_time = time.time()
+    async def execute_perfect_github_integration(self) -> Dict[str, Any]start_time = time.time()
+    """GitHub統合の完全実装実行"""
         results = {
             "start_time": datetime.now().isoformat(),
             "processes": self.process_count,
@@ -617,13 +615,11 @@ class MultiProcessA2AElderFlow:
         # エラーハンドリングの実装率を計算
         return 80.0  # 実装後に詳細計算
 
-    def _calculate_iron_will_score(self, quality_results: Dict[str, Any]) -> float:
-        """Iron Willスコアの計算"""
-        return quality_results.get("overall_score", 0.0)
+    def _calculate_iron_will_score(self, quality_results: Dict[str, Any]) -> floatreturn quality_results.get("overall_score", 0.0)
+    """Iron Willスコアの計算"""
 
-    def _save_results(self, results: Dict[str, Any]) -> None:
-        """結果の保存"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    def _save_results(self, results: Dict[str, Any]) -> Nonetimestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    """結果の保存"""
         output_file = f"reports/multiprocess_a2a_elder_flow_{timestamp}.json"
 
         os.makedirs("reports", exist_ok=True)
@@ -633,10 +629,8 @@ class MultiProcessA2AElderFlow:
 
         logger.info(f"📊 Results saved to {output_file}")
 
-    def __del__(self):
-        """クリーンアップ"""
-        if hasattr(self, "executor"):
-            self.executor.shutdown(wait=True)
+    def __del__(self)if hasattr(self, "executor")self.executor.shutdown(wait=True)
+    """クリーンアップ"""
         if hasattr(self, "thread_executor"):
             self.thread_executor.shutdown(wait=True)
 
@@ -652,7 +646,7 @@ async def main():
 
     if results.get("success"):
         logger.info("✅ GitHub Integration Perfection completed successfully!")
-        logger.info(f"📊 Metrics: {json.dumps(results['metrics'], indent=2)}")
+        logger.info(f"📊 Metrics: {json.dumps(results['metrics'], indent}")
     else:
         logger.error(f"❌ GitHub Integration Perfection failed: {results.get('error')}")
 

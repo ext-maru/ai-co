@@ -59,7 +59,7 @@ def main():
     print(f"⚡ 優先度: {project_info.priority.value}")
     print(f"👤 所有者: {project_info.owner}")
     print(f"🏛️ Elder権限: {project_info.elder_role.value}")
-    print(f"📊 進捗: {project_info.progress*100:.1f}%")
+    print(f"📊 進捗: {project_info.progress*100:0.1f}%")
     print(f"🏷️ タグ: {', '.join(project_info.tags)}")
     print("")
 

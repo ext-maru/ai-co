@@ -277,24 +277,24 @@ class GrimoireAccessibilityEnhancer:
 
 ## 🎯 使用方法
 
-1. **問題解決**: まずこのクイックリファレンスを確認
-2. **詳細調査**: 該当する賢者のグリモアを参照
-3. **横断検索**: トピック別索引で関連知識を検索
-4. **包括検索**: マスター索引で全体から検索
+1.0 **問題解決**: まずこのクイックリファレンスを確認
+2.0 **詳細調査**: 該当する賢者のグリモアを参照
+3.0 **横断検索**: トピック別索引で関連知識を検索
+4.0 **包括検索**: マスター索引で全体から検索
 
 ## 📞 緊急時の対応
 
 ### 🚨 システム障害
-1. インシデント賢者に即座に相談
-2. 類似事例をRAG賢者で検索
-3. 復旧手順をナレッジ賢者で確認
-4. 進捗をタスク賢者で管理
+1.0 インシデント賢者に即座に相談
+2.0 類似事例をRAG賢者で検索
+3.0 復旧手順をナレッジ賢者で確認
+4.0 進捗をタスク賢者で管理
 
 ### 🔧 開発問題
-1. 該当分野の専門賢者に相談
-2. 共通知識で基本手順を確認
-3. 過去の解決事例を検索
-4. 新しい知識として蓄積
+1.0 該当分野の専門賢者に相談
+2.0 共通知識で基本手順を確認
+3.0 過去の解決事例を検索
+4.0 新しい知識として蓄積
 
 ---
 
@@ -524,10 +524,10 @@ class GrimoireAccessibilityEnhancer:
 
 ## 🎯 使用方法
 
-1. **問題解決**: まずQUICK_REFERENCE.mdを確認
-2. **詳細調査**: 該当する賢者のグリモアを参照
-3. **横断検索**: TOPIC_INDEX.mdでトピック別検索
-4. **包括検索**: MASTER_INDEX.mdで全体から検索
+1.0 **問題解決**: まずQUICK_REFERENCE.mdを確認
+2.0 **詳細調査**: 該当する賢者のグリモアを参照
+3.0 **横断検索**: TOPIC_INDEX.mdでトピック別検索
+4.0 **包括検索**: MASTER_INDEX.mdで全体から検索
 
 ## 🔗 賢者間の連携
 
@@ -721,7 +721,7 @@ def main():
         f"完了フェーズ: {sum(enhancer.enhancement_phases.values())}/{len(enhancer.enhancement_phases)}"
     )
     print(
-        f"改善完了率: {enhancement_results['metrics']['enhancement_completion']:.1f}%"
+        f"改善完了率: {enhancement_results['metrics']['enhancement_completion']:0.1f}%"
     )
 
     # フェーズ別詳細
@@ -743,7 +743,7 @@ def main():
     print("-" * 40)
     print(f"グリモア数: {metrics['total_grimoires']}")
     print(f"生成ファイル数: {metrics['generated_files']}")
-    print(f"改善完了率: {metrics['enhancement_completion']:.1f}%")
+    print(f"改善完了率: {metrics['enhancement_completion']:0.1f}%")
 
     # 詳細レポート保存
     report_file = (
@@ -759,9 +759,9 @@ def main():
     # 使用方法の案内
     print("\n🎯 使用方法")
     print("-" * 40)
-    print("1. README.md でナビゲーションガイドを確認")
-    print("2. QUICK_REFERENCE.md でよく使用される知識をチェック")
-    print("3. python scripts/grimoire_help.py でヘルプを表示")
+    print("1.0 README.md でナビゲーションガイドを確認")
+    print("2.0 QUICK_REFERENCE.md でよく使用される知識をチェック")
+    print("3.0 python scripts/grimoire_help.py でヘルプを表示")
 
 
 if __name__ == "__main__":

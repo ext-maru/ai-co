@@ -115,10 +115,10 @@ def wait_and_show_results():
             excerpt = content[idx:]
             print(excerpt[:1000])
     else:
-        print("1. Slack Polling Workerが稼働しているか確認")
-        print("2. Slack Bot Tokenが有効か確認")
-        print("3. BotがチャンネルメンバーになっているかSlackで確認")
-        print("4. Slackで '@pm-ai test' を送信してテスト")
+        print("1.0 Slack Polling Workerが稼働しているか確認")
+        print("2.0 Slack Bot Tokenが有効か確認")
+        print("3.0 BotがチャンネルメンバーになっているかSlackで確認")
+        print("4.0 Slackで '@pm-ai test' を送信してテスト")
 
     print("\n\n💡 詳細なログを確認するには:")
     print("tail -f /home/aicompany/ai_co/ai_commands/logs/*.log")

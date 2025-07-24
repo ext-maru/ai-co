@@ -26,9 +26,8 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-async def run_pr_quality_audit():
-    """PR品質監査バッチ実行"""
-    logger.info("🔍 PR品質監査バッチ実行開始")
+async def run_pr_quality_audit()logger.info("🔍 PR品質監査バッチ実行開始")
+"""PR品質監査バッチ実行"""
     
     try:
         import re
@@ -116,9 +115,9 @@ async def run_pr_quality_audit():
 - 適切なPR説明（50文字以上）
 
 **次のアクション:**
-1. 上記問題を修正してください
-2. 修正後、PRを再オープンしてください
-3. または関連Issueを再オープンして次の処理者に委ねてください
+1.0 上記問題を修正してください
+2.0 修正後、PRを再オープンしてください
+3.0 または関連Issueを再オープンして次の処理者に委ねてください
 
 ---
 🤖 自動品質監査システムによる差し戻し (cron実行)

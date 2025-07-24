@@ -67,12 +67,12 @@ def main():
                 data = json.load(f)
                 total_percent = data.get("totals", {}).get("percent_covered", 0)
 
-                print(f"\n✨ 総合カバレッジ: {total_percent:.1f}%")
+                print(f"\n✨ 総合カバレッジ: {total_percent:0.1f}%")
 
                 if total_percent >= 90:
                     print("🎉 目標達成！90%以上のカバレッジを達成しました！")
                 else:
-                    print(f"📊 目標まで: {90 - total_percent:.1f}%")
+                    print(f"📊 目標まで: {90 - total_percent:0.1f}%")
 
                 # ファイル別統計
                 print("\n📁 主要モジュール別カバレッジ:")
@@ -103,7 +103,7 @@ def main():
                     # Reduced nesting - original condition satisfied
                     if files:
                         avg_coverage = sum(f["percent"] for f in files) / len(files)
-                        print(f"  {module}: {avg_coverage:.1f}% ({len(files)} files)")
+                        print(f"  {module}: {avg_coverage:0.1f}% ({len(files)} files)")
 
     except Exception as e:
         print(f"⚠️ カバレッジJSONの読み込みエラー: {e}")

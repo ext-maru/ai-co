@@ -112,10 +112,10 @@ class SearchQualityEnhancer(EldersServiceLegacy):
 
         logger.info(f"🔍 検索品質向上開始: {query}")
 
-        # 1. クエリ拡張
+        # 1.0 クエリ拡張
         expanded_query = await self._expand_query(query, context)
 
-        # 2. 結果リランキング
+        # 2.0 結果リランキング
         reranked_results = await self._rerank_results(
             {
                 "query": query,
@@ -125,12 +125,12 @@ class SearchQualityEnhancer(EldersServiceLegacy):
             }
         )
 
-        # 3. 品質メトリクス計算
+        # 3.0 品質メトリクス計算
         quality_metrics = await self._calculate_quality_metrics(
             query, expanded_query, reranked_results
         )
 
-        # 4. トラッキング記録
+        # 4.0 トラッキング記録
         await self._record_enhancement_metrics(
             query, expanded_query, reranked_results, quality_metrics
         )
@@ -188,7 +188,7 @@ class SearchQualityEnhancer(EldersServiceLegacy):
             expansion_score=expansion_score,
         )
 
-        logger.info(f"🔍 クエリ拡張完了: スコア={expansion_score:.2f}")
+        logger.info(f"🔍 クエリ拡張完了: スコア={expansion_score:0.2f}")
         return expansion
 
     async def _rerank_results(self, request: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -246,7 +246,7 @@ class SearchQualityEnhancer(EldersServiceLegacy):
         )
 
         logger.info(
-            f"📊 結果リランキング完了: 上位スコア={reranked_results[0].get('enhanced_score', 0):.2f}"
+            f"📊 結果リランキング完了: 上位スコア={reranked_results[0].get('enhanced_score', 0):0.2f}"
         )
         return reranked_results
 

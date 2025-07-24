@@ -274,7 +274,7 @@ All notable changes to this project will be documented in this file.
         self,
         knowledge_entries: List[Dict[str, Any]],
         api_name: str,
-        version: str = "1.0",
+        version: str = "1",
         output_format: str = "markdown"
     ) -> Dict[str, Any]:
         """Generate API documentation"""
@@ -390,7 +390,7 @@ All notable changes to this project will be documented in this file.
             # Prepare template context
             context = {
                 "system_name": system_name,
-                "version": "1.0",
+                "version": "1",
                 "date": datetime.now().strftime("%Y-%m-%d"),
                 "summary": spec_content.get("summary", "System overview"),
                 "architecture_description": spec_content.get("architecture", ""),
@@ -473,7 +473,7 @@ All notable changes to this project will be documented in this file.
             
             # Calculate confidence score
             avg_quality = sum(e.get("quality_score", 0.5) for e in sorted_entries) / len(sorted_entries)
-            confidence_score = min(1.0, avg_quality * len(sorted_entries) / 10)
+            confidence_score = min(1, avg_quality * len(sorted_entries) / 10)
             
             return {
                 "success": True,
@@ -787,7 +787,7 @@ All notable changes to this project will be documented in this file.
         """Validate documentation quality"""
         try:
             issues = []
-            validation_score = 1.0
+            validation_score = 1
             
             if check_structure:
                 structure_issues = self._check_structure(content)
@@ -807,7 +807,7 @@ All notable changes to this project will be documented in this file.
                     issues.append("Content may be difficult to read")
                     validation_score -= 0.2
             
-            validation_score = max(0.0, validation_score)
+            validation_score = max(0, validation_score)
             
             return {
                 "success": True,
@@ -1017,11 +1017,11 @@ All notable changes to this project will be documented in this file.
             "dependencies": [
                 {"name": "FastAPI", "version": "0.68+", "description": "Web framework"},
                 {"name": "asyncpg", "version": "0.24+", "description": "PostgreSQL driver"},
-                {"name": "scikit-learn", "version": "1.0+", "description": "Machine learning"}
+                {"name": "scikit-learn", "version": "1+", "description": "Machine learning"}
             ],
             "api_specs": "RESTful API with JSON responses",
             "security": [
-                "OAuth 2.0 authentication",
+                "OAuth 2 authentication",
                 "HTTPS encryption",
                 "Input validation",
                 "Rate limiting"
@@ -1243,7 +1243,7 @@ All notable changes to this project will be documented in this file.
                 "sentence_count": sentences,
                 "section_count": sections,
                 "readability_score": self._check_readability(content),
-                "structure_score": 1.0 if sections > 0 else 0.5,
+                "structure_score": 1 if sections > 0 else 0.5,
                 "estimated_reading_time": max(1, len(words) // 200)  # 200 WPM
             }
             

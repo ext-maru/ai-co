@@ -390,7 +390,7 @@ class ElderInterpretationCheckCommand(BaseCommand):
         for sage_id, verification in sage_verifications.items():
             self.info(f"  {verification['name']}:")
             sage_data = verification["verification"]
-            self.info(f"    📊 信頼度: {verification['confidence']:.1%}")
+            self.info(f"    📊 信頼度: {verification['confidence']:0.1%}")
 
             if "issues" in sage_data and sage_data["issues"]:
                 # Complex condition - consider breaking down
@@ -409,7 +409,7 @@ class ElderInterpretationCheckCommand(BaseCommand):
 
         # 総合評価
         self.info("📊 総合評価:")
-        self.info(f"  ✅ 解釈の正確性: {interpretation_assessment['overall_score']:.1%}")
+        self.info(f"  ✅ 解釈の正確性: {interpretation_assessment['overall_score']:0.1%}")
         self.info(f"  📈 信頼度レベル: {interpretation_assessment['confidence_level']}")
 
         if interpretation_assessment["is_correct"]:

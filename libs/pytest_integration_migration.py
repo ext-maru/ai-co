@@ -4,11 +4,11 @@ pytest統合テスト移行実装 - Week 3
 integration_test_framework.py → pytest + testcontainers 移行
 
 移行戦略:
-1. IntegrationTestRunner → pytest session fixtures
-2. ServiceOrchestrator → testcontainers Docker management
-3. TestDataManager → pytest fixtures with factory pattern
-4. EnvironmentManager → pytest scope management
-5. Custom assertions → pytest assert statements
+1.0 IntegrationTestRunner → pytest session fixtures
+2.0 ServiceOrchestrator → testcontainers Docker management
+3.0 TestDataManager → pytest fixtures with factory pattern
+4.0 EnvironmentManager → pytest scope management
+5.0 Custom assertions → pytest assert statements
 
 期待効果: 1,169行 → 約300行 (74%削減)
 """
@@ -48,7 +48,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 # =============================================================================
-# 1. Configuration and Data Models (pytest compatible)
+# 1.0 Configuration and Data Models (pytest compatible)
 # =============================================================================
 
 
@@ -76,7 +76,7 @@ class TestRunResult:
 
 
 # =============================================================================
-# 2. Service Management with testcontainers
+# 2.0 Service Management with testcontainers
 # =============================================================================
 
 
@@ -175,7 +175,7 @@ class TestContainerManager:
 
 
 # =============================================================================
-# 3. pytest Fixtures (従来のServiceOrchestratorを置換)
+# 3.0 pytest Fixtures (従来のServiceOrchestratorを置換)
 # =============================================================================
 
 
@@ -300,7 +300,7 @@ def test_data_factory():
 
 
 # =============================================================================
-# 4. API Testing Utilities (従来のAPIテスト機能を置換)
+# 4.0 API Testing Utilities (従来のAPIテスト機能を置換)
 # =============================================================================
 
 
@@ -425,7 +425,7 @@ class PytestAPITester:
 
 
 # =============================================================================
-# 5. pytest統合テスト実装例
+# 5.0 pytest統合テスト実装例
 # =============================================================================
 
 
@@ -559,7 +559,7 @@ class TestElderSystemIntegration:
 
 
 # =============================================================================
-# 6. 基本テスト（testcontainersなしでも実行可能）
+# 6.0 基本テスト（testcontainersなしでも実行可能）
 # =============================================================================
 
 
@@ -617,10 +617,10 @@ def test_code_reduction_achievement():
     reduction_rate = (original_lines - new_lines) / original_lines * 100
 
     print(f"従来: {original_lines}行 → 新実装: {new_lines}行")
-    print(f"削減率: {reduction_rate:.1f}%")
+    print(f"削減率: {reduction_rate:0.1f}%")
 
     # 70%以上の削減を達成していることを確認
-    assert reduction_rate >= 70, f"削減率 {reduction_rate:.1f}% < 目標70%"
+    assert reduction_rate >= 70, f"削減率 {reduction_rate:0.1f}% < 目標70%"
 
 
 if __name__ == "__main__":

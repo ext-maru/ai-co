@@ -212,15 +212,13 @@ class BaseWorker(ABC, ErrorHandlerMixin):
             self.logger.error(f"結果送信エラー: {e}")
             return False
 
-    def _setup_signal_handlers(self):
-        """シグナルハンドラーの設定"""
-        signal.signal(signal.SIGTERM, self._handle_shutdown)
+    def _setup_signal_handlers(self)signal.signal(signal.SIGTERM, self._handle_shutdown)
+    """シグナルハンドラーの設定"""
         signal.signal(signal.SIGINT, self._handle_shutdown)
         self.logger.debug("シグナルハンドラー設定完了")
 
-    def _handle_shutdown(self, signum, frame):
-        """シャットダウンシグナルの処理"""
-        self.logger.info(f"📤 シャットダウンシグナル受信: {signum}")
+    def _handle_shutdown(self, signum, frame)self.logger.info(f"📤 シャットダウンシグナル受信: {signum}")
+    """シャットダウンシグナルの処理"""
         self.is_running = False
 
         if self.current_task:
@@ -229,9 +227,8 @@ class BaseWorker(ABC, ErrorHandlerMixin):
 
         self.stop()
 
-    def start(self):
-        """ワーカー開始"""
-        self.logger.info(f"🚀 {self.__class__.__name__} 起動中...")
+    def start(self)self.logger.info(f"🚀 {self.__class__.__name__} 起動中...")
+    """ワーカー開始"""
 
         if not self.connect():
             self.logger.error("起動失敗: RabbitMQ接続エラー")
@@ -259,15 +256,14 @@ class BaseWorker(ABC, ErrorHandlerMixin):
             traceback.print_exc()
             self.stop()
 
-    def stop(self):
-        """ワーカー停止（改善版：Bad File Descriptor対策）"""
-        self.logger.info("🛑 ワーカー停止中...")
+    def stop(self)self.logger.info("🛑 ワーカー停止中...")
+    """ワーカー停止（改善版：Bad File Descriptor対策）"""
 
         # フラグ設定（他のメソッドでの操作を停止）
         self.is_running = False
 
         try:
-            # 1. チャンネルの停止（順序重要）
+            # 1.0 チャンネルの停止（順序重要）
             if self.channel:
                 try:
                     if hasattr(self.channel, "is_open") and self.channel.is_open:
@@ -290,7 +286,7 @@ class BaseWorker(ABC, ErrorHandlerMixin):
 
                 self.channel = None
 
-            # 2. コネクションの停止
+            # 2.0 コネクションの停止
             if self.connection:
                 try:
                     if (
@@ -353,10 +349,9 @@ class BaseWorker(ABC, ErrorHandlerMixin):
             self, error, context, severity, retry_callback
         )
 
-    def health_check(self) -> Dict[str, Any]:
-        """ヘルスチェック（サブクラスで拡張可能）"""
-        uptime = time.time() - self.stats["start_time"]
-        return {
+    def health_check(self) -> Dict[str, Any]uptime = time.time() - self.stats["start_time"]
+    """ヘルスチェック（サブクラスで拡張可能）"""
+        return {:
             "worker_id": self.worker_id,
             "worker_type": self.worker_type,
             "status": "healthy" if self.is_running else "stopped",
@@ -368,7 +363,6 @@ class BaseWorker(ABC, ErrorHandlerMixin):
             "timestamp": datetime.now().isoformat(),
         }
 
-    def run(self):
-        """start()メソッドのエイリアス（後方互換性のため）"""
-        self.logger.warning("⚠️ run()は非推奨です。start()を使用してください。")
+    def run(self)self.logger.warning("⚠️ run()は非推奨です。start()を使用してください。")
+    """start()メソッドのエイリアス（後方互換性のため）"""
         return self.start()

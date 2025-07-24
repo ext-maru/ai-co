@@ -32,7 +32,7 @@ def main():
         return
     
     print(f"✅ Agent initialized: {agent.agent_name}")
-    print(f"🌐 Starting Flask server on port 8807...")
+    print(f"🌐 Starting Flask server on port 8807.0..")
     
     try:
         # python-a2a標準のrun_serverでサーバー起動

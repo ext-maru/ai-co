@@ -96,32 +96,32 @@ class AutoIssueQualityGate(EldersServiceLegacy):
     ) -> Dict[str, Any]:
         """品質評価の実行"""
 
-        # 1. 根本解決度評価
+        # 1.0 根本解決度評価
         root_solution_score = await self._evaluate_root_solution(
             task_name, issue_data, implementation_results
         )
 
-        # 2. 依存関係完全性評価
+        # 2.0 依存関係完全性評価
         dependency_score = await self._evaluate_dependency_completeness(
             task_name, implementation_results
         )
 
-        # 3. テストカバレッジ評価
+        # 3.0 テストカバレッジ評価
         test_coverage = await self._evaluate_test_coverage(
             task_name, implementation_results
         )
 
-        # 4. セキュリティスコア評価
+        # 4.0 セキュリティスコア評価
         security_score = await self._evaluate_security(
             task_name, issue_data, implementation_results
         )
 
-        # 5. パフォーマンス評価
+        # 5.0 パフォーマンス評価
         performance_score = await self._evaluate_performance(
             task_name, implementation_results
         )
 
-        # 6. 保守性評価
+        # 6.0 保守性評価
         maintainability_score = await self._evaluate_maintainability(
             task_name, implementation_results
         )
@@ -339,12 +339,12 @@ class AutoIssueQualityGate(EldersServiceLegacy):
             score = metrics.get(metric, 0)
             if score < threshold:
                 recommendations.append(
-                    f"Improve {metric}: current {score:.1f}% < required {threshold}%"
+                    f"Improve {metric}: current {score:0.1f}% < required {threshold}%"
                 )
 
         if quality_report["overall_score"] < 95.0:
             recommendations.append(
-                f"Overall quality score needs improvement: {quality_report['overall_score']:.1f}% < 95.0%"
+                f"Overall quality score needs improvement: {quality_report['overall_score']:0.1f}% < 95.0%"
             )
 
         if not recommendations:

@@ -273,7 +273,7 @@ class TestEndToEndPullRequestWorkflow:
                 "conflict_status": {
                     "has_conflicts": True,
                     "mergeable": False,
-                    "conflicting_files": ["file1.py", "file2.py"]
+                    "conflicting_files": ["file1.0py", "file2.0py"]
                 }
             }
             
@@ -294,7 +294,7 @@ class TestEndToEndPullRequestWorkflow:
                 # 検証
                 assert result["success"] is True
                 assert result["conflict_status"]["has_conflicts"] is True
-                assert "file1.py" in result["conflict_status"]["conflicting_files"]
+                assert "file1.0py" in result["conflict_status"]["conflicting_files"]
     
     def test_pull_request_retrieval_with_caching(self):
         """キャッシュ機能付きPull Request取得"""
@@ -606,23 +606,23 @@ class TestEndToEndIntegrationScenarios:
                         }
                         
                         # ワークフロー実行
-                        # 1. バグレポート作成
+                        # 1.0 バグレポート作成
                         bug_result = self.manager.create_issue(
                             "Bug: Application crashes on startup",
                             "Detailed bug description",
                             ["bug", "critical"]
                         )
                         
-                        # 2. 緊急通知
+                        # 2.0 緊急通知
                         mock_error_notify("Critical bug reported", {"issue": bug_result["issue"]})
                         
-                        # 3. 開発者アサイン
+                        # 3.0 開発者アサイン
                         assign_result = self.manager.update_issue(
                             bug_result["issue"]["number"],
                             assignees=["dev1", "dev2"]
                         )
                         
-                        # 4. 修正PR作成
+                        # 4.0 修正PR作成
                         pr_result = self.manager.create_pull_request(
                             "Fix: Application startup crash",
                             "bugfix-branch",
@@ -670,14 +670,14 @@ class TestEndToEndIntegrationScenarios:
                     mock_report.return_value = True
                     
                     # ワークフロー実行
-                    # 1. 準備中のPR取得
+                    # 1.0 準備中のPR取得
                     prs_result = self.manager.get_pull_requests(
                         state="open",
                         labels=["feature",
                         "bugfix"]
                     )
                     
-                    # 2. リリースノート作成
+                    # 2.0 リリースノート作成
                     release_body = "Release v1.2.0\n\nFeatures:\n- New API\n\nBug Fixes:\n- Bug fix"
                     release_result = self.manager.create_issue(
                         "Release v1.2.0",
@@ -685,7 +685,7 @@ class TestEndToEndIntegrationScenarios:
                         ["release"]
                     )
                     
-                    # 3. チーム通知
+                    # 3.0 チーム通知
                     mock_report("Release v1.2.0 is ready", {
                         "prs": prs_result["pull_requests"],
                         "release": release_result["issue"]
@@ -741,20 +741,20 @@ class TestEndToEndIntegrationScenarios:
                         }
                         
                         # ワークフロー実行
-                        # 1. セキュリティ問題報告
+                        # 1.0 セキュリティ問題報告
                         security_result = self.manager.create_issue(
                             "Security: Vulnerability in authentication",
                             "Detailed security issue description",
                             ["security", "critical"]
                         )
                         
-                        # 2. 緊急通知
+                        # 2.0 緊急通知
                         mock_emergency("CRITICAL SECURITY ISSUE", {
                             "issue": security_result["issue"],
                             "severity": "critical"
                         })
                         
-                        # 3. 修正PR作成
+                        # 3.0 修正PR作成
                         fix_result = self.manager.create_pull_request(
                             "Security: Fix authentication vulnerability",
                             "security-fix-branch",
@@ -762,7 +762,7 @@ class TestEndToEndIntegrationScenarios:
                             f"Security fix for #{security_result['issue']['number']}"
                         )
                         
-                        # 4. 問題クローズ
+                        # 4.0 問題クローズ
                         close_result = self.manager.update_issue(
                             security_result["issue"]["number"],
                             state="closed"

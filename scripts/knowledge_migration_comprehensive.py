@@ -135,7 +135,7 @@ class ComprehensiveKnowledgeMigrator:
         self.stats.total_size = analysis["total_stats"]["total_size"]
 
         logger.info(
-            f"📊 Analysis complete: {self.stats.total_files} files, {self.stats.total_size/1024/1024:.2f}MB"
+            f"📊 Analysis complete: {self.stats.total_files} files, {self.stats.total_size/1024/1024:0.2f}MB"
         )
         return analysis
 
@@ -470,7 +470,7 @@ class ComprehensiveKnowledgeMigrator:
         verification["verification_passed"] = len(verification["missing_files"]) == 0
 
         logger.info(
-            f"✅ Verification complete: {verification['coverage_percentage']:.1f}% coverage"
+            f"✅ Verification complete: {verification['coverage_percentage']:0.1f}% coverage"
         )
         return verification
 
@@ -520,7 +520,7 @@ async def main():
         print("📊 DRY RUN ANALYSIS RESULTS")
         print("=" * 60)
         print(f"Total files found: {dry_run_results['statistics']['total_files']}")
-        print(f"Total size: {dry_run_results['statistics']['total_size_mb']:.2f} MB")
+        print(f"Total size: {dry_run_results['statistics']['total_size_mb']:0.2f} MB")
         print(f"Categories: {len(dry_run_results['migration_results'])}")
 
         for category, result in dry_run_results["migration_results"].items():
@@ -539,11 +539,11 @@ async def main():
         print("=" * 60)
         print(f"Successful: {live_results['statistics']['successful_migrations']}")
         print(f"Failed: {live_results['statistics']['failed_migrations']}")
-        print(f"Success rate: {live_results['statistics']['success_rate']:.1f}%")
+        print(f"Success rate: {live_results['statistics']['success_rate']:0.1f}%")
 
         # 検証
         verification = await migrator.verify_migration()
-        print(f"\n🔍 VERIFICATION: {verification['coverage_percentage']:.1f}% coverage")
+        print(f"\n🔍 VERIFICATION: {verification['coverage_percentage']:0.1f}% coverage")
 
         if verification["verification_passed"]:
             print("🎉 Migration verification PASSED - No data loss detected!")

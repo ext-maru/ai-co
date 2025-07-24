@@ -51,11 +51,10 @@ class ElderFlowSystemAuditor:
             "recommendations": []
         }
         
-    async def audit_task_tracker(self) -> Dict[str, Any]:
-        """タスクトラッカー（PostgreSQL統合）の監査"""
-        logger.info("🔍 タスクトラッカーシステムの監査開始...")
+    async def audit_task_tracker(self) -> Dict[str, Any]logger.info("🔍 タスクトラッカーシステムの監査開始...")
+    """タスクトラッカー（PostgreSQL統合）の監査"""
         
-        results = {
+        results = {:
             "status": "unknown",
             "postgres_integration": False,
             "data_integrity": True,
@@ -105,11 +104,10 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def audit_elder_flow_auto_apply(self) -> Dict[str, Any]:
-        """Elder Flow自動適用メカニズムの監査"""
-        logger.info("🔍 Elder Flow自動適用メカニズムの監査開始...")
+    async def audit_elder_flow_auto_apply(self) -> Dict[str, Any]logger.info("🔍 Elder Flow自動適用メカニズムの監査開始...")
+    """Elder Flow自動適用メカニズムの監査"""
         
-        results = {
+        results = {:
             "status": "unknown",
             "auto_detection": False,
             "keyword_patterns": [],
@@ -146,11 +144,10 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def audit_four_sages_integration(self) -> Dict[str, Any]:
-        """4賢者システム統合の監査"""
-        logger.info("🔍 4賢者システム統合の監査開始...")
+    async def audit_four_sages_integration(self) -> Dict[str, Any]logger.info("🔍 4賢者システム統合の監査開始...")
+    """4賢者システム統合の監査"""
         
-        results = {
+        results = {:
             "status": "unknown",
             "sages": {
                 "knowledge": {"status": "unknown", "functionality": []},
@@ -189,11 +186,10 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def audit_git_automation(self) -> Dict[str, Any]:
-        """Git自動化（git-elder-commit）の監査"""
-        logger.info("🔍 Git自動化システムの監査開始...")
+    async def audit_git_automation(self) -> Dict[str, Any]logger.info("🔍 Git自動化システムの監査開始...")
+    """Git自動化（git-elder-commit）の監査"""
         
-        results = {
+        results = {:
             "status": "unknown",
             "git_elder_commit": False,
             "conventional_commits": False,
@@ -231,11 +227,10 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def audit_knowledge_base(self) -> Dict[str, Any]:
-        """知識ベース整合性の監査"""
-        logger.info("🔍 知識ベース整合性の監査開始...")
+    async def audit_knowledge_base(self) -> Dict[str, Any]logger.info("🔍 知識ベース整合性の監査開始...")
+    """知識ベース整合性の監査"""
         
-        results = {
+        results = {:
             "status": "unknown",
             "total_entries": 0,
             "categories": {},
@@ -283,11 +278,10 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def security_scan(self) -> Dict[str, Any]:
-        """セキュリティ脆弱性スキャン"""
-        logger.info("🔍 セキュリティ脆弱性スキャン開始...")
+    async def security_scan(self) -> Dict[str, Any]logger.info("🔍 セキュリティ脆弱性スキャン開始...")
+    """セキュリティ脆弱性スキャン"""
         
-        results = {
+        results = {:
             "status": "unknown",
             "vulnerabilities": [],
             "sensitive_data": [],
@@ -326,11 +320,10 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def performance_benchmark(self) -> Dict[str, Any]:
-        """パフォーマンスベンチマーク"""
-        logger.info("🔍 パフォーマンスベンチマーク開始...")
+    async def performance_benchmark(self) -> Dict[str, Any]logger.info("🔍 パフォーマンスベンチマーク開始...")
+    """パフォーマンスベンチマーク"""
         
-        results = {
+        results = {:
             "status": "unknown",
             "benchmarks": {},
             "bottlenecks": [],
@@ -348,14 +341,14 @@ class ElderFlowSystemAuditor:
                 for i in range(1000):
                     f.write(f"Benchmark line {i}\n")
             write_time = time.time() - start_time
-            results["benchmarks"]["file_write_1000_lines"] = f"{write_time:.3f}s"
+            results["benchmarks"]["file_write_1000_lines"] = f"{write_time:0.3f}s"
             
             # ファイル読み込みベンチマーク
             start_time = time.time()
             with open(test_file, 'r') as f:
                 lines = f.readlines()
             read_time = time.time() - start_time
-            results["benchmarks"]["file_read_1000_lines"] = f"{read_time:.3f}s"
+            results["benchmarks"]["file_read_1000_lines"] = f"{read_time:0.3f}s"
             
             # クリーンアップ
             test_file.unlink(missing_ok=True)
@@ -374,13 +367,12 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def run_comprehensive_audit(self) -> Dict[str, Any]:
-        """包括的なシステム監査を実行"""
-        logger.info("🏛️ Elder Flow システム包括監査開始")
+    async def run_comprehensive_audit(self) -> Dict[str, Any]logger.info("🏛️ Elder Flow システム包括監査開始")
+    """包括的なシステム監査を実行"""
         logger.info("=" * 80)
         
         # 各コンポーネントの監査を実行
-        audit_tasks = {
+        audit_tasks = {:
             "task_tracker": self.audit_task_tracker(),
             "elder_flow_auto_apply": self.audit_elder_flow_auto_apply(),
             "four_sages": self.audit_four_sages_integration(),
@@ -442,9 +434,8 @@ class ElderFlowSystemAuditor:
         
         self.audit_results["recommendations"] = recommendations
     
-    def _calculate_overall_score(self):
-        """総合スコアの計算"""
-        total_components = len(self.audit_results["components"])
+    def _calculate_overall_score(self)total_components = len(self.audit_results["components"])
+    """総合スコアの計算"""
         operational_components = sum(
             1 for comp in self.audit_results["components"].values()
             if comp.get("status") in ["operational", "secure", "optimal"]
@@ -526,9 +517,8 @@ class ElderFlowSystemAuditor:
 
 # テスト関数
 @pytest.mark.asyncio
-async def test_system_audit():
-    """システム監査テストの実行"""
-    auditor = ElderFlowSystemAuditor()
+async def test_system_audit()auditor = ElderFlowSystemAuditor()
+"""システム監査テストの実行"""
     results = await auditor.run_comprehensive_audit()
     
     # レポート生成
@@ -549,9 +539,8 @@ async def test_system_audit():
 
 
 # 直接実行用
-async def main():
-    """メイン実行関数"""
-    auditor = ElderFlowSystemAuditor()
+async def main()auditor = ElderFlowSystemAuditor()
+"""メイン実行関数"""
     results = await auditor.run_comprehensive_audit()
     
     # レポート生成

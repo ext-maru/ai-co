@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Analysis Magic - 分析魔法
+"📊" Analysis Magic - 分析魔法
 ============================
 
 Ancient Elderの8つの古代魔法の一つ。
@@ -164,7 +164,7 @@ class AnalysisMagic(AncientMagic):
         # 分析設定
         self.analysis_config = {
             "default_confidence_level": 0.95,
-            "significance_level": 0.05,
+            "significance_level": 0.5,
             "max_features": 100,
             "max_data_points": 100000,
             "enable_caching": True,
@@ -177,7 +177,7 @@ class AnalysisMagic(AncientMagic):
             "correlation_strong": 0.7,
             "correlation_moderate": 0.5,
             "correlation_weak": 0.3,
-            "significance_level": 0.05,
+            "significance_level": 0.5,
             "outlier_z_score": 3.0,
             "trend_strength_min": 0.1
         }
@@ -258,7 +258,7 @@ class AnalysisMagic(AncientMagic):
                     "descriptive_statistics": {
                         "mean": {"mock_feature": 5.5},
                         "median": {"mock_feature": 5.5},
-                        "std": {"mock_feature": 3.03},
+                        "std": {"mock_feature": 3.3},
                         "variance": {"mock_feature": 9.17},
                         "min": {"mock_feature": 1},
                         "max": {"mock_feature": 10},
@@ -328,7 +328,7 @@ class AnalysisMagic(AncientMagic):
                         if len(col_data) >= 3:
                             try:
                                 normality_stat, normality_p = normaltest(col_data)
-                                is_normal = normality_p > 0.05
+                                is_normal = normality_p > 0.5
                             except:
                                 is_normal = False
                                 normality_p = 0.0
@@ -396,7 +396,7 @@ class AnalysisMagic(AncientMagic):
             data = analysis_params.get("data")
             method = analysis_params.get("method", "pearson")
             include_pvalues = analysis_params.get("include_pvalues", True)
-            significance_level = analysis_params.get("significance_level", 0.05)
+            significance_level = analysis_params.get("significance_level", 0.5)
             
             # データ検証と準備
             if isinstance(data, dict):
@@ -672,7 +672,7 @@ class AnalysisMagic(AncientMagic):
                         "trend_direction": "increasing",
                         "trend_strength": 0.75,
                         "seasonal_components": {"amplitude": 0.5, "period": 12},
-                        "decomposition": {"trend": [1, 2, 3, 4, 5], "seasonal": [0.1, 0.2, 0.1], "residual": [0.05, 0.03, 0.02]}
+                        "decomposition": {"trend": [1, 2, 3, 4, 5], "seasonal": [0.1, 0.2, 0.1], "residual": [0.5, 0.3, 0.2]}
                     },
                     "note": "Using mock data due to missing pandas dependency"
                 }
@@ -712,7 +712,7 @@ class AnalysisMagic(AncientMagic):
                     "slope": float(slope),
                     "intercept": float(intercept),
                     "correlation": float(correlation) if not np.isnan(correlation) else 0.0,
-                    "p_value": 0.05,  # mock value
+                    "p_value": 0.5,  # mock value
                     "std_error": 0.1   # mock value
                 }
             
@@ -721,10 +721,10 @@ class AnalysisMagic(AncientMagic):
                 slope = trend_result["linear_trend"]["slope"]
                 p_val = trend_result["linear_trend"]["p_value"]
                 
-                if p_val < 0.05:  # 統計的に有意
-                    if slope > 0.01:
+                if p_val < 0.5:  # 統計的に有意
+                    if slope > 0.1:
                         trend_direction = "increasing"
-                    elif slope < -0.01:
+                    elif slope < -0.1:
                         trend_direction = "decreasing"
                     else:
                         trend_direction = "stable"
@@ -801,7 +801,7 @@ class AnalysisMagic(AncientMagic):
             data = analysis_params.get("data")
             pattern_types = analysis_params.get("pattern_types", ["cyclical", "anomaly"])
             window_size = analysis_params.get("window_size", 10)
-            sensitivity = analysis_params.get("sensitivity", 0.05)
+            sensitivity = analysis_params.get("sensitivity", 0.5)
             
             # Simplified pattern detection using only numpy
             if data is None:
@@ -1064,8 +1064,8 @@ class AnalysisMagic(AncientMagic):
                         else:
                             cohens_d = 0
                         
-                        # 変化点判定（p値 < 0.05 かつ 効果量 > 0.5）
-                        if p_value < 0.05 and cohens_d > 0.5:
+                        # 変化点判定（p値 < 0.5 かつ 効果量 > 0.5）
+                        if p_value < 0.5 and cohens_d > 0.5:
                             change_points.append(i)
                             confidence_scores.append(1 - p_value)
                             
@@ -1270,7 +1270,7 @@ class AnalysisMagic(AncientMagic):
             data = analysis_params.get("data", {})
             test_type = analysis_params.get("test_type", "granger")
             max_lags = analysis_params.get("max_lags", 3)
-            significance_level = analysis_params.get("significance_level", 0.05)
+            significance_level = analysis_params.get("significance_level", 0.5)
             
             # データ検証
             if "cause" not in data or "effect" not in data:
@@ -1565,7 +1565,7 @@ class AnalysisMagic(AncientMagic):
                         skew_direction = "right" if skewness > 0 else "left"
                         insights.append({
                             "type": "statistical",
-                            "description": f"{col} shows significant {skew_direction} skewness (skewness: {skewness:.2f})",
+                            "description": f"{col} shows significant {skew_direction} skewness (skewness: {skewness:0.2f})",
                             "confidence": min(0.9, abs(skewness) / 3),
                             "variable": col,
                             "metric": "skewness",
@@ -1577,7 +1577,7 @@ class AnalysisMagic(AncientMagic):
                         kurt_type = "heavy-tailed" if kurtosis > 0 else "light-tailed"
                         insights.append({
                             "type": "statistical",
-                            "description": f"{col} has {kurt_type} distribution (kurtosis: {kurtosis:.2f})",
+                            "description": f"{col} has {kurt_type} distribution (kurtosis: {kurtosis:0.2f})",
                             "confidence": min(0.9, abs(kurtosis) / 5),
                             "variable": col,
                             "metric": "kurtosis", 
@@ -1600,7 +1600,7 @@ class AnalysisMagic(AncientMagic):
                                 
                                 insights.append({
                                     "type": "correlation",
-                                    "description": f"{col1} and {col2} show {corr_strength} {corr_direction} correlation (r = {corr_val:.3f})",
+                                    "description": f"{col1} and {col2} show {corr_strength} {corr_direction} correlation (r = {corr_val:0.3f})",
                                     "confidence": min(0.95, abs(corr_val)),
                                     "variables": [col1, col2],
                                     "correlation": corr_val,
@@ -1619,7 +1619,7 @@ class AnalysisMagic(AncientMagic):
                     if outlier_percentage > 5:  # 5%以上が外れ値
                         insights.append({
                             "type": "outlier",
-                            "description": f"{col} contains {outlier_percentage:.1f}% outliers ({outliers} out of {len(col_data)} values)",
+                            "description": f"{col} contains {outlier_percentage:0.1f}% outliers ({outliers} out of {len(col_data)} values)",
                             "confidence": min(0.9, outlier_percentage / 20),
                             "variable": col,
                             "outlier_count": int(outliers),
@@ -1635,13 +1635,13 @@ class AnalysisMagic(AncientMagic):
                         x = np.arange(len(col_data))
                         slope, intercept, r_value, p_value, std_err = stats.linregress(x, col_data)
                         
-                        if p_value < 0.05 and abs(r_value) > 0.3:
+                        if p_value < 0.5 and abs(r_value) > 0.3:
                             trend_direction = "increasing" if slope > 0 else "decreasing"
                             trend_strength = abs(r_value)
                             
                             insights.append({
                                 "type": "trend",
-                                "description": f"{col} shows a {trend_direction} trend over time (R² = {r_value**2:.3f})",
+                                "description": f"{col} shows a {trend_direction} trend over time (R² = {r_value**2:0.3f})",
                                 "confidence": min(0.95, trend_strength),
                                 "variable": col,
                                 "trend_direction": trend_direction,
@@ -1700,7 +1700,7 @@ class AnalysisMagic(AncientMagic):
         try:
             data = analysis_params.get("data")
             methods = analysis_params.get("methods", ["z_score"])
-            contamination = analysis_params.get("contamination", 0.05)
+            contamination = analysis_params.get("contamination", 0.5)
             threshold = analysis_params.get("threshold", 2.0)
             
             # データ検証
@@ -2065,14 +2065,14 @@ class AnalysisMagic(AncientMagic):
                             "type": "missing_values",
                             "severity": "high",
                             "column": col,
-                            "description": f"Column {col} has {missing_percentage:.1f}% missing values"
+                            "description": f"Column {col} has {missing_percentage:0.1f}% missing values"
                         })
                     elif missing_percentage > 20:
                         issues_detected.append({
                             "type": "missing_values", 
                             "severity": "medium",
                             "column": col,
-                            "description": f"Column {col} has {missing_percentage:.1f}% missing values"
+                            "description": f"Column {col} has {missing_percentage:0.1f}% missing values"
                         })
                 
                 completeness_score = 1 - (total_missing / total_cells)
@@ -2138,7 +2138,7 @@ class AnalysisMagic(AncientMagic):
                                 "type": "outliers",
                                 "severity": "high" if outlier_percentage > 20 else "medium",
                                 "column": col,
-                                "description": f"Column {col} has {outlier_percentage:.1f}% outliers"
+                                "description": f"Column {col} has {outlier_percentage:0.1f}% outliers"
                             })
                 
                 total_numeric_values = sum(len(df[col].dropna()) for col in numeric_cols)
@@ -2556,7 +2556,7 @@ class AnalysisMagic(AncientMagic):
         report_lines = [
             "# Comprehensive Data Analysis Report",
             f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            f"**Execution Time:** {summary['execution_time']:.2f} seconds",
+            f"**Execution Time:** {summary['execution_time']:0.2f} seconds",
             "",
             "## Executive Summary",
             f"- Total modules executed: {summary['total_modules']}",

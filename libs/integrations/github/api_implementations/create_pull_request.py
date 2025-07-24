@@ -512,7 +512,7 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
             
             safe_git = SafeGitOperations()
             
-            # 1. ブランチ名を生成
+            # 1.0 ブランチ名を生成
             if auto_branch_name:
                 # タイトルからブランチ名を生成
                 import re
@@ -522,7 +522,7 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
             else:
                 branch_name = kwargs.get("head", f"{branch_prefix}/auto-generated")
             
-            # 2. 安全にブランチを作成
+            # 2.0 安全にブランチを作成
             branch_result = safe_git.create_feature_branch_safely(branch_name, base)
             if not branch_result["success"]:
                 return {
@@ -531,10 +531,10 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
                     "branch_management": branch_result
                 }
             
-            # 3. 変更をコミット（既に存在する場合）
+            # 3.0 変更をコミット（既に存在する場合）
             commit_result = safe_git.auto_commit_if_changes(title)
             
-            # 4. ブランチをプッシュ
+            # 4.0 ブランチをプッシュ
             push_result = safe_git.push_branch_safely(branch_name)
             if not push_result["success"]:
                 return {
@@ -544,7 +544,7 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
                     "commit_result": commit_result
                 }
             
-            # 5. PRを作成
+            # 5.0 PRを作成
             pr_result = self.create_pull_request(
                 title=title,
                 head=branch_name,
@@ -553,7 +553,7 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
                 **kwargs
             )
             
-            # 6. 結果をまとめて返す
+            # 6.0 結果をまとめて返す
             return {
                 "success": pr_result["success"],
                 "pull_request": pr_result.get("pull_request"),

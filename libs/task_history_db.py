@@ -34,7 +34,7 @@ class TaskHistoryDB(BaseManager):
         """Initialize database schema (BaseManager abstract method implementation)"""
         try:
             self.ensure_directory(self.db_path.parent)
-            self.connection = sqlite3.connect(str(self.db_path))
+            self.connection = sqlite3connect(str(self.db_path))
             self.setup_schema()
             self.logger.info("✅ TaskHistoryDB initialized successfully")
             return True

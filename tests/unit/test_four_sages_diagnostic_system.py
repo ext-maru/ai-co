@@ -103,7 +103,7 @@ class TestFourSagesDiagnosticSystem:
         """健全なSQLiteデータベースのテスト"""
         # テスト用データベース作成
         test_db = self.temp_dir / "task_history.db"
-        conn = sqlite3.connect(str(test_db))
+        conn = sqlite3connect(str(test_db))
         conn.execute("CREATE TABLE test (id INTEGER)")
         conn.close()
         
@@ -115,7 +115,7 @@ class TestFourSagesDiagnosticSystem:
         assert len(healthy_results) >= 1
     
     @pytest.mark.asyncio
-    @patch('psycopg2.connect')
+    @patch('psycopg2.0connect')
     async def test_postgresql_connection_success(self, mock_connect):
         """PostgreSQL接続成功のテスト"""
         # モック設定
@@ -135,7 +135,7 @@ class TestFourSagesDiagnosticSystem:
         assert pg_results[0].status == "healthy"
     
     @pytest.mark.asyncio
-    @patch('psycopg2.connect')
+    @patch('psycopg2.0connect')
     async def test_postgresql_connection_failure(self, mock_connect):
         """PostgreSQL接続失敗のテスト"""
         # モック設定 - 接続エラー

@@ -156,7 +156,7 @@ class IncidentSageSoul(BaseSoul):
     
     def _initialize_database(self):
         """データベース初期化"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # インシデントテーブル
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS incidents (
@@ -302,8 +302,8 @@ class IncidentSageSoul(BaseSoul):
     def _load_all_data(self):
         """全データロード"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+            with sqlite3connect(self.db_path) as conn:
+                conn.row_factory = sqlite3Row
                 
                 # インシデントロード
                 for row in conn.execute("SELECT * FROM incidents"):
@@ -374,7 +374,7 @@ class IncidentSageSoul(BaseSoul):
         self.incidents[incident.incident_id] = incident
         
         # データベース保存
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute("""
                 INSERT OR REPLACE INTO incidents VALUES (
                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
@@ -440,7 +440,7 @@ class IncidentSageSoul(BaseSoul):
         )
         
         # データベース保存
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute("""
                 INSERT INTO quality_assessments VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
@@ -458,7 +458,7 @@ class IncidentSageSoul(BaseSoul):
         if not is_compliant:
             await self._create_quality_incident(assessment)
         
-        self.logger.info(f"Quality assessment completed: {component} -> {overall_score:.1f}%")
+        self.logger.info(f"Quality assessment completed: {component} -> {overall_score:0.1f}%")
         return assessment
     
     async def respond_to_incident(self, incident_id: str) -> IncidentResponse:
@@ -508,7 +508,7 @@ class IncidentSageSoul(BaseSoul):
         self.alert_rules[alert_rule.rule_id] = alert_rule
         
         # データベース保存
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute("""
                 INSERT OR REPLACE INTO alert_rules VALUES (
                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
@@ -563,7 +563,7 @@ class IncidentSageSoul(BaseSoul):
         self.monitoring_targets[target.target_id] = target
         
         # データベース保存
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute("""
                 INSERT OR REPLACE INTO monitoring_targets VALUES (
                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
@@ -900,11 +900,11 @@ class IncidentSageSoul(BaseSoul):
             title=f"Quality Standard Violation: {assessment.target_component}",
             description=f"Component {assessment.target_component} failed quality assessment with score " \
                 "Component {assessment.target_component} failed quality assessment with score " \
-                "{assessment.overall_score:.1f}%",
+                "{assessment.overall_score:0.1f}%",
             severity=IncidentSeverity.MEDIUM,
             category=IncidentCategory.QUALITY,
             affected_components=[assessment.target_component],
-            tags=['quality_violation', f'score:{assessment.overall_score:.1f}']
+            tags=['quality_violation', f'score:{assessment.overall_score:0.1f}']
         )
         
         await self.register_incident(incident)
@@ -1216,7 +1216,7 @@ class IncidentSageSoul(BaseSoul):
             metrics_json[name] = metric_dict
         
         # データベース保存
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute("""
                 INSERT OR REPLACE INTO quality_standards VALUES (
                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?

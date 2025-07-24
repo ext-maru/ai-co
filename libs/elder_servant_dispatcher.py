@@ -358,10 +358,8 @@ class ElderServantDispatcher:
         coordination_file.write_text(json.dumps(coordination_data, indent=2))
         logger.info(f"🤝 Test Guardian coordination file created: {assignment.task_id}")
 
-    def _extract_build_target(self, description: str) -> str:
-        """Extract build target from task description"""
-        if "build" in description.lower():
-            if "pipeline" in description.lower():
+    def _extract_build_target(self, description: str) -> strif "build" in description.lower()if "pipeline" in description.lower():
+    """Extract build target from task description"""
                 return "pipeline"
             elif "deployment" in description.lower():
                 return "deployment"
@@ -369,9 +367,8 @@ class ElderServantDispatcher:
                 return "optimization"
         return "general"
 
-    def _extract_optimization_focus(self, description: str) -> str:
-        """Extract optimization focus from task description"""
-        if "performance" in description.lower():
+    def _extract_optimization_focus(self, description: str) -> strif "performance" in description.lower():
+    """Extract optimization focus from task description"""
             return "performance"
         elif "memory" in description.lower():
             return "memory"
@@ -379,9 +376,8 @@ class ElderServantDispatcher:
             return "speed"
         return "general"
 
-    def _extract_analysis_type(self, description: str) -> str:
-        """Extract analysis type from task description"""
-        if "security" in description.lower():
+    def _extract_analysis_type(self, description: str) -> strif "security" in description.lower():
+    """Extract analysis type from task description"""
             return "security"
         elif "performance" in description.lower():
             return "performance"
@@ -389,9 +385,8 @@ class ElderServantDispatcher:
             return "code"
         return "general"
 
-    def _extract_automation_scope(self, description: str) -> str:
-        """Extract automation scope from task description"""
-        if "testing" in description.lower():
+    def _extract_automation_scope(self, description: str) -> strif "testing" in description.lower():
+    """Extract automation scope from task description"""
             return "testing"
         elif "deployment" in description.lower():
             return "deployment"
@@ -399,9 +394,8 @@ class ElderServantDispatcher:
             return "monitoring"
         return "general"
 
-    def _extract_monitoring_target(self, description: str) -> str:
-        """Extract monitoring target from task description"""
-        if "worker" in description.lower():
+    def _extract_monitoring_target(self, description: str) -> strif "worker" in description.lower():
+    """Extract monitoring target from task description"""
             return "worker"
         elif "system" in description.lower():
             return "system"
@@ -409,9 +403,8 @@ class ElderServantDispatcher:
             return "performance"
         return "general"
 
-    def _extract_alert_threshold(self, description: str) -> str:
-        """Extract alert threshold from task description"""
-        if "critical" in description.lower():
+    def _extract_alert_threshold(self, description: str) -> strif "critical" in description.lower():
+    """Extract alert threshold from task description"""
             return "critical"
         elif "warning" in description.lower():
             return "warning"

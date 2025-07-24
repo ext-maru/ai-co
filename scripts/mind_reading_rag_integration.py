@@ -3,7 +3,7 @@
 Mind Reading + RAG Elder 統合システム
 精度向上のための協力フレームワーク
 
-🧠 Mind Reading Protocol + 🔍 RAG Elder Wizards = 🌟 Ultimate Understanding
+🧠 Mind Reading Protocol + "🔍" RAG Elder Wizards = 🌟 Ultimate Understanding
 """
 
 import asyncio
@@ -82,11 +82,10 @@ class MindReadingRAGIntegration:
 
         self.logger.info("🌟 Mind Reading + RAG Integration initialized")
 
-    def _setup_logger(self) -> logging.Logger:
-        """ロガー設定"""
-        logger = logging.getLogger("mind_reading_rag_integration")
+    def _setup_logger(self) -> logging.Loggerlogger = logging.getLogger("mind_reading_rag_integration")
+    """ロガー設定"""
         logger.setLevel(logging.INFO)
-
+:
         if not logger.handlers:
             handler = logging.StreamHandler()
             formatter = logging.Formatter(
@@ -97,9 +96,8 @@ class MindReadingRAGIntegration:
 
         return logger
 
-    async def initialize_components(self):
-        """全コンポーネントを初期化"""
-        self.logger.info("🚀 Initializing integrated components...")
+    async def initialize_components(self)self.logger.info("🚀 Initializing integrated components...")
+    """全コンポーネントを初期化"""
 
         # Mind Reading Protocol初期化
         if MindReadingCore:
@@ -132,23 +130,23 @@ class MindReadingRAGIntegration:
         """
         self.logger.info(f"🧠🔍 Enhanced understanding: {text[:50]}...")
 
-        # 1. 基本的な意図理解
+        # 1.0 基本的な意図理解
         original_intent = await self.mind_reader.understand_intent(text)
-        self.logger.info(f"Original confidence: {original_intent.confidence:.2%}")
+        self.logger.info(f"Original confidence: {original_intent.confidence:0.2%}")
 
-        # 2. RAGによる文脈検索・補強
+        # 2.0 RAGによる文脈検索・補強
         rag_context = await self._gather_rag_context(text, original_intent)
 
-        # 3. 文脈を考慮した信頼度再計算
+        # 3.0 文脈を考慮した信頼度再計算
         enhanced_confidence = await self._calculate_enhanced_confidence(
             original_intent, rag_context
         )
 
-        # 4. 文脈キーワードと関連パターンの抽出
+        # 4.0 文脈キーワードと関連パターンの抽出
         contextual_keywords = await self._extract_contextual_keywords(rag_context)
         related_patterns = await self._find_related_patterns(rag_context)
 
-        # 5. 改善度の記録
+        # 5.0 改善度の記録
         improvement = AccuracyImprovement(
             improvement_id=f"improve_{datetime.now().timestamp()}",
             original_confidence=original_intent.confidence,
@@ -158,7 +156,7 @@ class MindReadingRAGIntegration:
             timestamp=datetime.now().isoformat()
         )
 
-        # 6. 統計更新
+        # 6.0 統計更新
         self._update_integration_stats(improvement)
 
         enhanced_intent = RAGEnhancedIntent(
@@ -170,8 +168,8 @@ class MindReadingRAGIntegration:
             improvement=improvement
         )
 
-                self.logger.info(f"Enhanced confidence: {enhanced_confidence:.2%} \
-            (improvement: {improvement.improvement_factor:.2f}x)")
+                self.logger.info(f"Enhanced confidence: {enhanced_confidence:0.2%} \
+            (improvement: {improvement.improvement_factor:0.2f}x)")
 
         return enhanced_intent
 
@@ -186,7 +184,7 @@ class MindReadingRAGIntegration:
         }
 
         try:
-            # 1. 類似意図の履歴検索
+            # 1.0 類似意図の履歴検索
             if self.learning_collector:
                 similar_executions = await self.learning_collector.get_similar_executions(
                     intent.intent_type,
@@ -195,7 +193,7 @@ class MindReadingRAGIntegration:
                 )
                 context["similar_intents"] = similar_executions
 
-            # 2. RAGエルダーによる知識検索
+            # 2.0 RAGエルダーによる知識検索
             if self.rag_orchestrator:
                 # 意図タイプに関連する知識を検索
                 knowledge_gap = KnowledgeGap(
@@ -219,11 +217,11 @@ class MindReadingRAGIntegration:
                     hunt_results = await available_wizard.hunt_for_information(knowledge_gap)
                     context["contextual_knowledge"] = hunt_results.get("findings", [])
 
-            # 3. キーワードベースの履歴検索
+            # 3.0 キーワードベースの履歴検索
             historical_patterns = await self._search_historical_patterns(intent.extracted_keywords)
             context["historical_patterns"] = historical_patterns
 
-            # 4. 成功パターンの取得
+            # 4.0 成功パターンの取得
             if self.learning_collector:
                 success_patterns = await self.learning_collector.get_success_patterns(intent.intent_type)
                 context["success_patterns"] = success_patterns[:3]  # 上位3パターン
@@ -274,14 +272,14 @@ class MindReadingRAGIntegration:
         enhancement_factor = 1.0
 
         try:
-            # 1. 類似意図の成功率による補正
+            # 1.0 類似意図の成功率による補正
             similar_intents = rag_context.get("similar_intents", [])
             if similar_intents:
                 success_count = sum(1 for s in similar_intents if hasattr(s, 'status') and s.status.value == 'success')
                 success_rate = success_count / len(similar_intents)
                 enhancement_factor *= (1 + success_rate * 0.2)  # 最大20%向上
 
-            # 2. 文脈知識の豊富さによる補正
+            # 2.0 文脈知識の豊富さによる補正
             contextual_knowledge = rag_context.get("contextual_knowledge", [])
             if contextual_knowledge:
                 knowledge_confidence = sum(
@@ -290,14 +288,14 @@ class MindReadingRAGIntegration:
                 )
                 enhancement_factor *= (1 + knowledge_confidence * 0.15)  # 最大15%向上
 
-            # 3. 歴史パターンマッチによる補正
+            # 3.0 歴史パターンマッチによる補正
             historical_patterns = rag_context.get("historical_patterns", [])
             if historical_patterns:
                 max_matches = max((p.get("keyword_matches", 0) for p in historical_patterns), default=0)
                 if max_matches > 2:
                     enhancement_factor *= (1 + min(max_matches * 0.05, 0.25))  # 最大25%向上
 
-            # 4. 成功パターンによる補正
+            # 4.0 成功パターンによる補正
             success_patterns = rag_context.get("success_patterns", [])
             if success_patterns:
                 avg_success_rate = sum(p.success_count / max(p.success_count + p.failure_count, 1)
@@ -311,10 +309,9 @@ class MindReadingRAGIntegration:
         enhanced_confidence = min(base_confidence * enhancement_factor, 1.0)
         return enhanced_confidence
 
-    async def _extract_contextual_keywords(self, rag_context: Dict[str, Any]) -> List[str]:
-        """文脈キーワードの抽出"""
-        keywords = set()
-
+    async def _extract_contextual_keywords(self, rag_context: Dict[str, Any]) -> List[str]keywords = set()
+    """文脈キーワードの抽出"""
+:
         try:
             # 文脈知識からキーワード抽出
             contextual_knowledge = rag_context.get("contextual_knowledge", [])
@@ -417,19 +414,19 @@ class MindReadingRAGIntegration:
         suggestions = []
 
         try:
-            # 1. データ不足の分析
+            # 1.0 データ不足の分析
             if self.integration_stats["total_enhancements"] < 10:
                 suggestions.append("More training data needed - collect diverse intent examples")
 
-            # 2. 文脈ヒット率の分析
+            # 2.0 文脈ヒット率の分析
             if self.integration_stats["context_hit_rate"] < 0.5:
                 suggestions.append("Improve RAG knowledge base - add more contextual documents")
 
-            # 3. 改善率の分析
+            # 3.0 改善率の分析
             if self.integration_stats["average_improvement"] < 1.1:
                 suggestions.append("Enhance RAG search algorithms - implement semantic search")
 
-            # 4. 失敗パターンの分析
+            # 4.0 失敗パターンの分析
             recent_failures = [
                 i for i in self.improvement_history[-10:]
                 if i.improvement_factor <= 1.0
@@ -438,7 +435,7 @@ class MindReadingRAGIntegration:
             if len(recent_failures) > 5:
                 suggestions.append("Analyze failure patterns - improve intent classification rules")
 
-            # 5. 成功パターンの活用
+            # 5.0 成功パターンの活用
             if self.integration_stats["successful_improvements"] > 0:
                 suggestions.append("Leverage successful patterns - create template-based enhancements")
 
@@ -457,9 +454,8 @@ class MindReadingRAGIntegration:
 
 
 # デモンストレーション
-async def demo_integration():
-    """統合システムのデモ"""
-    print("🌟 Mind Reading + RAG Elder Integration Demo")
+async def demo_integration()print("🌟 Mind Reading + RAG Elder Integration Demo")
+"""統合システムのデモ"""
     print("=" * 60)
 
     integration = MindReadingRAGIntegration()
@@ -489,9 +485,9 @@ async def demo_integration():
             enhanced_intent = await integration.enhanced_intent_understanding(test_case)
 
             print(f"   🧠 Original: {enhanced_intent.original_intent." \
-                "intent_type.value} ({enhanced_intent.original_intent.confidence:.2%})")
+                "intent_type.value} ({enhanced_intent.original_intent.confidence:0.2%})")
             print(f"   🌟 Enhanced: {enhanced_intent.enhanced_confidence:." \
-                "2%} (x{enhanced_intent.improvement.improvement_factor:.2f})")
+                "2%} (x{enhanced_intent.improvement.improvement_factor:0.2f})")
             print(f"   🔍 Context: {len(enhanced_intent.rag_context['contextual_knowledge'])} items")
             print(f"   📊 Keywords: {len(enhanced_intent.contextual_keywords)} contextual")
             print()
@@ -501,9 +497,9 @@ async def demo_integration():
         report = await integration.get_precision_enhancement_report()
 
         print(f"   Total Enhancements: {report['total_enhancements']}")
-        print(f"   Success Rate: {report['success_rate']:.1%}")
-        print(f"   Average Improvement: {report['average_improvement']:.2f}x")
-        print(f"   Max Improvement: {report['max_improvement']:.2f}x")
+        print(f"   Success Rate: {report['success_rate']:0.1%}")
+        print(f"   Average Improvement: {report['average_improvement']:0.2f}x")
+        print(f"   Max Improvement: {report['max_improvement']:0.2f}x")
         print()
 
         # 改善提案

@@ -71,7 +71,7 @@ class ElderCouncilSession:
 
         # Load the analysis report
         analysis_report = (
-            self.reports_dir / "AI_COMMAND_REORGANIZATION_REPORT_20250709.md"
+            self.reports_dir / "AI_COMMAND_REORGANIZATION_REPORT_20250709.0md"
         )
 
         proposal = {
@@ -536,27 +536,27 @@ class ElderCouncilSession:
         print("🏛️ AI Command System Reorganization - Elder Council Session")
         print("=" * 60)
 
-        # 1. Convene council
+        # 1.0 Convene council
         council_members = self.convene_council()
 
-        # 2. Review proposal
+        # 2.0 Review proposal
         proposal = self.review_proposal()
 
-        # 3. Elder discussions
+        # 3.0 Elder discussions
         discussions = self.elder_discussions(proposal)
 
-        # 4. Council decision
+        # 4.0 Council decision
         decision = self.council_decision(discussions)
 
-        # 5. Create implementation plan
+        # 5.0 Create implementation plan
         implementation = self.create_implementation_plan(decision)
 
-        # 6. Save records
+        # 6.0 Save records
         record_path = self.save_council_records(
             council_members, proposal, discussions, decision, implementation
         )
 
-        # 7. Execute immediate actions
+        # 7.0 Execute immediate actions
         self.execute_immediate_actions(decision)
 
         print(f"\n📄 評議会記録: {record_path}")

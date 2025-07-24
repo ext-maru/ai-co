@@ -25,7 +25,7 @@ def find_slack_config():
 
     print("🔍 Slack設定を検索中...")
 
-    # 1. 環境変数をチェック
+    # 1.0 環境変数をチェック
     print("\n📌 環境変数をチェック...")
     env_vars = {
         "SLACK_WEBHOOK_URL": os.environ.get("SLACK_WEBHOOK_URL"),
@@ -44,7 +44,7 @@ def find_slack_config():
             elif "CHANNEL_ID" in key:
                 found_config["channel_id"] = value
 
-    # 2. .envファイルをチェック
+    # 2.0 .envファイルをチェック
     env_files = [".env", ".env.local", ".env.production"]
     print("\n📌 .envファイルをチェック...")
 
@@ -81,7 +81,7 @@ def find_slack_config():
                                 found_config["channels"].append(value)
                             print(f"    ✅ Channel発見: {value}")
 
-    # 3. 設定ファイルをチェック
+    # 3.0 設定ファイルをチェック
     print("\n📌 設定ファイルをチェック...")
     config_patterns = [
         (PROJECT_ROOT / "config" / "*.json", "json"),
@@ -125,7 +125,7 @@ def find_slack_config():
             except Exception as e:
                 print(f"    ⚠️ 読み取りエラー: {e}")
 
-    # 4. ソースコード内のハードコーディングをチェック
+    # 4.0 ソースコード内のハードコーディングをチェック
     print("\n📌 ソースコード内の設定をチェック...")
     source_patterns = ["*.py", "*.sh"]
 
@@ -319,16 +319,16 @@ def main():
 
             print("\n✅ 設定完了！")
             print("\n次のステップ:")
-            print("1. 不足している情報があれば手動で追加:")
+            print("1.0 不足している情報があれば手動で追加:")
             print(f"   nano {PROJECT_ROOT}/config/slack.conf")
-            print("2. Slackワーカーを起動:")
+            print("2.0 Slackワーカーを起動:")
             print("   ai-slack start")
     else:
         print("\n⚠️  Slack設定が見つかりませんでした")
         print("\n設定方法:")
-        print("1. Slack Appを作成: https://api.slack.com/apps")
-        print("2. Bot TokenとWebhook URLを取得")
-        print("3. 設定ファイルに記入:")
+        print("1.0 Slack Appを作成: https://api.slack.com/apps")
+        print("2.0 Bot TokenとWebhook URLを取得")
+        print("3.0 設定ファイルに記入:")
         print(f"   nano {PROJECT_ROOT}/config/slack.conf")
         print("\n詳細ガイド:")
         print(f"   cat {PROJECT_ROOT}/docs/SLACK_INTEGRATION_GUIDE.md")

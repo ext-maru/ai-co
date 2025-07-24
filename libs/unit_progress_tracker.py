@@ -425,11 +425,11 @@ class UnitProgressTracker:
 ## 📊 Executive Summary
 - **Total Activities**: {report.summary['total_activities']}
 - **Auto-Generated**: {report.summary['auto_generated_count']}
-- **Overall Health**: {report.summary['overall_health']:.1f}%
+- **Overall Health**: {report.summary['overall_health']:0.1f}%
 
 ## ⚔️ Knights (騎士団)
 - **Activities**: {report.knights['total_activities']}
-- **Efficiency**: {report.summary['knights_efficiency']:.1f}%
+- **Efficiency**: {report.summary['knights_efficiency']:0.1f}%
 - **Actions**:
   - Detected: {report.knights['by_action'].get('detected', 0)}
   - Repaired: {report.knights['by_action'].get('repaired', 0)}
@@ -437,14 +437,14 @@ class UnitProgressTracker:
 
 ## 🧙‍♂️ Wizards (ウィザーズ)
 - **Activities**: {report.wizards['total_activities']}
-- **Productivity**: {report.summary['wizards_productivity']:.1f}
+- **Productivity**: {report.summary['wizards_productivity']:0.1f}
 - **Actions**:
   - Knowledge Gaps: {report.wizards['by_action'].get('knowledge_gap', 0)}
   - Enrichments: {report.wizards['by_action'].get('enrichment', 0)}
 
 ## 🔨 Dwarf Workshop (ドワーフ工房)
 - **Activities**: {report.dwarf_workshop['total_activities']}
-- **Optimization Rate**: {report.summary['dwarf_optimization_rate']:.1f}%
+- **Optimization Rate**: {report.summary['dwarf_optimization_rate']:0.1f}%
 - **Actions**:
   - Optimizations: {report.dwarf_workshop['by_action'].get('optimization', 0)}
   - Monitoring: {report.dwarf_workshop['by_action'].get('monitoring', 0)}
@@ -463,7 +463,7 @@ def main():
     report = tracker.generate_daily_report(today)
 
     print(f"✅ Daily progress report generated for {report.date}")
-    print(f"📊 Overall health: {report.summary['overall_health']:.1f}%")
+    print(f"📊 Overall health: {report.summary['overall_health']:0.1f}%")
     print(
         f"📁 Report saved to: knowledge_base/unit_progress/daily_progress_{report.date}.md"
     )

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 プロジェクトボード管理システム
+"📊" プロジェクトボード管理システム
 Project Board Management System
 
 GitHub Projectsとの統合を管理し、計画書からプロジェクトボードを自動生成・更新する
@@ -158,9 +158,8 @@ class ProjectBoardManager:
         except Exception as e:
             logger.error(f"同期マッピング保存エラー: {e}")
 
-    def _load_config(self) -> Dict:
-        """設定を読み込み"""
-        if not self.config_file.exists():
+    def _load_config(self) -> Dictif not self.config_file.exists():
+    """設定を読み込み"""
             default_config = {
                 "default_board_template": "kanban",
                 "auto_create_labels": True,
@@ -435,11 +434,10 @@ class ProjectBoardManager:
 
         return summary
 
-    async def auto_sync_all_boards(self) -> Dict:
-        """すべてのボードを自動同期"""
-        print("🔄 全ボード自動同期開始")
+    async def auto_sync_all_boards(self) -> Dictprint("🔄 全ボード自動同期開始")
+    """すべてのボードを自動同期"""
 
-        sync_results = {
+        sync_results = {:
             "timestamp": datetime.now().isoformat(),
             "total_boards": len(self.sync_mappings),
             "successful_syncs": 0,
@@ -534,7 +532,7 @@ class ProjectBoardManager:
                             "priority": "medium",
                             "plan_file": mapping.plan_file,
                             "project_id": mapping.project_id,
-                            "message": f"48時間以上同期されていません ({hours_since_sync:.1f}時間)",
+                            "message": f"48時間以上同期されていません ({hours_since_sync:0.1f}時間)",
                             "action": "sync_plan_to_board",
                         }
                     )
@@ -558,9 +556,8 @@ class ProjectBoardManager:
 
 
 # 使用例
-async def main():
-    """メイン実行関数"""
-    manager = ProjectBoardManager()
+async def main()manager = ProjectBoardManager()
+"""メイン実行関数"""
 
     # すべてのボードの概要を取得
     summary = await manager.get_all_boards_summary()

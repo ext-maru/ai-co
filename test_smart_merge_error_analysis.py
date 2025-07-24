@@ -32,16 +32,16 @@ class ErrorAnalysisTestSuite:
         """全テストを実行"""
         print("🚨 Smart Merge Retry エラーハンドリング・レジリエンス分析開始\n")
         
-        # 1. エラーハンドリングパターン分析
+        # 1.0 エラーハンドリングパターン分析
         await self._test_error_handling_patterns()
         
-        # 2. レジリエンス機能評価
+        # 2.0 レジリエンス機能評価
         await self._test_resilience_features()
         
-        # 3. 障害シナリオテスト
+        # 3.0 障害シナリオテスト
         await self._test_failure_scenarios()
         
-        # 4. 実際のストレステスト
+        # 4.0 実際のストレステスト
         await self._test_stress_conditions()
         
         # 分析結果レポート
@@ -49,7 +49,7 @@ class ErrorAnalysisTestSuite:
         
     async def _test_error_handling_patterns(self):
         """エラーハンドリングパターン分析"""
-        print("🔍 1. エラーハンドリングパターン分析")
+        print("🔍 1.0 エラーハンドリングパターン分析")
         
         from smart_merge_retry import SmartMergeRetryEngine, RetryConfig, MergeableState
         
@@ -117,7 +117,7 @@ class ErrorAnalysisTestSuite:
         
     async def _test_resilience_features(self):
         """レジリエンス機能評価"""
-        print("🛡️ 2. レジリエンス機能評価")
+        print("🛡️ 2.0 レジリエンス機能評価")
         
         try:
             from smart_merge_retry import SmartMergeRetryEngine, RetryConfig, MergeableState
@@ -181,7 +181,7 @@ class ErrorAnalysisTestSuite:
             
             if end_time - start_time < 5:  # 適切な時間内
                 resilience_score += 15
-                print(f"   ✅ 実行時間適切: {end_time - start_time:.2f}秒")
+                print(f"   ✅ 実行時間適切: {end_time - start_time:0.2f}秒")
             
             # 2.2 バックオフ機構テスト  
             print("   ⏰ 2.2 指数バックオフ機構テスト")
@@ -240,7 +240,7 @@ class ErrorAnalysisTestSuite:
     
     async def _test_failure_scenarios(self):
         """障害シナリオテスト"""
-        print("💣 3. 障害シナリオテスト")
+        print("💣 3.0 障害シナリオテスト")
         
         scenarios_tested = {
             'github_api_failure': False,
@@ -347,11 +347,11 @@ class ErrorAnalysisTestSuite:
         
         scenario_success_rate = sum(scenarios_tested.values()) / len(scenarios_tested)
         self.resilience_scores['scenarios'] = scenario_success_rate * 100
-        print(f"   📊 障害シナリオ対応率: {scenario_success_rate*100:.1f}%\n")
+        print(f"   📊 障害シナリオ対応率: {scenario_success_rate*100:0.1f}%\n")
     
     async def _test_stress_conditions(self):
         """実際のストレステスト"""
-        print("💪 4. ストレステスト")
+        print("💪 4.0 ストレステスト")
         
         stress_results = {
             'high_error_rate': 0,
@@ -394,10 +394,10 @@ class ErrorAnalysisTestSuite:
             
             config_stress = {
                 MergeableState.UNSTABLE: RetryConfig(
-                    max_retries=10, base_delay=0.05, max_delay=0.2, timeout=5
+                    max_retries=10, base_delay=0.5, max_delay=0.2, timeout=5
                 ),
                 MergeableState.UNKNOWN: RetryConfig(
-                    max_retries=5, base_delay=0.05, max_delay=0.1, timeout=3
+                    max_retries=5, base_delay=0.5, max_delay=0.1, timeout=3
                 )
             }
             
@@ -433,13 +433,13 @@ class ErrorAnalysisTestSuite:
             execution_time = end_stress_time - start_stress_time
             if execution_time < 10:  # 10秒以内
                 stress_results['resource_efficiency'] = 90
-                print(f"   ✅ 実行時間効率: {execution_time:.2f}秒")
+                print(f"   ✅ 実行時間効率: {execution_time:0.2f}秒")
             elif execution_time < 20:
                 stress_results['resource_efficiency'] = 70
-                print(f"   ⚠️ 実行時間: {execution_time:.2f}秒 (改善可能)")
+                print(f"   ⚠️ 実行時間: {execution_time:0.2f}秒 (改善可能)")
             else:
                 stress_results['resource_efficiency'] = 40
-                print(f"   ❌ 実行時間: {execution_time:.2f}秒 (非効率)")
+                print(f"   ❌ 実行時間: {execution_time:0.2f}秒 (非効率)")
             
             # 4.3 統計・監視機能テスト
             print("   📊 4.3 統計・監視機能テスト")
@@ -463,32 +463,32 @@ class ErrorAnalysisTestSuite:
         
         avg_stress_score = sum(stress_results.values()) / len(stress_results)
         self.resilience_scores['stress'] = avg_stress_score
-        print(f"   📊 ストレステストスコア: {avg_stress_score:.1f}/100\n")
+        print(f"   📊 ストレステストスコア: {avg_stress_score:0.1f}/100\n")
     
     def _generate_analysis_report(self):
         """分析結果レポート生成"""
         print("📋 === Smart Merge Retry エラーハンドリング・レジリエンス分析レポート ===\n")
         
-        # 1. エラーハンドリング分析結果
-        print("🔍 1. エラーハンドリングパターン分析結果:")
+        # 1.0 エラーハンドリング分析結果
+        print("🔍 1.0 エラーハンドリングパターン分析結果:")
         for pattern, tested in self.error_patterns.items():
             status = "✅ 適切" if tested else "❌ 問題あり"
             print(f"   - {pattern}: {status}")
         
         error_coverage = sum(self.error_patterns.values()) / len(self.error_patterns) * 100
-        print(f"   📊 エラー処理網羅率: {error_coverage:.1f}%")
+        print(f"   📊 エラー処理網羅率: {error_coverage:0.1f}%")
         
-        # 2. レジリエンス評価結果
-        print(f"\n🛡️ 2. レジリエンス機能評価結果:")
-        print(f"   - 基本機能スコア: {self.resilience_scores.get('basic', 0):.1f}/100")
-        print(f"   - 障害シナリオ対応: {self.resilience_scores.get('scenarios', 0):.1f}/100") 
-        print(f"   - ストレステスト: {self.resilience_scores.get('stress', 0):.1f}/100")
+        # 2.0 レジリエンス評価結果
+        print(f"\n🛡️ 2.0 レジリエンス機能評価結果:")
+        print(f"   - 基本機能スコア: {self.resilience_scores.get('basic', 0):0.1f}/100")
+        print(f"   - 障害シナリオ対応: {self.resilience_scores.get('scenarios', 0):0.1f}/100") 
+        print(f"   - ストレステスト: {self.resilience_scores.get('stress', 0):0.1f}/100")
         
         overall_resilience = sum(self.resilience_scores.values()) / len(self.resilience_scores)
-        print(f"   📊 総合レジリエンススコア: {overall_resilience:.1f}/100")
+        print(f"   📊 総合レジリエンススコア: {overall_resilience:0.1f}/100")
         
-        # 3. 改善提案
-        print(f"\n💡 3. 改善提案:")
+        # 3.0 改善提案
+        print(f"\n💡 3.0 改善提案:")
         
         if error_coverage < 80:
             print("   🔧 エラーハンドリング改善が必要:")
@@ -508,22 +508,22 @@ class ErrorAnalysisTestSuite:
             print("      - メモリ使用量の削減")
             print("      - 並行実行時の競合状態対策")
         
-        # 4. 推奨アクション
-        print(f"\n🎯 4. 推奨アクション:")
+        # 4.0 推奨アクション
+        print(f"\n🎯 4.0 推奨アクション:")
         
         if overall_resilience >= 80:
             print("   ✅ 優秀: 現在のシステムは十分に堅牢です")
         elif overall_resilience >= 60:
             print("   ⚠️ 良好: いくつかの改善で更なる向上が期待できます")
-            print("      1. エラーログの構造化")
-            print("      2. メトリクス収集の強化")
-            print("      3. アラート機構の実装")
+            print("      1.0 エラーログの構造化")
+            print("      2.0 メトリクス収集の強化")
+            print("      3.0 アラート機構の実装")
         else:
             print("   ❌ 要改善: システムの安定性に問題があります")
-            print("      1. 基本的なエラーハンドリングの見直し")
-            print("      2. リトライロジックの再設計")
-            print("      3. 障害回復機能の強化")
-            print("      4. 包括的なテストスイートの作成")
+            print("      1.0 基本的なエラーハンドリングの見直し")
+            print("      2.0 リトライロジックの再設計")
+            print("      3.0 障害回復機能の強化")
+            print("      4.0 包括的なテストスイートの作成")
         
         # 結果をファイルに保存
         analysis_result = {

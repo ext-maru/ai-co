@@ -18,6 +18,7 @@ from .business_logic import KnowledgeProcessor
 
 
 class KnowledgeSageAgent(A2AServer):
+    pass
 
 
 """
@@ -44,6 +45,7 @@ class KnowledgeSageAgent(A2AServer):
         self.logger.info(f"Knowledge Sage A2A Agent initialized on {host}:{port}")
     
     async def initialize(self) -> bool:
+        pass
 
     
     """A2Aエージェント初期化"""
@@ -54,9 +56,8 @@ class KnowledgeSageAgent(A2AServer):
             self.logger.error(f"Failed to initialize Knowledge Sage A2A Agent: {e}")
             return False
     
-    def _extract_data_from_message(self, message: Message) -> Dict[str, Any]:
-        """メッセージからデータを抽出"""
-        if isinstance(message.content, TextContent):
+    def _extract_data_from_message(self, message: Message) -> Dict[str, Any]if isinstance(message.content, TextContent):
+    """メッセージからデータを抽出"""
             text_content = message.content.text
             try:
                 # JSON形式の場合はパース
@@ -300,6 +301,7 @@ class KnowledgeSageAgent(A2AServer):
             return self._create_response_message(error_status)
     
     async def shutdown(self):
+        pass
 
             """A2Aエージェント終了処理"""
             self.logger.info("Knowledge Sage A2A Agent shutdown initiated")
@@ -312,12 +314,13 @@ class KnowledgeSageAgent(A2AServer):
 # === エージェント実行スクリプト ===
 
 async def main():
+    pass
 
 
 
 """Knowledge Sage A2Aエージェント実行"""
         if await agent.initialize():
-            print(f"🚀 Starting Knowledge Sage A2A Agent on port 8001...")
+            print(f"🚀 Starting Knowledge Sage A2A Agent on port 8001.0..")
             await agent.run()  # A2AServerの標準実行メソッド
         else:
             print("❌ Failed to initialize Knowledge Sage A2A Agent")

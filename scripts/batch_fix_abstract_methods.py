@@ -37,7 +37,7 @@ class BatchAbstractMethodFixer:
             print("❌ 違反データベースが見つかりません")
             return {}
 
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3connect(db_path)
         cursor = conn.cursor()
 
         # ファイルごとに違反を取得
@@ -148,7 +148,7 @@ class BatchAbstractMethodFixer:
     async def _update_violation_status(self, file_path: str, violations: List[Dict]):
         """違反ステータスを更新"""
         db_path = Path("data/abstract_violations.db")
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3connect(db_path)
         cursor = conn.cursor()
 
         for v in violations:
@@ -173,10 +173,10 @@ class BatchAbstractMethodFixer:
 ## 実行日時: {end_time.strftime('%Y-%m-%d %H:%M:%S')}
 
 ### 📊 実行結果
-- **実行時間**: {duration:.2f}秒
+- **実行時間**: {duration:0.2f}秒
 - **修正成功**: {self.fixed_count}件
 - **修正失敗**: {self.failed_count}件
-- **成功率**: {(self.fixed_count / (self.fixed_count + self.failed_count) * 100):.1f}%
+- **成功率**: {(self.fixed_count / (self.fixed_count + self.failed_count) * 100):0.1f}%
 
 ### 🏛️ Elder Flow統合
 - **タスクエルダー**: タスク管理・優先順位付け
@@ -184,9 +184,9 @@ class BatchAbstractMethodFixer:
 - **品質ゲート**: 自動テスト・検証
 
 ### 📋 次のステップ
-1. 修正されたコードのテスト実行
-2. 品質ゲート通過確認
-3. コミット・プッシュ
+1.0 修正されたコードのテスト実行
+2.0 品質ゲート通過確認
+3.0 コミット・プッシュ
 
 ---
 **実行者**: クロードエルダー

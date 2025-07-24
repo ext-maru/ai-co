@@ -64,9 +64,9 @@ Auto Issue ProcessorがIssue #83で予期しない動作をしました。
 Elder Flowが実装系タスクに対して不適切に適用されている
 
 ## 改善計画
-1. Issue種別判定システムの実装
-2. 技術要件抽出エンジンの開発
-3. Elder Flow Phase 2アーキテクチャ
+1.0 Issue種別判定システムの実装
+2.0 技術要件抽出エンジンの開発
+3.0 Elder Flow Phase 2アーキテクチャ
 ''',
             'labels': ['bug', 'critical', 'elder-flow']
         }
@@ -91,7 +91,7 @@ Elder Flowが実装系タスクに対して不適切に適用されている
         print(f"Title: {issue_data['title']}")
         print(f"Category: {result['issue_category']}")
         print(f"Type: {result['issue_type']}")
-        print(f"Confidence: {result['confidence']:.2%}")
+        print(f"Confidence: {result['confidence']:0.2%}")
         print(f"Elder Flow Mode: {result['elder_flow_mode']}")
         print(f"Recommended Approach: {result['recommended_approach']}")
         

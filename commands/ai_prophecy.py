@@ -264,9 +264,9 @@ class ProphecyCommand(BaseCommand):
         readiness = gate_status['readiness_score']
 
         if gate_status['is_ready']:
-            self.success(f"✅ 進化条件達成: {readiness:.1%}")
+            self.success(f"✅ 進化条件達成: {readiness:0.1%}")
         else:
-            self.warning(f"⚠️ 進化条件未達成: {readiness:.1%}")
+            self.warning(f"⚠️ 進化条件未達成: {readiness:0.1%}")
 
         # 条件詳細
         self.info("📋 条件詳細:")
@@ -398,7 +398,7 @@ class ProphecyCommand(BaseCommand):
 
         if "error" not in evaluation:
             readiness = evaluation['gate_status']['readiness_score']
-            self.info(f"\n📊 現在の進化準備度: {readiness:.1%}")
+            self.info(f"\n📊 現在の進化準備度: {readiness:0.1%}")
 
             if readiness >= 0.8:
                 self.success("✅ エルダーズ評議会の承認: 進化準備完了")

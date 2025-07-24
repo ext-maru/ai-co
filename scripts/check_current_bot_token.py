@@ -39,11 +39,11 @@ def check_bot_token():
         print("❌ Bot Token形式: 不正")
 
     print("\n🔄 権限追加後の新しいBot Token取得手順:")
-    print("1. https://api.slack.com/apps → PM-AI アプリ")
-    print("2. OAuth & Permissions ページ")
-    print("3. 「Install to Workspace」をクリック")
-    print("4. 権限を再承認")
-    print("5. 新しい「Bot User OAuth Token」をコピー")
+    print("1.0 https://api.slack.com/apps → PM-AI アプリ")
+    print("2.0 OAuth & Permissions ページ")
+    print("3.0 「Install to Workspace」をクリック")
+    print("4.0 権限を再承認")
+    print("5.0 新しい「Bot User OAuth Token」をコピー")
     print("\n💡 権限追加後は必ず再インストールが必要です")
     print("   再インストールしないと新しい権限が有効になりません")
 

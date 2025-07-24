@@ -17,9 +17,8 @@ from typing import Any, Dict, List, Optional
 class UnifiedTrackingDB:
     """統合トラッキングデータベース"""
 
-    def __init__(self, db_path:
+    def __init__(self, db_path: Optional[str] = None):
         """初期化メソッド"""
-    Optional[str] = None):
         if db_path is None:
             # デフォルトパス
             self.db_path = Path.home() / ".elder_flow" / "tracking.db"
@@ -31,7 +30,7 @@ class UnifiedTrackingDB:
 
     def _init_db(self):
         """データベース初期化"""
-        conn = sqlite3.connect(str(self.db_path))
+        conn = sqlite3connect(str(self.db_path))
         cursor = conn.cursor()
 
         # 実行記録テーブル
@@ -70,7 +69,7 @@ class UnifiedTrackingDB:
     async def save_execution_record(self, record: Dict[str, Any]) -> bool:
         """実行記録を保存"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -103,7 +102,7 @@ class UnifiedTrackingDB:
     async def get_execution_record(self, flow_id: str) -> Optional[Dict[str, Any]]:
         """実行記録を取得"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -142,7 +141,7 @@ class UnifiedTrackingDB:
     async def get_recent_executions(self, limit: int = 10) -> List[Dict[str, Any]]:
         """最近の実行記録を取得"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -185,7 +184,7 @@ class UnifiedTrackingDB:
     async def get_statistics(self) -> Dict[str, Any]:
         """統計情報を取得"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # 総実行数
@@ -235,7 +234,7 @@ class UnifiedTrackingDB:
     async def cleanup_old_records(self, days: int = 30) -> int:
         """古い記録をクリーンアップ"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(

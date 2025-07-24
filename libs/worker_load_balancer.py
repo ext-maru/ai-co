@@ -50,9 +50,8 @@ class LoadMetrics:
 class WorkerLoadBalancer:
     """ワーカー負荷分散システム"""
 
-    def __init__(self, max_workers:
+    def __init__(self, max_workers: int = 20, target_cpu: float = 70.0):
         """初期化メソッド"""
-    int = 20, target_cpu: float = 70.0):
         self.max_workers = max_workers
         self.target_cpu = target_cpu
         self.workers: Dict[int, WorkerProcess] = {}
@@ -403,9 +402,9 @@ def main():
     print(f"   総ワーカー数: {status['metrics']['total_workers']}")
     print(f"   アクティブ: {status['metrics']['active_workers']}")
     print(f"   アイドル: {status['metrics']['idle_workers']}")
-    print(f"   平均CPU: {status['metrics']['avg_cpu']:.1f}%")
-    print(f"   平均メモリ: {status['metrics']['avg_memory']:.1f}MB")
-    print(f"   システム負荷: {status['metrics']['system_load']:.1f}%")
+    print(f"   平均CPU: {status['metrics']['avg_cpu']:0.1f}%")
+    print(f"   平均メモリ: {status['metrics']['avg_memory']:0.1f}MB")
+    print(f"   システム負荷: {status['metrics']['system_load']:0.1f}%")
 
     print(f"\n🎯 最適化対象:")
     for key, count in status["optimization_targets"].items():
@@ -426,7 +425,7 @@ def main():
             f"   ワーカー数: {result['before']['worker_count']} → {result['after']['worker_count']}"
         )
         print(
-            f"   システム負荷: {result['before']['system_load']:.1f}% → {result['after']['system_load']:.1f}%"
+            f"   システム負荷: {result['before']['system_load']:0.1f}% → {result['after']['system_load']:0.1f}%"
         )
         print(f"   終了したワーカー: {len(result['terminated_workers'])}個")
 

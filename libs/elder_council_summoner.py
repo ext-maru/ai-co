@@ -310,7 +310,7 @@ class ElderCouncilSummoner:
                 TriggerCategory.SYSTEM_FAILURE,
                 UrgencyLevel.CRITICAL,
                 "Critical Worker System Failure",
-                f"Worker health score dropped to {metrics.worker_health_score:.2%}",
+                f"Worker health score dropped to {metrics.worker_health_score:0.2%}",
                 metrics,
                 ["worker_system"],
                 [
@@ -326,7 +326,7 @@ class ElderCouncilSummoner:
                 TriggerCategory.SYSTEM_FAILURE,
                 UrgencyLevel.CRITICAL,
                 "Critical Memory Usage",
-                f"Memory usage reached {metrics.memory_usage:.2%}",
+                f"Memory usage reached {metrics.memory_usage:0.2%}",
                 metrics,
                 ["system_resources"],
                 [
@@ -362,7 +362,7 @@ class ElderCouncilSummoner:
                 TriggerCategory.STRATEGIC_DECISION,
                 UrgencyLevel.HIGH,
                 "Critical Test Coverage Gap",
-                f"Test coverage is only {metrics.test_coverage:.2%}",
+                f"Test coverage is only {metrics.test_coverage:0.2%}",
                 metrics,
                 ["quality_assurance", "development_process"],
                 [
@@ -381,7 +381,7 @@ class ElderCouncilSummoner:
                 TriggerCategory.INTEGRATION_CHALLENGE,
                 UrgencyLevel.HIGH,
                 "4 Sages Consensus Failure",
-                f"4 Sages consensus rate dropped to {metrics.four_sages_consensus_rate:.2%}",
+                f"4 Sages consensus rate dropped to {metrics.four_sages_consensus_rate:0.2%}",
                 metrics,
                 ["four_sages_system", "decision_making"],
                 [
@@ -401,7 +401,7 @@ class ElderCouncilSummoner:
                     UrgencyLevel.MEDIUM,
                     "System Evolution Opportunity",
                     f"Learning velocity decreased, evolution opportunity score: " \
-                        "{evolution_score:.2%}",
+                        "{evolution_score:0.2%}",
                     metrics,
                     ["ai_evolution", "learning_systems"],
                     [
@@ -438,7 +438,7 @@ class ElderCouncilSummoner:
                 TriggerCategory.ARCHITECTURAL_CHANGE,
                 UrgencyLevel.HIGH,
                 "High System Complexity",
-                f"System complexity score: {metrics.system_complexity_score:.2%}",
+                f"System complexity score: {metrics.system_complexity_score:0.2%}",
                 metrics,
                 ["system_architecture", "technical_debt"],
                 [
@@ -840,7 +840,7 @@ class ElderCouncilSummoner:
             document += f"""
 ## 🧙‍♂️ **4賢者システム分析**
 
-### コンセンサス信頼度: {sages_input.get('consensus_confidence', 0):.1%}
+### コンセンサス信頼度: {sages_input.get('consensus_confidence', 0):0.1%}
 
 ### 個別評価:
 """
@@ -851,7 +851,7 @@ class ElderCouncilSummoner:
                 document += f"""
 **{sage_name}**:
 - 評価: {assessment.get('assessment', 'No assessment')}
-- 信頼度: {assessment.get('confidence', 0):.1%}
+- 信頼度: {assessment.get('confidence', 0):0.1%}
 - 推奨優先度: {assessment.get('recommended_priority', 'unknown')}
 
 """
@@ -869,11 +869,11 @@ class ElderCouncilSummoner:
 
 ## 🎯 **求められる決定事項**
 
-1. **緊急対応**: 即座に実行すべきアクション
-2. **戦略的方針**: 長期的な方向性と優先順位
-3. **リソース配分**: 人的・技術的リソースの最適配分
-4. **進化戦略**: システム進化の次のステップ
-5. **権限委譲**: 4賢者システムへの自律的決定権限
+1.0 **緊急対応**: 即座に実行すべきアクション
+2.0 **戦略的方針**: 長期的な方向性と優先順位
+3.0 **リソース配分**: 人的・技術的リソースの最適配分
+4.0 **進化戦略**: システム進化の次のステップ
+5.0 **権限委譲**: 4賢者システムへの自律的決定権限
 
 ## ⏰ **緊急度の根拠**
 
@@ -1552,7 +1552,7 @@ def main():
         while True:
             time.sleep(60)
             status = summoner.get_system_status()
-            logger.info(f"System status: {json.dumps(status, indent=2, default=str)}")
+            logger.info(f"System status: {json.dumps(status, indent=2)}")
 
     except KeyboardInterrupt:
         logger.info("Shutting down...")

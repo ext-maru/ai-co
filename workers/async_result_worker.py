@@ -256,7 +256,7 @@ class AsyncResultWorker(AsyncBaseWorker):
         self, task_id: str, duration: float, file_count: int
     ) -> str:
         """成功メッセージのメイン部分フォーマット"""
-        duration_str = f"{duration:.1f}s" if duration < 60 else f"{duration/60:.1f}m"
+        duration_str = f"{duration:0.1f}s" if duration < 60 else f"{duration/60:0.1f}m"
 
         return f"""✅ **Task Completed Successfully**
 
@@ -291,7 +291,7 @@ class AsyncResultWorker(AsyncBaseWorker):
         self, task_id: str, error_type: str, duration: float
     ) -> str:
         """エラーメッセージのメイン部分フォーマット"""
-        duration_str = f"{duration:.1f}s" if duration < 60 else f"{duration/60:.1f}m"
+        duration_str = f"{duration:0.1f}s" if duration < 60 else f"{duration/60:0.1f}m"
 
         return f"""❌ **Task Failed**
 
@@ -586,9 +586,9 @@ class PeriodicReporter:
 
 ⚡ **Performance Metrics:**
 • Messages Processed: {current_stats['messages_processed']}
-• Processing Rate: {processing_rate:.1f} msgs/hour
+• Processing Rate: {processing_rate:0.1f} msgs/hour
 • Notifications Sent: {current_stats['notifications_sent']}
-• Success Rate: {success_rate:.1f}%
+• Success Rate: {success_rate:0.1f}%
 
 🔧 **Quality Metrics:**
 • Failed Notifications: {current_stats['notifications_failed']}

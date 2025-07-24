@@ -19,7 +19,7 @@ from libs.elder_scheduled_tasks import ElderScheduledTasks
 async def test_unified_processor_standalone():
     """スタンドアロンでの統一プロセッサーテスト"""
     print("\n" + "=" * 60)
-    print("1. スタンドアロンテスト")
+    print("1.0 スタンドアロンテスト")
     print("=" * 60)
     
     # 設定作成
@@ -50,7 +50,7 @@ async def test_unified_processor_standalone():
     print(f"  - 成功数: {result['stats']['success']}")
     print(f"  - 失敗数: {result['stats']['failed']}")
     print(f"  - スキップ数: {result['stats']['skipped']}")
-    print(f"  - 処理時間: {elapsed:.1f}秒")
+    print(f"  - 処理時間: {elapsed:0.1f}秒")
     
     return result
 
@@ -58,7 +58,7 @@ async def test_unified_processor_standalone():
 async def test_scheduler_integration():
     """スケジューラー統合テスト"""
     print("\n" + "=" * 60)
-    print("2. APScheduler統合テスト")
+    print("2.0 APScheduler統合テスト")
     print("=" * 60)
     
     # Elder Scheduled Tasksから該当部分を抽出してテスト
@@ -94,7 +94,7 @@ async def test_scheduler_integration():
         
         # 処理時間ログ
         if result.get("duration_seconds"):
-            print(f"⏱️ 処理時間: {result['duration_seconds']:.1f}秒")
+            print(f"⏱️ 処理時間: {result['duration_seconds']:0.1f}秒")
         
         print("✅ 統一Auto Issue Processor完了")
         return True
@@ -107,7 +107,7 @@ async def test_scheduler_integration():
 def test_scheduler_registration():
     """スケジューラー登録テスト（実際には実行しない）"""
     print("\n" + "=" * 60)
-    print("3. スケジューラー登録確認")
+    print("3.0 スケジューラー登録確認")
     print("=" * 60)
     
     # Elder Scheduled Tasksのインスタンスを作成
@@ -133,13 +133,13 @@ async def main():
     print("=" * 60)
     print(f"実行時刻: {datetime.now()}")
     
-    # 1. スタンドアロンテスト
+    # 1.0 スタンドアロンテスト
     result1 = await test_unified_processor_standalone()
     
-    # 2. スケジューラー統合テスト
+    # 2.0 スケジューラー統合テスト
     result2 = await test_scheduler_integration()
     
-    # 3. スケジューラー登録確認
+    # 3.0 スケジューラー登録確認
     test_scheduler_registration()
     
     # 総合結果
@@ -150,9 +150,9 @@ async def main():
     if result1["success"] and result2:
         print("✅ すべてのテストが成功しました")
         print("\n次のステップ:")
-        print("1. 本番環境でのテスト実施")
-        print("2. Elder Scheduled Tasksでauto_issue_processorタスクの有効化")
-        print("3. 動作確認後、古い実装の削除")
+        print("1.0 本番環境でのテスト実施")
+        print("2.0 Elder Scheduled Tasksでauto_issue_processorタスクの有効化")
+        print("3.0 動作確認後、古い実装の削除")
     else:
         print("❌ 一部のテストが失敗しました")
         print("ログを確認して問題を修正してください")

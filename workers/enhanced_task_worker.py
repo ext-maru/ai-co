@@ -330,7 +330,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                         context += f"- {result.get('content', '')[:200]}...\n"
                         context += f"  Source: Elder Knowledge Base (Score: {result.get(
                             'score',
-                            0):.2f}
+                            0):0.2f}
                         )\n"
                     return context
             except Exception as e:
@@ -364,7 +364,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             context = "\n\n## Related Knowledge:\n"
             for result in results:
                 context += f"- {result['content'][:200]}...\n"
-                context += f"  Source: {result['source']} (Score: {result['similarity_score']:.2f})\n"
+                context += f"  Source: {result['source']} (Score: {result['similarity_score']:0.2f})\n"
 
             return context
 
@@ -417,9 +417,8 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
         return "\n".join(instructions)
 
-    def _execute_claude(self, task_id: str, prompt: str, task_context: dict = None):
-        """Claude CLIを実行（Elder Tree統合対応）"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    def _execute_claude(self, task_id: str, prompt: str, task_context: dict = None)timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    """Claude CLIを実行（Elder Tree統合対応）"""
         session_name = f"claude_session_{task_id}_{timestamp}"
 
         # 🌳 Elder Tree Integration: タスクコンテキストからElder推奨事項を取得
@@ -1083,9 +1082,8 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         else:
             return "low"
 
-    def _estimate_resource_requirements(self, task_data: dict) -> dict:
-        """タスクのリソース要求を推定"""
-        prompt = task_data.get("prompt", "").lower()
+    def _estimate_resource_requirements(self, task_data: dict) -> dictprompt = task_data.get("prompt", "").lower()
+    """タスクのリソース要求を推定"""
 
         # CPU要求度
         cpu_intensive = any(
@@ -1102,18 +1100,17 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             word in prompt for word in ["api", "download", "upload", "web"]
         )
 
-        return {
+        return {:
             "cpu_requirement": "high" if cpu_intensive else "medium",
             "memory_requirement": "high" if memory_intensive else "medium",
             "network_requirement": "high" if network_intensive else "low",
             "estimated_duration": self._estimate_task_duration(task_data),
         }
 
-    def _estimate_task_duration(self, task_data: dict) -> str:
-        """タスクの推定実行時間"""
-        complexity = self._assess_task_complexity(task_data)
+    def _estimate_task_duration(self, task_data: dict) -> strcomplexity = self._assess_task_complexity(task_data)
+    """タスクの推定実行時間"""
         prompt_length = len(task_data.get("prompt", ""))
-
+:
         if complexity == "high" or prompt_length > 1000:
             # Complex condition - consider breaking down
             return "10-30 minutes"
@@ -1123,39 +1120,34 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         else:
             return "2-10 minutes"
 
-    def _extract_task_approach(self, sage_response: dict) -> str:
-        """タスクアプローチの抽出"""
-        learning_outcome = sage_response.get("learning_outcome", {})
+    def _extract_task_approach(self, sage_response: dict) -> strlearning_outcome = sage_response.get("learning_outcome", {})
+    """タスクアプローチの抽出""":
         if isinstance(learning_outcome, dict):
             return learning_outcome.get(
                 "recommended_approach", "Standard iterative approach"
             )
         return "Standard iterative approach"
 
-    def _extract_resource_optimization(self, sage_response: dict) -> dict:
-        """リソース最適化の抽出"""
-        learning_outcome = sage_response.get("learning_outcome", {})
+    def _extract_resource_optimization(self, sage_response: dict) -> dictlearning_outcome = sage_response.get("learning_outcome", {})
+    """リソース最適化の抽出""":
         if isinstance(learning_outcome, dict):
             return learning_outcome.get("resource_optimization", {})
         return {"cpu_optimization": "standard", "memory_optimization": "standard"}
 
-    def _extract_execution_strategy(self, sage_response: dict) -> str:
-        """実行戦略の抽出"""
-        learning_outcome = sage_response.get("learning_outcome", {})
+    def _extract_execution_strategy(self, sage_response: dict) -> strlearning_outcome = sage_response.get("learning_outcome", {})
+    """実行戦略の抽出""":
         if isinstance(learning_outcome, dict):
             return learning_outcome.get("execution_strategy", "Sequential execution")
         return "Sequential execution"
 
-    def _extract_risk_mitigation(self, sage_response: dict) -> list:
-        """リスク軽減策の抽出"""
-        learning_outcome = sage_response.get("learning_outcome", {})
+    def _extract_risk_mitigation(self, sage_response: dict) -> listlearning_outcome = sage_response.get("learning_outcome", {})
+    """リスク軽減策の抽出""":
         if isinstance(learning_outcome, dict):
             return learning_outcome.get("risk_mitigation", [])
         return ["Monitor execution closely", "Implement fallback procedures"]
 
-    def _assess_output_quality(self, result: dict) -> float:
-        """出力品質の評価"""
-        if not result.get("success", False):
+    def _assess_output_quality(self, result: dict) -> floatif not result.get("success", False):
+    """出力品質の評価"""
             return 0.0
 
         output = result.get("output", "")
@@ -1176,11 +1168,10 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
         return min(base_score, 1.0)
 
-    def _extract_techniques_used(self, result: dict) -> list:
-        """使用されたテクニックの抽出"""
-        output = result.get("output", "").lower()
+    def _extract_techniques_used(self, result: dict) -> listoutput = result.get("output", "").lower()
+    """使用されたテクニックの抽出"""
         techniques = []
-
+:
         if "claude" in output:
             techniques.append("Claude AI processing")
         if "template" in output:
@@ -1192,13 +1183,12 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
         return techniques if techniques else ["Standard processing"]
 
-    def _extract_challenges(self, result: dict) -> list:
-        """遭遇した課題の抽出"""
-        output = result.get("output", "").lower()
+    def _extract_challenges(self, result: dict) -> listoutput = result.get("output", "").lower()
+    """遭遇した課題の抽出"""
         error = result.get("error", "").lower()
 
         challenges = []
-
+:
         if "timeout" in output or "timeout" in error:
             # Complex condition - consider breaking down
             challenges.append("Execution timeout")
@@ -1211,12 +1201,11 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
         return challenges if challenges else ["No significant challenges"]
 
-    def _extract_solutions(self, result: dict) -> list:
-        """適用された解決策の抽出"""
-        output = result.get("output", "").lower()
+    def _extract_solutions(self, result: dict) -> listoutput = result.get("output", "").lower()
+    """適用された解決策の抽出"""
 
         solutions = []
-
+:
         if "retry" in output:
             solutions.append("Automatic retry mechanism")
         if "fallback" in output:
@@ -1264,10 +1253,9 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
         return patterns if patterns else ["General task processing"]
 
-    def _assess_error_severity(self, error_data: dict) -> str:
-        """エラーの重要度を評価"""
-        error_message = error_data.get("error", "").lower()
-
+    def _assess_error_severity(self, error_data: dict) -> strerror_message = error_data.get("error", "").lower()
+    """エラーの重要度を評価"""
+:
         if any(word in error_message for word in ["critical", "fatal", "system"]):
             # Complex condition - consider breaking down
             return "critical"
@@ -1281,10 +1269,9 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         else:
             return "low"
 
-    def _assess_impact_scope(self, error_data: dict) -> str:
-        """エラーの影響範囲を評価"""
-        error_message = error_data.get("error", "").lower()
-
+    def _assess_impact_scope(self, error_data: dict) -> strerror_message = error_data.get("error", "").lower()
+    """エラーの影響範囲を評価"""
+:
         if any(word in error_message for word in ["system", "service", "database"]):
             # Complex condition - consider breaking down
             return "system_wide"
@@ -1376,11 +1363,10 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Error during stop: {e}")
 
-    def initialize(self) -> None:
-        """ワーカーの初期化処理"""
-        self.logger.info(f"{EMOJI['start']} Initializing {self.__class__.__name__}...")
+    def initialize(self) -> Noneself.logger.info(f"{EMOJI['start']} Initializing {self.__class__.__name__}...")
+    """ワーカーの初期化処理"""
 
-        # 設定の妥当性を確認
+        # 設定の妥当性を確認:
         if not self.validate_config():
             raise ValueError("Configuration validation failed")
 
@@ -1425,9 +1411,8 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         else:
             raise Exception(result["error"])
 
-    def _send_result(self, result_data: dict):
-        """結果を送信（テスト用メソッド）"""
-        return self.send_result(result_data)
+    def _send_result(self, result_data: dict)return self.send_result(result_data)
+    """結果を送信（テスト用メソッド）"""
 
     def _extract_created_files(self, output: str) -> list:
         """作成されたファイルを抽出（テスト用メソッド）"""
@@ -1484,9 +1469,8 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
         return False
 
-    def get_status(self):
-        """ワーカーの状態を取得（Elder Tree統合対応）"""
-        base_status = self.health_check()
+    def get_status(self)base_status = self.health_check()
+    """ワーカーの状態を取得（Elder Tree統合対応）"""
 
         # 🌳 Elder Tree Integration: Elder系システムのステータス
         elder_status = {

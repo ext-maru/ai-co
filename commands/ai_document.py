@@ -111,7 +111,7 @@ class AutoPMOrchestrator:
 
             if pm_result["message_type"] == "review_completion":
                 quality_score = pm_result["payload"]["final_quality_score"]
-                print(f"    ✅ 品質評価完了: {quality_score:.1f}/100")
+                print(f"    ✅ 品質評価完了: {quality_score:0.1f}/100")
             else:
                 print(f"    🔄 品質向上が必要です")
                 quality_score = pm_result["payload"]["current_quality_score"]
@@ -402,7 +402,7 @@ class AIDocumentCLI:
 
                 if result["status"] == "success":
                     print(f"\n🎉 ドキュメント生成完了!")
-                    print(f"📊 品質スコア: {result['quality_score']:.1f}/100")
+                    print(f"📊 品質スコア: {result['quality_score']:0.1f}/100")
                     print(f"📁 出力ディレクトリ: {options['output_dir']}")
                     return 0
                 else:

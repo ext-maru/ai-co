@@ -1107,7 +1107,7 @@ class LearningMagic(AncientMagic):
         if avg_performance < 0.85:
             optimizations.append({
                 "target": "servant_performance",
-                "current_state": f"{avg_performance:.2f} average performance",
+                "current_state": f"{avg_performance:0.2f} average performance",
                 "target_state": "0.85 average performance",
                 "approach": "performance_tuning_and_optimization",
                 "timeline": "4_weeks"
@@ -2068,7 +2068,7 @@ class LearningMagic(AncientMagic):
     def _create_improvement_plan(self, sage: str, metric: str, current: float, target: float) -> Dict[str, Any]:
         """改善計画を作成"""
         return {
-            "assessment": f"Improve {sage} {metric} from {current:.3f} to {target:.3f}",
+            "assessment": f"Improve {sage} {metric} from {current:0.3f} to {target:0.3f}",
             "approach": self._suggest_improvement_approach(sage, metric),
             "timeline": "2_weeks",
             "success_criteria": f"{metric} >= {target}",
@@ -2104,7 +2104,7 @@ class LearningMagic(AncientMagic):
                         "current_level": value,
                         "target_level": 0.9,
                         "method": self._suggest_enhancement_method(sage, metric),
-                        "expected_impact": f"{((0.9 - value) / value * 100):.1f}% improvement" if value > 0 else "Significant improvement",
+                        "expected_impact": f"{((0.9 - value) / value * 100):0.1f}% improvement" if value > 0 else "Significant improvement",
                         "timeline": "2_weeks"
                     }
                     sage_enhancements.append(enhancement)
@@ -2147,7 +2147,7 @@ class LearningMagic(AncientMagic):
         if avg_quality < 0.85:
             optimizations.append({
                 "optimization_type": "quality_improvement",
-                "description": f"Improve servant quality score (current: {avg_quality:.3f}, target: 0.85)",
+                "description": f"Improve servant quality score (current: {avg_quality:0.3f}, target: 0.85)",
                 "expected_benefit": "Higher output quality and reduced error rates",
                 "implementation": "Implement quality training and performance monitoring",
                 "timeline": "4_weeks"
@@ -2157,7 +2157,7 @@ class LearningMagic(AncientMagic):
         if collaboration_efficiency < 0.8:
             optimizations.append({
                 "optimization_type": "collaboration_enhancement",
-                "description": f"Enhance collaboration efficiency (current: {collaboration_efficiency:.3f}, target: 0.8)",
+                "description": f"Enhance collaboration efficiency (current: {collaboration_efficiency:0.3f}, target: 0.8)",
                 "expected_benefit": "Faster multi-servant task completion",
                 "implementation": "Implement collaboration patterns and communication protocols",
                 "timeline": "2_weeks"
@@ -2177,7 +2177,7 @@ class LearningMagic(AncientMagic):
         if satisfaction_score < 0.9:
             upgrades.append({
                 "upgrade_type": "satisfaction_improvement",
-                "description": f"Improve user satisfaction (current: {satisfaction_score:.3f}, target: 0.9)",
+                "description": f"Improve user satisfaction (current: {satisfaction_score:0.3f}, target: 0.9)",
                 "approach": "Enhance response quality and reduce response time",
                 "expected_impact": "Higher user retention and engagement",
                 "timeline": "3_weeks"
@@ -2346,7 +2346,7 @@ class LearningMagic(AncientMagic):
         if avg_improvement > 0.15:  # 15%以上の全体改善
             synthesis["system_wide_optimizations"] = [{
                 "optimization": "elder_tree_performance_boost",
-                "description": f"System-wide improvement of {avg_improvement:.1%}",
+                "description": f"System-wide improvement of {avg_improvement:0.1%}",
                 "implementation_priority": "high"
             }]
             

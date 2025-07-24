@@ -35,9 +35,9 @@ WARNING:AutoIssueProcessor:Sage consultation partial failure: 'RagManager' objec
 - 他の3賢者で補完されているため、処理自体は継続
 
 ## 改善案
-1. `libs/rag_manager.py`に`process_request`メソッドを実装
-2. 既存の`search_knowledge`メソッドをラップする形で実装
-3. 非同期処理対応（async/await）
+1.0 `libs/rag_manager.py`に`process_request`メソッドを実装
+2.0 既存の`search_knowledge`メソッドをラップする形で実装
+3.0 非同期処理対応（async/await）
 
 ## 優先度
 Medium - システムは動作しているが、4賢者の完全な協調のために必要
@@ -66,9 +66,9 @@ WARNING:ElderFlowErrorHandler:Attempt 1/3 failed: Sage consultation failed: know
 - 処理時間の増加
 
 ## 改善案
-1. `libs/elder_flow_four_sages_complete.py`の非同期処理を修正
-2. Noneチェックの追加
-3. プレースホルダー実装の改善
+1.0 `libs/elder_flow_four_sages_complete.py`の非同期処理を修正
+2.0 Noneチェックの追加
+3.0 プレースホルダー実装の改善
 
 ## 優先度
 Medium - リトライで回復するが、パフォーマンス向上のため修正推奨
@@ -96,9 +96,9 @@ ERROR:libs.elder_flow_orchestrator:Quality gate execution failed: 'security_issu
 - PR作成は成功するが、セキュリティ面の確認が不完全
 
 ## 改善案
-1. 品質ゲート結果のデータ構造を確認
-2. security_issuesキーの存在チェックを追加
-3. デフォルト値の設定
+1.0 品質ゲート結果のデータ構造を確認
+2.0 security_issuesキーの存在チェックを追加
+3.0 デフォルト値の設定
 
 ## 優先度
 High - セキュリティチェックは重要な機能

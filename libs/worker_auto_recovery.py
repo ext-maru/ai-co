@@ -496,7 +496,7 @@ class AutoRecoveryEngine:
                     worker_id=worker_state.worker_id,
                     action=RecoveryAction.NONE,
                     attempts=worker_state.recovery_attempts,
-                    reason=f"backoff_period (wait {backoff_time - time_since_last:.1f}s)",
+                    reason=f"backoff_period (wait {backoff_time - time_since_last:0.1f}s)",
                 )
 
         # Try recovery strategies

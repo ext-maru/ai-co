@@ -194,17 +194,15 @@ class {model_name}CRUD:
         """初期化メソッド"""
         self.db = db
 
-    def create(self, **kwargs) -> {model_name}:
-        """Create a new {model_name}"""
-        db_{model_name.lower()} = {model_name}(**kwargs)
+    def create(self, **kwargs) -> {model_name}db_{model_name.lower()} = {model_name}(**kwargs)
+    """Create a new {model_name}"""
         self.db.add(db_{model_name.lower()})
         self.db.commit()
         self.db.refresh(db_{model_name.lower()})
         return db_{model_name.lower()}
-
-    def get(self, {model_name.lower()}_id: int) -> Optional[{model_name}]:
-        """Get a {model_name} by ID"""
-        query = self.db.query({model_name}).filter({model_name}.id == {model_name.lower()}_id)
+:
+    def get(self, {model_name.lower()}_id: int) -> Optional[{model_name}]query = self.db.query({model_name}).filter({model_name}.id == {model_name.lower()}_id)
+    """Get a {model_name} by ID"""
 '''
 
         if soft_delete:
@@ -214,11 +212,10 @@ class {model_name}CRUD:
 
         content += f'''        return query.first()
 
-    def get_all(self, skip: int = 0, limit: int = 100) -> List[{model_name}]:
-        """Get all {model_name}s with pagination"""
-        query = self.db.query({model_name})
+    def get_all(self, skip: int = 0, limit: int = 100) -> List[{model_name}]query = self.db.query({model_name})
+    """Get all {model_name}s with pagination"""
 '''
-
+:
         if soft_delete:
             content += (
                 f"        query = query.filter({model_name}.is_deleted == False)\n"
@@ -226,9 +223,8 @@ class {model_name}CRUD:
 
         content += f'''        return query.offset(skip).limit(limit).all()
 
-    def update(self, {model_name.lower()}_id: int, **kwargs) -> Optional[{model_name}]:
-        """Update a {model_name}"""
-        db_{model_name.lower()} = self.get({model_name.lower()}_id)
+    def update(self, {model_name.lower()}_id: int, **kwargs) -> Optional[{model_name}]db_{model_name.lower()} = self.get({model_name.lower()}_id)
+    """Update a {model_name}"""
         if db_{model_name.lower()}:
             for key, value in kwargs.items():
                 setattr(db_{model_name.lower()}, key, value)
@@ -236,10 +232,10 @@ class {model_name}CRUD:
             self.db.refresh(db_{model_name.lower()})
         return db_{model_name.lower()}
 
-    def delete(self, {model_name.lower()}_id: int) -> bool:
-        """Delete a {model_name}"""
-        db_{model_name.lower()} = self.get({model_name.lower()}_id)
+    def delete(self, {model_name.lower()}_id: int) -> booldb_{model_name.lower()} = self.get({model_name.lower()}_id)
+    """Delete a {model_name}"""
         if db_{model_name.lower()}:
+            pass
 '''
 
         if soft_delete:
@@ -255,11 +251,10 @@ class {model_name}CRUD:
         content += '''            return True
         return False
 
-    def search(self, **filters) -> List[{model_name}]:
-        """Search {model_name}s with filters"""
-        query = self.db.query({model_name})
+    def search(self, **filters) -> List[{model_name}]query = self.db.query({model_name})
+    """Search {model_name}s with filters"""
 '''
-
+:
         if soft_delete:
             content += (
                 f"        query = query.filter({model_name}.is_deleted == False)\n"
@@ -353,9 +348,8 @@ def upgrade():
         unique=False
     )
 
-def downgrade():
-    """Drop {model_name} table"""
-    op.drop_index(op.f('ix_{model_name.lower()}s_id'), table_name='{model_name.lower()}s')
+def downgrade()op.drop_index(op.f('ix_{model_name.lower()}s_id'), table_name='{model_name.lower()}s')
+"""Drop {model_name} table"""
     op.drop_table('{model_name.lower()}s')
 '''
 

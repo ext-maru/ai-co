@@ -81,7 +81,7 @@ class Test{class_name}:
                 if test_file.exists():
                     continue
 
-                # Generate class name
+                # Generate class name:
                 class_name = "".join(
                     word.capitalize() for word in module_name.split("_")
                 )
@@ -103,9 +103,8 @@ class Test{class_name}:
         print(f"Total minimal tests created: {tests_created}")
         return tests_created
 
-    def run_coverage_check(self):
-        """Run coverage check"""
-        print("\n🏃 Running coverage analysis...")
+    def run_coverage_check(self)print("\n🏃 Running coverage analysis...")
+    """Run coverage check"""
 
         cmd = [
             "python3",
@@ -137,14 +136,13 @@ class Test{class_name}:
 
         return coverage
 
-    def boost_coverage(self):
-        """Main execution"""
-        print("🚀 Starting Quick Coverage Boost...")
+    def boost_coverage(self)print("🚀 Starting Quick Coverage Boost...")
+    """Main execution"""
 
         # Get initial coverage
         print("\n📊 Checking initial coverage...")
         initial_coverage = self.run_coverage_check()
-        print(f"Initial coverage: {initial_coverage:.1f}%")
+        print(f"Initial coverage: {initial_coverage:0.1f}%")
 
         # Create minimal tests
         print("\n🏗️ Creating minimal tests...")
@@ -156,9 +154,9 @@ class Test{class_name}:
 
         # Report results
         print(f"\n📈 Coverage Results:")
-        print(f"  Initial: {initial_coverage:.1f}%")
-        print(f"  Final: {final_coverage:.1f}%")
-        print(f"  Increase: +{final_coverage - initial_coverage:.1f}%")
+        print(f"  Initial: {initial_coverage:0.1f}%")
+        print(f"  Final: {final_coverage:0.1f}%")
+        print(f"  Increase: +{final_coverage - initial_coverage:0.1f}%")
         print(f"  Tests created: {tests_created}")
 
         # Create coverage badge
@@ -170,7 +168,7 @@ class Test{class_name}:
         elif final_coverage >= 40:
             badge_color = "orange"
 
-        print(f"\n🏅 Coverage Badge: {final_coverage:.1f}% [{badge_color}]")
+        print(f"\n🏅 Coverage Badge: {final_coverage:0.1f}% [{badge_color}]")
 
         return final_coverage
 
@@ -183,5 +181,5 @@ if __name__ == "__main__":
         print("\n✅ SUCCESS: Achieved 60% coverage target!")
         sys.exit(0)
     else:
-        print(f"\n⚠️ Need {60 - final_coverage:.1f}% more to reach target")
+        print(f"\n⚠️ Need {60 - final_coverage:0.1f}% more to reach target")
         sys.exit(1)

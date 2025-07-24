@@ -4,10 +4,10 @@
 Elder TreeとFour Sagesの実戦統合テスト
 
 実行内容:
-1. Elder Treeパフォーマンスモニター動作確認
-2. Slack Monitor WorkerのElder Tree統合確認
-3. 統計レポート生成確認
-4. 自律学習システム動作確認
+1.0 Elder Treeパフォーマンスモニター動作確認
+2.0 Slack Monitor WorkerのElder Tree統合確認
+3.0 統計レポート生成確認
+4.0 自律学習システム動作確認
 """
 
 import asyncio
@@ -45,9 +45,8 @@ class EldersGuildIntegrationTest:
             "overall_success": False,
         }
 
-    async def run_all_tests(self):
-        """全テスト実行"""
-        logger.info("🏛️ Starting Elders Guild Integration Test")
+    async def run_all_tests(self)logger.info("🏛️ Starting Elders Guild Integration Test")
+    """全テスト実行"""
         logger.info("🌟 Under Grand Elder maru's governance")
 
         # 各テストを順次実行
@@ -61,9 +60,8 @@ class EldersGuildIntegrationTest:
 
         return self.test_results
 
-    async def test_performance_monitor(self):
-        """テスト1: パフォーマンスモニター"""
-        logger.info("\n📊 Test 1: Elder Tree Performance Monitor")
+    async def test_performance_monitor(self)logger.info("\n📊 Test 1: Elder Tree Performance Monitor")
+    """テスト1: パフォーマンスモニター"""
 
         try:
             monitor = ElderTreePerformanceMonitor()
@@ -80,7 +78,7 @@ class EldersGuildIntegrationTest:
             # リアルタイムメトリクス取得
             metrics = monitor.get_real_time_metrics()
             logger.info(
-                f"Real-time metrics: {json.dumps(metrics, indent=2, default=str)}"
+                f"Real-time metrics: {json.dumps(metrics, indent}"
             )
 
             # ダッシュボードデータ確認
@@ -104,9 +102,8 @@ class EldersGuildIntegrationTest:
             logger.error(f"❌ Performance Monitor Test Failed: {e}")
             self.test_results["performance_monitor"] = False
 
-    async def test_slack_integration(self):
-        """テスト2: Slack Worker統合"""
-        logger.info("\n🔧 Test 2: Slack Monitor Worker Elder Tree Integration")
+    async def test_slack_integration(self)logger.info("\n🔧 Test 2: Slack Monitor Worker Elder Tree Integration")
+    """テスト2: Slack Worker統合"""
 
         try:
             worker = SlackMonitorWorker()
@@ -145,9 +142,8 @@ class EldersGuildIntegrationTest:
             logger.error(f"❌ Slack Integration Test Failed: {e}")
             self.test_results["slack_integration"] = False
 
-    async def test_statistics_reporter(self):
-        """テスト3: 統計レポート生成"""
-        logger.info("\n📈 Test 3: Elder Tree Statistics Reporter")
+    async def test_statistics_reporter(self)logger.info("\n📈 Test 3: Elder Tree Statistics Reporter")
+    """テスト3: 統計レポート生成"""
 
         try:
             reporter = ElderTreeStatisticsReporter()
@@ -177,9 +173,8 @@ class EldersGuildIntegrationTest:
             logger.error(f"❌ Statistics Reporter Test Failed: {e}")
             self.test_results["statistics_report"] = False
 
-    async def test_autonomous_learning(self):
-        """テスト4: 自律学習システム"""
-        logger.info("\n🤖 Test 4: Four Sages Autonomous Learning")
+    async def test_autonomous_learning(self)logger.info("\n🤖 Test 4: Four Sages Autonomous Learning")
+    """テスト4: 自律学習システム"""
 
         try:
             learning_system = FourSagesAutonomousLearning()

@@ -20,9 +20,8 @@ from ..base_sage import BaseSage
 class RAGSage(BaseSage):
     """RAG賢者 - 情報検索と知識統合"""
 
-    def __init__(self, data_path:
+    def __init__(self, data_path: str = "data/rag"):
         """初期化メソッド"""
-    str = "data/rag"):
         super().__init__("RAG")
 
         self.data_path = data_path
@@ -104,7 +103,7 @@ class RAGSage(BaseSage):
         """RAGデータベースの初期化"""
         os.makedirs(self.data_path, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 文書テーブル
             conn.execute(
                 """
@@ -306,7 +305,7 @@ class RAGSage(BaseSage):
         content_hash = hashlib.md5(f"{title}{content}".encode()).hexdigest()
         document_id = str(uuid.uuid4())
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 重複チェック
@@ -373,7 +372,7 @@ class RAGSage(BaseSage):
                 }
             )
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # チャンク保存
@@ -466,7 +465,7 @@ class RAGSage(BaseSage):
         if not query_keywords:
             return {"success": False, "error": "No valid keywords found in query"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 基本検索クエリ構築
@@ -623,7 +622,7 @@ class RAGSage(BaseSage):
         language: Optional[str] = None,
     ) -> Dict[str, float]:
         """TF-IDFベースの関連度スコア計算"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 総文書数取得
@@ -703,7 +702,7 @@ class RAGSage(BaseSage):
         if not document_id:
             return {"success": False, "error": "Document ID is required"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 文書詳細取得
@@ -769,7 +768,7 @@ class RAGSage(BaseSage):
         limit = request.get("limit", 50)
         offset = request.get("offset", 0)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # WHERE句構築
@@ -872,7 +871,7 @@ class RAGSage(BaseSage):
         params.append(datetime.now().isoformat())  # updated_at
         params.append(document_id)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 文書存在確認
@@ -930,7 +929,7 @@ class RAGSage(BaseSage):
         if not document_id:
             return {"success": False, "error": "Document ID is required"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 文書存在確認
@@ -970,7 +969,7 @@ class RAGSage(BaseSage):
 
         context_id = str(uuid.uuid4())
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 指定された文書が存在するかチェック
@@ -1022,7 +1021,7 @@ class RAGSage(BaseSage):
         if not context_id or not query:
             return {"success": False, "error": "Context ID and query are required"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # コンテキスト取得
@@ -1072,7 +1071,7 @@ class RAGSage(BaseSage):
         if not document_id:
             return {"success": False, "error": "Document ID is required"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 対象文書のキーワード取得
@@ -1144,7 +1143,7 @@ class RAGSage(BaseSage):
 
         start_date = (datetime.now() - timedelta(days=period_days)).isoformat()
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 文書統計
@@ -1247,7 +1246,7 @@ class RAGSage(BaseSage):
         """文書の再インデックシング"""
         document_ids = request.get("document_ids", [])
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 全文書または指定文書の再インデックシング

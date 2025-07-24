@@ -65,9 +65,9 @@ def show_scaling_status(output_format="text", sections=None):
         print("📊 現在の状態:")
         print(f"  稼働中ワーカー: {metrics['active_workers']}")
         print(f"  キュー長: {metrics['queue_length']}")
-        print(f"  CPU使用率: {metrics['system']['cpu_percent']:.1f}%")
-        print(f"  メモリ使用率: {metrics['system']['memory_percent']:.1f}%")
-        print(f"  ロードアベレージ: {metrics['system']['load_average']:.2f}")
+        print(f"  CPU使用率: {metrics['system']['cpu_percent']:0.1f}%")
+        print(f"  メモリ使用率: {metrics['system']['memory_percent']:0.1f}%")
+        print(f"  ロードアベレージ: {metrics['system']['load_average']:0.2f}")
 
     if sections is None or "workers" in sections:
         print("\n📋 ワーカー詳細:")

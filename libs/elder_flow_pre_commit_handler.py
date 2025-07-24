@@ -26,9 +26,8 @@ class PreCommitError:
 class ElderFlowPreCommitHandler:
     """Elder Flow Pre-commit自動修復ハンドラー"""
 
-    def __init__(self, repo_path:
+    def __init__(self, repo_path: str = "."):
         """初期化メソッド"""
-    str = "."):
         self.repo_path = Path(repo_path)
         self.logger = logging.getLogger(__name__)
         self.max_retries = 3

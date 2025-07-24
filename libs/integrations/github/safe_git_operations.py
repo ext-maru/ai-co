@@ -165,7 +165,7 @@ class SafeGitOperations:
         stashed = False
         
         try:
-            # 1. 未コミットの変更を一時保存
+            # 1.0 未コミットの変更を一時保存
             if self.has_uncommitted_changes():
                 stash_result = self.stash_changes()
                 if not stash_result["success"]:
@@ -176,18 +176,18 @@ class SafeGitOperations:
                     }
                 stashed = True
             
-            # 2. ブランチ名を生成（Issue番号を抽出）
+            # 2.0 ブランチ名を生成（Issue番号を抽出）
             import re
             issue_match = re.search(r'#(\d+)', pr_title)
             issue_number = issue_match.group(1) if issue_match else "unknown"
             branch_name = f"{branch_prefix}-issue-{issue_number}"
             
-            # 3. 既存ブランチを削除（存在する場合）
+            # 3.0 既存ブランチを削除（存在する場合）
             self.delete_branch(branch_name, force=True)
             # リモートブランチも削除を試みる
             self._run_git_command(["push", "origin", "--delete", branch_name], check=False)
             
-            # 4. 新しいブランチを作成
+            # 4.0 新しいブランチを作成
             create_result = self.create_branch(branch_name, base_branch)
             if not create_result["success"]:
                 return {

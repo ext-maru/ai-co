@@ -31,7 +31,7 @@ def example_basic_usage():
     scheduler = get_elder_scheduler()
     scheduler.start()
     
-    # 1. 間隔実行ジョブ
+    # 1.0 間隔実行ジョブ
     def interval_job():
         print(f"⏰ 間隔ジョブ実行: {datetime.now()}")
     
@@ -43,7 +43,7 @@ def example_basic_usage():
         name='30秒間隔ジョブ'
     )
     
-    # 2. Cronジョブ（毎日9時）
+    # 2.0 Cronジョブ（毎日9時）
     def daily_job():
         print(f"🌅 日次ジョブ実行: {datetime.now()}")
     
@@ -56,7 +56,7 @@ def example_basic_usage():
         name='日次レポート生成'
     )
     
-    # 3. 一回限りジョブ
+    # 3.0 一回限りジョブ
     def one_time_job():
         print(f"🎯 一回限りジョブ実行: {datetime.now()}")
     
@@ -81,19 +81,19 @@ def example_builder_pattern():
     
     builder = ElderScheduleBuilder(scheduler)
     
-    # 1. 毎分実行
+    # 1.0 毎分実行
     def every_minute_job():
         print(f"📅 毎分ジョブ: {datetime.now()}")
     
     builder.every(1).minutes().do(every_minute_job)
     
-    # 2. 5秒間隔
+    # 2.0 5秒間隔
     def every_5_seconds_job():
         print(f"⚡ 5秒間隔ジョブ: {datetime.now()}")
     
     builder.every(5).seconds().do(every_5_seconds_job)
     
-    # 3. 2時間間隔
+    # 3.0 2時間間隔
     def every_2_hours_job():
         print(f"🕐 2時間間隔ジョブ: {datetime.now()}")
     
@@ -109,25 +109,25 @@ def example_decorators():
     scheduler = get_elder_scheduler()
     decorators = ElderScheduleDecorators(scheduler)
     
-    # 1. 日次実行デコレータ
+    # 1.0 日次実行デコレータ
     @decorators.daily(hour=8, minute=30)
     def morning_report():
         print(f"🌅 朝次レポート: {datetime.now()}")
         return "Morning report generated"
     
-    # 2. 時次実行デコレータ
+    # 2.0 時次実行デコレータ
     @decorators.hourly(minute=0)
     def hourly_cleanup():
         print(f"🧹 時次クリーンアップ: {datetime.now()}")
         return "Cleanup completed"
     
-    # 3. 週次実行デコレータ（月曜日10時）
+    # 3.0 週次実行デコレータ（月曜日10時）
     @decorators.weekly(day_of_week=0, hour=10, minute=0)
     def weekly_summary():
         print(f"📊 週次サマリー: {datetime.now()}")
         return "Weekly summary generated"
     
-    # 4. カスタムスケジュールデコレータ
+    # 4.0 カスタムスケジュールデコレータ
     @decorators.scheduled('interval', minutes=10)
     def custom_monitor():
         print(f"👁️ カスタム監視: {datetime.now()}")
@@ -207,7 +207,7 @@ def example_database_tasks():
     scheduler = get_elder_scheduler()
     scheduler.start()
     
-    # 1. データベースクリーンアップ（日次）
+    # 1.0 データベースクリーンアップ（日次）
     def db_cleanup():
         print(f"🧹 データベースクリーンアップ開始: {datetime.now()}")
         # 古いログエントリ削除
@@ -225,7 +225,7 @@ def example_database_tasks():
         name='データベースクリーンアップ'
     )
     
-    # 2. バックアップ（日次）
+    # 2.0 バックアップ（日次）
     def db_backup():
         print(f"💾 データベースバックアップ開始: {datetime.now()}")
         # PostgreSQLダンプ作成
@@ -243,7 +243,7 @@ def example_database_tasks():
         name='データベースバックアップ'
     )
     
-    # 3. 統計情報更新（時次）
+    # 3.0 統計情報更新（時次）
     def update_stats():
         print(f"📊 統計情報更新: {datetime.now()}")
         # ユーザー統計計算
@@ -270,7 +270,7 @@ def example_monitoring_tasks():
     scheduler = get_elder_scheduler()
     scheduler.start()
     
-    # 1. ヘルスチェック（5分間隔）
+    # 1.0 ヘルスチェック（5分間隔）
     def health_check():
         print(f"💓 ヘルスチェック: {datetime.now()}")
         # API エンドポイント確認
@@ -288,7 +288,7 @@ def example_monitoring_tasks():
         name='システムヘルスチェック'
     )
     
-    # 2. ログローテーション（日次）
+    # 2.0 ログローテーション（日次）
     def log_rotation():
         print(f"📋 ログローテーション: {datetime.now()}")
         # 古いログファイル圧縮
@@ -306,7 +306,7 @@ def example_monitoring_tasks():
         name='ログローテーション'
     )
     
-    # 3. セキュリティスキャン（週次）
+    # 3.0 セキュリティスキャン（週次）
     def security_scan():
         print(f"🔒 セキュリティスキャン: {datetime.now()}")
         """security_scanメソッド"""

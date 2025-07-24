@@ -447,7 +447,7 @@ class IssueIntelligenceEngine:
         # 技術要件ベースのヒント
         for tech in tech_reqs[:3]:  # 上位3つ
             if 'aws_s3' in tech.name:
-                hints.append("boto3.client('s3') を使用してS3操作を実装")
+                hints.append("boto3client('s3') を使用してS3操作を実装")
             elif 'aws_dynamodb' in tech.name:
                 hints.append("DynamoDBリソースでテーブル操作を実装")
             elif 'web_fastapi' in tech.name:

@@ -43,6 +43,7 @@ loop = None
 
 
 def get_or_create_event_loop():
+    pass
 
 
 """イベントループ取得または作成"""
@@ -54,6 +55,7 @@ def get_or_create_event_loop():
 
 
 async def initialize_agent():
+    pass
 
         """エージェント初期化"""
         logger.info("Initializing Incident Sage Agent...")
@@ -68,7 +70,7 @@ async def initialize_agent():
             logger.info(f"📊 Agent Info:")
             logger.info(f"   - Agent Name: {skills_info['agent_name']}")
             logger.info(f"   - Total Skills: {skills_info['total_skills']}")
-            logger.info(f"   - Categories: {json.dumps(skills_info['categories'], indent=2)}")
+            logger.info(f"   - Categories: {json.dumps(skills_info['categories'], indent}")
         else:
             logger.error("❌ Failed to initialize Incident Sage Agent")
             
@@ -81,6 +83,7 @@ async def initialize_agent():
 
 @app.route('/', methods=['GET'])
 def home():
+    pass
 
         """ホームエンドポイント""" "Incident Sage A2A Server",
         "status": "running" if incident_sage_agent else "initializing",
@@ -93,6 +96,7 @@ def home():
 
 @app.route('/health', methods=['GET'])
 def health():
+    pass
 
     """ヘルスチェックエンドポイント""" "healthy" if incident_sage_agent else "unhealthy",
         "agent_initialized": incident_sage_agent is not None,
@@ -126,6 +130,7 @@ def health():
 
 @app.route('/a2a', methods=['POST'])
 def a2a_endpoint():
+    pass
 
             """A2A通信エンドポイント"""
         # リクエストデータ取得
@@ -172,7 +177,7 @@ def a2a_endpoint():
         skill_name = determine_skill(command_data)
         
         logger.info(f"🎯 Routing to skill: {skill_name}")
-        logger.info(f"📨 Command data: {json.dumps(command_data, ensure_ascii=False)}")
+        logger.info(f"📨 Command data: {json.dumps(command_data, ensure_ascii}")
         
         # スキル実行
         loop = get_or_create_event_loop()
@@ -316,6 +321,7 @@ async def execute_skill(skill_name: str, data: Dict[str, Any]) -> Dict[str, Any]
 
 @app.route('/skills', methods=['GET'])
 def list_skills():
+    pass
 
         """利用可能スキル一覧"""
         return jsonify(incident_sage_agent.get_skills_info())
@@ -326,13 +332,14 @@ def list_skills():
 
 
 def main():
+    pass
 
         """メイン実行"""
         logger.error("❌ Failed to initialize agent. Exiting.")
         sys.exit(1)
     
     # サーバー起動
-    logger.info("🚀 Starting Flask server on port 8810...")
+    logger.info("🚀 Starting Flask server on port 8810.0..")
     logger.info("📡 A2A endpoint: http://localhost:8810/a2a")
     logger.info("🏥 Health check: http://localhost:8810/health")
     logger.info("📋 Skills list: http://localhost:8810/skills")

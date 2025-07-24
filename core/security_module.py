@@ -381,7 +381,7 @@ class InputSanitizer:
             safe_name = safe_name.replace(char, "_")
 
         # 英数字、ハイフン、アンダースコア、ピリオドのみ許可
-        safe_name = re.sub(r"[^a-zA-Z0-9._-]", "_", safe_name)
+        safe_name = re.sub(r"[^a-zA-Z0-9.0_-]", "_", safe_name)
 
         # 長さ制限
         if len(safe_name) > 255:

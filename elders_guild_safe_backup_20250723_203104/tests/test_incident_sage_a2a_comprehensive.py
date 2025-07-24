@@ -27,6 +27,7 @@ from incident_sage.business_logic import IncidentProcessor
 
 
 class TestIncidentSageA2AComprehensive:
+    pass
 
 
 """Incident Sage A2A Agent包括的テスト"""
@@ -35,6 +36,7 @@ class TestIncidentSageA2AComprehensive:
         self.logger = logging.getLogger("incident_sage_comprehensive_test")
     
     async def run_all_tests(self) -> Dict[str, Any]:
+        pass
 
         """全包括的テスト実行"""
             print(f"\\n🧪 {test_name.replace('_', ' ').title()} 実行中...")
@@ -50,7 +52,7 @@ class TestIncidentSageA2AComprehensive:
                 
                 if result:
                     passed_tests += 1
-                    print(f"   ✅ {test_name} 成功 ({self.test_results[test_name]['duration']:.3f}s)")
+                    print(f"   ✅ {test_name} 成功 ({self.test_results[test_name]['duration']:0.3f}s)")
                 else:
                     print(f"   ❌ {test_name} 失敗")
                     
@@ -68,9 +70,9 @@ class TestIncidentSageA2AComprehensive:
         
         print(f"\\n📊 包括的テスト結果サマリー")
         print("=" * 70)
-        print(f"合格テスト: {passed_tests}/{total_tests} ({success_rate:.1f}%)")
-        print(f"総実行時間: {total_duration:.3f}秒")
-        print(f"平均テスト時間: {total_duration/total_tests:.3f}秒")
+        print(f"合格テスト: {passed_tests}/{total_tests} ({success_rate:0.1f}%)")
+        print(f"総実行時間: {total_duration:0.3f}秒")
+        print(f"平均テスト時間: {total_duration/total_tests:0.3f}秒")
         
         return {
             "total_tests": total_tests,
@@ -82,6 +84,7 @@ class TestIncidentSageA2AComprehensive:
         }
     
     async def test_performance(self) -> bool:
+        pass
 
         """パフォーマンステスト"""
             processor = IncidentProcessor()
@@ -118,14 +121,14 @@ class TestIncidentSageA2AComprehensive:
             
             # パフォーマンス基準確認
             if throughput < 50:  # 50 ops/sec未満は失敗
-                print(f"     ❌ スループット低い: {throughput:.1f} ops/sec")
+                print(f"     ❌ スループット低い: {throughput:0.1f} ops/sec")
                 return False
             
             if avg_time_per_operation > 0.1:  # 100ms超は失敗
-                print(f"     ❌ 平均実行時間長い: {avg_time_per_operation:.3f}s")
+                print(f"     ❌ 平均実行時間長い: {avg_time_per_operation:0.3f}s")
                 return False
             
-            print(f"     ✅ パフォーマンステスト成功: {throughput:.1f} ops/sec, {avg_time_per_operation:.3f}s/op")
+            print(f"     ✅ パフォーマンステスト成功: {throughput:0.1f} ops/sec, {avg_time_per_operation:0.3f}s/op")
             return True
             
         except Exception as e:
@@ -133,6 +136,7 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_concurrency(self) -> bool:
+        pass
 
             """並行性テスト"""
             processor = IncidentProcessor()
@@ -175,10 +179,10 @@ class TestIncidentSageA2AComprehensive:
                 return False
             
             if concurrent_time > 5.0:  # 5秒超は遅い
-                print(f"     ❌ 並行実行時間長い: {concurrent_time:.3f}s")
+                print(f"     ❌ 並行実行時間長い: {concurrent_time:0.3f}s")
                 return False
             
-            print(f"     ✅ 並行性テスト成功: {len(successful_results)}/{len(concurrent_tasks)} 成功, {concurrent_time:.3f}s")
+            print(f"     ✅ 並行性テスト成功: {len(successful_results)}/{len(concurrent_tasks)} 成功, {concurrent_time:0.3f}s")
             return True
             
         except Exception as e:
@@ -186,6 +190,7 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_error_handling(self) -> bool:
+        pass
 
             """エラーハンドリングテスト"""
             processor = IncidentProcessor()
@@ -292,13 +297,14 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_data_integrity(self) -> bool:
+        pass
 
             """データ整合性テスト"""
             processor = IncidentProcessor()
             
             # データ整合性テストシナリオ
             
-            # 1. インシデント作成と取得の整合性
+            # 1.0 インシデント作成と取得の整合性
             original_incident_data = {
                 "anomaly_data": {
                     "component": "integrity_test_service",
@@ -319,11 +325,11 @@ class TestIncidentSageA2AComprehensive:
             
             # データベースから読み直し
             processor2 = IncidentProcessor()
-            if incident_id not in processor2.incidents:
+            if incident_id not in processor2.0incidents:
                 print(f"     ❌ インシデントデータ永続化失敗")
                 return False
             
-            stored_incident = processor2.incidents[incident_id]
+            stored_incident = processor2.0incidents[incident_id]
             
             # データ整合性確認
             if stored_incident.title != create_result["data"]["title"]:
@@ -334,7 +340,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ 重要度不整合")
                 return False
             
-            # 2. 品質基準データ整合性
+            # 2.0 品質基準データ整合性
             quality_data = {
                 "standard": {
                     "name": "Integrity Test Standard",
@@ -362,11 +368,11 @@ class TestIncidentSageA2AComprehensive:
             
             # 新しいプロセッサで確認
             processor3 = IncidentProcessor()
-            if standard_id not in processor3.quality_standards:
+            if standard_id not in processor3.0quality_standards:
                 print(f"     ❌ 品質基準データ永続化失敗")
                 return False
             
-            stored_standard = processor3.quality_standards[standard_id]
+            stored_standard = processor3.0quality_standards[standard_id]
             if stored_standard.name != quality_data["standard"]["name"]:
                 print(f"     ❌ 品質基準名不整合")
                 return False
@@ -379,12 +385,13 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_complex_workflow(self) -> bool:
+        pass
 
             """複雑ワークフローテスト"""
             processor = IncidentProcessor()
             
             # 複雑なワークフローシナリオ
-            # 1. 複数サービスでの連鎖的インシデント
+            # 1.0 複数サービスでの連鎖的インシデント
             services = ["frontend", "api_gateway", "user_service", "payment_service", "database"]
             incidents = []
             
@@ -410,13 +417,13 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ インシデント作成数不一致: {len(incidents)} != {len(services)}")
                 return False
             
-            # 2. パターン学習実行
+            # 2.0 パターン学習実行
             pattern_result = await processor.process_action("learn_incident_patterns", {})
             if not pattern_result.get("success"):
                 print(f"     ❌ パターン学習失敗")
                 return False
             
-            # 3. 相関分析実行
+            # 3.0 相関分析実行
             correlation_result = await processor.process_action("analyze_correlations", {})
             if not correlation_result.get("success"):
                 print(f"     ❌ 相関分析失敗")
@@ -424,7 +431,7 @@ class TestIncidentSageA2AComprehensive:
             
             correlations = correlation_result["data"]["correlations"]
             
-            # 4. 自動修復試行
+            # 4.0 自動修復試行
             remediation_results = []
             for incident_id in incidents[:2]:  # 最初の2つのみ
                 remediation_result = await processor.process_action("attempt_automated_remediation", {
@@ -434,7 +441,7 @@ class TestIncidentSageA2AComprehensive:
             
             successful_remediations = [r for r in remediation_results if r.get("success")]
             
-            # 5. 統計分析
+            # 5.0 統計分析
             stats_result = await processor.process_action("get_statistics", {})
             if not stats_result.get("success"):
                 print(f"     ❌ 統計取得失敗")
@@ -459,6 +466,7 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_memory_efficiency(self) -> bool:
+        pass
 
             """メモリ効率性テスト"""
             import psutil
@@ -502,15 +510,15 @@ class TestIncidentSageA2AComprehensive:
             
             # メモリ効率性基準確認
             if memory_increase > 100:  # 100MB超増加は問題
-                print(f"     ❌ メモリ使用量増加過大: {memory_increase:.1f}MB")
+                print(f"     ❌ メモリ使用量増加過大: {memory_increase:0.1f}MB")
                 return False
             
             memory_per_op = (memory_increase * 1024) / 1000  # KB per operation
             if memory_per_op > 10:  # 10KB/op超は問題
-                print(f"     ❌ 操作あたりメモリ使用量過大: {memory_per_op:.1f}KB/op")
+                print(f"     ❌ 操作あたりメモリ使用量過大: {memory_per_op:0.1f}KB/op")
                 return False
             
-            print(f"     ✅ メモリ効率性テスト成功: +{memory_increase:.1f}MB, {memory_per_op:.1f}KB/op")
+            print(f"     ✅ メモリ効率性テスト成功: +{memory_increase:0.1f}MB, {memory_per_op:0.1f}KB/op")
             return True
             
         except ImportError:
@@ -521,6 +529,7 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_incident_lifecycle(self) -> bool:
+        pass
 
             """インシデントライフサイクルテスト"""
             processor = IncidentProcessor(test_mode=True)
@@ -528,7 +537,7 @@ class TestIncidentSageA2AComprehensive:
             
             # インシデントライフサイクル全体テスト
             
-            # 1. インシデント検知
+            # 1.0 インシデント検知
             detection_data = {
                 "anomaly_data": {
                     "component": "lifecycle_test_service",
@@ -550,7 +559,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ 初期ステータス不正: {initial_status}")
                 return False
             
-            # 2. インシデント対応
+            # 2.0 インシデント対応
             response_result = await processor.process_action("respond_to_incident", {
                 "incident_id": incident_id
             })
@@ -562,7 +571,7 @@ class TestIncidentSageA2AComprehensive:
             response_status = response_result["data"]["response_status"]
             incident_status_after_response = response_result["data"]["incident_status"]
             
-            # 3. 自動修復試行
+            # 3.0 自動修復試行
             remediation_result = await processor.process_action("attempt_automated_remediation", {
                 "incident_id": incident_id
             })
@@ -573,7 +582,7 @@ class TestIncidentSageA2AComprehensive:
             
             remediation_status = remediation_result["data"]["status"]
             
-            # 4. インシデント状態確認
+            # 4.0 インシデント状態確認
             # test_modeでは永続化されないため、同じプロセッサで確認
             if incident_id not in processor.incidents:
                 print(f"     ❌ インシデントがメモリに存在しない")
@@ -600,13 +609,14 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_quality_assessment_comprehensive(self) -> bool:
+        pass
 
             """品質評価包括テスト"""
             processor = IncidentProcessor()
             
             # 複数品質基準での包括評価
             
-            # 1. カスタム品質基準作成
+            # 1.0 カスタム品質基準作成
             custom_standards = [
                 {
                     "name": "Security Standard",
@@ -640,7 +650,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ 品質基準作成数不一致")
                 return False
             
-            # 2. 複数コンポーネントでの品質評価
+            # 2.0 複数コンポーネントでの品質評価
             components = ["frontend", "backend", "database"]
             assessment_results = []
             
@@ -667,7 +677,7 @@ class TestIncidentSageA2AComprehensive:
                     if assessment_result.get("success"):
                         assessment_results.append(assessment_result["data"])
             
-            # 3. 評価結果分析
+            # 3.0 評価結果分析
             total_assessments = len(components) * len(created_standards)
             successful_assessments = len(assessment_results)
             
@@ -689,7 +699,7 @@ class TestIncidentSageA2AComprehensive:
                 "average_quality_score": avg_quality_score
             }
             
-            print(f"     ✅ 品質評価包括テスト成功: {compliance_rate:.1f}%適合, 平均{avg_quality_score:.1f}点")
+            print(f"     ✅ 品質評価包括テスト成功: {compliance_rate:0.1f}%適合, 平均{avg_quality_score:0.1f}点")
             return True
             
         except Exception as e:
@@ -697,6 +707,7 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_alert_system_integration(self) -> bool:
+        pass
 
             """アラートシステム統合テスト"""
             processor = IncidentProcessor(test_mode=True)
@@ -704,7 +715,7 @@ class TestIncidentSageA2AComprehensive:
             
             # アラートシステム統合シナリオ
             
-            # 1. 複数アラートルール作成
+            # 1.0 複数アラートルール作成
             alert_rules = [
                 {
                     "name": "CPU Alert",
@@ -738,7 +749,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ アラートルール作成数不一致")
                 return False
             
-            # 2. アラート評価シナリオ
+            # 2.0 アラート評価シナリオ
             test_metrics = [
                 {
                     "scenario": "normal",
@@ -774,7 +785,7 @@ class TestIncidentSageA2AComprehensive:
                         "match": triggered_count == test_case["expected_alerts"]
                     })
             
-            # 3. アラート評価結果検証
+            # 3.0 アラート評価結果検証
             successful_evaluations = [r for r in alert_evaluation_results if r["match"]]
             
             if len(successful_evaluations) != len(test_metrics):
@@ -792,13 +803,14 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_monitoring_comprehensive(self) -> bool:
+        pass
 
             """監視機能包括テスト"""
             processor = IncidentProcessor()
             
             # 監視システム包括テスト
             
-            # 1. 複数監視対象登録
+            # 1.0 複数監視対象登録
             monitoring_targets = [
                 {
                     "name": "Web Server",
@@ -832,7 +844,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ 監視対象登録数不一致")
                 return False
             
-            # 2. ヘルスチェック実行
+            # 2.0 ヘルスチェック実行
             health_check_results = []
             for target_id in created_targets:
                 result = await processor.process_action("check_target_health", {
@@ -845,7 +857,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ ヘルスチェック実行数不一致")
                 return False
             
-            # 3. ヘルスチェック結果分析
+            # 3.0 ヘルスチェック結果分析
             healthy_targets = [r for r in health_check_results if r["status"] == "healthy"]
             avg_response_time = sum(r["response_time_ms"] for r in health_check_results) / len(health_check_results)
             avg_uptime = sum(r["uptime_percentage"] for r in health_check_results) / len(health_check_results)
@@ -863,7 +875,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ 全監視対象が不健康")
                 return False
             
-            print(f"     ✅ 監視機能包括テスト成功: {len(healthy_targets)}/{len(created_targets)}健康, 平均応答{avg_response_time:.1f}ms")
+            print(f"     ✅ 監視機能包括テスト成功: {len(healthy_targets)}/{len(created_targets)}健康, 平均応答{avg_response_time:0.1f}ms")
             return True
             
         except Exception as e:
@@ -871,13 +883,14 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_pattern_learning_advanced(self) -> bool:
+        pass
 
             """パターン学習高度テスト"""
             processor = IncidentProcessor()
             
             # 高度パターン学習テスト
             
-            # 1. 複雑なインシデントパターン作成
+            # 1.0 複雑なインシデントパターン作成
             incident_patterns = [
                 # パフォーマンス関連パターン
                 *[{
@@ -917,7 +930,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ インシデント作成数不一致")
                 return False
             
-            # 2. パターン学習実行
+            # 2.0 パターン学習実行
             learning_result = await processor.process_action("learn_incident_patterns", {})
             
             if not learning_result.get("success"):
@@ -928,7 +941,7 @@ class TestIncidentSageA2AComprehensive:
             patterns_learned = learning_data["patterns_learned"]
             patterns = learning_data["patterns"]
             
-            # 3. 学習パターン分析
+            # 3.0 学習パターン分析
             expected_categories = ["performance", "security", "availability"]
             learned_categories = [p["category"] for p in patterns]
             
@@ -966,7 +979,7 @@ class TestIncidentSageA2AComprehensive:
                 "average_pattern_quality": avg_pattern_quality
             }
             
-            print(f"     ✅ パターン学習高度テスト成功: {patterns_learned}パターン, {category_coverage}カテゴリ, 品質{avg_pattern_quality:.1f}")
+            print(f"     ✅ パターン学習高度テスト成功: {patterns_learned}パターン, {category_coverage}カテゴリ, 品質{avg_pattern_quality:0.1f}")
             return True
             
         except Exception as e:
@@ -974,6 +987,7 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_correlation_analysis_detailed(self) -> bool:
+        pass
 
             """相関分析詳細テスト"""
             processor = IncidentProcessor(test_mode=True)
@@ -981,7 +995,7 @@ class TestIncidentSageA2AComprehensive:
             
             # 相関分析詳細テスト
             
-            # 1. 時間的相関インシデント作成
+            # 1.0 時間的相関インシデント作成
             time_correlated_incidents = []
             
             # 同時期インシデント群1
@@ -1013,7 +1027,7 @@ class TestIncidentSageA2AComprehensive:
                     time_correlated_incidents.append(result["data"]["incident_id"])
                 await asyncio.sleep(0.001)
             
-            # 2. 空間的相関インシデント作成
+            # 2.0 空間的相関インシデント作成
             space_correlated_incidents = []
             shared_components = ["payment_service", "user_database"]
             
@@ -1029,7 +1043,7 @@ class TestIncidentSageA2AComprehensive:
                     if result.get("success"):
                         space_correlated_incidents.append(result["data"]["incident_id"])
             
-            # 3. 相関分析実行
+            # 3.0 相関分析実行
             correlation_result = await processor.process_action("analyze_correlations", {})
             
             if not correlation_result.get("success"):
@@ -1040,7 +1054,7 @@ class TestIncidentSageA2AComprehensive:
             correlations = correlation_data["correlations"]
             analyzed_incidents = correlation_data["analyzed_incidents"]
             
-            # 4. 相関分析結果評価
+            # 4.0 相関分析結果評価
             total_incidents_created = len(time_correlated_incidents) + len(space_correlated_incidents)
             
             if analyzed_incidents != total_incidents_created:
@@ -1071,13 +1085,14 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_remediation_effectiveness(self) -> bool:
+        pass
 
             """修復効果テスト"""
             processor = IncidentProcessor()
             
             # 修復効果テスト
             
-            # 1. 異なるカテゴリのインシデント作成
+            # 1.0 異なるカテゴリのインシデント作成
             test_categories = [
                 ("performance", "cache_service", "memory_leak"),
                 ("availability", "web_server", "service_down"),
@@ -1118,7 +1133,7 @@ class TestIncidentSageA2AComprehensive:
                         "actions_taken": remediation_data.get("actions_taken", [])
                     })
             
-            # 2. 修復効果分析
+            # 2.0 修復効果分析
             successful_remediations = [r for r in remediation_results if r["status"] == "success"]
             failed_remediations = [r for r in remediation_results if r["status"] == "failed"]
             no_action_remediations = [r for r in remediation_results if r["status"] == "no_action"]
@@ -1143,7 +1158,7 @@ class TestIncidentSageA2AComprehensive:
             
             # 効果基準確認
             if success_rate < 50:  # 50%未満は問題
-                print(f"     ❌ 修復成功率低い: {success_rate:.1f}%")
+                print(f"     ❌ 修復成功率低い: {success_rate:0.1f}%")
                 return False
             
             # 全カテゴリで修復アクションが定義されているか確認
@@ -1152,7 +1167,7 @@ class TestIncidentSageA2AComprehensive:
                 print(f"     ❌ 修復アクション定義不足")
                 return False
             
-            print(f"     ✅ 修復効果テスト成功: {success_rate:.1f}%成功率, {len(test_categories)}カテゴリ対応")
+            print(f"     ✅ 修復効果テスト成功: {success_rate:0.1f}%成功率, {len(test_categories)}カテゴリ対応")
             return True
             
         except Exception as e:
@@ -1160,6 +1175,7 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_statistics_accuracy(self) -> bool:
+        pass
 
             """統計精度テスト"""
             processor = IncidentProcessor(test_mode=True)
@@ -1167,7 +1183,7 @@ class TestIncidentSageA2AComprehensive:
             
             # 統計精度テスト
             
-            # 1. 既知データで統計作成
+            # 1.0 既知データで統計作成
             known_data = {
                 "incidents": [],
                 "quality_assessments": [],
@@ -1241,7 +1257,7 @@ class TestIncidentSageA2AComprehensive:
                 if result.get("success"):
                     known_data["monitoring_targets"].append(result["data"]["target_id"])
             
-            # 2. 統計取得・精度確認
+            # 2.0 統計取得・精度確認
             stats_result = await processor.process_action("get_statistics", {})
             
             if not stats_result.get("success"):
@@ -1304,13 +1320,13 @@ class TestIncidentSageA2AComprehensive:
             
             # 精度基準確認
             if accuracy_rate < 80:  # 80%未満は問題
-                print(f"     ❌ 統計精度低い: {accuracy_rate:.1f}%")
+                print(f"     ❌ 統計精度低い: {accuracy_rate:0.1f}%")
                 for check in accuracy_checks:
                     if not check["accurate"]:
                         print(f"       • {check['metric']}: 期待{check['expected']}, 実際{check['actual']}")
                 return False
             
-            print(f"     ✅ 統計精度テスト成功: {accuracy_rate:.1f}%精度, {len(accurate_metrics)}/{len(accuracy_checks)}項目")
+            print(f"     ✅ 統計精度テスト成功: {accuracy_rate:0.1f}%精度, {len(accurate_metrics)}/{len(accuracy_checks)}項目")
             return True
             
         except Exception as e:
@@ -1318,13 +1334,14 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_stress_load(self) -> bool:
+        pass
 
             """ストレス負荷テスト"""
             processor = IncidentProcessor()
             
             # ストレス負荷テスト
             
-            # 1. 大量同時操作テスト
+            # 1.0 大量同時操作テスト
             stress_operations = []
             
             # 各種操作を混合
@@ -1355,7 +1372,7 @@ class TestIncidentSageA2AComprehensive:
                     # パターン学習
                     stress_operations.append(("learn_incident_patterns", {}))
             
-            # 2. ストレス実行
+            # 2.0 ストレス実行
             start_time = time.time()
             stress_results = []
             
@@ -1378,7 +1395,7 @@ class TestIncidentSageA2AComprehensive:
             end_time = time.time()
             total_stress_time = end_time - start_time
             
-            # 3. ストレス結果分析
+            # 3.0 ストレス結果分析
             successful_operations = [r for r in stress_results if r.get("success")]
             failed_operations = [r for r in stress_results if not r.get("success")]
             
@@ -1396,14 +1413,14 @@ class TestIncidentSageA2AComprehensive:
             
             # ストレス基準確認
             if stress_success_rate < 90:  # 90%未満は問題
-                print(f"     ❌ ストレス成功率低い: {stress_success_rate:.1f}%")
+                print(f"     ❌ ストレス成功率低い: {stress_success_rate:0.1f}%")
                 return False
             
             if stress_throughput < 20:  # 20 ops/sec未満は問題
-                print(f"     ❌ ストレススループット低い: {stress_throughput:.1f} ops/sec")
+                print(f"     ❌ ストレススループット低い: {stress_throughput:0.1f} ops/sec")
                 return False
             
-            print(f"     ✅ ストレス負荷テスト成功: {stress_success_rate:.1f}%成功率, {stress_throughput:.1f} ops/sec")
+            print(f"     ✅ ストレス負荷テスト成功: {stress_success_rate:0.1f}%成功率, {stress_throughput:0.1f} ops/sec")
             return True
             
         except Exception as e:
@@ -1411,6 +1428,7 @@ class TestIncidentSageA2AComprehensive:
             return False
     
     async def test_edge_cases(self) -> bool:
+        pass
 
             """エッジケーステスト"""
             processor = IncidentProcessor()
@@ -1539,13 +1557,13 @@ class TestIncidentSageA2AComprehensive:
             
             # エッジケース基準確認
             if edge_case_success_rate < 80:  # 80%未満は問題
-                print(f"     ❌ エッジケース処理不十分: {edge_case_success_rate:.1f}%")
+                print(f"     ❌ エッジケース処理不十分: {edge_case_success_rate:0.1f}%")
                 for result in edge_case_results:
                     if not result["correct"]:
                         print(f"       • {result['case']}: 期待{result['expected_success']}, 実際{result['actual_success']}")
                 return False
             
-            print(f"     ✅ エッジケーステスト成功: {edge_case_success_rate:.1f}%適切処理, {len(correct_results)}/{len(edge_test_cases)}ケース")
+            print(f"     ✅ エッジケーステスト成功: {edge_case_success_rate:0.1f}%適切処理, {len(correct_results)}/{len(edge_test_cases)}ケース")
             return True
             
         except Exception as e:
@@ -1554,12 +1572,13 @@ class TestIncidentSageA2AComprehensive:
 
 
 async def main():
+    pass
 
             """メイン実行"""
         print(f"\\n🎉 Incident Sage包括的テスト成功！")
-        print(f"   成功率: {results['success_rate']:.1f}%")
-        print(f"   実行時間: {results['total_duration']:.3f}秒")
-        print(f"   平均テスト時間: {results['total_duration']/results['total_tests']:.3f}秒")
+        print(f"   成功率: {results['success_rate']:0.1f}%")
+        print(f"   実行時間: {results['total_duration']:0.3f}秒")
+        print(f"   平均テスト時間: {results['total_duration']/results['total_tests']:0.3f}秒")
         print(f"   🚨 Elder Loop Phase 4完了")
         
         # パフォーマンスサマリー
@@ -1567,14 +1586,14 @@ async def main():
             print(f"\\n📊 パフォーマンスサマリー:")
             for metric_name, metric_data in test_suite.performance_metrics.items():
                 if isinstance(metric_data, dict) and "throughput" in metric_data:
-                    print(f"   • {metric_name}: {metric_data['throughput']:.1f} ops/sec")
+                    print(f"   • {metric_name}: {metric_data['throughput']:0.1f} ops/sec")
                 elif isinstance(metric_data, dict) and "success_rate" in metric_data:
-                    print(f"   • {metric_name}: {metric_data['success_rate']:.1f}% 成功率")
+                    print(f"   • {metric_name}: {metric_data['success_rate']:0.1f}% 成功率")
         
         return True
     else:
         print(f"\\n🔧 Incident Sage包括的テストで調整が必要")
-        print(f"   成功率: {results['success_rate']:.1f}% (80%未満)")
+        print(f"   成功率: {results['success_rate']:0.1f}% (80%未満)")
         return False
 
 

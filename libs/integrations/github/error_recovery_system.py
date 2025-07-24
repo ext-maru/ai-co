@@ -98,9 +98,8 @@ class CircuitBreakerConfig:
 class CircuitBreaker:
     """サーキットブレーカーパターン実装"""
     
-    def __init__(self, config:
+    def __init__(self, config: CircuitBreakerConfig):
         """初期化メソッド"""
-    CircuitBreakerConfig):
         self.config = config
         self.state = CircuitBreakerState.CLOSED
         self.failure_count = 0
@@ -206,9 +205,8 @@ class RetryStrategy(ABC):
 class ExponentialBackoffStrategy(RetryStrategy):
     """指数バックオフ戦略"""
     
-    def __init__(self, base_delay:
+    def __init__(self, base_delay: float = 1.0, max_delay: float = 60.0, max_attempts: int = 5):
         """初期化メソッド"""
-    float = 1.0, max_delay: float = 60.0, max_attempts: int = 5):
         self.base_delay = base_delay
         self.max_delay = max_delay
         self.max_attempts = max_attempts

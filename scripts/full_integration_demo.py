@@ -23,7 +23,7 @@ def main():
     print("完全統合デモンストレーション")
     print("=" * 80)
 
-    # 1. システム状態確認
+    # 1.0 システム状態確認
     check_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
 
@@ -53,7 +53,7 @@ echo ""
     print("1️⃣ システム状態を確認中...")
     time.sleep(5)
 
-    # 2. Claude Desktop統合テスト実行
+    # 2.0 Claude Desktop統合テスト実行
     test_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
 source venv/bin/activate
@@ -78,7 +78,7 @@ from pathlib import Path
 
 db_path = Path('/home/aicompany/ai_co/data/tasks.db')
 if db_path.exists():
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3connect(str(db_path))
     cursor = conn.cursor()
 
     cursor.execute('''
@@ -101,7 +101,7 @@ if db_path.exists():
     print("\n2️⃣ Claude Desktop統合テストを実行中...")
     time.sleep(15)
 
-    # 3. 実際の開発タスク送信デモ
+    # 3.0 実際の開発タスク送信デモ
     demo_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
 source venv/bin/activate
@@ -143,7 +143,7 @@ print('  - CLI: ./scripts/task list')
     print("\n3️⃣ 実際の開発タスクを送信中...")
     time.sleep(10)
 
-    # 4. 最終確認
+    # 4.0 最終確認
     final_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
 

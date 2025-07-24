@@ -180,7 +180,7 @@ class IntelligentTaskSplitter(BaseManager):
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 分割されたタスクテーブル
             conn.execute(
                 """
@@ -479,7 +479,7 @@ class IntelligentTaskSplitter(BaseManager):
         subtasks = []
         base_hours = self._estimate_hours_by_complexity(complexity)
 
-        # 1. 設計・計画フェーズ
+        # 1.0 設計・計画フェーズ
         subtasks.append(
             SubTask(
                 id=f"{task_id}_design",
@@ -497,7 +497,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 2. 主要実装
+        # 2.0 主要実装
         subtasks.append(
             SubTask(
                 id=f"{task_id}_implementation",
@@ -515,7 +515,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 3. テスト
+        # 3.0 テスト
         subtasks.append(
             SubTask(
                 id=f"{task_id}_testing",
@@ -533,7 +533,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 4. ドキュメント作成
+        # 4.0 ドキュメント作成
         subtasks.append(
             SubTask(
                 id=f"{task_id}_documentation",
@@ -560,7 +560,7 @@ class IntelligentTaskSplitter(BaseManager):
         subtasks = []
         base_hours = self._estimate_hours_by_complexity(complexity)
 
-        # 1. 要件分析
+        # 1.0 要件分析
         subtasks.append(
             SubTask(
                 id=f"{task_id}_requirements",
@@ -578,7 +578,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 2. アーキテクチャ設計
+        # 2.0 アーキテクチャ設計
         subtasks.append(
             SubTask(
                 id=f"{task_id}_architecture",
@@ -596,7 +596,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 3. 詳細設計
+        # 3.0 詳細設計
         subtasks.append(
             SubTask(
                 id=f"{task_id}_detailed_design",
@@ -623,7 +623,7 @@ class IntelligentTaskSplitter(BaseManager):
         subtasks = []
         base_hours = self._estimate_hours_by_complexity(complexity)
 
-        # 1. 情報収集
+        # 1.0 情報収集
         subtasks.append(
             SubTask(
                 id=f"{task_id}_information_gathering",
@@ -641,7 +641,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 2. 分析・評価
+        # 2.0 分析・評価
         subtasks.append(
             SubTask(
                 id=f"{task_id}_analysis",
@@ -659,7 +659,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 3. レポート作成
+        # 3.0 レポート作成
         subtasks.append(
             SubTask(
                 id=f"{task_id}_report",
@@ -686,7 +686,7 @@ class IntelligentTaskSplitter(BaseManager):
         subtasks = []
         base_hours = self._estimate_hours_by_complexity(complexity)
 
-        # 1. テスト計画
+        # 1.0 テスト計画
         subtasks.append(
             SubTask(
                 id=f"{task_id}_test_planning",
@@ -704,7 +704,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 2. テスト実装
+        # 2.0 テスト実装
         subtasks.append(
             SubTask(
                 id=f"{task_id}_test_implementation",
@@ -722,7 +722,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 3. テスト実行
+        # 3.0 テスト実行
         subtasks.append(
             SubTask(
                 id=f"{task_id}_test_execution",
@@ -749,7 +749,7 @@ class IntelligentTaskSplitter(BaseManager):
         subtasks = []
         base_hours = self._estimate_hours_by_complexity(complexity)
 
-        # 1. 統合計画
+        # 1.0 統合計画
         subtasks.append(
             SubTask(
                 id=f"{task_id}_integration_planning",
@@ -767,7 +767,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 2. 統合実装
+        # 2.0 統合実装
         subtasks.append(
             SubTask(
                 id=f"{task_id}_integration_implementation",
@@ -785,7 +785,7 @@ class IntelligentTaskSplitter(BaseManager):
             )
         )
 
-        # 3. 統合テスト
+        # 3.0 統合テスト
         subtasks.append(
             SubTask(
                 id=f"{task_id}_integration_testing",
@@ -883,7 +883,7 @@ class IntelligentTaskSplitter(BaseManager):
 
     def _save_subtasks_to_db(self, subtasks: List[SubTask]):
         """サブタスクをデータベースに保存"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             for subtask in subtasks:
             # 繰り返し処理
                 conn.execute(
@@ -922,7 +922,7 @@ class IntelligentTaskSplitter(BaseManager):
         self, task_id: str, subtask_count: int, complexity_score: float
     ):
         """分割履歴を記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 時間削減見積もり
             estimated_savings = subtask_count * 0.1 * complexity_score  # 簡易計算
 
@@ -1012,7 +1012,7 @@ class IntelligentTaskSplitter(BaseManager):
     def get_subtasks_by_parent(self, parent_task_id: str) -> List[SubTask]:
         """親タスクIDからサブタスクを取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.execute(
                     """
                     SELECT id, parent_task_id, title, description, task_type, complexity,
@@ -1058,7 +1058,7 @@ class IntelligentTaskSplitter(BaseManager):
     def get_splitting_statistics(self) -> Dict[str, Any]:
         """分割統計情報取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 stats = {}
 
                 # 全体統計
@@ -1164,7 +1164,7 @@ if __name__ == "__main__":
         complexity, score = splitter.analyze_task_complexity(test_case["description"])
         task_type = splitter.determine_task_type(test_case["description"])
 
-        print(f"🎯 Analysis: {complexity.value} ({score:.1f}), Type: {task_type.value}")
+        print(f"🎯 Analysis: {complexity.value} ({score:0.1f}), Type: {task_type.value}")
 
         # タスク分割
         subtasks = splitter.split_into_subtasks(
@@ -1192,4 +1192,4 @@ if __name__ == "__main__":
     stats = splitter.get_splitting_statistics()
     print(f"Total split tasks: {stats.get('total_split_tasks', 0)}")
     print(f"Total subtasks: {stats.get('total_subtasks', 0)}")
-    print(f"Average estimated hours: {stats.get('avg_estimated_hours', 0.0):.1f}")
+    print(f"Average estimated hours: {stats.get('avg_estimated_hours', 0.0):0.1f}")

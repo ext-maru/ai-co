@@ -134,7 +134,7 @@ def test_insight_correlation():
     tests_total = 3
 
     if correlation_high > correlation_low:
-        print(f"  ✅ 高相関 ({correlation_high:.3f}) > 低相関 ({correlation_low:.3f})")
+        print(f"  ✅ 高相関 ({correlation_high:0.3f}) > 低相関 ({correlation_low:0.3f})")
         tests_passed += 1
     else:
         print(f"  ❌ Correlation logic failed: {correlation_high} <= {correlation_low}")
@@ -221,14 +221,14 @@ async def test_quantum_consensus():
 
     if 0 <= consensus.confidence <= 1:
     # 複雑な条件判定
-        print(f"  ✅ 信頼度範囲OK: {consensus.confidence:.3f}")
+        print(f"  ✅ 信頼度範囲OK: {consensus.confidence:0.3f}")
         tests_passed += 1
     else:
         print(f"  ❌ Confidence out of range: {consensus.confidence}")
 
     # 複雑な条件判定
     if 0 <= consensus.coherence <= 1:
-        print(f"  ✅ コヒーレンス範囲OK: {consensus.coherence:.3f}")
+        print(f"  ✅ コヒーレンス範囲OK: {consensus.coherence:0.3f}")
         tests_passed += 1
     else:
         print(f"  ❌ Coherence out of range: {consensus.coherence}")
@@ -294,13 +294,13 @@ def test_quantum_health():
         print(f"  ❌ Invalid status: {health['overall_status']}")
 
     if "quantum_coherence_level" in health:
-        print(f"  ✅ コヒーレンスレベル: {health['quantum_coherence_level']:.3f}")
+        print(f"  ✅ コヒーレンスレベル: {health['quantum_coherence_level']:0.3f}")
         tests_passed += 1
     else:
         print("  ❌ Missing coherence level")
 
     if "entanglement_stability" in health:
-        print(f"  ✅ もつれ安定性: {health['entanglement_stability']:.3f}")
+        print(f"  ✅ もつれ安定性: {health['entanglement_stability']:0.3f}")
         tests_passed += 1
     else:
         print("  ❌ Missing entanglement stability")
@@ -352,7 +352,7 @@ async def test_quantum_learning():
         print("  ❌ Quantum weights error")
 
     if result["coherence_improvement"] >= 0:
-        print(f"  ✅ コヒーレンス改善: {result['coherence_improvement']:.3f}")
+        print(f"  ✅ コヒーレンス改善: {result['coherence_improvement']:0.3f}")
         tests_passed += 1
     else:
         print("  ❌ Coherence improvement negative")

@@ -133,11 +133,11 @@ class MonitoringMixin:
             "processed_count": self.metrics["processed_count"],
             "success_count": self.metrics["success_count"],
             "error_count": self.metrics["error_count"],
-            "error_rate": f"{self.error_rate:.2%}",
-            "success_rate": f"{self.success_rate:.2%}",
-            "avg_processing_time": f"{self.avg_processing_time:.2f}s",
-            "tasks_per_minute": f"{self.get_throughput():.1f}",
-            "health_score": f"{self.calculate_health_score():.1f}",
+            "error_rate": f"{self.error_rate:0.2%}",
+            "success_rate": f"{self.success_rate:0.2%}",
+            "avg_processing_time": f"{self.avg_processing_time:0.2f}s",
+            "tasks_per_minute": f"{self.get_throughput():0.1f}",
+            "health_score": f"{self.calculate_health_score():0.1f}",
             "last_error": self.metrics["last_error"],
             "last_success_time": self.metrics["last_success_time"].isoformat()
             if self.metrics["last_success_time"]

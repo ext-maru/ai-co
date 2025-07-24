@@ -263,7 +263,7 @@ Authority: Elder Council - Identity Protocol Enforcement
 Total Files Scanned: {scan_results['total_files']}
 Files with Violations: {scan_results['violations_found']}
 Compliance Rate: {((scan_results['total_files'] - scan_results[ \
-    'violations_found']) / scan_results['total_files'] * 100):.1f}%
+    'violations_found']) / scan_results['total_files'] * 100):0.1f}%
 
 ## 🚨 Critical Violations
 

@@ -418,7 +418,7 @@ class SecurityLevelEnforcer:
 
         except Exception as e:
             self.logger.error(f"🚨 Access validation error: {e}")
-            return self._create_denied_result(request, f"System error: {str(e)}", 1.0)
+            return self._create_denied_result(request, f"System error: {str(e)}", 1)
 
     def _validate_session(self, context: SecurityContext) -> bool:
         """セッション有効性検証"""
@@ -483,7 +483,7 @@ class SecurityLevelEnforcer:
     def _calculate_risk_score(self, request: AccessRequest) -> float:
         """リスクスコア計算"""
 
-        score = 0.0
+        score = 0
 
         # 時間ベースリスク
         current_hour = datetime.now().hour
@@ -498,13 +498,13 @@ class SecurityLevelEnforcer:
 
         # データ分類リスク
         data_risk = {
-            DataClassification.PUBLIC: 0.0,
+            DataClassification.PUBLIC: 0,
             DataClassification.INTERNAL: 0.1,
             DataClassification.CONFIDENTIAL: 0.3,
             DataClassification.RESTRICTED: 0.5,
             DataClassification.TOP_SECRET: 0.7,
         }
-        score += data_risk.get(request.data_classification, 0.0)
+        score += data_risk.get(request.data_classification, 0)
 
         # セッション年数リスク
         session_age = datetime.now() - request.context.created_at
@@ -515,7 +515,7 @@ class SecurityLevelEnforcer:
         anomaly_score = self.anomaly_detector.detect_anomaly(request)
         score += anomaly_score
 
-        return min(score, 1.0)
+        return min(score, 1)
 
     def _get_access_restrictions(self, request: AccessRequest) -> List[str]:
         """アクセス制限取得"""
@@ -577,7 +577,7 @@ class SecurityLevelEnforcer:
             resource_id=request.resource_id,
             timestamp=datetime.now(),
             severity=int(risk_score * 10),
-            description=f"High risk access attempt: {risk_score:.2f}",
+            description=f"High risk access attempt: {risk_score:0.2f}",
             evidence={
                 "request": asdict(request),
                 "risk_score": risk_score,
@@ -706,10 +706,10 @@ class AnomalyDetector:
         ]
 
     def detect_anomaly(self, request: AccessRequest) -> float:
-        """異常スコア計算（0.0-1.0）"""
+        """異常スコア計算（0-1）"""
 
         # 簡易実装（実際はより高度な機械学習モデルを使用）
-        anomaly_score = 0.0
+        anomaly_score = 0
 
         # 時間パターン異常
         current_hour = datetime.now().hour
@@ -733,7 +733,7 @@ class AnomalyDetector:
         ]:
             anomaly_score += 0.6
 
-        return min(anomaly_score, 1.0)
+        return min(anomaly_score, 1)
 
 
 if __name__ == "__main__":
@@ -763,7 +763,7 @@ if __name__ == "__main__":
     result = enforcer.validate_access(access_request)
     print(f"📋 Access result: {'✅ GRANTED' if result.granted else '❌ DENIED'}")
     print(f"   Reason: {result.reason}")
-    print(f"   Risk Score: {result.risk_score:.2f}")
+    print(f"   Risk Score: {result.risk_score:0.2f}")
 
     # セキュリティメトリクス表示
     metrics = enforcer.get_security_metrics()

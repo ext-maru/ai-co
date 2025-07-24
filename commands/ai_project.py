@@ -284,7 +284,7 @@ class ProjectCommand(BaseCommand):
             self.info(f"  総数: {stats['projects']['total']}")
             self.info(f"  アクティブ: {stats['projects']['active']}")
             self.info(f"  完了: {stats['projects']['completed']}")
-            self.info(f"  平均進捗: {stats['projects']['avg_progress']:.1f}%")
+            self.info(f"  平均進捗: {stats['projects']['avg_progress']:0.1f}%")
 
             self.info(f"\n📋 タスク:")
             self.info(f"  総数: {stats['tasks']['total']}")
@@ -347,7 +347,7 @@ class ProjectCommand(BaseCommand):
             for risk in risks:
                 # Process each item in collection
                 self.info(
-                    f"  • {risk['risk']} (確率: {risk['probability']*100:.0f}%, 影響: {risk['impact']})"
+                    f"  • {risk['risk']} (確率: {risk['probability']*100:0.0f}%, 影響: {risk['impact']})"
                 )
                 self.info(f"    対策: {risk['mitigation']}")
 

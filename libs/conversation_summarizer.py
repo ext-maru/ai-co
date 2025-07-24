@@ -23,8 +23,8 @@ class ConversationSummarizer:
 
     def check_conversations_for_summary(self) -> List[str]:
         """要約が必要な会話を検出"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         # メッセージ数が閾値を超えている会話
@@ -53,8 +53,8 @@ class ConversationSummarizer:
     def generate_summary(self, conversation_id: str) -> Optional[str]:
         """会話の要約を生成"""
         # メッセージ取得
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         cursor.execute(
@@ -125,7 +125,7 @@ class ConversationSummarizer:
 
     def save_summary(self, conversation_id: str, summary: str):
         """要約を保存"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -144,7 +144,7 @@ class ConversationSummarizer:
 
     def compress_old_messages(self, conversation_id: str):
         """古いメッセージを圧縮（アーカイブテーブルに移動）"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # アーカイブテーブル作成

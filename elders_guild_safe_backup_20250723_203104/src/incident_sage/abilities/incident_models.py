@@ -16,6 +16,7 @@ import uuid
 
 
 class IncidentSeverity(Enum):
+    pass
 
 
 """インシデント重要度"""
@@ -30,6 +31,7 @@ class IncidentSeverity(Enum):
 
 
 class IncidentCategory(Enum):
+    pass
 
     """インシデントカテゴリ"""
     """インシデント"""
@@ -65,6 +67,7 @@ class IncidentCategory(Enum):
 
 @dataclass
 class QualityMetric:
+    pass
 
 
 
@@ -92,6 +95,7 @@ class QualityMetric:
 
 @dataclass
 class QualityStandard:
+    pass
 
 
 
@@ -116,6 +120,7 @@ class QualityStandard:
 
 @dataclass
 class QualityAssessment:
+    pass
 
 
 
@@ -141,6 +146,7 @@ class QualityAssessment:
 
 @dataclass
 class IncidentResponse:
+    pass
 
 
 
@@ -169,6 +175,7 @@ class IncidentResponse:
 
 @dataclass 
 class AlertRule:
+    pass
 
 
 
@@ -200,6 +207,7 @@ class AlertRule:
 
 @dataclass
 class MonitoringTarget:
+    pass
 
 
 

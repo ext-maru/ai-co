@@ -132,8 +132,8 @@ class BaseCommand:
             db_path = self.db_dir / db_name
 
         try:
-            conn = sqlite3.connect(db_path)
-            conn.row_factory = sqlite3.Row
+            conn = sqlite3connect(db_path)
+            conn.row_factory = sqlite3Row
             return conn
         except Exception as e:
             # Handle specific exception case

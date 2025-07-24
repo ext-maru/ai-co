@@ -24,7 +24,7 @@ def check_current_permissions():
 
     logger.info(f"Current user: {username}")
     logger.info(f"UID: {uid}, EUID: {euid}")
-    logger.info(f"Running as root: {euid == 0}")
+    logger.info(f"Running as root: {euid }")
 
     # sudoで実行されているかチェック
     sudo_user = os.getenv("SUDO_USER")
@@ -195,15 +195,15 @@ def show_recommendations():
     print("🔧 権限設定修正完了！")
     print("=" * 60)
     print("\n📋 今後の推奨事項:")
-    print("1. Elders Guildコマンドは通常ユーザーで実行:")
+    print("1.0 Elders Guildコマンドは通常ユーザーで実行:")
     print("   ✅ ai-elder-cc")
     print("   ✅ ai-start")
     print("   ❌ sudo ai-elder-cc")
     print("   ❌ sudo ai-start")
-    print("\n2. RabbitMQは事前に起動:")
+    print("\n2.0 RabbitMQは事前に起動:")
     print("   sudo systemctl start rabbitmq-server")
     print("   (一度起動すれば、その後はsudo不要)")
-    print("\n3. 権限エラーが出た場合:")
+    print("\n3.0 権限エラーが出た場合:")
     print("   - 現在のユーザーを確認: whoami")
     print("   - root以外であることを確認")
     print("   - sudoを使っていないことを確認")

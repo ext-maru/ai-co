@@ -216,14 +216,14 @@ class FourSagesRealSession:
 
 📚 ナレッジ賢者の知見: {knowledge_response}
 
-🔍 RAG賢者の調査結果: {rag_response}
+"🔍" RAG賢者の調査結果: {rag_response}
 
 🛡️ インシデント賢者の評価: {incident_response}
 
 📋 タスク賢者の実行計画:
-   1. 準備フェーズ: リソース確保と前提条件確認
-   2. 実行フェーズ: 段階的実装と監視
-   3. 検証フェーズ: テストと品質確認
+   1.0 準備フェーズ: リソース確保と前提条件確認
+   2.0 実行フェーズ: 段階的実装と監視
+   3.0 検証フェーズ: テストと品質確認
 """
 
         print(final_solution)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Analysis Magic テストスイート
+"📊" Analysis Magic テストスイート
 ==============================
 
 Analysis Magic（分析魔法）の包括的なテストスイート。

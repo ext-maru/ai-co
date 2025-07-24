@@ -264,7 +264,7 @@ class ElderGuildTestCase(unittest.TestCase):
         # Elder monitoring
         execution_time = time.time() - self.test_start_time
         self.assertLess(execution_time, 5.0, "Test should complete within 5 seconds")
-        self.logger.info(f"Test completed in {{execution_time:.2f}}s")
+        self.logger.info(f"Test completed in {{execution_time:0.2f}}s")
 
     def test_iron_will_compliance(self):
         """Verify Iron Will quality compliance"""
@@ -409,7 +409,7 @@ class TestHybridIntegration:
         self.start_time = time.time()
         yield
         execution_time = time.time() - self.start_time
-        self.logger.info(f"Test execution time: {{execution_time:.3f}}s")
+        self.logger.info(f"Test execution time: {{execution_time:0.3f}}s")
 
     @pytest.fixture
     def elder_quality_gate(self):
@@ -608,7 +608,7 @@ class SimpleHybridQualityInspector:
 
         if not iron_will_compliant:
             recommendations.append(
-                f"Improve code quality to meet Iron Will standard (current: {final_score:.1f}%, target: 95%+)"
+                f"Improve code quality to meet Iron Will standard (current: {final_score:0.1f}%, target: 95%+)"
             )
 
         if final_score >= 90:
@@ -676,9 +676,9 @@ async def test_hybrid_servants():
     )
 
     print(f"✅ Success: {result['success']}")
-    print(f"🎯 Quality Score: {result['hybrid_quality_score']:.2f}")
+    print(f"🎯 Quality Score: {result['hybrid_quality_score']:0.2f}")
     print(f"⚡ Iron Will Compliant: {result['iron_will_compliant']}")
-    print(f"⏱️  Execution Time: {result['execution_time']:.2f}s")
+    print(f"⏱️  Execution Time: {result['execution_time']:0.2f}s")
 
     # Test Hybrid Test Guardian
     print("\n🧪 Testing Hybrid Test Guardian...")
@@ -695,7 +695,7 @@ async def test_hybrid_servants():
     print(f"✅ Success: {result['success']}")
     print(f"📊 Test Count: {result['test_count']}")
     print(f"📈 Coverage Estimate: {result['coverage_estimate']}%")
-    print(f"⏱️  Execution Time: {result['execution_time']:.2f}s")
+    print(f"⏱️  Execution Time: {result['execution_time']:0.2f}s")
 
     # Test Hybrid Quality Inspector
     print("\n🔍 Testing Hybrid Quality Inspector...")
@@ -718,10 +718,10 @@ async def test_hybrid_servants():
     result = await quality_inspector.check_quality(quality_code)
 
     print(f"✅ Success: {result['success']}")
-    print(f"🎯 Overall Quality: {result['overall_quality_score']:.1f}%")
+    print(f"🎯 Overall Quality: {result['overall_quality_score']:0.1f}%")
     print(f"⚡ Iron Will Compliant: {result['iron_will_compliant']}")
     print(f"📋 Recommendations: {len(result['recommendations'])}")
-    print(f"⏱️  Execution Time: {result['execution_time']:.2f}s")
+    print(f"⏱️  Execution Time: {result['execution_time']:0.2f}s")
 
     # Summary
     print("\n" + "=" * 60)

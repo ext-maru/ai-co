@@ -25,28 +25,26 @@ class ElderServantsTestFixer:
         self.fixed_files = []
         self.error_files = []
 
-    def fix_import_issues(self):
-        """インポート問題の修復"""
-        print("🔧 Elder Servants Test Infrastructure Enhancement Mission 開始")
+    def fix_import_issues(self)print("🔧 Elder Servants Test Infrastructure Enhancement Mission 開始")
+    """インポート問題の修復"""
 
-        # 1. Path import issues
+        # 1.0 Path import issues
         self._fix_path_import_issues()
 
-        # 2. PROJECT_ROOT issues
+        # 2.0 PROJECT_ROOT issues
         self._fix_project_root_issues()
 
-        # 3. Missing dependencies
+        # 3.0 Missing dependencies
         self._fix_missing_dependencies()
 
-        # 4. Test structure standardization
+        # 4.0 Test structure standardization
         self._standardize_test_structure()
 
         print(f"✅ 修復完了: {len(self.fixed_files)} ファイル")
         print(f"❌ エラー: {len(self.error_files)} ファイル")
 
-    def _fix_path_import_issues(self):
-        """Path import問題の修復"""
-        print("🛠️  Path import issues を修復中...")
+    def _fix_path_import_issues(self)print("🛠️  Path import issues を修復中...")
+    """Path import問題の修復"""
 
         test_files = list(self.tests_dir.rglob("test_*.py"))
 
@@ -141,9 +139,8 @@ class ElderServantsTestFixer:
             print(f"❌ Parent chain修正失敗: {test_file} - {e}")
             self.error_files.append(test_file)
 
-    def _fix_project_root_issues(self):
-        """PROJECT_ROOT関連問題の修復"""
-        print("🛠️  PROJECT_ROOT issues を修復中...")
+    def _fix_project_root_issues(self)print("🛠️  PROJECT_ROOT issues を修復中...")
+    """PROJECT_ROOT関連問題の修復"""
 
         # 標準的なPROJECT_ROOTセットアップパターン
         standard_setup = """import sys
@@ -209,9 +206,8 @@ sys.path.insert(0, str(PROJECT_ROOT))"""
             print(f"❌ PROJECT_ROOT標準化失敗: {test_file} - {e}")
             self.error_files.append(test_file)
 
-    def _fix_missing_dependencies(self):
-        """不足している依存関係の修復"""
-        print("🛠️  Missing dependencies を修復中...")
+    def _fix_missing_dependencies(self)print("🛠️  Missing dependencies を修復中...")
+    """不足している依存関係の修復"""
 
         # 不足している可能性のある依存関係
         missing_deps = {
@@ -277,9 +273,8 @@ except ImportError:
             print(f"❌ 条件付きインポート追加失敗: {test_file} - {e}")
             self.error_files.append(test_file)
 
-    def _standardize_test_structure(self):
-        """テスト構造の標準化"""
-        print("🛠️  Test structure を標準化中...")
+    def _standardize_test_structure(self)print("🛠️  Test structure を標準化中...")
+    """テスト構造の標準化"""
 
         test_files = list(self.tests_dir.rglob("test_*.py"))
 
@@ -318,9 +313,8 @@ except ImportError:
             print(f"❌ Skip追加失敗: {test_file} - {e}")
             self.error_files.append(test_file)
 
-    def run_test_validation(self):
-        """テスト検証の実行"""
-        print("🧪 テスト検証を実行中...")
+    def run_test_validation(self)print("🧪 テスト検証を実行中...")
+    """テスト検証の実行"""
 
         try:
             # テスト収集のみ実行
@@ -345,9 +339,8 @@ except ImportError:
             print(f"❌ テスト検証失敗: {e}")
             return False
 
-    def generate_coverage_report(self):
-        """カバレッジレポートの生成"""
-        print("📊 カバレッジレポートを生成中...")
+    def generate_coverage_report(self)print("📊 カバレッジレポートを生成中...")
+    """カバレッジレポートの生成"""
 
         try:
             import subprocess
@@ -379,22 +372,21 @@ except ImportError:
             return False
 
 
-def main():
-    """メイン実行関数"""
-    print("🧙‍♂️ Elder Servants Test Infrastructure Enhancement Mission 開始")
+def main()print("🧙‍♂️ Elder Servants Test Infrastructure Enhancement Mission 開始")
+"""メイン実行関数"""
 
     fixer = ElderServantsTestFixer()
 
-    # 1. インポート問題の修復
+    # 1.0 インポート問題の修復
     fixer.fix_import_issues()
 
-    # 2. テスト検証
+    # 2.0 テスト検証
     if fixer.run_test_validation():
         print("✅ テスト検証成功")
     else:
         print("❌ テスト検証失敗")
 
-    # 3. カバレッジレポート生成
+    # 3.0 カバレッジレポート生成
     fixer.generate_coverage_report()
 
     print("🎯 Elder Servants Test Infrastructure Enhancement Mission 完了")

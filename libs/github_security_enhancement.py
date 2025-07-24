@@ -5,7 +5,7 @@ Ancient Elder #3 承認済み包括的セキュリティ強化システム
 
 Created: 2025-07-17
 Author: Claude Elder
-Version: 1.0.0 - Ancient Elder #3 Security Standards
+Version: 1.0 - Ancient Elder #3 Security Standards
 Architecture: Elders Legacy Security層
 Target: 95%+ Security Score (Iron Will準拠)
 """
@@ -404,11 +404,11 @@ class InputValidationService:
 
         # 許可されたGitHubパターン
         self.github_patterns = {
-            "repository": r"^[a-zA-Z0-9._-]+/[a-zA-Z0-9._-]+$",
-            "branch": r"^[a-zA-Z0-9._/-]+$",
+            "repository": r"^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$",
+            "branch": r"^[a-zA-Z0-9_/-]+$",
             "commit_sha": r"^[a-f0-9]{40}$",
-            "tag": r"^[a-zA-Z0-9._-]+$",
-            "file_path": r"^[a-zA-Z0-9._/\-\s]+$",
+            "tag": r"^[a-zA-Z0-9_-]+$",
+            "file_path": r"^[a-zA-Z0-9_/\-\s]+$",
             "github_token": r"^(?:ghp_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9_]{82,})$",
         }
 
@@ -747,10 +747,10 @@ class SecurityMonitoringService:
         )
 
         # 自動対応アクション
-        # 1. セッション無効化
-        # 2. IP ブロック
-        # 3. 通知送信
-        # 4. システム保護モード有効化
+        # 1 セッション無効化
+        # 2 IP ブロック
+        # 3 通知送信
+        # 4 システム保護モード有効化
 
     def get_security_metrics(self) -> Dict[str, Any]:
         """セキュリティメトリクス取得"""
@@ -1026,8 +1026,8 @@ class VulnerabilityManagementService:
                     "cve_id": "CVE-2023-32681",
                     "severity": "HIGH",
                     "description": "Requests library vulnerability",
-                    "affected_versions": ["<2.31.0"],
-                    "fixed_version": "2.31.0",
+                    "affected_versions": ["<2.31"],
+                    "fixed_version": "2.31",
                 }
             ],
             "flask": [
@@ -1233,7 +1233,7 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
             "total_validations": 0,
             "total_threats_detected": 0,
             "total_vulnerabilities_found": 0,
-            "security_score": 0.0,
+            "security_score": 0,
             "last_security_scan": None,
         }
 
@@ -1395,7 +1395,7 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
         """
         return {
             "name": "GitHubSecurityEnhancement",
-            "version": "1.0.0",
+            "version": "1.0",
             "domain": "EXECUTION",
             "security_features": [
                 "Authentication & Authorization",
@@ -1670,7 +1670,7 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
                 "message": "Security scan completed",
                 "scan_results": scan_results,
                 "security_score": security_score,
-                "iron_will_compliant": security_score >= 95.0,
+                "iron_will_compliant": security_score >= 95,
             }
 
         except Exception as e:
@@ -1769,7 +1769,7 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
         """コンプライアンスチェック処理"""
         try:
             compliance_results = {
-                "iron_will_compliance": self.security_stats["security_score"] >= 95.0,
+                "iron_will_compliance": self.security_stats["security_score"] >= 95,
                 "elder_legacy_compliance": True,  # Elder Legacy準拠
                 "ancient_elder_approval": True,  # Ancient Elder #3承認済み
                 "security_features_implemented": 8,
@@ -1821,7 +1821,7 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
                 },
                 "compliance_status": {
                     "iron_will_compliant": self.security_stats["security_score"]
-                    >= 95.0,
+                    >= 95,
                     "security_score": self.security_stats["security_score"],
                     "last_scan": self.security_stats["last_security_scan"],
                 },
@@ -1852,7 +1852,7 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
                     "vulnerability_management": "healthy",
                 },
                 "security_score": self.security_stats["security_score"],
-                "iron_will_compliant": self.security_stats["security_score"] >= 95.0,
+                "iron_will_compliant": self.security_stats["security_score"] >= 95,
                 "active_sessions": len(self.auth_service.active_sessions),
                 "blocked_ips": len(self.network_security.blocked_ips),
                 "total_audit_events": len(self.security_monitoring.audit_events),
@@ -1888,7 +1888,7 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
             self.security_stats["last_security_scan"] = datetime.utcnow().isoformat()
 
             self.logger.info(
-                f"Security baseline initialized with score: {security_score:.2f}%"
+                f"Security baseline initialized with score: {security_score:0.2f}%"
             )
 
         except Exception as e:
@@ -1900,10 +1900,10 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
         """セキュリティスコア計算"""
         try:
             # 基本スコア（実装されている機能に基づく）
-            base_score = 85.0
+            base_score = 85
 
             # 脆弱性による減点
-            vulnerability_penalty = 0.0
+            vulnerability_penalty = 0
             for result in scan_results:
                 vulnerabilities = result.get("vulnerabilities_found", 0) + result.get(
                     "issues_found", 0
@@ -1911,33 +1911,33 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
                 if vulnerabilities > 0:
                     # 脆弱性1つあたり1点減点
                     vulnerability_penalty += min(
-                        vulnerabilities * 1.0, 20.0
+                        vulnerabilities * 1, 20
                     )  # 最大20点減点
 
             # セキュリティ機能ボーナス
-            security_bonus = 0.0
+            security_bonus = 0
 
             # 暗号化実装ボーナス
             if self.config.encryption_algorithm == "AES-256-GCM":
-                security_bonus += 5.0
+                security_bonus += 5
 
             # MFA有効化ボーナス
             if self.config.mfa_enabled:
-                security_bonus += 3.0
+                security_bonus += 3
 
             # 監査ログ有効化ボーナス
             if self.config.real_time_monitoring:
-                security_bonus += 2.0
+                security_bonus += 2
 
             # 最終スコア計算
             final_score = base_score - vulnerability_penalty + security_bonus
 
             # 0-100の範囲に制限
-            return max(0.0, min(100.0, final_score))
+            return max(0, min(100, final_score))
 
         except Exception as e:
             self.logger.error(f"Security score calculation failed: {e}")
-            return 0.0
+            return 0
 
 
 # Convenience functions for easy access
@@ -1970,6 +1970,7 @@ def create_security_configuration(**kwargs) -> SecurityConfiguration:
 
 
 if __name__ == "__main__":
+    pass
 
     async def test_security_enhancement():
         """テスト実行"""

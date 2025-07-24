@@ -37,10 +37,10 @@ class PostDeploymentVerification:
             duration = time.time() - start_time
 
             if result:
-                print(f"  ✅ {name}: {message} ({duration:.2f}s)")
+                print(f"  ✅ {name}: {message} ({duration:0.2f}s)")
                 status = "PASS"
             else:
-                print(f"  ❌ {name}: {message} ({duration:.2f}s)")
+                print(f"  ❌ {name}: {message} ({duration:0.2f}s)")
                 status = "FAIL"
 
             self.verification_results.append(
@@ -58,7 +58,7 @@ class PostDeploymentVerification:
 
         except Exception as e:
             duration = time.time() - start_time
-            print(f"  ❌ {name}: Error - {str(e)} ({duration:.2f}s)")
+            print(f"  ❌ {name}: Error - {str(e)} ({duration:0.2f}s)")
 
             self.verification_results.append(
                 {

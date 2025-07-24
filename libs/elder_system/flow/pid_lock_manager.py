@@ -95,9 +95,6 @@ class PIDLockManager:
                         locked_pid = existing_lock_data.get("pid")
 
                         # PIDが生きているかチェック
-                        if not (locked_pid and self._is_process_alive(locked_pid)):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
                         if locked_pid and self._is_process_alive(locked_pid):
                             logger.warning(
                                 f"Task '{task_id}' is already running "

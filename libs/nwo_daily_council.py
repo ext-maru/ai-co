@@ -4,10 +4,10 @@
 New World Order 開発界新世界秩序への日次進化システム
 
 グランドエルダーmaru様の4大最終目標達成のための自動評議会
-1. Mind Reading Protocol (思考読み取り議定書)
-2. Instant Reality Engine (瞬間現実化エンジン)
-3. Prophetic Development Matrix (予言開発マトリックス)
-4. Global Domination Framework (世界支配基盤)
+1.0 Mind Reading Protocol (思考読み取り議定書)
+2.0 Instant Reality Engine (瞬間現実化エンジン)
+3.0 Prophetic Development Matrix (予言開発マトリックス)
+4.0 Global Domination Framework (世界支配基盤)
 
 Author: Claude Elder
 Date: 2025-07-11
@@ -143,7 +143,7 @@ class nWoDailyCouncil:
         """nWo評議会データベース初期化"""
         db_path = PROJECT_ROOT / "nwo_council.db"
 
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3connect(db_path)
         cursor = conn.cursor()
 
         # nWo提案テーブル
@@ -218,37 +218,37 @@ class nWoDailyCouncil:
         }
 
         try:
-            # 1. nWo進捗分析
+            # 1.0 nWo進捗分析
             progress_analysis = await self._analyze_nwo_progress()
             council_results["nwo_progress_analysis"] = progress_analysis
 
-            # 2. 4賢者による戦略提案
+            # 2.0 4賢者による戦略提案
             sage_proposals = await self._consult_four_sages()
             council_results["sage_consultations"] = sage_proposals
 
-            # 3. 新機能提案生成
+            # 3.0 新機能提案生成
             new_proposals = await self._generate_nwo_proposals(
                 progress_analysis, sage_proposals
             )
             council_results["new_proposals"] = new_proposals
 
-            # 4. 戦略的意思決定
+            # 4.0 戦略的意思決定
             strategic_decisions = await self._make_strategic_decisions(
                 progress_analysis, new_proposals
             )
             council_results["strategic_decisions"] = strategic_decisions
 
-            # 5. 即座実行アクション
+            # 5.0 即座実行アクション
             immediate_actions = await self._define_immediate_actions(
                 strategic_decisions
             )
             council_results["immediate_actions"] = immediate_actions
 
-            # 6. グランドエルダーmaru様への報告書生成
+            # 6.0 グランドエルダーmaru様への報告書生成
             emperor_briefing = await self._generate_emperor_briefing(council_results)
             council_results["emperor_briefing"] = emperor_briefing
 
-            # 7. セッション記録保存
+            # 7.0 セッション記録保存
             await self._save_council_session(council_results)
 
             self.logger.info(
@@ -573,8 +573,8 @@ class nWoDailyCouncil:
         # nWo全体状況概要
         progress = council_results["nwo_progress_analysis"]
         briefing["nwo_status_overview"] = {
-            "overall_progress": f"{progress['overall_progress']:.1f}%",
-            "acceleration_rate": f"{progress['acceleration_rate']:.1f}%",
+            "overall_progress": f"{progress['overall_progress']:0.1f}%",
+            "acceleration_rate": f"{progress['acceleration_rate']:0.1f}%",
             "critical_blockers_count": len(progress["critical_blockers"]),
             "new_proposals_generated": len(council_results["new_proposals"]),
         }
@@ -612,7 +612,7 @@ class nWoDailyCouncil:
 
     async def _save_council_session(self, council_results: Dict):
         """評議会セッション記録保存"""
-        conn = sqlite3.connect(self.council_db)
+        conn = sqlite3connect(self.council_db)
         cursor = conn.cursor()
 
         # 提案の保存
@@ -688,12 +688,12 @@ async def execute_nwo_daily_council():
         # 結果表示
         print("📊 nWo進捗状況:")
         progress = results["nwo_progress_analysis"]
-        print(f"  全体進捗: {progress['overall_progress']:.1f}%")
+        print(f"  全体進捗: {progress['overall_progress']:0.1f}%")
 
         for pillar, data in progress["pillar_progress"].items():
             # Process each item in collection
             print(
-                f"  {pillar}: {data['current_level']:.1f}% (目標: {data['target_level']:.1f}%)"
+                f"  {pillar}: {data['current_level']:0.1f}% (目標: {data['target_level']:0.1f}%)"
             )
 
         print(f"\n💡 新規提案: {len(results['new_proposals'])} 件")

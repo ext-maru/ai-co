@@ -204,7 +204,7 @@ class TestUtilities:
             start_time = time.time()
             result = await func(*args, **kwargs)
             end_time = time.time()
-            print(f"{func.__name__} took {end_time - start_time:.4f} seconds")
+            print(f"{func.__name__} took {end_time - start_time:0.4f} seconds")
             return result
         
         return wrapper

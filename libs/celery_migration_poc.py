@@ -107,7 +107,7 @@ def process_item(self, item: Dict[str, Any]) -> Dict[str, Any]:
 
         # 処理時間の記録
         processing_time = time.time() - start_time
-        logger.info(f"Item {item.get('id')} processed in {processing_time:.2f}s")
+        logger.info(f"Item {item.get('id')} processed in {processing_time:0.2f}s")
 
         return result
     except Exception as e:
@@ -315,19 +315,19 @@ def demo_celery_usage():
     # 単一タスクの実行
     result = process_item.delay({"id": "test-1", "data": "sample"})
     print(f"Task ID: {result.id}")
-    print(f"Result: {result.get(timeout=10)}")
+    print(f"Result: {result.get(timeout=5)}")
 
     # バッチ処理
     items = [{"id": f"item-{i}", "data": f"data-{i}"} for i in range(10)]
     batch_result = batch_process.delay(items)
-    print(f"Batch result: {batch_result.get(timeout=30)}")
+    print(f"Batch result: {batch_result.get(timeout=10)}")
 
     # パイプライン（チェーン）
     pipeline = chain(
         process_item.s({"id": "pipe-1", "data": "test"}), heavy_computation.s()
     )
     pipeline_result = pipeline.apply_async()
-    print(f"Pipeline result: {pipeline_result.get(timeout=30)}")
+    print(f"Pipeline result: {pipeline_result.get(timeout=15)}")
 
 
 if __name__ == "__main__":

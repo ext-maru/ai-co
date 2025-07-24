@@ -131,7 +131,7 @@ class EmergencyResponseSystem:
     def detect_emergency(self) -> Tuple[bool, str, str]:
         """緊急事態の検出"""
         try:
-            # 1. ブランチ削除の検出
+            # 1.0 ブランチ削除の検出
             result = self.run_git("branch -a")
             if result.returncode == 0:
                 branches = result.stdout
@@ -145,7 +145,7 @@ class EmergencyResponseSystem:
                             f"保護ブランチ '{protected_branch}' が削除されました",
                         )
 
-            # 2. 強制プッシュの検出
+            # 2.0 強制プッシュの検出
             result = self.run_git("log --oneline -n 10")
             if result.returncode == 0:
                 recent_commits = result.stdout
@@ -153,12 +153,12 @@ class EmergencyResponseSystem:
                 if "force" in recent_commits.lower():
                     return True, "HIGH", "強制プッシュが検出されました"
 
-            # 3. マージ競合の検出
+            # 3.0 マージ競合の検出
             result = self.run_git("status --porcelain")
             if result.returncode == 0 and "UU" in result.stdout:
                 return True, "MEDIUM", "マージ競合が検出されました"
 
-            # 4. リポジトリ破損の検出
+            # 4.0 リポジトリ破損の検出
             result = self.run_git("fsck --full")
             if result.returncode != 0:
                 return True, "CRITICAL", "リポジトリ破損が検出されました"
@@ -276,24 +276,24 @@ class EmergencyResponseSystem:
         self.logger.critical(f"CRITICAL緊急対応開始: {message}")
 
         try:
-            # 1. 即座に緊急時バックアップを作成
+            # 1.0 即座に緊急時バックアップを作成
             if not self.create_emergency_backup():
                 self.logger.error("緊急時バックアップの作成に失敗")
                 return False
 
-            # 2. 保護ブランチの復旧
+            # 2.0 保護ブランチの復旧
             if "削除されました" in message:
                 if not self.restore_deleted_branch():
                     self.logger.error("ブランチ復旧に失敗")
                     return False
 
-            # 3. リポジトリ破損の場合は完全復旧
+            # 3.0 リポジトリ破損の場合は完全復旧
             if "破損" in message:
                 if not self.full_repository_restoration():
                     self.logger.error("リポジトリ復旧に失敗")
                     return False
 
-            # 4. 4賢者による検証
+            # 4.0 4賢者による検証
             if not self.four_sages_emergency_validation():
                 self.logger.error("4賢者による緊急検証に失敗")
                 return False
@@ -310,18 +310,18 @@ class EmergencyResponseSystem:
         self.logger.warning(f"HIGH緊急対応開始: {message}")
 
         try:
-            # 1. バックアップ作成
+            # 1.0 バックアップ作成
             if not self.create_emergency_backup():
                 self.logger.error("バックアップ作成に失敗")
                 return False
 
-            # 2. 強制プッシュの場合はロールバック
+            # 2.0 強制プッシュの場合はロールバック
             if "強制プッシュ" in message:
                 if not self.rollback_force_push():
                     self.logger.error("強制プッシュのロールバックに失敗")
                     return False
 
-            # 3. 通知送信
+            # 3.0 通知送信
             self.notify_emergency("HIGH", message)
 
             self.logger.info("✅ HIGH緊急対応完了")
@@ -336,13 +336,13 @@ class EmergencyResponseSystem:
         self.logger.info(f"MEDIUM緊急対応開始: {message}")
 
         try:
-            # 1. マージ競合の自動解決
+            # 1.0 マージ競合の自動解決
             if "マージ競合" in message:
                 if not self.resolve_merge_conflicts():
                     self.logger.error("マージ競合の解決に失敗")
                     return False
 
-            # 2. 通知送信
+            # 2.0 通知送信
             self.notify_emergency("MEDIUM", message)
 
             self.logger.info("✅ MEDIUM緊急対応完了")

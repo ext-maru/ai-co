@@ -5,7 +5,7 @@ Feedback Loop System - フィードバックループシステム
 
 4賢者との連携:
 📚 ナレッジ賢者: 短いサイクルで高頻度フィードバックの実装
-🔍 RAG賢者: フィードバックデータの意味的検索と関連付け
+"🔍" RAG賢者: フィードバックデータの意味的検索と関連付け
 📋 タスク賢者: フィードバック処理の優先順位付けと効率化
 🚨 インシデント賢者: フィードバックループ暴走の検知と防止
 """
@@ -1442,7 +1442,7 @@ class FeedbackLoopSystem:
                     insights.append(
                         {
                             "type": "performance_improvement",
-                            "description": f'{data.get("metric_name")} improved by {improvement:.1%}',
+                            "description": f'{data.get("metric_name")} improved by {improvement:0.1%}',
                         }
                     )
 

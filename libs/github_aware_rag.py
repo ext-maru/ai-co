@@ -15,9 +15,8 @@ from libs.rag_manager import RAGManager
 
 class GitHubAwareRAGManager(RAGManager):
     """GitHubAwareRAGManager - 管理システムクラス"""
-    def __init__(self, model:
+    def __init__(self, model: str = "claude-sonnet-4-20250514"):
         """初期化メソッド"""
-    str = "claude-sonnet-4-20250514"):
         super().__init__(model)
         self.github = GitHubIntegrationManager()
 

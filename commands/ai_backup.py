@@ -251,11 +251,11 @@ class AIBackupCommand(BaseCommand):
                 f"ファイル: {result['backup_file']}",
                 f"サイズ: {result['size']}",
                 f"ファイル数: {result['files_count']}",
-                f"処理時間: {result['duration']:.1f}秒",
+                f"処理時間: {result['duration']:0.1f}秒",
             ]
 
             if result.get("compression_ratio"):
-                message_lines.append(f"圧縮率: {result['compression_ratio']:.1%}")
+                message_lines.append(f"圧縮率: {result['compression_ratio']:0.1%}")
 
             return CommandResult(success=True, message="\n".join(message_lines))
         else:
@@ -419,7 +419,7 @@ class AIBackupCommand(BaseCommand):
                 "復元完了",
                 f"復元ファイル数: {result['restored_files']}",
                 f"復元先: {result['restore_path']}",
-                f"処理時間: {result['duration']:.1f}秒",
+                f"処理時間: {result['duration']:0.1f}秒",
             ]
 
             if result.get("verification_passed") is not None:
@@ -938,7 +938,7 @@ class AIBackupCommand(BaseCommand):
                     # SQLiteダンプ
                     try:
                         # Deep nesting detected (depth: 5) - consider refactoring
-                        with sqlite3.connect(db_file) as conn:
+                        with sqlite3connect(db_file) as conn:
                             # Deep nesting detected (depth: 6) - consider refactoring
                             with open(backup_path, "w") as f:
                                 # TODO: Extract this complex nested logic into a separate method
@@ -1193,7 +1193,7 @@ class AIBackupCommand(BaseCommand):
 
             # アラート閾値チェック
             if hours_since_backup > args.alert_threshold:
-                alerts.append(f"最終バックアップから{hours_since_backup:.1f}時間経過")
+                alerts.append(f"最終バックアップから{hours_since_backup:0.1f}時間経過")
 
             # 推奨事項生成
             if hours_since_backup > 12:
@@ -1299,9 +1299,9 @@ class AIBackupCommand(BaseCommand):
         for unit in ["B", "KB", "MB", "GB", "TB"]:
             # Process each item in collection
             if size_bytes < 1024.0:
-                return f"{size_bytes:.1f}{unit}"
+                return f"{size_bytes:0.1f}{unit}"
             size_bytes /= 1024.0
-        return f"{size_bytes:.1f}PB"
+        return f"{size_bytes:0.1f}PB"
 
     def _load_config(self):
         """設定読み込み"""
@@ -1371,7 +1371,7 @@ class AIBackupCommand(BaseCommand):
             "success": True,
             "encrypted_file": args.output,
             "encryption_algorithm": args.encryption_algorithm,
-            "key_fingerprint": "abc123...",
+            "key_fingerprint": "abc123.0..",
         }
 
 

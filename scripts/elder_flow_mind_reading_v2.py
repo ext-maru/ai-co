@@ -105,30 +105,30 @@ class ElderFlowMindReading:
             return await self._fallback_processing(maru_text)
 
         try:
-            # 1. Mind Reading - 意図理解
+            # 1.0 Mind Reading - 意図理解
             intent_result = await self.mind_reader.understand_intent(maru_text)
-            self.logger.info(f"🧠 Intent understood: {intent_result.intent_type.value} ({intent_result.confidence:.2%})")
+            self.logger.info(f"🧠 Intent understood: {intent_result.intent_type.value} ({intent_result.confidence:0.2%})")
 
-            # 2. Intent Parser - コマンド生成
+            # 2.0 Intent Parser - コマンド生成
             parsed_command = await self.intent_parser.parse_intent(intent_result, maru_text)
             command = await self.intent_parser.generate_command(parsed_command)
             self.logger.info(f"💭 Command generated: {command}")
 
-            # 3. Elder Flow実行判定
+            # 3.0 Elder Flow実行判定
             should_auto_execute = self._should_auto_execute(intent_result, parsed_command)
 
-            # 4. 実行
+            # 4.0 実行
             if should_auto_execute or self.auto_mode:
                 execution_result = await self._execute_elder_flow_command(command, intent_result)
             else:
                 execution_result = await self._generate_execution_plan(command, intent_result)
 
-            # 5. 学習データ収集
+            # 5.0 学習データ収集
             await self._record_execution(
                 maru_text, intent_result, parsed_command, command, execution_result
             )
 
-            # 6. 統計更新
+            # 6.0 統計更新
             self._update_stats(intent_result, execution_result)
 
             return {
@@ -414,7 +414,7 @@ async def main():
         # 結果表示
         if "error" not in result:
             print(f"   🧠 Intent: {result['intent']}")
-            print(f"   📊 Confidence: {result['confidence']:.2%}")
+            print(f"   📊 Confidence: {result['confidence']:0.2%}")
             print(f"   💻 Command: {result['command']}")
             print(f"   ⚡ Auto-executed: {'Yes' if result['executed'] else 'No'}")
 
@@ -432,9 +432,9 @@ async def main():
     print("\n📊 Elder Flow v2.0 Statistics:")
     stats = elder_flow.get_statistics()
     print(f"   Total Executions: {stats['total_executions']}")
-    print(f"   Success Rate: {stats['successful_executions'] / stats['total_executions'] * 100:.1f}%")
-    print(f"   Mind Reading Accuracy: {stats['mind_reading_accuracy']:.2%}")
-    print(f"   Auto Execution Rate: {stats['auto_execution_rate']:.2%}")
+    print(f"   Success Rate: {stats['successful_executions'] / stats['total_executions'] * 100:0.1f}%")
+    print(f"   Mind Reading Accuracy: {stats['mind_reading_accuracy']:0.2%}")
+    print(f"   Auto Execution Rate: {stats['auto_execution_rate']:0.2%}")
     print(f"   Mind Reading Available: {stats['mind_reading_available']}")
 
     # 学習データ統計

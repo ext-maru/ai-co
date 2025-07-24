@@ -50,8 +50,8 @@ class Issue156Implementation:
         # Extract features from issue
         # Features to implement:
         # - 自動イシュー処理システムでRAG賢者の`process_request`メソッドが未実装のため、4賢者相談の一部が失敗しています。
-        # - 1. `libs/rag_manager.py`に`process_request`メソッドを実装
-        # - 2. 既存の`search_knowledge`メソッドをラップする形で実装
+        # - 1.0 `libs/rag_manager.py`に`process_request`メソッドを実装
+        # - 2.0 既存の`search_knowledge`メソッドをラップする形で実装
         
         # Initialize based on detected requirements
         

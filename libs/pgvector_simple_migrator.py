@@ -34,8 +34,8 @@ class SimplePgVectorMigrator:
         
         try:
             # SQLiteからデータ読み込み
-            conn = sqlite3.connect(self.sqlite_db)
-            conn.row_factory = sqlite3.Row
+            conn = sqlite3connect(self.sqlite_db)
+            conn.row_factory = sqlite3Row
             cursor = conn.execute("SELECT COUNT(*) FROM knowledge_documents")
             total_count = cursor.fetchone()[0]
             
@@ -170,7 +170,7 @@ INSERT INTO knowledge_documents (
             vector = [x/norm for x in vector]
             
         # JSON形式で返却
-        return '[' + ','.join(f'{v:.6f}' for v in vector) + ']'
+        return '[' + ','.join(f'{v:0.6f}' for v in vector) + ']'
 
 def main():
     """メイン実行"""

@@ -29,9 +29,11 @@ from pathlib import Path
 pm_worker_path = Path("workers/pm_worker.py")
 content = pm_worker_path.read_text()
 
-# 1. commit_changesの呼び出しを修正
+# 1.0 commit_changesの呼び出しを修正
 # 旧: if self.git_flow.commit_changes(commit_message, new_files):
+    pass
 # 新: if self.git_flow.commit_changes(use_best_practices=True):
+    pass
 
 old_pattern = r'commit_message = f"Task \
     f"{task_id\}: \{result_data\[\'summary\'\]\}"\s*\n\s*if self\.git_flow\.commit_changes\(commit_message, new_files\):'
@@ -64,8 +66,8 @@ grep -n "use_best_practices" workers/pm_worker.py && echo "✅ Patch applied" ||
 # PMWorker再起動が必要
 echo ""
 echo "⚠️ PMWorkerの再起動が必要です:"
-echo "  1. 現在のPMWorkerを停止: Ctrl+C"
-echo "  2. 再起動: python3 workers/pm_worker.py"
+echo "  1.0 現在のPMWorkerを停止: Ctrl+C"
+echo "  2.0 再起動: python3 workers/pm_worker.py"
 echo ""
 echo "または ai-restart を実行してください"
 """

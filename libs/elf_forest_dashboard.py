@@ -313,7 +313,7 @@ class ElfForestDashboard:
 {'=' * 60}
 更新時刻: {self.dashboard_data.get('timestamp', 'N/A')}
 
-📊 テスト実行状況
+"📊" テスト実行状況
 - 総テスト数: {self.dashboard_data.get('test_status', {}).get('total_tests', 0)}
 - 収集エラー: {self.dashboard_data.get('test_status', {}).get('collection_errors', 0)}
 - カバレッジ: {self.dashboard_data.get(
@@ -321,10 +321,10 @@ class ElfForestDashboard:
     {}).get('coverage',
     {}).get('total_coverage',
     0
-):.1f}%
+):0.1f}%
 
 🏛️ Phase 1.5作戦進捗
-- 全体進捗: {self.dashboard_data.get('phase_progress', {}).get('overall_progress', 0):.1f}%
+- 全体進捗: {self.dashboard_data.get('phase_progress', {}).get('overall_progress', 0):0.1f}%
 - 状態: {self.dashboard_data.get('phase_progress', {}).get('phase_status', 'N/A')}
 
 🛡️ チーム状況:
@@ -342,18 +342,18 @@ class ElfForestDashboard:
                 'name',
                 team_id)}: {team_data.get('progress',
                 0
-            ):.1f}%\n"
+            ):0.1f}%\n"
 
         # システムメトリクス
         metrics = self.dashboard_data.get("system_metrics", {})
         report += f"""
 💻 システムメトリクス
-- CPU使用率: {metrics.get('cpu_usage', 0):.1f}%
-- メモリ使用率: {metrics.get('memory_usage', 0):.1f}%
-- ディスク使用率: {metrics.get('disk_usage', 0):.1f}%
+- CPU使用率: {metrics.get('cpu_usage', 0):0.1f}%
+- メモリ使用率: {metrics.get('memory_usage', 0):0.1f}%
+- ディスク使用率: {metrics.get('disk_usage', 0):0.1f}%
 
 🏥 ヘルス状況
-- 総合健全性: {self.dashboard_data.get('health_status', {}).get('overall_health', 0):.1f}%
+- 総合健全性: {self.dashboard_data.get('health_status', {}).get('overall_health', 0):0.1f}%
 - 状態: {self.dashboard_data.get('health_status', {}).get('status', 'N/A')}
 
 🧝‍♂️ エルフの森監視

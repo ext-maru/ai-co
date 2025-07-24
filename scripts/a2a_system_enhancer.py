@@ -64,28 +64,28 @@ class A2ASystemEnhancer:
             "recommendations_implemented": [],
         }
 
-        # 1. システムエージェント負荷分散
+        # 1.0 システムエージェント負荷分散
         if self._apply_load_balancing():
             enhancement_results["enhancements"]["load_balancing"] = "success"
             enhancement_results["recommendations_implemented"].append(
                 "🤖 systemエージェントの負荷分散実装"
             )
 
-        # 2. 監視システム強化
+        # 2.0 監視システム強化
         if self._apply_enhanced_monitoring():
             enhancement_results["enhancements"]["enhanced_monitoring"] = "success"
             enhancement_results["recommendations_implemented"].append(
                 "🕐 短時間集中監視の強化"
             )
 
-        # 3. エラー回復機能
+        # 3.0 エラー回復機能
         if self._apply_error_recovery():
             enhancement_results["enhancements"]["error_recovery"] = "success"
             enhancement_results["recommendations_implemented"].append(
                 "🔄 自動エラー回復機能の実装"
             )
 
-        # 4. パフォーマンス最適化
+        # 4.0 パフォーマンス最適化
         if self._apply_performance_optimization():
             enhancement_results["enhancements"]["performance_optimization"] = "success"
             enhancement_results["recommendations_implemented"].append(
@@ -110,7 +110,7 @@ class A2ASystemEnhancer:
             print("  🤖 systemエージェント負荷分散を実装中...")
 
             # データベースに負荷分散テーブルを作成
-            conn = sqlite3.connect(self.a2a_db_path)
+            conn = sqlite3connect(self.a2a_db_path)
             cursor = conn.cursor()
 
             # 負荷分散テーブル作成
@@ -163,7 +163,7 @@ class A2ASystemEnhancer:
             print("  🕐 短時間集中監視システムを強化中...")
 
             # 監視強化テーブル作成
-            conn = sqlite3.connect(self.a2a_db_path)
+            conn = sqlite3connect(self.a2a_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -218,7 +218,7 @@ class A2ASystemEnhancer:
             print("  🔄 自動エラー回復機能を実装中...")
 
             # エラー回復テーブル作成
-            conn = sqlite3.connect(self.a2a_db_path)
+            conn = sqlite3connect(self.a2a_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -269,7 +269,7 @@ class A2ASystemEnhancer:
             print("  ⚡ パフォーマンス最適化を実装中...")
 
             # パフォーマンス最適化テーブル作成
-            conn = sqlite3.connect(self.a2a_db_path)
+            conn = sqlite3connect(self.a2a_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -348,7 +348,7 @@ class A2ASystemEnhancer:
     def _collect_metrics(self):
         """メトリクス収集"""
         try:
-            conn = sqlite3.connect(self.a2a_db_path)
+            conn = sqlite3connect(self.a2a_db_path)
             cursor = conn.cursor()
 
             # 最近の通信データを取得
@@ -428,7 +428,7 @@ class A2ASystemEnhancer:
     def _measure_performance(self) -> Dict[str, Any]:
         """パフォーマンス測定"""
         try:
-            conn = sqlite3.connect(self.a2a_db_path)
+            conn = sqlite3connect(self.a2a_db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -560,12 +560,12 @@ def main():
         improvement = enhancement_results["improvement_assessment"]
         print("\n📈 改良効果")
         print("-" * 40)
-        print(f"総合改善度: {improvement['overall_improvement']:.1f}%")
+        print(f"総合改善度: {improvement['overall_improvement']:0.1f}%")
         print(f"評価: {improvement['assessment'].upper()}")
 
         if improvement["individual_improvements"]:
             for metric, value in improvement["individual_improvements"].items():
-                print(f"  {metric}: {value:.1f}%改善")
+                print(f"  {metric}: {value:0.1f}%改善")
 
         # レポート保存
         report_file = (
@@ -592,8 +592,8 @@ def main():
                 if metrics["system_agent_load"]:
                     print(
                         f"[{datetime.now().strftime('%H:%M:%S')}] システム負荷: {metrics['system_agent_load'][-1]}, "
-                        f"応答時間: {metrics['response_times'][-1]:.3f}s, "
-                        f"エラー率: {metrics['error_rates'][-1]:.1%}"
+                        f"応答時間: {metrics['response_times'][-1]:0.3f}s, "
+                        f"エラー率: {metrics['error_rates'][-1]:0.1%}"
                         if metrics["response_times"] and metrics["error_rates"]
                         else ""
                     )

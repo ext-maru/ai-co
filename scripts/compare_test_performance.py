@@ -49,7 +49,7 @@ class TestPerformanceComparator:
                 )
                 duration = time.time() - start_time
                 durations.append(duration)
-                print(f"  実行 {i+1}/{iterations}: {duration:.2f}秒")
+                print(f"  実行 {i+1}/{iterations}: {duration:0.2f}秒")
             except Exception as e:
                 print(f"  エラー: {e}")
                 continue
@@ -89,7 +89,7 @@ class TestPerformanceComparator:
                 )
                 duration = time.time() - start_time
                 durations.append(duration)
-                print(f"  実行 {i+1}/{iterations}: {duration:.2f}秒")
+                print(f"  実行 {i+1}/{iterations}: {duration:0.2f}秒")
             except Exception as e:
                 print(f"  エラー: {e}")
                 continue
@@ -150,12 +150,12 @@ class TestPerformanceComparator:
 
 | メトリクス | 既存フレームワーク | pytest | 改善率 |
 |------------|-------------------|---------|--------|
-| 平均実行時間 | {original_results['avg_duration']:.2f}秒 | {pytest_results[ \
-    'avg_duration']:.2f}秒 | {((original_results['avg_duration'] - \
-        pytest_results['avg_duration']) / original_results['avg_duration'] * 100):.1f}% |
-| 最小実行時間 | {original_results['min_duration']:.2f}秒 | {pytest_results['min_duration']:.2f}秒 | - |
-| 最大実行時間 | {original_results['max_duration']:.2f}秒 | {pytest_results['max_duration']:.2f}秒 | - |
-| 標準偏差 | {original_results['std_deviation']:.2f} | {pytest_results['std_deviation']:.2f} | - |
+| 平均実行時間 | {original_results['avg_duration']:0.2f}秒 | {pytest_results[ \
+    'avg_duration']:0.2f}秒 | {((original_results['avg_duration'] - \
+        pytest_results['avg_duration']) / original_results['avg_duration'] * 100):0.1f}% |
+| 最小実行時間 | {original_results['min_duration']:0.2f}秒 | {pytest_results['min_duration']:0.2f}秒 | - |
+| 最大実行時間 | {original_results['max_duration']:0.2f}秒 | {pytest_results['max_duration']:0.2f}秒 | - |
+| 標準偏差 | {original_results['std_deviation']:0.2f} | {pytest_results['std_deviation']:0.2f} | - |
 
 ## 📈 コード削減
 
@@ -167,29 +167,29 @@ class TestPerformanceComparator:
     'N/A')} | {code_metrics.get('pytest',
     {}).get('lines_of_code',
     'N/A')} | {code_metrics.get('code_reduction_percentage',
-    0):.1f
+    0):0.1f
 }% |
 | ファイルサイズ | {
     code_metrics.get('original',
     {}).get('file_size',
-    0) / 1024:.1f} KB | {code_metrics.get('pytest',
+    0) / 1024:0.1f} KB | {code_metrics.get('pytest',
     {}).get('file_size',
-    0) / 1024:.1f
+    0) / 1024:0.1f
 } KB | - |
 
 ## 🎯 pytest移行のメリット
 
-1. **並列実行サポート**: pytest-xdistによる自動並列化
-2. **豊富なフィクスチャ**: 再利用可能なテストセットアップ
-3. **testcontainers統合**: Dockerコンテナの自動管理
-4. **詳細なレポート**: HTML/XML形式の出力サポート
-5. **プラグインエコシステム**: 豊富な拡張機能
+1 **並列実行サポート**: pytest-xdistによる自動並列化
+2 **豊富なフィクスチャ**: 再利用可能なテストセットアップ
+3 **testcontainers統合**: Dockerコンテナの自動管理
+4 **詳細なレポート**: HTML/XML形式の出力サポート
+5 **プラグインエコシステム**: 豊富な拡張機能
 
 ## 🚧 移行時の考慮事項
 
-1. **学習コスト**: pytestの概念とベストプラクティス習得
-2. **依存関係**: 追加パッケージのインストール必要
-3. **設定移行**: 既存の設定をpytest.iniへ移行
+1 **学習コスト**: pytestの概念とベストプラクティス習得
+2 **依存関係**: 追加パッケージのインストール必要
+3 **設定移行**: 既存の設定をpytest.iniへ移行
 
 ## 📝 推奨事項
 

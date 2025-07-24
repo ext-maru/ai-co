@@ -59,9 +59,8 @@ class ETLJob:
 class DataExtractor:
     """データ抽出エンジン"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = Path(project_root)
         self.cache_dir = self.project_root / ".etl_cache"
         self.cache_dir.mkdir(exist_ok=True)
@@ -91,7 +90,7 @@ class DataExtractor:
     async def extract_from_database(self, query: str, db_path: Path) -> pd.DataFrame:
         """データベースからデータ抽出"""
         try:
-            conn = sqlite3.connect(str(db_path))
+            conn = sqlite3connect(str(db_path))
             df = pd.read_sql_query(query, conn)
             conn.close()
 
@@ -281,9 +280,8 @@ class DataTransformer:
 class DataLoader:
     """データロードエンジン"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = Path(project_root)
         self.output_dir = self.project_root / "etl_output"
         self.output_dir.mkdir(exist_ok=True)
@@ -291,7 +289,7 @@ class DataLoader:
     async def load_to_database(self, df: pd.DataFrame, table_name: str, db_path: Path):
         """データベースへのロード"""
         try:
-            conn = sqlite3.connect(str(db_path))
+            conn = sqlite3connect(str(db_path))
             df.to_sql(table_name, conn, if_exists="append", index=False)
             conn.close()
 
@@ -333,9 +331,8 @@ class DataLoader:
 class ETLPipeline:
     """ETLパイプライン統合"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = Path(project_root)
         self.extractor = DataExtractor(project_root)
         self.transformer = DataTransformer()

@@ -234,7 +234,7 @@ def test_prediction_model_operations():
                 tests_passed += 1
             else:
                 print(
-                    f"  ⚠️ F1スコア計算: 期待値{expected_f1:.3f}, 実際{full_model.f1_score:.3f}"
+                    f"  ⚠️ F1スコア計算: 期待値{expected_f1:0.3f}, 実際{full_model.f1_score:0.3f}"
                 )
                 tests_passed += 1  # 手動設定も許可
         else:
@@ -732,7 +732,7 @@ def test_incident_forecast_operations():
 
         # 複雑な条件判定
         if 0.0 <= accuracy <= 1.0:
-            print(f"  ✅ 予測精度評価: {accuracy:.2f}")
+            print(f"  ✅ 予測精度評価: {accuracy:0.2f}")
             tests_passed += 1
         else:
             print("  ❌ 予測精度評価失敗")
@@ -982,12 +982,12 @@ async def main():
         print("🚀 予測インシデント管理システムのカバレッジが大幅に向上しました")
         return 0
     elif success_rate >= 80:
-        print(f"✅ 大部分のテストが成功しました ({success_rate:.1f}%)")
+        print(f"✅ 大部分のテストが成功しました ({success_rate:0.1f}%)")
         print("🚀 カバレッジが大幅に向上しました")
         return 0
     else:
         print(f"❌ {total_tests - total_passed}個のテストが失敗しました")
-        print(f"成功率: {success_rate:.1f}%")
+        print(f"成功率: {success_rate:0.1f}%")
         return 1
 
 

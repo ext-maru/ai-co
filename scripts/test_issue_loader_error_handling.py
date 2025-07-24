@@ -147,12 +147,12 @@ async def test_template_error_retry():
         print(f"  - エラータイプ: {type(e).__name__}")
         print(f"  - エラーメッセージ: {str(e)[:100]}...")
         print(f"  - 総リトライ回数: {retry_count}")
-        print(f"  - 処理時間: {elapsed_time:.2f}秒")
+        print(f"  - 処理時間: {elapsed_time:0.2f}秒")
         
         # リトライ遅延の確認
         if retry_count > 1:
             avg_delay = elapsed_time / retry_count
-            print(f"  - 平均リトライ間隔: {avg_delay:.2f}秒")
+            print(f"  - 平均リトライ間隔: {avg_delay:0.2f}秒")
     
     finally:
         # クリーンアップ

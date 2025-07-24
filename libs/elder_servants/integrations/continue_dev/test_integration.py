@@ -153,15 +153,15 @@ async def test_continue_dev_scenario():
     # Simulate Continue.dev workflow
     success = True
     
-    # 1. User asks for code generation
+    # 1.0 User asks for code generation
     print("1️⃣ User requests code generation via Continue.dev...")
     success &= await test_code_generation()
     
-    # 2. Check quality of generated code
+    # 2.0 Check quality of generated code
     print("\n2️⃣ Continue.dev checks code quality...")
     success &= await test_quality_check()
     
-    # 3. Consult sages for best practices
+    # 3.0 Consult sages for best practices
     print("\n3️⃣ Continue.dev consults sages for improvements...")
     success &= await test_sage_consultation()
     

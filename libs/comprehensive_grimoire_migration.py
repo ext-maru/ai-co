@@ -67,9 +67,9 @@ class FileAnalysis:
     merge_target: Optional[str] = None
 
     # 品質分析
-    content_quality_score: float = 0.0
-    technical_complexity: float = 0.0
-    importance_score: float = 0.0
+    content_quality_score: float = 0
+    technical_complexity: float = 0
+    importance_score: float = 0
 
 
 @dataclass
@@ -99,7 +99,7 @@ class MigrationResult:
 
     start_time: datetime = None
     end_time: datetime = None
-    duration_seconds: float = 0.0
+    duration_seconds: float = 0
 
 
 class ContentAnalyzer:
@@ -397,8 +397,8 @@ class ContentAnalyzer:
         return sorted(list(tags))
 
     def _assess_content_quality(self, content: str) -> float:
-        """コンテンツ品質評価 (0.0-1.0)"""
-        score = 0.0
+        """コンテンツ品質評価 (0-1)"""
+        score = 0
 
         # 基本構造
         if re.search(r"^#\s+", content, re.MULTILINE):  # H1見出しあり
@@ -430,11 +430,11 @@ class ContentAnalyzer:
         if "[" in content and "]" in content:
             score += 0.1
 
-        return min(1.0, score)
+        return min(1, score)
 
     def _assess_technical_complexity(self, content: str) -> float:
-        """技術的複雑性評価 (0.0-1.0)"""
-        score = 0.0
+        """技術的複雑性評価 (0-1)"""
+        score = 0
         content_lower = content.lower()
 
         # 技術用語の密度
@@ -480,11 +480,11 @@ class ContentAnalyzer:
         nesting_level = max(line.count("  ") for line in content.split("\n"))
         score += min(0.1, nesting_level / 20)
 
-        return min(1.0, score)
+        return min(1, score)
 
     def _assess_importance(self, content: str, path_obj: Path) -> float:
-        """重要度評価 (0.0-1.0)"""
-        score = 0.0
+        """重要度評価 (0-1)"""
+        score = 0
 
         # パス解析
         path_lower = str(path_obj).lower()
@@ -527,7 +527,7 @@ class ContentAnalyzer:
         if 1000 <= size <= 20000:
             score += 0.1
 
-        return max(0.0, min(1.0, score))
+        return max(0, min(1, score))
 
 
 class DuplicateDetector:
@@ -574,16 +574,16 @@ class DuplicateDetector:
         """コンテンツ類似性検出"""
         # 簡単な類似性検出（単語重複率）
         for i, analysis1 in enumerate(analyses):
-            if analysis1.is_duplicate:
+            if analysis1is_duplicate:
                 continue
 
-            words1 = set(analysis1.content.lower().split())
+            words1 = set(analysis1content.lower().split())
 
             for analysis2 in analyses[i + 1 :]:
-                if analysis2.is_duplicate:
+                if analysis2is_duplicate:
                     continue
 
-                words2 = set(analysis2.content.lower().split())
+                words2 = set(analysis2content.lower().split())
 
                 if not words1 or not words2:
                     continue
@@ -595,14 +595,14 @@ class DuplicateDetector:
 
                 if similarity > self.similarity_threshold:
                     # より重要度の低い方を重複とマーク
-                    if analysis1.importance_score >= analysis2.importance_score:
-                        analysis2.is_duplicate = True
-                        analysis2.merge_target = analysis1.file_path
-                        analysis1.similarity_candidates.append(analysis2.file_path)
+                    if analysis1importance_score >= analysis2importance_score:
+                        analysis2is_duplicate = True
+                        analysis2merge_target = analysis1file_path
+                        analysis1similarity_candidates.append(analysis2file_path)
                     else:
-                        analysis1.is_duplicate = True
-                        analysis1.merge_target = analysis2.file_path
-                        analysis2.similarity_candidates.append(analysis1.file_path)
+                        analysis1is_duplicate = True
+                        analysis1merge_target = analysis2file_path
+                        analysis2similarity_candidates.append(analysis1file_path)
 
 
 class ComprehensiveGrimoireMigration:
@@ -823,7 +823,7 @@ class ComprehensiveGrimoireMigration:
         total_time = sum(batch.estimated_time for batch in batches)
 
         self.logger.info(f"Created {len(batches)} batches for {total_files} files")
-        self.logger.info(f"Estimated migration time: {total_time:.1f} minutes")
+        self.logger.info(f"Estimated migration time: {total_time:0.1f} minutes")
 
         return batches
 
@@ -896,7 +896,7 @@ class ComprehensiveGrimoireMigration:
             self.logger.info(
                 f"Batch {batch.batch_id} complete: "
                 f"{result.successful} successful, {result.failed} failed, "
-                f"{result.duration_seconds:.1f}s"
+                f"{result.duration_seconds:0.1f}s"
             )
 
         except Exception as e:
@@ -916,24 +916,24 @@ class ComprehensiveGrimoireMigration:
         try:
             self.logger.info("🏛️ Starting Comprehensive Grimoire Migration...")
 
-            # 1. ファイル発見
+            # 1 ファイル発見
             file_paths = await self.discover_files(root_path)
 
             if not file_paths:
                 self.logger.warning("No MD files found")
                 return {"error": "No MD files found"}
 
-            # 2. ファイル分析
+            # 2 ファイル分析
             analyses = await self.analyze_files(file_paths)
 
-            # 3. バッチ作成
+            # 3 バッチ作成
             batches = self.create_migration_batches(analyses)
 
             if not batches:
                 self.logger.warning("No migration batches created")
                 return {"error": "No migration batches created"}
 
-            # 4. バッチ移行実行
+            # 4 バッチ移行実行
             migration_results = []
 
             # セマフォアで同時実行数制御
@@ -1013,7 +1013,7 @@ class ComprehensiveGrimoireMigration:
                 f"🎉 Migration Complete! "
                 f"{total_successful} files migrated successfully, "
                 f"{total_failed} failures, "
-                f"{total_duration:.1f}s total"
+                f"{total_duration:0.1f}s total"
             )
 
             return final_report
@@ -1096,8 +1096,8 @@ async def execute_comprehensive_migration():
             print(f"  • Duplicates detected: {summary['duplicates_detected']}")
             print(f"  • Files migrated: {summary['files_migrated_successfully']}")
             print(f"  • Failures: {summary['migration_failures']}")
-            print(f"  • Duration: {summary['total_duration_seconds']:.1f} seconds")
-            print(f"  • Speed: {summary['average_files_per_second']:.2f} files/sec")
+            print(f"  • Duration: {summary['total_duration_seconds']:0.1f} seconds")
+            print(f"  • Speed: {summary['average_files_per_second']:0.2f} files/sec")
         else:
             print(f"  ❌ Migration failed: {result.get('error')}")
 

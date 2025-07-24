@@ -45,9 +45,8 @@ class FlowViolationType:
 class ElderFlowTracer:
     """Elder Flow実行トレーサー"""
     
-    def __init__(self, log_directory:
+    def __init__(self, log_directory: Optional[Path] = None):
         """初期化メソッド"""
-    Optional[Path] = None):
         self.log_directory = log_directory or Path("logs")
         self.logger = logging.getLogger("ElderFlowTracer")
         
@@ -55,7 +54,7 @@ class ElderFlowTracer:
         self.flow_patterns = {
             FlowStage.SAGE_COUNCIL: [
                 re.compile(r'sage.*council.*started', re.IGNORECASE),
-                re.compile(r'4.*sage.*meeting', re.IGNORECASE),
+                re.compile(r'4.0*sage.*meeting', re.IGNORECASE),
                 re.compile(r'consulting.*four.*sages', re.IGNORECASE),
                 re.compile(r'elder.*flow.*sage.*phase', re.IGNORECASE),
             ],
@@ -496,9 +495,8 @@ class FlowComplianceAuditor(AncientElderBase):
     プロセス遵守違反を検出する
     """
     
-    def __init__(self, log_directory:
+    def __init__(self, log_directory: Optional[Path] = None):
         """初期化メソッド"""
-    Optional[Path] = None):
         super().__init__(specialty="flow_compliance_auditor")
         
         # コンポーネント初期化
@@ -600,7 +598,7 @@ class FlowComplianceAuditor(AncientElderBase):
             execution_time = (datetime.now() - start_time).total_seconds()
             metrics["execution_time"] = execution_time
             
-            self.logger.info(f"✅ Flow Compliance audit completed in {execution_time:.2f}s")
+            self.logger.info(f"✅ Flow Compliance audit completed in {execution_time:0.2f}s")
             
             # AuditResultを正しく作成
             result = AuditResult()

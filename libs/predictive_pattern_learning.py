@@ -166,7 +166,7 @@ class PredictivePatternLearningSystem:
             # データディレクトリ作成
             Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
 
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             # タスク実行記録テーブル
@@ -258,7 +258,7 @@ class PredictivePatternLearningSystem:
     def _load_existing_data(self):
         """既存データ読み込み"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             # 実行記録読み込み
@@ -564,7 +564,7 @@ class PredictivePatternLearningSystem:
 
             self.logger.info(
                 (
-                    f"🎯 Models trained: CT={completion_time_accuracy:.3f}, S={success_accuracy:.3f}, P={pattern_accuracy:.3f}"
+                    f"🎯 Models trained: CT={completion_time_accuracy:0.3f}, S={success_accuracy:0.3f}, P={pattern_accuracy:0.3f}"
                 )
             )
 
@@ -883,7 +883,7 @@ class PredictivePatternLearningSystem:
     async def _store_execution_record(self, record: TaskExecutionRecord):
         """実行記録保存"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -920,7 +920,7 @@ class PredictivePatternLearningSystem:
     async def _store_prediction_result(self, result: PredictionResult):
         """予測結果保存"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             prediction_id = (
@@ -957,7 +957,7 @@ class PredictivePatternLearningSystem:
     async def _save_models(self, accuracy_metrics: Dict[str, float]):
         """モデル保存"""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             # モデルデータをシリアライズ
@@ -1095,25 +1095,25 @@ class PredictivePatternLearningSystem:
             if optimization["type"] == "completion_time_optimization":
                 steps.extend(
                     [
-                        "1. 並列処理可能な部分を特定",
-                        "2. タスク分割を実行",
-                        "3. リソーススケーリングを適用",
+                        "1.0 並列処理可能な部分を特定",
+                        "2.0 タスク分割を実行",
+                        "3.0 リソーススケーリングを適用",
                     ]
                 )
             elif optimization["type"] == "resource_optimization":
                 steps.extend(
                     [
-                        "1. メモリ使用量を最適化",
-                        "2. CPU スケジューリングを調整",
-                        "3. I/O 処理を最適化",
+                        "1.0 メモリ使用量を最適化",
+                        "2.0 CPU スケジューリングを調整",
+                        "3.0 I/O 処理を最適化",
                     ]
                 )
             elif optimization["type"] == "success_rate_optimization":
                 steps.extend(
                     [
-                        "1. エラーハンドリングを強化",
-                        "2. 依存関係の事前検証",
-                        "3. テストカバレッジを向上",
+                        "1.0 エラーハンドリングを強化",
+                        "2.0 依存関係の事前検証",
+                        "3.0 テストカバレッジを向上",
                     ]
                 )
 
@@ -1216,9 +1216,9 @@ async def main():
         print(f"📊 Prediction Result:")
         print(f"  Task ID: {prediction.task_id}")
         print(f"  Predicted Pattern: {prediction.predicted_pattern.value}")
-        print(f"  Predicted Time: {prediction.predicted_completion_time:.1f}s")
-        print(f"  Success Rate: {prediction.predicted_success_rate:.2f}")
-        print(f"  Confidence: {prediction.confidence:.2f}")
+        print(f"  Predicted Time: {prediction.predicted_completion_time:0.1f}s")
+        print(f"  Success Rate: {prediction.predicted_success_rate:0.2f}")
+        print(f"  Confidence: {prediction.confidence:0.2f}")
         print(f"  Reasoning: {prediction.reasoning}")
         print(f"  Optimizations: {prediction.recommended_optimizations}")
 

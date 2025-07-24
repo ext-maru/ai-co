@@ -69,17 +69,17 @@ class EnhancedRAGSage(EldersServiceLegacy):
 
         logger.info(f"🔍 Enhanced RAG検索開始: {query}")
 
-        # 1. パフォーマンス追跡開始
+        # 1.0 パフォーマンス追跡開始
         search_id = await self.performance_tracker.start_search_tracking(
             {"query": query, "context": context}
         )
 
-        # 2. キャッシュ最適化
+        # 2.0 キャッシュ最適化
         cache_result = await self.cache_optimizer.process_request(
             {"action": "optimize", "cache_name": "rag_search", "query": query}
         )
 
-        # 3. 検索品質向上
+        # 3.0 検索品質向上
         quality_result = await self.quality_enhancer.process_request(
             {
                 "action": "enhance",
@@ -89,13 +89,13 @@ class EnhancedRAGSage(EldersServiceLegacy):
             }
         )
 
-        # 4. インデックス最適化
+        # 4.0 インデックス最適化
         index_result = await self.index_optimizer.process_request({"action": "analyze"})
 
-        # 5. パフォーマンス追跡完了
+        # 5.0 パフォーマンス追跡完了
         await self.performance_tracker.end_search_tracking(search_id)
 
-        # 6. 統合結果作成
+        # 6.0 統合結果作成
         integrated_result = {
             "search_id": search_id,
             "query": query,
@@ -112,11 +112,11 @@ class EnhancedRAGSage(EldersServiceLegacy):
             ),
         }
 
-        # 7. 統合メトリクス記録
+        # 7.0 統合メトリクス記録
         await self._record_integrated_metrics(integrated_result)
 
         logger.info(
-            f"✅ Enhanced RAG検索完了: スコア={integrated_result['overall_score']:.2f}"
+            f"✅ Enhanced RAG検索完了: スコア={integrated_result['overall_score']:0.2f}"
         )
 
         return integrated_result
@@ -293,6 +293,7 @@ class EnhancedRAGSage(EldersServiceLegacy):
 
 
 if __name__ == "__main__":
+    pass
 
     async def test_enhanced_rag_sage():
         """test_enhanced_rag_sageテストメソッド"""

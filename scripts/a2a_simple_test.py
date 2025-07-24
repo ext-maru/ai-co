@@ -276,7 +276,7 @@ class SimpleA2ATest:
             success_rate = (
                 self.test_results["tests_passed"] / self.test_results["tests_run"]
             ) * 100
-            print(f"成功率: {success_rate:.1f}%")
+            print(f"成功率: {success_rate:0.1f}%")
 
         print(f"\n📡 通信記録: {len(self.test_results['communications'])}件")
 

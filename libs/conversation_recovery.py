@@ -24,8 +24,8 @@ class ConversationRecoveryManager:
 
     def check_stalled_conversations(self) -> List[Dict]:
         """停止した会話を検出"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         timeout_threshold = datetime.now() - timedelta(minutes=self.timeout_minutes)
@@ -60,8 +60,8 @@ class ConversationRecoveryManager:
 
     def recover_conversation(self, conversation_id: str) -> bool:
         """会話の復旧を試みる"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         try:
@@ -126,7 +126,7 @@ class ConversationRecoveryManager:
 
     def _mark_as_failed(self, conversation_id: str, reason: str):
         """会話を失敗状態にマーク"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -159,7 +159,7 @@ class ConversationRecoveryManager:
             channel = connection.channel()
 
             # 最後のメッセージを取得
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -212,8 +212,8 @@ class ConversationRecoveryManager:
 
     def reassign_orphaned_conversations(self):
         """孤立した会話を再割り当て"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         # アクティブな会話を取得
@@ -248,7 +248,7 @@ class ConversationRecoveryManager:
         """自動リカバリチェック"""
         logger.info("=== 自動リカバリチェック開始 ===")
 
-        # 1. 停止した会話をチェック
+        # 1.0 停止した会話をチェック
         stalled = self.check_stalled_conversations()
         logger.info(f"停止会話: {len(stalled)}件")
 
@@ -267,7 +267,7 @@ class ConversationRecoveryManager:
                 else:
                     failed += 1
 
-        # 2. 孤立した会話をチェック
+        # 2.0 孤立した会話をチェック
         orphaned = self.reassign_orphaned_conversations()
 
         logger.info(f"リカバリ結果: 成功={recovered}, 失敗={failed}, 孤立={orphaned}")

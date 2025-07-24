@@ -34,9 +34,8 @@ class ExtremeLoadTest:
     """極限負荷テスト"""
     
     @staticmethod
-    async def test_massive_concurrent_locks():
-        """大量同時ロックテスト"""
-        print("\n🔥 大量同時ロックテスト (1000同時ロック)")
+    async def test_massive_concurrent_locks()print("\n🔥 大量同時ロックテスト (1000同時ロック)")
+    """大量同時ロックテスト"""
         issues = []
         lock_dir = "./extreme_test_locks"
         
@@ -73,13 +72,13 @@ class ExtremeLoadTest:
         
         print(f"  - 成功: {success_count}/1000")
         print(f"  - エラー: {error_count}")
-        print(f"  - 処理時間: {elapsed:.2f}秒")
+        print(f"  - 処理時間: {elapsed:0.2f}秒")
         
         if error_count > 10:
             issues.append(f"❌ 大量ロックでエラー多発: {error_count}件")
         
         if elapsed > 10:
-            issues.append(f"❌ ロック処理が遅すぎる: {elapsed:.2f}秒")
+            issues.append(f"❌ ロック処理が遅すぎる: {elapsed:0.2f}秒")
         
         # クリーンアップ
         if os.path.exists(lock_dir):
@@ -88,9 +87,8 @@ class ExtremeLoadTest:
         return issues
     
     @staticmethod
-    async def test_memory_stress():
-        """メモリストレステスト"""
-        print("\n💾 メモリストレステスト")
+    async def test_memory_stress()print("\n💾 メモリストレステスト")
+    """メモリストレステスト"""
         issues = []
         
         config = ProcessorConfig()
@@ -108,15 +106,15 @@ class ExtremeLoadTest:
             
             if i % 100 == 0:
                 current_memory = process.memory_info().rss / 1024 / 1024
-                print(f"  - {i}個作成: {current_memory:.1f}MB使用")
+                print(f"  - {i}個作成: {current_memory:0.1f}MB使用")
         
         final_memory = process.memory_info().rss / 1024 / 1024
         memory_per_instance = (final_memory - initial_memory) / 1000
         
-        print(f"  - インスタンスあたり: {memory_per_instance:.2f}MB")
+        print(f"  - インスタンスあたり: {memory_per_instance:0.2f}MB")
         
         if memory_per_instance > 1:  # 1MB以上
-            issues.append(f"❌ メモリ使用量が多すぎる: {memory_per_instance:.2f}MB/インスタンス")
+            issues.append(f"❌ メモリ使用量が多すぎる: {memory_per_instance:0.2f}MB/インスタンス")
         
         # 解放後のメモリ確認
         processors.clear()
@@ -125,14 +123,13 @@ class ExtremeLoadTest:
         
         after_gc_memory = process.memory_info().rss / 1024 / 1024
         if after_gc_memory - initial_memory > 100:  # 100MB以上残存
-            issues.append(f"❌ メモリが解放されない: {after_gc_memory - initial_memory:.1f}MB残存")
+            issues.append(f"❌ メモリが解放されない: {after_gc_memory - initial_memory:0.1f}MB残存")
         
         return issues
     
     @staticmethod
-    async def test_cpu_stress():
-        """CPUストレステスト"""
-        print("\n⚡ CPUストレステスト")
+    async def test_cpu_stress()print("\n⚡ CPUストレステスト")
+    """CPUストレステスト"""
         issues = []
         
         config = ProcessorConfig()
@@ -168,11 +165,11 @@ class ExtremeLoadTest:
         elapsed = time.time() - start_time
         cpu_after = psutil.cpu_percent(interval=0.1)
         
-        print(f"  - 処理時間: {elapsed:.2f}秒")
+        print(f"  - 処理時間: {elapsed:0.2f}秒")
         print(f"  - CPU使用率: {cpu_before}% → {cpu_after}%")
         
         if elapsed > 60:  # 1分以上
-            issues.append(f"❌ 処理が遅すぎる: {elapsed:.2f}秒")
+            issues.append(f"❌ 処理が遅すぎる: {elapsed:0.2f}秒")
         
         return issues
 
@@ -181,9 +178,8 @@ class ChaosTest:
     """カオステスト - 異常系の極限テスト"""
     
     @staticmethod
-    async def test_random_failures():
-        """ランダム障害テスト"""
-        print("\n🎲 ランダム障害テスト")
+    async def test_random_failures()print("\n🎲 ランダム障害テスト")
+    """ランダム障害テスト"""
         issues = []
         
         config = ProcessorConfig()
@@ -220,14 +216,13 @@ class ChaosTest:
         
         recovery_rate = result['stats']['success'] / (result['stats']['success'] + result['stats']['failed'])
         if recovery_rate < 0.5:
-            issues.append(f"❌ エラーリカバリー率が低い: {recovery_rate:.1%}")
+            issues.append(f"❌ エラーリカバリー率が低い: {recovery_rate:0.1%}")
         
         return issues
     
     @staticmethod
-    async def test_signal_handling():
-        """シグナルハンドリングテスト"""
-        print("\n🚨 シグナルハンドリングテスト")
+    async def test_signal_handling()print("\n🚨 シグナルハンドリングテスト")
+    """シグナルハンドリングテスト"""
         issues = []
         
         config = ProcessorConfig()
@@ -255,9 +250,8 @@ class ChaosTest:
         return issues
     
     @staticmethod
-    async def test_resource_exhaustion():
-        """リソース枯渇テスト"""
-        print("\n💀 リソース枯渇テスト")
+    async def test_resource_exhaustion()print("\n💀 リソース枯渇テスト")
+    """リソース枯渇テスト"""
         issues = []
         
         # ファイルディスクリプタ枯渇シミュレーション
@@ -298,9 +292,8 @@ class SecurityPenetrationTest:
     """セキュリティペネトレーションテスト"""
     
     @staticmethod
-    async def test_path_traversal_advanced():
-        """高度なパストラバーサル攻撃"""
-        print("\n🔓 高度なパストラバーサル攻撃テスト")
+    async def test_path_traversal_advanced()print("\n🔓 高度なパストラバーサル攻撃テスト")
+    """高度なパストラバーサル攻撃"""
         issues = []
         
         # 様々な攻撃パターン
@@ -309,7 +302,7 @@ class SecurityPenetrationTest:
             "..\\..\\..\\windows\\system32",
             "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd",
             "....//....//....//",
-            "\x00../../etc/passwd",
+            "\x00.0./../etc/passwd",
             "..%252f..%252f..%252fetc%252fpasswd",
             "..%c0%af..%c0%af..%c0%afetc%c0%afpasswd",
             "/var/www/../../etc/passwd",
@@ -340,9 +333,8 @@ class SecurityPenetrationTest:
         return issues
     
     @staticmethod
-    async def test_injection_advanced():
-        """高度なインジェクション攻撃"""
-        print("\n💉 高度なインジェクション攻撃テスト")
+    async def test_injection_advanced()print("\n💉 高度なインジェクション攻撃テスト")
+    """高度なインジェクション攻撃"""
         issues = []
         
         config = ProcessorConfig()
@@ -397,16 +389,15 @@ class SecurityPenetrationTest:
         return issues
     
     @staticmethod
-    async def test_dos_attacks():
-        """DoS攻撃テスト"""
-        print("\n💣 DoS攻撃テスト")
+    async def test_dos_attacks()print("\n💣 DoS攻撃テスト")
+    """DoS攻撃テスト"""
         issues = []
         
         config = ProcessorConfig()
         config.dry_run = True
         processor = AutoIssueProcessor(config)
         
-        # 1. 巨大データ攻撃
+        # 1.0 巨大データ攻撃
         huge_issue = Mock()
         huge_issue.number = 1
         huge_issue.title = "A" * 1000000  # 1MB のタイトル
@@ -430,12 +421,12 @@ class SecurityPenetrationTest:
         end_memory = psutil.Process().memory_info().rss / 1024 / 1024
         
         if elapsed > 10:
-            issues.append(f"❌ 巨大データで処理が遅延: {elapsed:.1f}秒")
+            issues.append(f"❌ 巨大データで処理が遅延: {elapsed:0.1f}秒")
         
         if end_memory - start_memory > 100:
-            issues.append(f"❌ 過剰なメモリ使用: {end_memory - start_memory:.1f}MB")
+            issues.append(f"❌ 過剰なメモリ使用: {end_memory - start_memory:0.1f}MB")
         
-        # 2. 無限ループ攻撃
+        # 2.0 無限ループ攻撃
         # （実装省略 - 実際のコードでは無限ループにならないため）
         
         return issues
@@ -445,9 +436,8 @@ class RealWorldTest:
     """実環境シミュレーションテスト"""
     
     @staticmethod
-    async def test_github_api_simulation():
-        """GitHub API シミュレーション"""
-        print("\n🌐 GitHub API シミュレーションテスト")
+    async def test_github_api_simulation()print("\n🌐 GitHub API シミュレーションテスト")
+    """GitHub API シミュレーション"""
         issues = []
         
         config = ProcessorConfig()
@@ -503,9 +493,8 @@ class RealWorldTest:
         return issues
     
     @staticmethod
-    async def test_real_file_operations():
-        """実際のファイル操作テスト"""
-        print("\n📁 実ファイル操作テスト")
+    async def test_real_file_operations()print("\n📁 実ファイル操作テスト")
+    """実際のファイル操作テスト"""
         issues = []
         
         test_dir = Path("./real_world_test")
@@ -549,9 +538,8 @@ class RealWorldTest:
         return issues
 
 
-async def run_extreme_audit():
-    """極限監査の実行"""
-    print("=" * 80)
+async def run_extreme_audit()print("=" * 80)
+"""極限監査の実行"""
     print("統一Auto Issue Processor 極限監査")
     print("=" * 80)
     print("⚠️  この監査は高負荷をかけます")
@@ -559,7 +547,7 @@ async def run_extreme_audit():
     
     all_issues = []
     
-    # 1. 極限負荷テスト
+    # 1.0 極限負荷テスト
     print("🔥 極限負荷テスト")
     print("-" * 40)
     load_issues = []
@@ -574,7 +562,7 @@ async def run_extreme_audit():
     else:
         print("  ✅ 極限負荷テスト合格")
     
-    # 2. カオステスト
+    # 2.0 カオステスト
     print("\n🌪️ カオステスト")
     print("-" * 40)
     chaos_issues = []
@@ -589,7 +577,7 @@ async def run_extreme_audit():
     else:
         print("  ✅ カオステスト合格")
     
-    # 3. セキュリティペネトレーション
+    # 3.0 セキュリティペネトレーション
     print("\n🔐 セキュリティペネトレーション")
     print("-" * 40)
     security_issues = []
@@ -604,7 +592,7 @@ async def run_extreme_audit():
     else:
         print("  ✅ セキュリティテスト合格")
     
-    # 4. 実環境シミュレーション
+    # 4.0 実環境シミュレーション
     print("\n🌍 実環境シミュレーション")
     print("-" * 40)
     real_issues = []
@@ -675,8 +663,8 @@ if __name__ == "__main__":
     # システムリソースの確認
     print("システムリソース:")
     print(f"  CPU: {multiprocessing.cpu_count()}コア")
-    print(f"  メモリ: {psutil.virtual_memory().total / (1024**3):.1f}GB")
-    print(f"  空きメモリ: {psutil.virtual_memory().available / (1024**3):.1f}GB")
+    print(f"  メモリ: {psutil.virtual_memory().total / (1024**3):0.1f}GB")
+    print(f"  空きメモリ: {psutil.virtual_memory().available / (1024**3):0.1f}GB")
     print()
     
     # 自動実行モード

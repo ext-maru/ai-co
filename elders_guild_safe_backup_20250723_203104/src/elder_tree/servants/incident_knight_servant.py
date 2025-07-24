@@ -47,6 +47,7 @@ import structlog
     description="Elder Tree Incident Knight Servant - Emergency Response Specialist"
 )
 class IncidentKnightServant(ElderServantBase):
+    pass
 
     """
     ⚔️ インシデント騎士団サーバント (Elder Tree統合)
@@ -109,6 +110,7 @@ class IncidentKnightServant(ElderServantBase):
         )
     
     def _initialize_knight_tools(self):
+        pass
 
         
         """インシデント騎士団ツール初期化"""
@@ -141,6 +143,7 @@ class IncidentKnightServant(ElderServantBase):
             )
     
     def _register_incident_knight_handlers(self):
+        pass
 
             """インシデント騎士専用メッセージハンドラー登録"""
             """
@@ -192,6 +195,7 @@ class IncidentKnightServant(ElderServantBase):
         
         @self.handle("analyze_root_cause")
         async def handle_analyze_root_cause(message) -> Dict[str, Any]:
+            pass
 
                 """
             根本原因分析リクエスト
@@ -234,6 +238,7 @@ class IncidentKnightServant(ElderServantBase):
         
         @self.handle("execute_recovery")
         async def handle_execute_recovery(message) -> Dict[str, Any]:
+            pass
 
                 """
             復旧実行リクエスト
@@ -283,6 +288,7 @@ class IncidentKnightServant(ElderServantBase):
         
         @self.handle("create_post_mortem")
         async def handle_create_post_mortem(message) -> Dict[str, Any]:
+            pass
 
                 """
             ポストモーテム作成リクエスト
@@ -325,6 +331,7 @@ class IncidentKnightServant(ElderServantBase):
         
         @self.handle("get_incident_status")
         async def handle_get_incident_status(message) -> Dict[str, Any]:
+            pass
 
                 """
             インシデントステータス取得
@@ -777,10 +784,9 @@ class IncidentKnightServant(ElderServantBase):
         
         return analysis
     
-    async def _execute_recovery_step(self, step: Dict[str, Any]) -> Dict[str, Any]:
-        """復旧ステップ実行"""
-        step_type = step.get("type", "unknown")
-        
+    async def _execute_recovery_step(self, step: Dict[str, Any]) -> Dict[str, Any]step_type = step.get("type", "unknown")
+    """復旧ステップ実行"""
+        :
         if step_type == "restart_service":
             # サービス再起動（シミュレーション）
             await asyncio.sleep(2)  # シミュレート
@@ -838,10 +844,9 @@ class IncidentKnightServant(ElderServantBase):
         rollback_results["status"] = "completed"
         return rollback_results
     
-    async def _verify_recovery(self, verification: Dict[str, Any]) -> Dict[str, Any]:
-        """復旧検証"""
-        verify_type = verification.get("type", "unknown")
-        
+    async def _verify_recovery(self, verification: Dict[str, Any]) -> Dict[str, Any]verify_type = verification.get("type", "unknown")
+    """復旧検証"""
+        :
         if verify_type == "health_check":
             # ヘルスチェック（シミュレーション）
             await asyncio.sleep(1)
@@ -989,6 +994,7 @@ class IncidentKnightServant(ElderServantBase):
         return post_mortem
     
     async def _start_incident_monitoring(self):
+        pass
 
         
         """インシデント常時監視"""
@@ -1032,7 +1038,7 @@ class IncidentKnightServant(ElderServantBase):
     """インシデントエスカレーション""" incident_id,
             "escalation_level": 2,
             "notified": ["team_lead@example.com", "manager@example.com"],
-            "reason": f"Incident unresolved for {elapsed_seconds/60:.1f} minutes"
+            "reason": f"Incident unresolved for {elapsed_seconds/60:0.1f} minutes"
         }
         
         incident["escalation_history"] = incident.get("escalation_history", [])
@@ -1048,6 +1054,7 @@ class IncidentKnightServant(ElderServantBase):
         )
     
     async def _update_incident_metrics(self):
+        pass
 
             """インシデントメトリクス更新"""
             avg_response_time = sum(self.response_times) / len(self.response_times)
@@ -1059,6 +1066,7 @@ class IncidentKnightServant(ElderServantBase):
             )
     
     def _get_response_metrics(self) -> Dict[str, Any]:
+        pass
 
             """応答メトリクス取得""" sum(self.response_times) / len(self.response_times) if self.response_times else 0,
             "sla_compliance_rate": self._calculate_sla_compliance(),
@@ -1068,6 +1076,7 @@ class IncidentKnightServant(ElderServantBase):
         }
     
     def _calculate_sla_compliance(self) -> float:
+        pass
 
         """SLAコンプライアンス率計算"""
             return 100.0
@@ -1076,6 +1085,7 @@ class IncidentKnightServant(ElderServantBase):
         return (within_sla / len(self.response_times)) * 100
     
     def _calculate_success_rate(self) -> float:
+        pass
 
             """成功率計算"""
             return 100.0
@@ -1083,6 +1093,7 @@ class IncidentKnightServant(ElderServantBase):
         return (self.recovery_success_rate["success"] / total) * 100
     
     async def get_specialized_capabilities(self) -> List[str]:
+        pass
 
             """インシデント騎士専門能力の取得"""
             knight_capabilities.extend([
@@ -1097,6 +1108,7 @@ class IncidentKnightServant(ElderServantBase):
 # デバッグ・テスト用
 if __name__ == "__main__":
     async def test_incident_knight():
+        pass
 
     """test_incident_knightメソッド"""
             await knight.start()
@@ -1127,7 +1139,7 @@ if __name__ == "__main__":
             
             # 応答メトリクス表示
             metrics = knight._get_response_metrics()
-            print(f"SLA Compliance: {metrics['sla_compliance_rate']:.1f}%")
+            print(f"SLA Compliance: {metrics['sla_compliance_rate']:0.1f}%")
             
             # 少し待機
             await asyncio.sleep(5)

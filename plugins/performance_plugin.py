@@ -51,7 +51,7 @@ class PerformanceMonitorPlugin(WorkerPlugin):
         """データベース初期化"""
         self.db_path.parent.mkdir(exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS performance_metrics (
@@ -173,7 +173,7 @@ class PerformanceMonitorPlugin(WorkerPlugin):
 
     def _record_metrics(self, **kwargs):
         """メトリクスをデータベースに記録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO performance_metrics
@@ -221,7 +221,7 @@ class PerformanceStats:
 
     def get_summary(self, days: int = 7) -> Dict[str, Any]:
         """統計サマリーを取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 基本統計
             cursor = conn.execute(
                 """
@@ -253,7 +253,7 @@ class PerformanceStats:
 
     def get_task_type_breakdown(self) -> Dict[str, Dict[str, Any]]:
         """タスクタイプ別の統計"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT

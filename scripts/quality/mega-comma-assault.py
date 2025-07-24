@@ -9,6 +9,7 @@ import re
 from typing import List, Dict
 
 def mega_comma_assault():
+    pass
 
 
 """141件のカンマエラーを完全撲滅"""
@@ -85,7 +86,7 @@ def mega_comma_assault():
     print(f"\n📊 COMMA ASSAULT結果:")
     print(f"   修正成功: {fixed_count}件")
     print(f"   修正失敗: {len(failed_files)}件")
-    print(f"   成功率: {fixed_count/len(comma_files)*100:.1f}%")
+    print(f"   成功率: {fixed_count/len(comma_files)*100:0.1f}%")
     
     if failed_files:
         print(f"\n🔧 失敗ファイル（手動対応必要）:")

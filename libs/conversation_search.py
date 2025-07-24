@@ -21,8 +21,8 @@ class ConversationSearchEngine:
 
     def search_by_keywords(self, keywords: List[str], limit: int = 10) -> List[Dict]:
         """キーワードで会話を検索（AI学習用）"""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         # キーワード条件構築
@@ -69,8 +69,8 @@ class ConversationSearchEngine:
         # プロンプトからキーワード抽出
         keywords = self._extract_keywords(prompt)
 
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(self.db_path)
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         # 初期プロンプトが似ている会話を検索
@@ -142,7 +142,7 @@ class ConversationSearchEngine:
         words2 = set(self._extract_keywords(text2.lower()))
 
         if not words1 or not words2:
-            return 0.0
+            return 0
 
         # Jaccard係数
         intersection = words1.intersection(words2)
@@ -152,7 +152,7 @@ class ConversationSearchEngine:
 
     def get_conversation_patterns(self) -> Dict:
         """会話パターン分析（AI学習用）"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         patterns = {
@@ -199,7 +199,7 @@ class ConversationSearchEngine:
         cursor.execute(
             """
             SELECT AVG(msg_count) as avg_messages,
-                   SUM(CASE WHEN state = 'completed' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as completion_rate
+                   SUM(CASE WHEN state = 'completed' THEN 1 ELSE 0 END) * 100 / COUNT(*) as completion_rate
             FROM (
                 SELECT c.conversation_id, c.state, COUNT(m.message_id) as msg_count
                 FROM conversations c
@@ -220,7 +220,7 @@ class ConversationSearchEngine:
         patterns = self.get_conversation_patterns()
 
         # タスクタイプ分析
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(

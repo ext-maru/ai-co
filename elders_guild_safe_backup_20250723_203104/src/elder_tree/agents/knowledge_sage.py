@@ -14,6 +14,7 @@ from flask import Flask
 
 
 class KnowledgeSage(ElderTreeAgent):
+    pass
 
 
 """Knowledge Sage - 知識管理専門エージェント""" str = "./knowledge_base.db", port: int = 50051):
@@ -38,9 +39,10 @@ class KnowledgeSage(ElderTreeAgent):
         self.logger.info("Knowledge Sage initialized", db_path=str(self.db_path))
     
     def _init_database(self):
+        pass
 
         """SQLite データベース初期化"""
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
             
             # 知識テーブル作成
@@ -92,6 +94,7 @@ class KnowledgeSage(ElderTreeAgent):
             raise
     
     def _register_domain_handlers(self):
+        pass
 
             """Knowledge Sage固有のハンドラー登録""" Dict[str, Any]) -> Dict[str, Any]:
         """メッセージハンドラー"""
@@ -115,9 +118,8 @@ class KnowledgeSage(ElderTreeAgent):
         else:
             return {"status": "error", "message": f"Unknown message type: {message_type}"}
     
-    def _handle_analyze_technology(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """技術分析処理"""
-        tech_name = data.get("technology")
+    def _handle_analyze_technology(self, data: Dict[str, Any]) -> Dict[str, Any]tech_name = data.get("technology")
+    """技術分析処理"""
         context = data.get("context", {})
         
         self.logger.info(
@@ -125,7 +127,7 @@ class KnowledgeSage(ElderTreeAgent):
             technology=tech_name,
             context=context
         )
-        
+        :
         # 基本分析（TDD: テストが通る最小実装）
         analysis = {
             "technology": tech_name,
@@ -145,7 +147,7 @@ class KnowledgeSage(ElderTreeAgent):
         
         # データベースに技術分析保存
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO tech_analyses (technology, assessment, confidence, pros, cons, recommendation)
@@ -180,14 +182,13 @@ class KnowledgeSage(ElderTreeAgent):
         
         return {"analysis": analysis, "status": "completed"}
     
-    def _handle_store_knowledge(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """知識保存処理"""
-        knowledge_item = data.get("knowledge")
+    def _handle_store_knowledge(self, data: Dict[str, Any]) -> Dict[str, Any]knowledge_item = data.get("knowledge")
+    """知識保存処理"""
         category = data.get("category", "general")
         title = data.get("title", "Untitled Knowledge")
         metadata = data.get("metadata", {})
         
-        # メモリ内ストレージ
+        # メモリ内ストレージ:
         if category not in self.knowledge_base:
             self.knowledge_base[category] = []
         
@@ -195,7 +196,7 @@ class KnowledgeSage(ElderTreeAgent):
         
         # データベース永続化
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO knowledge_items (category, title, content, metadata)
@@ -230,14 +231,13 @@ class KnowledgeSage(ElderTreeAgent):
                 "message": f"Storage failed: {str(e)}"
             }
     
-    def _handle_search_knowledge(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """知識検索処理"""
-        query = data.get("query", "")
+    def _handle_search_knowledge(self, data: Dict[str, Any]) -> Dict[str, Any]query = data.get("query", "")
+    """知識検索処理"""
         category = data.get("category")
         limit = data.get("limit", 10)
-        
+        :
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
             
             # SQL構築
@@ -295,16 +295,15 @@ class KnowledgeSage(ElderTreeAgent):
                 "message": f"Search failed: {str(e)}"
             }
     
-    def _handle_learn_from_feedback(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """フィードバックからの学習処理"""
-        feedback_type = data.get("type", "general")
+    def _handle_learn_from_feedback(self, data: Dict[str, Any]) -> Dict[str, Any]feedback_type = data.get("type", "general")
+    """フィードバックからの学習処理"""
         content = data.get("content", "")
         source = data.get("source", "user")
         confidence = data.get("confidence", 0.8)
-        
+        :
         try:
             # 学習履歴に保存
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO learning_history (learning_type, content, source, confidence)
@@ -344,18 +343,18 @@ class KnowledgeSage(ElderTreeAgent):
                 "message": f"Learning failed: {str(e)}"
             }
     
-    def _handle_get_statistics(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """統計情報取得"""
-        stats = self.get_knowledge_statistics()
-        return {
+    def _handle_get_statistics(self, data: Dict[str, Any]) -> Dict[str, Any]stats = self.get_knowledge_statistics()
+    """統計情報取得"""
+        return {:
             "status": "success",
             "statistics": stats
         }
     
     def get_knowledge_statistics(self) -> Dict[str, Any]:
+        pass
 
         """知識統計情報取得"""
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3connect(self.db_path)
             cursor = conn.cursor()
             
             # 基本統計
@@ -387,6 +386,7 @@ class KnowledgeSage(ElderTreeAgent):
 
 # 単体実行用
 def main():
+    pass
 
             """mainメソッド"""
         try:

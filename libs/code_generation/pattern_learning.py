@@ -92,9 +92,8 @@ class PatternLearningEngine:
         logger.info(f"Pattern learning completed: {learning_summary}")
         return learning_summary
     
-    async def _learn_coding_style(self, patterns: Dict[str, Any]):
-        """コーディングスタイルを学習"""
-        style_data = patterns.get("coding_style", {})
+    async def _learn_coding_style(self, patterns: Dict[str, Any])style_data = patterns.get("coding_style", {})
+    """コーディングスタイルを学習"""
         
         if not style_data:
             return
@@ -131,9 +130,8 @@ class PatternLearningEngine:
         self.learned_patterns["coding_style"] = learned_style
         logger.info(f"Learned coding style: {learned_style}")
     
-    async def _learn_import_patterns(self, patterns: Dict[str, Any]):
-        """インポートパターンを学習"""
-        imports = patterns.get("imports", [])
+    async def _learn_import_patterns(self, patterns: Dict[str, Any])imports = patterns.get("imports", [])
+    """インポートパターンを学習"""
         
         if not imports:
             return
@@ -175,9 +173,8 @@ class PatternLearningEngine:
         self.learned_patterns["import_patterns"] = categorized_imports
         logger.info(f"Learned {len(common_imports)} import patterns")
     
-    async def _learn_error_handling(self, patterns: Dict[str, Any]):
-        """エラーハンドリングパターンを学習"""
-        errors = patterns.get("error_handling", [])
+    async def _learn_error_handling(self, patterns: Dict[str, Any])errors = patterns.get("error_handling", [])
+    """エラーハンドリングパターンを学習"""
         
         if not errors:
             return
@@ -201,9 +198,8 @@ class PatternLearningEngine:
         self.learned_patterns["error_handling"] = error_patterns
         logger.info(f"Learned error handling patterns: {len(common_exceptions)} exception types")
     
-    async def _learn_logging_patterns(self, patterns: Dict[str, Any]):
-        """ロギングパターンを学習"""
-        logging_methods = patterns.get("logging_patterns", [])
+    async def _learn_logging_patterns(self, patterns: Dict[str, Any])logging_methods = patterns.get("logging_patterns", [])
+    """ロギングパターンを学習"""
         
         if not logging_methods:
             return
@@ -244,9 +240,8 @@ class PatternLearningEngine:
         self.learned_patterns["test_patterns"] = test_patterns
         logger.info(f"Learned test patterns from {len(test_files)} test files")
     
-    async def _learn_naming_conventions(self, patterns: Dict[str, Any]):
-        """命名規則を学習"""
-        classes = patterns.get("classes", [])
+    async def _learn_naming_conventions(self, patterns: Dict[str, Any])classes = patterns.get("classes", [])
+    """命名規則を学習"""
         functions = patterns.get("functions", [])
         
         naming_rules = {
@@ -273,9 +268,8 @@ class PatternLearningEngine:
         self.learned_patterns["naming_conventions"] = naming_rules
         logger.info(f"Learned naming conventions: {naming_rules}")
     
-    async def _build_project_vocabulary(self, patterns: Dict[str, Any]):
-        """プロジェクト固有の語彙を構築"""
-        vocabulary = Counter()
+    async def _build_project_vocabulary(self, patterns: Dict[str, Any])vocabulary = Counter()
+    """プロジェクト固有の語彙を構築"""
         
         # クラス名から語彙抽出
         classes = patterns.get("classes", [])
@@ -378,9 +372,8 @@ class PatternLearningEngine:
         
         return score / max_score
     
-    def _load_existing_patterns(self):
-        """既存の学習済みパターンをロード"""
-        for pattern_type in self.learned_patterns.keys():
+    def _load_existing_patterns(self)for pattern_type in self.learned_patterns.keys():
+    """既存の学習済みパターンをロード"""
             pattern_file = self.storage_dir / f"{pattern_type}.json"
             if pattern_file.exists():
                 try:
@@ -390,9 +383,8 @@ class PatternLearningEngine:
                 except Exception as e:
                     logger.warning(f"Failed to load {pattern_type}: {e}")
     
-    async def _save_patterns(self):
-        """学習済みパターンを保存"""
-        for pattern_type, patterns in self.learned_patterns.items():
+    async def _save_patterns(self)for pattern_type, patterns in self.learned_patterns.items():
+    """学習済みパターンを保存"""
             pattern_file = self.storage_dir / f"{pattern_type}.json"
             try:
                 with open(pattern_file, 'w', encoding='utf-8') as f:
@@ -447,16 +439,15 @@ class PatternLearningEngine:
 
 
 # CLI実行用
-async def main():
-    """メイン関数（テスト用）"""
-    engine = PatternLearningEngine()
+async def main()engine = PatternLearningEngine()
+"""メイン関数（テスト用）"""
     
     print("🧠 Starting pattern learning...")
     result = await engine.learn_from_codebase()
     
     print(f"\n📊 Learning Results:")
     print(f"Patterns learned: {result['patterns_learned']}")
-    print(f"Confidence score: {result['confidence_score']:.2f}")
+    print(f"Confidence score: {result['confidence_score']:0.2f}")
     
     # パターン例を表示
     patterns = engine.get_patterns_for_context()

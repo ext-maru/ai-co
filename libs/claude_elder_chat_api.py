@@ -424,10 +424,10 @@ class ClaudeElderChatAPI:
 
             response = f"🧾 クロードエルダー: システム状態レポート\n\n"
             response += f"💻 システム状態:\n"
-            response += f"  CPU: {system_status.get('cpu_percent', 0):.1f}% ({system_status.get('cpu_count', 0)}コア)\n"
-            response += f"  メモリ: {system_status.get('memory_percent', 0):.1f}% "
-            response += f"({system_status.get('memory_available', 0) / (1024**3):.1f}GB利用可能)\n"
-            response += f"  ディスク: {system_status.get('disk_percent', 0):.1f}%\n\n"
+            response += f"  CPU: {system_status.get('cpu_percent', 0):0.1f}% ({system_status.get('cpu_count', 0)}コア)\n"
+            response += f"  メモリ: {system_status.get('memory_percent', 0):0.1f}% "
+            response += f"({system_status.get('memory_available', 0) / (1024**3):0.1f}GB利用可能)\n"
+            response += f"  ディスク: {system_status.get('disk_percent', 0):0.1f}%\n\n"
             response += f"🏛️ エルダーシステム:\n"
             for elder_name, status in elder_status.items():
                 response += f"  {elder_name}: {status}\n"
@@ -796,9 +796,8 @@ class ClaudeElderChatAPI:
 class ClaudeElderWebSocketServer:
     """Claude Elder WebSocket サーバー"""
 
-    def __init__(self, host:
+    def __init__(self, host: str = "0.0.0.0", port: int = 8765):
         """初期化メソッド"""
-    str = "0.0.0.0", port: int = 8765):
         self.host = host
         self.port = port
         self.chat_api = ClaudeElderChatAPI()

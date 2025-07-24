@@ -336,10 +336,10 @@ def main():
 
         print("🔧 To enable full browser testing:")
         print(
-            "   1. Install system dependencies: sudo apt install chromium-browser libnss3"
+            "   1.0 Install system dependencies: sudo apt install chromium-browser libnss3"
         )
-        print("   2. Use Docker: docker run --rm selenium/standalone-chrome")
-        print("   3. Set up X11 forwarding for WSL2")
+        print("   2.0 Use Docker: docker run --rm selenium/standalone-chrome")
+        print("   3.0 Set up X11 forwarding for WSL2")
 
         return 0 if results["success_rate"] >= 60 else 1
 

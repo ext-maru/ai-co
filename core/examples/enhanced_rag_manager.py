@@ -30,7 +30,7 @@ class EnhancedRAGManager(BaseManager):
 
         # DB設定
         self.db_path = self.paths["db"] / "task_history.db"
-        self.connection: Optional[sqlite3.Connection] = None
+        self.connection: Optional[sqlite3Connection] = None
 
         # 統計情報
         self.cache_hits = 0
@@ -46,10 +46,10 @@ class EnhancedRAGManager(BaseManager):
                 return False
 
             # DB接続
-            self.connection = sqlite3.connect(
+            self.connection = sqlite3connect(
                 str(self.db_path), check_same_thread=False
             )
-            self.connection.row_factory = sqlite3.Row
+            self.connection.row_factory = sqlite3Row
 
             # テーブル作成
             self._create_tables()

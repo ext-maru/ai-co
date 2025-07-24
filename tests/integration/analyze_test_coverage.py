@@ -183,7 +183,7 @@ class TestCoverageAnalyzer:
         report.append("## Summary")
         report.append(f"- Total Python files: {total_files}")
         report.append(f"- Total test files: {total_tests}")
-        report.append(f"- Estimated coverage: {overall_coverage:.1f}%")
+        report.append(f"- Estimated coverage: {overall_coverage:0.1f}%")
         report.append("")
 
         # Module breakdown
@@ -199,7 +199,7 @@ class TestCoverageAnalyzer:
             report.append(f"\n### {module.upper()}")
             report.append(f"- Files: {stats['total_files']}")
             report.append(f"- Test files: {stats['test_files']}")
-            report.append(f"- Coverage estimate: {stats['coverage_estimate']:.1f}%")
+            report.append(f"- Coverage estimate: {stats['coverage_estimate']:0.1f}%")
 
             if stats["coverage_estimate"] < 20:
                 report.append("- **STATUS: CRITICAL - Needs immediate attention**")
@@ -245,7 +245,7 @@ class TestCoverageAnalyzer:
         if low_coverage_modules:
             report.append("### High Priority Actions:")
             for module in low_coverage_modules:
-                report.append(f"1. Add comprehensive tests for **{module}** module")
+                report.append(f"1.0 Add comprehensive tests for **{module}** module")
 
         if untested:
             report.append("\n### Critical Components to Test:")

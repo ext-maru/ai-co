@@ -43,8 +43,8 @@ async def demo_existing_optimizer():
 
         print(f"✅ 処理完了")
         print(f"  - アイテム数: {len(items)}")
-        print(f"  - 処理時間: {elapsed:.2f}秒")
-        print(f"  - スループット: {len(items)/elapsed:.1f} items/秒")
+        print(f"  - 処理時間: {elapsed:0.2f}秒")
+        print(f"  - スループット: {len(items)/elapsed:0.1f} items/秒")
     except Exception as e:
         print(f"❌ エラー: {e}")
 
@@ -70,8 +70,8 @@ async def demo_celery_optimizer():
 
         print(f"✅ 処理完了（Celery版）")
         print(f"  - アイテム数: {len(items)}")
-        print(f"  - 処理時間: {elapsed:.2f}秒")
-        print(f"  - スループット: {len(items)/elapsed:.1f} items/秒")
+        print(f"  - 処理時間: {elapsed:0.2f}秒")
+        print(f"  - スループット: {len(items)/elapsed:0.1f} items/秒")
 
         print("\n📋 Celeryの追加機能:")
         print("  - タスクの永続化（ブローカー経由）")
@@ -108,15 +108,15 @@ async def demo_hybrid_optimizer():
         print("\n📦 小規模バッチ（50アイテム）:")
         result = await optimizer.hybrid_optimization(small_items, threshold=100)
         print(f"  - 使用手法: {result.method}")
-        print(f"  - 処理時間: {result.processing_time:.3f}秒")
-        print(f"  - メモリ使用: {result.metrics['memory_usage']:.1f} MB")
+        print(f"  - 処理時間: {result.processing_time:0.3f}秒")
+        print(f"  - メモリ使用: {result.metrics['memory_usage']:0.1f} MB")
 
         # 大規模（Ray使用）
         print("\n📦 大規模バッチ（500アイテム）:")
         result = await optimizer.hybrid_optimization(large_items, threshold=100)
         print(f"  - 使用手法: {result.method}")
-        print(f"  - 処理時間: {result.processing_time:.3f}秒")
-        print(f"  - メモリ使用: {result.metrics['memory_usage']:.1f} MB")
+        print(f"  - 処理時間: {result.processing_time:0.3f}秒")
+        print(f"  - メモリ使用: {result.metrics['memory_usage']:0.1f} MB")
 
         print("\n🎯 ハイブリッドアプローチの利点:")
         print("  - 小規模タスク: Celeryの信頼性とタスク管理")
@@ -221,9 +221,9 @@ async def main():
 
     print("\n✅ デモ完了！")
     print("\n📝 次のアクション:")
-    print("1. docker-compose.ymlにRedis/RabbitMQを追加")
-    print("2. requirements-poc.txtにCelery/Rayを追加")
-    print("3. 小規模ワーカーで試験運用開始")
+    print("1.0 docker-compose.ymlにRedis/RabbitMQを追加")
+    print("2.0 requirements-poc.txtにCelery/Rayを追加")
+    print("3.0 小規模ワーカーで試験運用開始")
 
 
 if __name__ == "__main__":

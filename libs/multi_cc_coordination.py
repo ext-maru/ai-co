@@ -131,7 +131,7 @@ class CCInstanceManager:
 
     def _init_database(self):
         """Initialize the database"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS cc_instances (
@@ -157,7 +157,7 @@ class CCInstanceManager:
         """Register a new CC instance"""
         instance_id = str(uuid.uuid4())
 
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             conn.execute(
                 """
                 INSERT INTO cc_instances
@@ -168,7 +168,7 @@ class CCInstanceManager:
                     instance_id,
                     instance_info.get("hostname", f"claude-{instance_id[:8]}"),
                     json.dumps(instance_info.get("capabilities", [])),
-                    instance_info.get("current_load", 0.0),
+                    instance_info.get("current_load", 0),
                     instance_info.get("max_capacity", 10),
                     json.dumps(instance_info),
                 ),
@@ -179,7 +179,7 @@ class CCInstanceManager:
 
     def get_instance(self, instance_id: str) -> Optional[CCInstance]:
         """Get instance by ID"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             cursor = conn.execute(
                 """
                 SELECT instance_id, hostname, capabilities, current_load,
@@ -213,7 +213,7 @@ class CCInstanceManager:
 
     def discover_instances(self, include_stale: bool = False) -> List[CCInstance]:
         """Discover active CC instances"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             query = """
                 SELECT instance_id, hostname, capabilities, current_load,
                        max_capacity, last_seen
@@ -255,7 +255,7 @@ class CCInstanceManager:
 
     def update_heartbeat(self, instance_id: str) -> bool:
         """Update instance heartbeat"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             # Use Python datetime for more precision
             new_timestamp = datetime.now().isoformat()
             cursor = conn.execute(
@@ -271,7 +271,7 @@ class CCInstanceManager:
 
     def update_load(self, instance_id: str, current_load: float) -> bool:
         """Update instance load"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             cursor = conn.execute(
                 """
                 UPDATE cc_instances
@@ -285,7 +285,7 @@ class CCInstanceManager:
 
     def deregister_instance(self, instance_id: str) -> bool:
         """Deregister an instance"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             cursor = conn.execute(
                 """
                 DELETE FROM cc_instances
@@ -303,7 +303,7 @@ class CCInstanceManager:
         """Clean up stale instances"""
         cutoff = (datetime.now() - timedelta(minutes=timeout_minutes)).isoformat()
 
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             cursor = conn.execute(
                 """
                 DELETE FROM cc_instances
@@ -419,8 +419,8 @@ class TaskDistributor:
             for under in underloaded:
                 logger.info(
                     f"Load rebalancing opportunity: {over.instance_id} "
-                    f"({over.current_load:.2f}) -> {under.instance_id} "
-                    f"({under.current_load:.2f})"
+                    f"({over.current_load:0.2f}) -> {under.instance_id} "
+                    f"({under.current_load:0.2f})"
                 )
 
         return rebalancing_actions
@@ -439,20 +439,20 @@ class ConflictResolver:
     ) -> Optional[TaskConflict]:
         """Detect if two tasks conflict"""
         # Ensure tasks have created_at timestamp
-        if task1.created_at is None:
-            task1.created_at = datetime.now()
-        if task2.created_at is None:
-            task2.created_at = datetime.now()
+        if task1created_at is None:
+            task1created_at = datetime.now()
+        if task2created_at is None:
+            task2created_at = datetime.now()
 
         # Check for file editing conflicts
-        if task1.task_type == "file_edit" and task2.task_type == "file_edit":
-            file1 = task1.payload.get("file")
-            file2 = task2.payload.get("file")
+        if task1task_type == "file_edit" and task2task_type == "file_edit":
+            file1 = task1payload.get("file")
+            file2 = task2payload.get("file")
 
             if file1 == file2:
                 # Check line range overlap
-                range1 = task1.payload.get("line_range", [0, float("inf")])
-                range2 = task2.payload.get("line_range", [0, float("inf")])
+                range1 = task1payload.get("line_range", [0, float("inf")])
+                range2 = task2payload.get("line_range", [0, float("inf")])
 
                 if range1[0] <= range2[1] and range2[0] <= range1[1]:
                     return TaskConflict(
@@ -463,8 +463,8 @@ class ConflictResolver:
                     )
 
         # Check for resource conflicts
-        resources1 = set(task1.payload.get("resources", []))
-        resources2 = set(task2.payload.get("resources", []))
+        resources1 = set(task1payload.get("resources", []))
+        resources2 = set(task2payload.get("resources", []))
 
         if resources1 & resources2:  # Intersection
             return TaskConflict(
@@ -480,13 +480,13 @@ class ConflictResolver:
         """Resolve a conflict between tasks"""
         with self._lock:
             # Priority-based resolution
-            if conflict.task1.priority > conflict.task2.priority:
+            if conflict.task1priority > conflict.task2priority:
                 winning_task = conflict.task1
-            elif conflict.task2.priority > conflict.task1.priority:
+            elif conflict.task2priority > conflict.task1priority:
                 winning_task = conflict.task2
             else:
                 # If same priority, choose the older task
-                if conflict.task1.created_at < conflict.task2.created_at:
+                if conflict.task1created_at < conflict.task2created_at:
                     winning_task = conflict.task1
                 else:
                     winning_task = conflict.task2
@@ -501,8 +501,8 @@ class ConflictResolver:
             self.conflict_history.append(resolution)
 
             logger.info(
-                f"Resolved conflict between {conflict.task1.task_id} and "
-                f"{conflict.task2.task_id}. Winner: {winning_task.task_id}"
+                f"Resolved conflict between {conflict.task1task_id} and "
+                f"{conflict.task2task_id}. Winner: {winning_task.task_id}"
             )
 
             return resolution
@@ -512,26 +512,26 @@ class ConflictResolver:
     ) -> Optional[DistributedTask]:
         """Attempt to merge compatible tasks"""
         # Only merge tasks of the same type
-        if task1.task_type != task2.task_type:
+        if task1task_type != task2task_type:
             return None
 
         # For test suite tasks, merge test lists
-        if task1.task_type == "test_suite":
-            tests1 = task1.payload.get("tests", [])
-            tests2 = task2.payload.get("tests", [])
+        if task1task_type == "test_suite":
+            tests1 = task1payload.get("tests", [])
+            tests2 = task2payload.get("tests", [])
 
             merged_task = DistributedTask(
-                task_id=f"{task1.task_id}+{task2.task_id}",
-                task_type=task1.task_type,
-                priority=max(task1.priority, task2.priority),
-                estimated_load=task1.estimated_load + task2.estimated_load,
+                task_id=f"{task1task_id}+{task2task_id}",
+                task_type=task1task_type,
+                priority=max(task1priority, task2priority),
+                estimated_load=task1estimated_load + task2estimated_load,
                 payload={
                     "tests": tests1 + tests2,
-                    "merged_from": [task1.task_id, task2.task_id],
+                    "merged_from": [task1task_id, task2task_id],
                 },
             )
 
-            logger.info(f"Merged tasks {task1.task_id} and {task2.task_id}")
+            logger.info(f"Merged tasks {task1task_id} and {task2task_id}")
             return merged_task
 
         return None
@@ -553,7 +553,7 @@ class CCCommunicator:
 
     def _init_database(self):
         """Initialize message database"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS cc_messages (
@@ -580,7 +580,7 @@ class CCCommunicator:
 
     def send_message(self, message: CCMessage) -> str:
         """Send a message to another instance"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             conn.execute(
                 """
                 INSERT INTO cc_messages
@@ -608,7 +608,7 @@ class CCCommunicator:
         self, recipient_id: str, only_unread: bool = False
     ) -> List[CCMessage]:
         """Receive messages for an instance"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             query = """
                 SELECT message_id, sender_id, recipient_id, message_type,
                        payload, timestamp
@@ -655,7 +655,7 @@ class CCCommunicator:
 
     def acknowledge_message(self, message_id: str, acknowledger_id: str) -> bool:
         """Acknowledge receipt of a message"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             cursor = conn.execute(
                 """
                 UPDATE cc_messages
@@ -671,7 +671,7 @@ class CCCommunicator:
 
     def get_acknowledgment_status(self, message_id: str) -> Dict[str, Any]:
         """Get acknowledgment status of a message"""
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             cursor = conn.execute(
                 """
                 SELECT acknowledged, acknowledged_by, acknowledged_at
@@ -756,7 +756,7 @@ class MultiCCCoordinator:
         instance_info = {
             "hostname": config.get("hostname", f"claude-{uuid.uuid4().hex[:8]}"),
             "capabilities": self.capabilities,
-            "current_load": config.get("current_load", 0.0),
+            "current_load": config.get("current_load", 0),
             "max_capacity": config.get("max_capacity", 10),
         }
 

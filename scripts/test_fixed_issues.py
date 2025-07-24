@@ -37,12 +37,12 @@ async def test_fixed_japanese_search():
             
             print(f"✅ 日本語検索成功")
             print(f"   - 検索結果: {len(results)}件")
-            print(f"   - 実行時間: {(end_time - start_time):.3f}秒")
+            print(f"   - 実行時間: {(end_time - start_time):0.3f}秒")
             
             if results:
                 print("   - 検索結果例:")
                 for i, row in enumerate(results[:3], 1):
-                    print(f"     {i}. {row['title'][:50]}... (スコア: {row['search_score']:.3f})")
+                    print(f"     {i}. {row['title'][:50]}... (スコア: {row['search_score']:0.3f})")
             
             return True
             
@@ -148,12 +148,12 @@ async def test_fixed_semantic_search():
             
             print(f"✅ セマンティック検索成功")
             print(f"   - 検索結果: {len(results)}件")
-            print(f"   - 実行時間: {(end_time - start_time):.3f}秒")
+            print(f"   - 実行時間: {(end_time - start_time):0.3f}秒")
             
             if results:
                 print("   - 検索結果例:")
                 for i, row in enumerate(results[:3], 1):
-                    print(f"     {i}. {row['title'][:50]}... (類似度: {row['similarity']:.3f})")
+                    print(f"     {i}. {row['title'][:50]}... (類似度: {row['similarity']:0.3f})")
             
             return True
             
@@ -175,14 +175,14 @@ async def test_fixed_error_handling():
         await manager.connect()
         
         async with manager.pool.acquire() as conn:
-            # 1. 正常データの検証テスト
+            # 1.0 正常データの検証テスト
             validation_result = await conn.fetchrow("""
                 SELECT validate_knowledge_entity('正常タイトル', '正常コンテンツ', 0.8) as result
             """)
             
             print(f"✅ 正常データ検証: {validation_result['result']}")
             
-            # 2. 異常データの検証テスト
+            # 2.0 異常データの検証テスト
             invalid_tests = [
                 ("", "コンテンツ", 0.5, "空タイトル"),
                 ("タイトル", "", 0.5, "空コンテンツ"), 
@@ -199,7 +199,7 @@ async def test_fixed_error_handling():
                 status = "✅ エラー検出" if is_error else "❌ エラー未検出"
                 print(f"   {test_name}: {status}")
             
-            # 3. 安全挿入テスト
+            # 3.0 安全挿入テスト
             safe_result = await conn.fetchrow("""
                 SELECT * FROM knowledge_sage.safe_insert_entity(
                     gen_random_uuid(),
@@ -241,34 +241,34 @@ async def test_search_comparison():
             print(f"\n🔍 クエリ: '{query}'")
             
             async with manager.pool.acquire() as conn:
-                # 1. 従来の全文検索（エラーが発生する可能性）
+                # 1.0 従来の全文検索（エラーが発生する可能性）
                 try:
                     start_time = time.time()
                     old_results = await manager.full_text_search(query, max_results=5)
                     old_time = time.time() - start_time
-                    print(f"   従来検索: {len(old_results)}件 ({old_time:.3f}秒)")
+                    print(f"   従来検索: {len(old_results)}件 ({old_time:0.3f}秒)")
                 except Exception as e:
                     print(f"   従来検索: エラー ({str(e)[:50]}...)")
                 
-                # 2. 新しい日本語検索
+                # 2.0 新しい日本語検索
                 try:
                     start_time = time.time()
                     new_results = await conn.fetch("""
                         SELECT * FROM knowledge_sage.enhanced_japanese_search($1, 5, 0.1)
                     """, query)
                     new_time = time.time() - start_time
-                    print(f"   新日本語検索: {len(new_results)}件 ({new_time:.3f}秒)")
+                    print(f"   新日本語検索: {len(new_results)}件 ({new_time:0.3f}秒)")
                 except Exception as e:
                     print(f"   新日本語検索: エラー ({str(e)[:50]}...)")
                 
-                # 3. セマンティック検索
+                # 3.0 セマンティック検索
                 try:
                     start_time = time.time()
                     sem_results = await conn.fetch("""
                         SELECT * FROM knowledge_sage.mock_semantic_search_enhanced($1, 0.3, 5)
                     """, query)
                     sem_time = time.time() - start_time
-                    print(f"   セマンティック検索: {len(sem_results)}件 ({sem_time:.3f}秒)")
+                    print(f"   セマンティック検索: {len(sem_results)}件 ({sem_time:0.3f}秒)")
                 except Exception as e:
                     print(f"   セマンティック検索: エラー ({str(e)[:50]}...)")
         
@@ -317,7 +317,7 @@ async def main():
         }.get(test_name, test_name)
         print(f"- {test_display}: {status}")
     
-    print(f"\n📊 成功率: {success_count}/{total_count} ({(success_count/total_count*100):.1f}%)")
+    print(f"\n📊 成功率: {success_count}/{total_count} ({(success_count/total_count*100):0.1f}%)")
     
     if success_count == total_count:
         print("\n🎉 すべての修正項目が正常に動作しています！")

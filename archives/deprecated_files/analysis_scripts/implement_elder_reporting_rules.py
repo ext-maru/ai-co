@@ -182,19 +182,19 @@ class ElderReportingSystem:
 """
 
         if metrics.get("worker_health", 1.0) < 0.5:
-            report += f"- **ワーカー健全性**: {metrics['worker_health']:.1%} (閾値: 50%)\n"
+            report += f"- **ワーカー健全性**: {metrics['worker_health']:0.1%} (閾値: 50%)\n"
         if metrics.get("memory_usage", 0.0) > 0.95:
-            report += f"- **メモリ使用率**: {metrics['memory_usage']:.1%} (閾値: 95%)\n"
+            report += f"- **メモリ使用率**: {metrics['memory_usage']:0.1%} (閾値: 95%)\n"
         if metrics.get("error_rate", 0.0) > 0.2:
-            report += f"- **エラー率**: {metrics['error_rate']:.1%} (閾値: 20%)\n"
+            report += f"- **エラー率**: {metrics['error_rate']:0.1%} (閾値: 20%)\n"
 
         report += """
 ## 自動対応
 
 エルダー報告ルールv1.0に基づき、以下の自動対応を実行します：
-1. 影響を受けたワーカーの再起動
-2. リソースの最適化
-3. エラーログの詳細分析
+1.0 影響を受けたワーカーの再起動
+2.0 リソースの最適化
+3.0 エラーログの詳細分析
 
 ## 詳細メトリクス
 """
@@ -212,9 +212,9 @@ class ElderReportingSystem:
 **システム状態**: {self.system_state}
 
 ## サマリー
-- システムヘルススコア: {self._calculate_health_score(metrics):.1%}
-- ワーカー稼働率: {metrics.get('worker_health', 0):.1%}
-- エラー率: {metrics.get('error_rate', 0):.1%}
+- システムヘルススコア: {self._calculate_health_score(metrics):0.1%}
+- ワーカー稼働率: {metrics.get('worker_health', 0):0.1%}
+- エラー率: {metrics.get('error_rate', 0):0.1%}
 
 """
 
@@ -230,7 +230,7 @@ class ElderReportingSystem:
 **日付**: {timestamp.strftime('%Y年%m月%d日')}
 
 ## 24時間統計
-- 平均稼働率: {metrics.get('avg_health', 0):.1%}
+- 平均稼働率: {metrics.get('avg_health', 0):0.1%}
 - 総エラー数: {metrics.get('total_errors', 0)}
 - インシデント数: {metrics.get('incident_count', 0)}
 
@@ -258,7 +258,7 @@ class ElderReportingSystem:
 
 ## 学習成果
 - 新規パターン検出: {metrics.get('new_patterns', 0)}
-- 自動対応成功率: {metrics.get('auto_fix_rate', 0):.1%}
+- 自動対応成功率: {metrics.get('auto_fix_rate', 0):0.1%}
 """
         return report, "markdown+graph"
 

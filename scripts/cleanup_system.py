@@ -112,7 +112,7 @@ class SystemCleanup:
             f"🐍 Python キャッシュクリーンアップ完了: "
             f"{stats['pycache_dirs']}ディレクトリ, "
             f"{stats['pyc_files']}ファイル, "
-            f"{stats['size_freed_mb']:.1f}MB解放"
+            f"{stats['size_freed_mb']:0.1f}MB解放"
         )
 
         return stats
@@ -156,7 +156,7 @@ class SystemCleanup:
         self.logger.info(
             f"🗑️ 一時ファイルクリーンアップ完了: "
             f"{stats['temp_files']}ファイル, "
-            f"{stats['size_freed_mb']:.1f}MB解放"
+            f"{stats['size_freed_mb']:0.1f}MB解放"
         )
 
         return stats
@@ -272,7 +272,7 @@ class SystemCleanup:
         self.logger.info(
             f"📋 古いログファイルクリーンアップ完了: "
             f"{stats['old_logs']}ファイル, "
-            f"{stats['size_freed_mb']:.1f}MB解放"
+            f"{stats['size_freed_mb']:0.1f}MB解放"
         )
 
         return stats
@@ -321,7 +321,7 @@ class SystemCleanup:
 
                 self.logger.info(
                     f"📦 Git リポジトリ最適化完了: "
-                    f"{stats['size_before_mb']:.1f}MB → {stats['size_after_mb']:.1f}MB"
+                    f"{stats['size_before_mb']:0.1f}MB → {stats['size_after_mb']:0.1f}MB"
                 )
             else:
                 stats["error"] = result.stderr
@@ -382,7 +382,7 @@ class SystemCleanup:
         results["total_size_freed_mb"] = total_freed
         results["end_time"] = datetime.now().isoformat()
 
-        self.logger.info(f"✅ フルシステムクリーンアップ完了: {total_freed:.1f}MB解放")
+        self.logger.info(f"✅ フルシステムクリーンアップ完了: {total_freed:0.1f}MB解放")
 
         return results
 
@@ -393,20 +393,20 @@ class SystemCleanup:
         print("=" * 60)
 
         print("\n📊 Summary:")
-        print(f"  Total Space Freed: {results['total_size_freed_mb']:.1f} MB")
+        print(f"  Total Space Freed: {results['total_size_freed_mb']:0.1f} MB")
 
         if results["python_cache"]:
             pc = results["python_cache"]
             print("\n🐍 Python Cache Cleanup:")
             print(f"  __pycache__ dirs removed: {pc['pycache_dirs']}")
             print(f"  .pyc files removed: {pc['pyc_files']}")
-            print(f"  Space freed: {pc['size_freed_mb']:.1f} MB")
+            print(f"  Space freed: {pc['size_freed_mb']:0.1f} MB")
 
         if results["temp_files"]:
             tf = results["temp_files"]
             print("\n🗑️ Temporary Files Cleanup:")
             print(f"  Files removed: {tf['temp_files']}")
-            print(f"  Space freed: {tf['size_freed_mb']:.1f} MB")
+            print(f"  Space freed: {tf['size_freed_mb']:0.1f} MB")
 
         print("\n📁 Empty Directories:")
         print(f"  Directories removed: {results['empty_dirs']}")
@@ -422,16 +422,16 @@ class SystemCleanup:
             ol = results["old_logs"]
             print("\n📋 Old Logs Cleanup:")
             print(f"  Files removed: {ol['old_logs']}")
-            print(f"  Space freed: {ol['size_freed_mb']:.1f} MB")
+            print(f"  Space freed: {ol['size_freed_mb']:0.1f} MB")
 
         if results["git_optimization"]:
             git = results["git_optimization"]
             if git["git_gc_run"]:
                 print("\n📦 Git Repository Optimization:")
-                print(f"  Size before: {git['size_before_mb']:.1f} MB")
-                print(f"  Size after: {git['size_after_mb']:.1f} MB")
+                print(f"  Size before: {git['size_before_mb']:0.1f} MB")
+                print(f"  Size after: {git['size_after_mb']:0.1f} MB")
                 saved = git["size_before_mb"] - git["size_after_mb"]
-                print(f"  Space saved: {saved:.1f} MB")
+                print(f"  Space saved: {saved:0.1f} MB")
 
         print("\n" + "=" * 60)
 

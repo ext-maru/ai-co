@@ -151,7 +151,7 @@ class ParallelExecutionManager(BaseManager):
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 実行グループテーブル
             conn.execute(
                 """
@@ -296,7 +296,7 @@ class ParallelExecutionManager(BaseManager):
             )
 
             # データベースに保存
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO execution_groups
@@ -350,7 +350,7 @@ class ParallelExecutionManager(BaseManager):
 
             # 実行開始時刻を記録
             start_time = datetime.now()
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     UPDATE execution_groups
@@ -574,7 +574,7 @@ class ParallelExecutionManager(BaseManager):
             # データベースに記録
             self._save_execution_result(result)
 
-            logger.info(f"✅ タスク実行完了: {task.id} ({duration:.1f}秒)")
+            logger.info(f"✅ タスク実行完了: {task.id} ({duration:0.1f}秒)")
             return result
 
         except Exception as e:
@@ -740,7 +740,7 @@ class ParallelExecutionManager(BaseManager):
     def _save_execution_result(self, result: ExecutionResult):
         """実行結果をデータベースに保存"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO execution_history
@@ -783,7 +783,7 @@ class ParallelExecutionManager(BaseManager):
             )
 
             # データベース更新
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     UPDATE execution_groups
@@ -797,7 +797,7 @@ class ParallelExecutionManager(BaseManager):
             self.execution_stats["parallel_groups"] += 1
 
             logger.info(
-                f"📊 グループ実行完了: {group_id} ({duration:.1f}秒, " \
+                f"📊 グループ実行完了: {group_id} ({duration:0.1f}秒, " \
                     "成功{len(results)-failed_count}/{len(results)})"
             )
 
@@ -822,7 +822,7 @@ class ParallelExecutionManager(BaseManager):
             self.execution_stats["avg_execution_time"] = avg_duration
 
             # データベースに保存
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO execution_statistics
@@ -844,7 +844,7 @@ class ParallelExecutionManager(BaseManager):
     def get_execution_status(self, group_id: str) -> Dict[str, Any]:
         """実行状態取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # グループ情報取得
                 cursor = conn.execute(
                     """
@@ -1012,7 +1012,7 @@ if __name__ == "__main__":
     for resource, usage in resource_usage["current_usage"].items():
         limit = resource_usage["limits"][resource]
         utilization = resource_usage["utilization"][resource]
-        print(f"  {resource}: {usage:.1f}/{limit:.1f} ({utilization:.1f}%)")
+        print(f"  {resource}: {usage:0.1f}/{limit:0.1f} ({utilization:0.1f}%)")
 
     # 並列実行テスト
     print(f"\n🚀 並列実行テスト開始")
@@ -1030,7 +1030,7 @@ if __name__ == "__main__":
         print(f"  タスク詳細:")
         for task in status["tasks"]:
             print(
-                f"    {task['task_id']}: {task['status']} ({task.get('duration', 0):.1f}秒)"
+                f"    {task['task_id']}: {task['status']} ({task.get('duration', 0):0.1f}秒)"
             )
 
     # 統計情報
@@ -1040,7 +1040,7 @@ if __name__ == "__main__":
     print(f"  完了タスク数: {stats['completed_tasks']}")
     print(f"  失敗タスク数: {stats['failed_tasks']}")
     print(f"  並列グループ数: {stats['parallel_groups']}")
-    print(f"  平均実行時間: {stats['avg_execution_time']:.1f}秒")
+    print(f"  平均実行時間: {stats['avg_execution_time']:0.1f}秒")
 
     # シャットダウン
     manager.shutdown()

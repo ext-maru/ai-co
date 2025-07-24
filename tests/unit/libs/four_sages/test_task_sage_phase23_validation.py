@@ -32,8 +32,8 @@ async def validate_task_sage():
         print(f"❌ インスタンス作成エラー: {e}")
         return
     
-    # 1. 機能確認
-    print("\n1. 実装機能の確認:")
+    # 1.0 機能確認
+    print("\n1.0 実装機能の確認:")
     features = {
         "基本Task Sage": hasattr(sage, 'task_repository'),
         "動的優先度エンジン": hasattr(sage, 'priority_engine'),
@@ -47,8 +47,8 @@ async def validate_task_sage():
         status = "✅" if exists else "❌"
         print(f"  {status} {feature}")
     
-    # 2. テストタスク作成
-    print("\n2. テストタスク作成:")
+    # 2.0 テストタスク作成
+    print("\n2.0 テストタスク作成:")
     test_task = {
         "type": "create_task",
         "title": "Phase 23 検証タスク",
@@ -70,8 +70,8 @@ async def validate_task_sage():
         print(f"  ❌ エラー発生: {e}")
         return
     
-    # 3. 動的優先度計算
-    print("\n3. 動的優先度計算テスト:")
+    # 3.0 動的優先度計算
+    print("\n3.0 動的優先度計算テスト:")
     try:
         predict_result = await sage.process_request({
             "type": "predict_completion",
@@ -88,8 +88,8 @@ async def validate_task_sage():
     except Exception as e:
         print(f"  ❌ エラー発生: {e}")
     
-    # 4. リソース分析
-    print("\n4. リソース分析テスト:")
+    # 4.0 リソース分析
+    print("\n4.0 リソース分析テスト:")
     try:
         resource_result = await sage.process_request({
             "type": "analyze_resources"
@@ -106,8 +106,8 @@ async def validate_task_sage():
     except Exception as e:
         print(f"  ❌ エラー発生: {e}")
     
-    # 5. 能力一覧
-    print("\n5. Task Sage 能力一覧:")
+    # 5.0 能力一覧
+    print("\n5.0 Task Sage 能力一覧:")
     try:
         capabilities = await sage.get_capabilities()
         print(f"  ✅ 総能力数: {len(capabilities)}")

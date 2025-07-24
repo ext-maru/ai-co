@@ -91,9 +91,8 @@ class UTTCRUDManager(EldersServiceLegacy):
     TDD準拠・Iron Will品質基準・Elder統合対応
     """
 
-    def __init__(self, database_url:
+    def __init__(self, database_url: str = "sqlite:///utt_crud.db"):
         """初期化メソッド"""
-    str = "sqlite:///utt_crud.db"):
         super().__init__()
         self.engine = create_engine(database_url, echo=False)
         Base.metadata.create_all(self.engine)
@@ -1228,6 +1227,7 @@ class UTTCRUDManager(EldersServiceLegacy):
 
 # 実行時テスト
 if __name__ == "__main__":
+    pass
 
     async def test_crud_basic():
         """CRUD基本動作テスト"""

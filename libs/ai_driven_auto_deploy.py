@@ -188,7 +188,7 @@ class AIDeploymentPlanner:
             base_demand * time_multiplier * env_multiplier * app_multiplier
         )
 
-        self.logger.info(f"📈 Predicted demand: {predicted_demand:.2f}")
+        self.logger.info(f"📈 Predicted demand: {predicted_demand:0.2f}")
         return min(10.0, predicted_demand)
 
     async def _assess_deployment_risk(
@@ -219,7 +219,7 @@ class AIDeploymentPlanner:
         # 総合リスクスコア計算
         total_risk = sum(weight for _, weight in risk_factors) / len(risk_factors)
 
-        self.logger.info(f"⚠️ Risk assessment: {total_risk:.2f}")
+        self.logger.info(f"⚠️ Risk assessment: {total_risk:0.2f}")
         return min(1.0, total_risk)
 
     async def _select_optimal_strategy(
@@ -812,7 +812,7 @@ async def demo_ai_auto_deploy():
                 progress = deployment["progress"]
                 phase = deployment["current_phase"]
 
-                print(f"  📦 {exec_id[:12]}... - {status} ({progress:.1f}%) - {phase}")
+                print(f"  📦 {exec_id[:12]}... - {status} ({progress:0.1f}%) - {phase}")
 
                 if status in ["completed", "failed"]:
                     print(f"    📋 Final metrics: {deployment.get('metrics', {})}")

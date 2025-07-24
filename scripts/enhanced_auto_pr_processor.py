@@ -57,7 +57,7 @@ async def main():
         logger.info(f"  処理済みIssue数: {metrics['metrics']['processed_issues']}")
         logger.info(f"  成功PR数: {metrics['metrics']['successful_prs']}")
         logger.info(f"  失敗数: {metrics['metrics']['failed_attempts']}")
-        logger.info(f"  成功率: {metrics['success_rate']:.1f}%")
+        logger.info(f"  成功率: {metrics['success_rate']:0.1f}%")
 
         logger.info("✅ Enhanced Auto PR Processor 完了")
         return True

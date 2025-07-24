@@ -14,9 +14,9 @@ from unittest.mock import patch, Mock
 
 from libs.elder_servants.dwarf_workshop.container_crafter import (
     ContainerCrafter,
-    ContainerSpec,
-    ImageSpec,
-    KubernetesSpec
+    ContainerMetrics,
+    BuildResult,
+    DeploymentResult
 )
 from libs.elder_servants.base.elder_servant import (
     ServantRequest,

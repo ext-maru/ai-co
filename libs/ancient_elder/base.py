@@ -83,9 +83,8 @@ class AuditResult:
 class AncientElderBase(BaseSoul, ABC):
     """すべてのエンシェントエルダーの基底クラス"""
     
-    def __init__(self, specialty:
+    def __init__(self, specialty: str):
         """初期化メソッド"""
-    str):
         # SoulIdentityを作成
         identity = SoulIdentity(
             soul_id=f"ancient_elder_{specialty.lower()}_{datetime.now().strftime('%Y%m%d%H%M%S')}",

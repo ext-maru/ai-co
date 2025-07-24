@@ -319,7 +319,7 @@ class TestEndToEnd(unittest.TestCase):
         """完全なワークフローテスト"""
         print("\n🔍 === エンドツーエンドテスト開始 ===")
 
-        # 1. 複雑度評価
+        # 1.0 複雑度評価
         print("1️⃣ 複雑度評価テスト...")
         evaluator = ComplexityEvaluator()
 
@@ -338,10 +338,10 @@ class TestEndToEnd(unittest.TestCase):
             issue.labels = []
 
             score = loop.run_until_complete(evaluator.evaluate(issue))
-            print(f"   - '{title}': スコア={score.score:.2f}, 処理可能={score.is_processable}")
+            print(f"   - '{title}': スコア={score.score:0.2f}, 処理可能={score.is_processable}")
             self.assertEqual(score.is_processable, should_process)
 
-        # 2. 処理制限
+        # 2.0 処理制限
         print("\n2️⃣ 処理制限テスト...")
         limiter = ProcessingLimiter()
         limiter.processing_log_file = Path("logs/test_e2e_processing.json")

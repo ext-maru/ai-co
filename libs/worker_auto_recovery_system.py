@@ -94,7 +94,7 @@ class AbstractMethodValidator:
         """データベース初期化"""
         self.violations_db.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(str(self.violations_db)) as conn:
+        with sqlite3connect(str(self.violations_db)) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS violations (
@@ -432,7 +432,7 @@ class AbstractMethodValidator:
     def _save_scan_results(self, results: Dict[str, Any]) -> None:
         """スキャン結果をデータベースに保存"""
         try:
-            with sqlite3.connect(str(self.violations_db)) as conn:
+            with sqlite3connect(str(self.violations_db)) as conn:
                 # スキャン履歴を保存
                 conn.execute(
                     """
@@ -471,7 +471,7 @@ class AbstractMethodValidator:
     def _mark_violation_fixed(self, violation: ValidationResult) -> None:
         """違反修正をマーク"""
         try:
-            with sqlite3.connect(str(self.violations_db)) as conn:
+            with sqlite3connect(str(self.violations_db)) as conn:
                 conn.execute(
                     """
                     UPDATE violations
@@ -517,7 +517,7 @@ class EmergencyRecoveryScript:
         """データベース初期化"""
         self.recovery_db.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(str(self.recovery_db)) as conn:
+        with sqlite3connect(str(self.recovery_db)) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS recovery_events (
@@ -547,7 +547,7 @@ class EmergencyRecoveryScript:
                 return failed_workers
 
             # Pythonワーカープロセスを検索
-            worker_patterns = [r"python3.*worker.*\.py", r"python.*worker.*\.py"]
+            worker_patterns = [r"python3.0*worker.*\.py", r"python.*worker.*\.py"]
 
             running_workers = set()
             for line in result.stdout.split("\n"):
@@ -660,11 +660,11 @@ class EmergencyRecoveryScript:
         }
 
         try:
-            # 1. 停止ワーカーの検出
+            # 1.0 停止ワーカーの検出
             failed_workers = self.detect_failed_workers()
             result["detected_failures"] = failed_workers
 
-            # 2. ワーカーの再起動
+            # 2.0 ワーカーの再起動
             for worker in failed_workers:
                 restart_result = self.restart_worker(worker)
 
@@ -673,7 +673,7 @@ class EmergencyRecoveryScript:
                 else:
                     result["failed_restarts"].append(restart_result)
 
-            # 3. アラート送信
+            # 3.0 アラート送信
             if failed_workers:
                 alert_result = self.send_emergency_alert(
                     {
@@ -685,7 +685,7 @@ class EmergencyRecoveryScript:
                 )
                 result["alerts_sent"].append(alert_result)
 
-            # 4. 結果判定
+            # 4.0 結果判定
             result["success"] = len(result["failed_restarts"]) == 0
 
         except Exception as e:
@@ -736,7 +736,7 @@ class EmergencyRecoveryScript:
     def _save_recovery_event(self, event_data: Dict[str, Any]) -> None:
         """復旧イベントを保存"""
         try:
-            with sqlite3.connect(str(self.recovery_db)) as conn:
+            with sqlite3connect(str(self.recovery_db)) as conn:
                 conn.execute(
                     """
                     INSERT INTO recovery_events
@@ -949,7 +949,7 @@ class WorkerHealthMonitor:
                             "worker": worker["name"],
                             "value": worker["memory_mb"],
                             "severity": "warning",
-                            "description": f"Worker {worker['name']} high memory: {worker['memory_mb']:.1f}MB",
+                            "description": f"Worker {worker['name']} high memory: {worker['memory_mb']:0.1f}MB",
                         }
                     )
 

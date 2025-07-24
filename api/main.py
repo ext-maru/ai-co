@@ -340,7 +340,7 @@ async def execute_documentation_generation(project_id: str, include_similar: boo
     try:
         documentation = await portal.generate_project_documentation(project_id)
         if documentation:
-            logger.info(f"資料生成完了: {project_id} (品質: {documentation.quality_score:.2f})")
+            logger.info(f"資料生成完了: {project_id} (品質: {documentation.quality_score:0.2f})")
         else:
             logger.warning(f"資料生成失敗: {project_id}")
     except Exception as e:
@@ -532,9 +532,8 @@ async def internal_error_handler(request, exc):
 
 # 起動時イベント
 @app.on_event("startup")
-async def startup_event():
-    """起動時初期化"""
-    logger.info("🚀 Project Web Portal API 起動中...")
+async def startup_event()logger.info("🚀 Project Web Portal API 起動中...")
+"""起動時初期化"""
 
     # データベース初期化確認
     try:
@@ -548,9 +547,8 @@ async def startup_event():
 
 # 終了時イベント
 @app.on_event("shutdown")
-async def shutdown_event():
-    """終了時クリーンアップ"""
-    logger.info("🔽 Project Web Portal API 終了中...")
+async def shutdown_event()logger.info("🔽 Project Web Portal API 終了中...")
+"""終了時クリーンアップ"""
     # クリーンアップ処理
     logger.info("✅ Project Web Portal API 終了完了")
 

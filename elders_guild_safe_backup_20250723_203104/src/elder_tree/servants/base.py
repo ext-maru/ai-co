@@ -19,6 +19,7 @@ from datetime import datetime
 
 
 class ServantCapability(Enum):
+    pass
 
 
 """サーバントの能力定義"""
@@ -30,6 +31,7 @@ class ServantCapability(Enum):
 
 
 class BaseServant(ABC):
+    pass
 
     """
     すべてのサーバントの基底クラス
@@ -78,6 +80,7 @@ class BaseServant(ABC):
         return True
         
     def get_required_fields(self) -> List[str]:
+        pass
 
                 """必須フィールドを取得（サブクラスでオーバーライド可能）""" str, data: Dict[str, Any]) -> Dict[str, Any]:
         """賢者に報告"""
@@ -109,6 +112,7 @@ class BaseServant(ABC):
         return capability in self.capabilities
         
     def get_status(self) -> Dict[str, Any]:
+        pass
 
         """現在のステータスを取得""" self.servant_id,
             "name": self.name,
@@ -120,6 +124,7 @@ class BaseServant(ABC):
 
 
 class DwarfServant(BaseServant):
+    pass
 
         """ドワーフ工房のサーバント基底クラス""" str, name: str, specialization: str):
         super().__init__(servant_id, name, ServantType.DWARF)
@@ -131,9 +136,8 @@ class DwarfServant(BaseServant):
             ServantCapability.QUALITY_ANALYSIS
         ])
         
-    async def execute_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
-        """ドワーフタスクの実行"""
-        if not await self.validate_input(task_data):
+    async def execute_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]if not await self.validate_input(task_data):
+    """ドワーフタスクの実行"""
             return {"success": False, "error": "Invalid input"}
             
         try:
@@ -177,6 +181,7 @@ class DwarfServant(BaseServant):
 
 
 class WizardServant(BaseServant):
+    pass
 
             """RAGウィザーズのサーバント基底クラス""" str, name: str, research_area: str):
         super().__init__(servant_id, name, ServantType.WIZARD)
@@ -195,6 +200,7 @@ class WizardServant(BaseServant):
 
 
 class ElfServant(BaseServant):
+    pass
 
         """エルフの森のサーバント基底クラス""" str, name: str, monitoring_domain: str):
         super().__init__(servant_id, name, ServantType.ELF)
@@ -213,6 +219,7 @@ class ElfServant(BaseServant):
 
 
 class KnightServant(BaseServant):
+    pass
 
         """インシデント騎士団のサーバント基底クラス""" str, name: str, incident_type: str):
         super().__init__(servant_id, name, ServantType.KNIGHT)

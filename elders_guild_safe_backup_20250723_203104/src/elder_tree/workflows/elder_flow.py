@@ -20,6 +20,7 @@ from sqlmodel import SQLModel, Field as SQLField, Session, create_engine, select
 
 
 class StageStatus(str, Enum):
+    pass
 
 
 """Stageステータス"""
@@ -44,6 +45,7 @@ class StageStatus(str, Enum):
 
 @dataclass
 class ElderFlowResult:
+    pass
 
             """Elder Flow実行結果""" str
     status: str
@@ -56,6 +58,7 @@ class ElderFlowResult:
         return sum(1 for stage in self.stages if stage.completed)
     
     def to_dict(self) -> Dict[str, Any]:
+        pass
 
         """辞書形式に変換""" self.flow_id,
             "status": self.status,
@@ -77,6 +80,7 @@ class ElderFlowResult:
 
 # SQLModel FlowRecord定義
 class FlowRecord(SQLModel, table=True):
+    pass
 
         """Elder Flow実行記録""" Optional[int] = SQLField(default=None, primary_key=True)
     flow_id: str = SQLField(index=True, unique=True)
@@ -92,17 +96,18 @@ class FlowRecord(SQLModel, table=True):
 
 @agent(name="ElderFlow", description="Elder Tree 5-stage automation workflow")
 class ElderFlow(A2AServer):
+    pass
 
 
 
 """
     Elder Flow - 5段階自動化ワークフロー
     
-    1. 賢者協議 (Sage Consultation)
-    2. サーバント実行 (Servant Execution)
-    3. 品質ゲート (Quality Gate)
-    4. 評議会報告 (Council Report)
-    5. Git自動化 (Git Automation)
+    1.0 賢者協議 (Sage Consultation)
+    2.0 サーバント実行 (Servant Execution)
+    3.0 品質ゲート (Quality Gate)
+    4.0 評議会報告 (Council Report)
+    5.0 Git自動化 (Git Automation)
     """ str = "sqlite:///elder_flow.db",
                  redis_url: str = "redis://localhost:6379",
                  port: int = 50100):
@@ -147,6 +152,7 @@ class ElderFlow(A2AServer):
         self._register_handlers()
     
     async def start(self):
+        pass
 
         """起動時処理"""
         """停止時処理"""
@@ -155,6 +161,7 @@ class ElderFlow(A2AServer):
         await super().stop()
     
     def _register_handlers(self):
+        pass
 
             """Elder Flowハンドラー登録""" Message) -> Dict[str, Any]:
             """
@@ -500,9 +507,8 @@ class ElderFlow(A2AServer):
         # デフォルト
         return "code_crafter"
     
-    async def _quality_gate(self, execution_result: Dict[str, Any]) -> Dict[str, Any]:
-        """ステージ3: 品質ゲート"""
-        self.logger.info("Stage 3: Quality Gate")
+    async def _quality_gate(self, execution_result: Dict[str, Any]) -> Dict[str, Any]self.logger.info("Stage 3: Quality Gate")
+    """ステージ3: 品質ゲート"""
         
         quality_score = execution_result.get("quality", {}).get("score", 0)
         quality_passed = execution_result.get("quality", {}).get("passed", False)

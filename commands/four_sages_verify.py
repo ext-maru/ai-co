@@ -526,9 +526,9 @@ class FourSagesVerifyCommand(BaseCommand):
     def generate_decision_reason(self, approved: bool, score: float) -> str:
         """判定理由の生成"""
         if approved:
-            return f"4賢者の総合評価が承認基準（{score:.1%}）を満たしています"
+            return f"4賢者の総合評価が承認基準（{score:0.1%}）を満たしています"
         else:
-            return f"4賢者の総合評価が承認基準（{score:.1%}）を下回っています"
+            return f"4賢者の総合評価が承認基準（{score:0.1%}）を下回っています"
 
     def generate_next_steps(self, approved: bool, verification_result: Dict[str, Any]) -> List[str]:
         """次のステップの生成"""
@@ -550,7 +550,7 @@ class FourSagesVerifyCommand(BaseCommand):
         self.info("🧙‍♂️ 4賢者の検証結果:")
         for sage_id, verification in sage_verifications.items():
             self.info(f"  {verification['name']}:")
-            self.info(f"    📊 スコア: {verification['score']:.1%}")
+            self.info(f"    📊 スコア: {verification['score']:0.1%}")
 
             if verification["recommendations"]:
                 self.info("    💡 推奨事項:")
@@ -567,9 +567,9 @@ class FourSagesVerifyCommand(BaseCommand):
 
         # 総合評価
         self.info("📊 総合評価:")
-        self.info(f"  📈 総合スコア: {verification_result['average_score']:.1%}")
+        self.info(f"  📈 総合スコア: {verification_result['average_score']:0.1%}")
         self.info(f"  🎯 準備度: {verification_result['readiness_level']}")
-        self.info(f"  ✅ 承認基準: {verification_result['approval_threshold']:.1%}")
+        self.info(f"  ✅ 承認基準: {verification_result['approval_threshold']:0.1%}")
 
     def display_approval_decision(self, approval_decision: Dict[str, Any]):
         """承認判定の表示"""

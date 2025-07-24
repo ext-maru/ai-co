@@ -199,9 +199,8 @@ class ElderCouncilReport:
 # Council Reporter System
 class ElderCouncilReporter:
     """ElderCouncilReporter - エルダーズギルド関連クラス"""
-    def __init__(self, reports_dir:
+    def __init__(self, reports_dir: str = "knowledge_base/council_reports"):
         """初期化メソッド"""
-    str = "knowledge_base/council_reports"):
         self.reports_dir = Path(reports_dir)
         self.reports_dir.mkdir(parents=True, exist_ok=True)
 
@@ -346,14 +345,14 @@ class ElderCouncilReporter:
         )
         overall_score = quality_results.get("summary", {}).get("overall_score", 0)
 
-        report.summary = f"Quality assessment completed with status: {overall_status} (Score: {overall_score:.2f}/10)"
+        report.summary = f"Quality assessment completed with status: {overall_status} (Score: {overall_score:0.2f}/10)"
 
         # 概要セクション
         summary_data = quality_results.get("summary", {})
         report.add_section(
             "Assessment Summary",
             f"Overall Status: {overall_status}\n"
-            f"Overall Score: {overall_score:.2f}/10\n"
+            f"Overall Score: {overall_score:0.2f}/10\n"
             f"Total Checks: {summary_data.get('total_checks', 0)}\n"
             f"Passed Checks: {summary_data.get('passed_checks', 0)}\n"
             f"Failed Checks: {summary_data.get('failed_checks', 0)}\n"
@@ -370,7 +369,7 @@ class ElderCouncilReporter:
             report.add_section(
                 f"{check_type.replace('_', ' ').title()} Check",
                 f"Status: {status}\n"
-                f"Score: {score:.2f}/10\n"
+                f"Score: {score:0.2f}/10\n"
                 f"Passed Metrics: {check_result.get('passed_count', 0)}\n"
                 f"Failed Metrics: {check_result.get('failed_count', 0)}\n"
                 f"Issues: {len(check_result.get('issues', []))}",
@@ -703,6 +702,7 @@ def save_report(report_id: str) -> bool:
 
 # Example usage
 if __name__ == "__main__":
+    pass
 
     def main():
         """mainメソッド"""

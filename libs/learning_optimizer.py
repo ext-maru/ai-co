@@ -100,7 +100,7 @@ class LearningOptimizer(BaseManager):
         """学習データベースの初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 戦略実行履歴
             conn.execute(
                 """
@@ -193,7 +193,7 @@ class LearningOptimizer(BaseManager):
         # リソース使用量を推定
         resource_usage = self._estimate_resource_usage(execution_result)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO strategy_executions
@@ -230,7 +230,7 @@ class LearningOptimizer(BaseManager):
             return self.performance_cache[cache_key]
 
         # 学習済み戦略を取得
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT strategy_definition, context_patterns, effectiveness_score
@@ -283,7 +283,7 @@ class LearningOptimizer(BaseManager):
         }
 
         # エラータイプ別に最適化
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute("SELECT DISTINCT error_type FROM strategy_executions")
             error_types = [row[0] for row in cursor]
 
@@ -704,7 +704,7 @@ class LearningOptimizer(BaseManager):
 
     def _should_trigger_learning(self, error_type: str) -> bool:
         """学習をトリガーすべきか判断"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT COUNT(*) FROM strategy_executions
@@ -765,7 +765,7 @@ class LearningOptimizer(BaseManager):
 
     def _get_recent_executions(self, error_type: str, limit: int = 100) -> List[Dict]:
         """最近の実行履歴を取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT * FROM strategy_executions
@@ -781,7 +781,7 @@ class LearningOptimizer(BaseManager):
 
     def _get_current_best_strategy(self, error_type: str) -> Optional[Dict]:
         """現在の最良戦略を取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT strategy_definition FROM learned_strategies
@@ -828,7 +828,7 @@ class LearningOptimizer(BaseManager):
         """最適化された戦略を保存"""
         strategy_id = f"opt_{error_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 既存の戦略を更新または新規作成
             conn.execute(
                 """
@@ -882,7 +882,7 @@ class LearningOptimizer(BaseManager):
     def provide_feedback(self, incident_id: str, result: Dict):
         """修復結果のフィードバックを提供"""
         # フィードバックを記録
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO healing_feedback
@@ -917,7 +917,7 @@ class LearningOptimizer(BaseManager):
 
     def get_statistics(self) -> Dict:
         """統計情報を取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # 基本統計
             cursor = conn.execute(
                 """
@@ -967,7 +967,7 @@ class LearningOptimizer(BaseManager):
         """上位戦略を取得"""
         strategies = []
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT strategy_definition FROM learned_strategies

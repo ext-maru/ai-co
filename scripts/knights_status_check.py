@@ -29,7 +29,7 @@ def check_knights_status():
         "overall_status": "unknown",
     }
 
-    # 1. 騎士団ファイルの存在確認
+    # 1.0 騎士団ファイルの存在確認
     print("📁 騎士団ファイル確認...")
 
     required_files = [
@@ -56,7 +56,7 @@ def check_knights_status():
     else:
         print(f"📦 フレームワーク: ❌ {file_count}/{len(required_files)} 不完全")
 
-    # 2. 騎士団プロセスの確認
+    # 2.0 騎士団プロセスの確認
     print("\n🔍 プロセス稼働状況...")
 
     knight_processes = []
@@ -86,7 +86,7 @@ def check_knights_status():
     except Exception as e:
         print(f"❌ プロセス確認エラー: {e}")
 
-    # 3. 修復能力のテスト
+    # 3.0 修復能力のテスト
     print("\n🧪 修復能力テスト...")
 
     try:
@@ -122,7 +122,7 @@ def check_knights_status():
     except Exception as e:
         print(f"❌ 修復能力テストエラー: {e}")
 
-    # 4. 配置状況の確認
+    # 4.0 配置状況の確認
     print("\n📊 配置状況...")
 
     deployment_files = [
@@ -145,7 +145,7 @@ def check_knights_status():
     else:
         print(f"🚀 配置状況: ❌ 未展開")
 
-    # 5. 総合判定
+    # 5.0 総合判定
     print("\n🎯 総合判定...")
 
     scores = [
@@ -169,7 +169,7 @@ def check_knights_status():
         status["overall_status"] = "not_operational"
         print("🛡️ 騎士団状態: ❌ 非稼働")
 
-    # 6. 推奨アクション
+    # 6.0 推奨アクション
     print("\n💡 推奨アクション...")
 
     if not status["processes_running"]:

@@ -256,10 +256,10 @@ maru様の意図を理解するためのコアシステム実装
         print()
 
     print("🎯 次のステップ:")
-    print("1. タスクエルダーによる実装開始")
-    print("2. 4賢者による品質監視")
-    print("3. 段階的統合テスト")
-    print("4. nWo戦略目標達成")
+    print("1.0 タスクエルダーによる実装開始")
+    print("2.0 4賢者による品質監視")
+    print("3.0 段階的統合テスト")
+    print("4.0 nWo戦略目標達成")
 
 
 async def main():

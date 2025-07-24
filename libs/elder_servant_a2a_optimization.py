@@ -383,9 +383,8 @@ class CircuitBreaker:
 class ElderServantOptimizer:
     """エルダーサーバント通信最適化管理"""
 
-    def __init__(self, elder_client:
+    def __init__(self, elder_client: A2AClient, policy: CommunicationPolicy = None):
         """初期化メソッド"""
-    A2AClient, policy: CommunicationPolicy = None):
         self.elder_client = elder_client
         self.policy = policy or CommunicationPolicy()
         self.registry = ElderServantRegistry()
@@ -653,14 +652,14 @@ class ElderServantOptimizer:
             servant_metrics[servant_id] = {
                 "status": metrics.status.value,
                 "load": f"{metrics.current_load}/{metrics.max_capacity}",
-                "response_time": f"{metrics.average_response_time:.3f}s",
-                "error_rate": f"{metrics.error_rate:.2%}",
+                "response_time": f"{metrics.average_response_time:0.3f}s",
+                "error_rate": f"{metrics.error_rate:0.2%}",
             }
 
         return {
             "total_messages": self.total_messages,
-            "success_rate": f"{success_rate:.2%}",
-            "average_latency": f"{self.average_latency:.3f}s",
+            "success_rate": f"{success_rate:0.2%}",
+            "average_latency": f"{self.average_latency:0.3f}s",
             "optimization_enabled": self.optimization_enabled,
             "load_balancing_strategy": self.load_balancer.strategy.value,
             "circuit_breaker_states": dict(self.circuit_breaker.circuit_states),
@@ -697,7 +696,7 @@ async def example_elder_servant_optimization():
 
         # 最適化された通信例
 
-        # 1. 高優先度タスク（最適なサーバント選択）
+        # 1.0 高優先度タスク（最適なサーバント選択）
         result1 = await optimizer.send_optimized_message(
             capability="task_execution",
             message_type=MessageType.TASK_ASSIGNMENT,
@@ -707,7 +706,7 @@ async def example_elder_servant_optimization():
         )
         print(f"Critical task result: {result1}")
 
-        # 2. バッチ処理（複数の低優先度タスク）
+        # 2.0 バッチ処理（複数の低優先度タスク）
         for i in range(5):
             await optimizer.send_optimized_message(
                 capability="data_processing",
@@ -718,7 +717,7 @@ async def example_elder_servant_optimization():
                 use_batching=True,
             )
 
-        # 3. 監視データ収集
+        # 3.0 監視データ収集
         health_result = await optimizer.send_optimized_message(
             capability="monitoring",
             message_type=MessageType.HEALTH_CHECK,

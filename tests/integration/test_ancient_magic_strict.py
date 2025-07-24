@@ -295,7 +295,7 @@ def こんにちは():
         # 同じキーに対して並行書き込み
         async def write_cache(value):
             cache.set("test", {"path": "."}, {"value": value})
-            await asyncio.sleep(0.001)  # わずかな遅延
+            await asyncio.sleep(0.01)  # わずかな遅延
             return cache.get("test", {"path": "."})
         
         # 10個の並行タスク

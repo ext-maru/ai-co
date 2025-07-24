@@ -158,9 +158,8 @@ class UnifiedEntityManager:
             logger.error(f"Database initialization failed: {e}")
             raise
 
-    def _create_basic_schema(self):
-        """基本スキーマ作成（スキーマファイルが無い場合）"""
-        with self._get_connection() as conn:
+    def _create_basic_schema(self)with self._get_connection() as conn:
+    """基本スキーマ作成（スキーマファイルが無い場合）"""
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS unified_entities (
@@ -183,10 +182,9 @@ class UnifiedEntityManager:
             conn.commit()
 
     @contextmanager
-    def _get_connection(self):
-        """データベース接続コンテキストマネージャー"""
-        conn = sqlite3.connect(self.db_path, timeout=30.0)
-        conn.row_factory = sqlite3.Row
+    def _get_connection(self)conn = sqlite3connect(self.db_path, timeout=30.0)
+    """データベース接続コンテキストマネージャー"""
+        conn.row_factory = sqlite3Row
         try:
             yield conn
         except Exception as e:
@@ -601,7 +599,7 @@ class UnifiedEntityManager:
     # ユーティリティメソッド
     # ============================================
 
-    def _row_to_entity(self, row: sqlite3.Row) -> BaseEntity:
+    def _row_to_entity(self, row: sqlite3Row) -> BaseEntity:
         """データベース行をエンティティオブジェクトに変換"""
         # 基本データの解析
         metadata = json.loads(row["metadata"]) if row["metadata"] else {}

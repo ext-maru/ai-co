@@ -4,9 +4,9 @@ Four Sages Integration System - 統合テスト
 4賢者システムの完全な動作検証とパフォーマンステスト
 
 Elder Flow TDD実装:
-1. 🔴 Red: 失敗するテストを作成
-2. 🟢 Green: 最小限のコードで成功
-3. 🔵 Refactor: コード改善
+1.0 🔴 Red: 失敗するテストを作成
+2.0 🟢 Green: 最小限のコードで成功
+3.0 🔵 Refactor: コード改善
 
 テスト対象:
 - 4賢者の協調動作
@@ -91,7 +91,7 @@ class TestFourSagesIntegration:
         assert integration_system.db_path.parent.exists()
         
         # テーブル存在確認
-        conn = sqlite3.connect(str(integration_system.db_path))
+        conn = sqlite3connect(str(integration_system.db_path))
         cursor = conn.cursor()
         
         # テーブル一覧取得
@@ -436,7 +436,7 @@ class TestFourSagesIntegration:
     def test_database_error_recovery(self, integration_system):
         """データベースエラー復旧テスト"""
         # データベース接続エラーシミュレーション
-        with patch('sqlite3.connect', side_effect=sqlite3.Error("Database error")):
+        with patch('sqlite3connect', side_effect=sqlite3Error("Database error")):
             # エラーが発生してもクラッシュしない
             session_data = {
                 "session_id": "test_session",
@@ -597,7 +597,7 @@ class TestFourSagesIntegration:
     def test_sage_performance_tracking(self, integration_system):
         """賢者パフォーマンス追跡テスト"""
         # パフォーマンスデータ保存
-        conn = sqlite3.connect(str(integration_system.db_path))
+        conn = sqlite3connect(str(integration_system.db_path))
         cursor = conn.cursor()
         
         cursor.execute("""

@@ -87,8 +87,8 @@ class AIMetricsCommand(BaseCommand):
     def _get_period_stats(self, db, start_date):
         """期間別の統計情報を取得"""
         try:
-            with sqlite3.connect(db.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+            with sqlite3connect(db.db_path) as conn:
+                conn.row_factory = sqlite3Row
 
                 # 基本的なクエリ
                 query = "SELECT * FROM task_history"
@@ -171,9 +171,9 @@ class AIMetricsCommand(BaseCommand):
 [cyan]総タスク数:[/cyan] {stats['total_tasks']}
 [cyan]完了タスク:[/cyan] {stats['completed_tasks']}
 [cyan]失敗タスク:[/cyan] {stats['failed_tasks']}
-[cyan]成功率:[/cyan] {stats['success_rate']:.1f}%
+[cyan]成功率:[/cyan] {stats['success_rate']:0.1f}%
 [cyan]要約済み:[/cyan] {stats['summarized_tasks']}
-[cyan]平均応答長:[/cyan] {stats['avg_response_length']:.0f} 文字
+[cyan]平均応答長:[/cyan] {stats['avg_response_length']:0.0f} 文字
 """
         console.print(Panel(summary.strip(), title="📊 Elders Guild 統計情報", expand=False))
 
@@ -189,7 +189,7 @@ class AIMetricsCommand(BaseCommand):
                 stats["worker_stats"].items(), key=lambda x: x[1], reverse=True
             ):
                 percentage = (count / total * 100) if total > 0 else 0
-                worker_table.add_row(worker, str(count), f"{percentage:.1f}%")
+                worker_table.add_row(worker, str(count), f"{percentage:0.1f}%")
 
             console.print(worker_table)
 
@@ -205,7 +205,7 @@ class AIMetricsCommand(BaseCommand):
                 stats["type_stats"].items(), key=lambda x: x[1], reverse=True
             ):
                 percentage = (count / total * 100) if total > 0 else 0
-                type_table.add_row(task_type, str(count), f"{percentage:.1f}%")
+                type_table.add_row(task_type, str(count), f"{percentage:0.1f}%")
 
             console.print(type_table)
 

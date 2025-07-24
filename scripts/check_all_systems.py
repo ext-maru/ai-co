@@ -24,7 +24,7 @@ def check_system(sections=None, output_format="text"):
     if sections is None:
         sections = ["core", "workers", "libraries", "features"]
 
-    # 1. コアシステム
+    # 1.0 コアシステム
     if "core" in sections:
         if output_format == "text":
             print("【コアシステム】")
@@ -58,7 +58,7 @@ def check_system(sections=None, output_format="text"):
             for name, status in results["core"].items():
                 print(f"{check_mark(status)} {name}")
 
-    # 2. ワーカー稼働状態
+    # 2.0 ワーカー稼働状態
     if "workers" in sections:
         if output_format == "text":
             print("\n【ワーカー】")
@@ -71,7 +71,7 @@ def check_system(sections=None, output_format="text"):
             if output_format == "text":
                 print(f"{check_mark(results['workers'][worker])} {worker}")
 
-    # 3. ライブラリ機能
+    # 3.0 ライブラリ機能
     print("\n【ライブラリ機能】")
     libs_to_check = {
         "RAGマネージャー": "libs.rag_manager.RAGManager",
@@ -91,7 +91,7 @@ def check_system(sections=None, output_format="text"):
             results["libraries"][name] = False
         print(f"{check_mark(results['libraries'][name])} {name}")
 
-    # 4. 機能確認
+    # 4.0 機能確認
     print("\n【実装機能】")
 
     # データベース
@@ -128,7 +128,7 @@ def check_system(sections=None, output_format="text"):
     for name, status in results["features"].items():
         print(f"{check_mark(status)} {name}")
 
-    # 5. 統計情報
+    # 5.0 統計情報
     print("\n【統計】")
     try:
         from features.database.task_history_db import TaskHistoryDB

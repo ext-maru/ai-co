@@ -214,8 +214,8 @@ class ServantAutoSelector:
             self._update_selection_stats(criteria, best_score)
 
             self.logger.info(
-                f"Selected servant: {best_servant.name} (score: {best_score:.3f}, confidence:" \
-                    " {confidence:.3f})"
+                f"Selected servant: {best_servant.name} (score: {best_score:0.3f}, confidence:" \
+                    " {confidence:0.3f})"
             )
             return selection_result
 
@@ -413,9 +413,7 @@ class ServantAutoSelector:
                     # Process each item in collection
                     if servant.name in self.servant_profiles_cache:
                         profile = self.servant_profiles_cache[servant.name]
-                        if not (profile not in candidates):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
+                        # Removed invalid continue statement
                         if profile not in candidates:
                             candidates.append(profile)
 
@@ -727,7 +725,7 @@ class ServantAutoSelector:
             # 主要要因
             if criteria == SelectionCriteria.PERFORMANCE:
                 success_rate = profile.performance_history.get("success_rate", 0)
-                reasoning["key_factors"].append(f"高い成功率: {success_rate:.1%}")
+                reasoning["key_factors"].append(f"高い成功率: {success_rate:0.1%}")
 
             elif criteria == SelectionCriteria.QUALITY:
                 avg_quality = (
@@ -735,11 +733,11 @@ class ServantAutoSelector:
                     if profile.quality_scores
                     else 0
                 )
-                reasoning["key_factors"].append(f"品質スコア: {avg_quality:.1f}")
+                reasoning["key_factors"].append(f"品質スコア: {avg_quality:0.1f}")
 
             elif criteria == SelectionCriteria.AVAILABILITY:
                 reasoning["key_factors"].append(
-                    f"可用性スコア: {profile.availability_score:.2f}"
+                    f"可用性スコア: {profile.availability_score:0.2f}"
                 )
 
             # 強み

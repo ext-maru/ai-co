@@ -181,10 +181,8 @@ class TestDistributedQueueManager:
         assert expired[0].id == "expiring"
     
     @pytest.mark.asyncio
-    async def test_concurrent_access(self, queue_manager):
-        """Test thread-safe concurrent access"""
-        async def producer(prefix: str, count: int):
-            for i in range(count):
+    async def test_concurrent_access(self, queue_manager)async def producer(prefix: str, count: int)for i in range(count):
+    """Test thread-safe concurrent access"""
             """producerメソッド"""
                 await queue_manager.enqueue(
                     QueueItem(f"{prefix}-{i}", {})
@@ -337,9 +335,8 @@ class TestDistributedQueueManager:
         # Rate should be close to limit
         assert 8 <= rate <= 12  # Allow some variance
     
-    def test_queue_stats_export(self, queue_manager):
-        """Test statistics export for monitoring"""
-        stats = queue_manager.export_stats()
+    def test_queue_stats_export(self, queue_manager)stats = queue_manager.export_stats()
+    """Test statistics export for monitoring"""
         
         assert "queue_size" in stats
         assert "total_enqueued" in stats

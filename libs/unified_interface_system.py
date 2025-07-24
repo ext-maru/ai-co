@@ -11,7 +11,7 @@ Web UI、CLI、VSCode統合、API Gateway を提供
 🖥️ 強化されたCLI インターフェース
 📝 VSCode統合プラグイン
 🔌 統合API Gateway
-📊 リアルタイムモニタリング
+"📊" リアルタイムモニタリング
 🎯 ユーザー体験最適化
 """
 
@@ -224,31 +224,27 @@ class UnifiedInterfaceSystem:
             return await self.get_system_status()
 
         @self.app.post("/api/search")
-        async def api_search(request:
+        async def api_search(request: dict):
             """api_searchメソッド"""
-        dict):
             self.interface_stats["api_calls"] += 1
             return await self.handle_search_request(request)
 
         @self.app.post("/api/sages/collaborative-analysis")
-        async def api_sages_analysis(request:
+        async def api_sages_analysis(request: dict):
             """api_sages_analysisメソッド"""
-        dict):
             self.interface_stats["api_calls"] += 1
             return await self.handle_sages_analysis(request)
 
         @self.app.post("/api/learning/create-task")
-        async def api_learning_task(request:
+        async def api_learning_task(request: dict):
             """api_learning_taskメソッド"""
-        dict):
             self.interface_stats["api_calls"] += 1
             return await self.handle_learning_task(request)
 
         # WebSocket Route
         @self.app.websocket("/ws/{session_id}")
-        async def websocket_endpoint(websocket:
+        async def websocket_endpoint(websocket: WebSocket, session_id: str):
             """websocket_endpointメソッド"""
-        WebSocket, session_id: str):
             await self.handle_websocket_connection(websocket, session_id)
 
         # Health Check
@@ -336,7 +332,7 @@ class UnifiedInterfaceSystem:
         </div>
 
         <div class="card">
-            <h2>📊 System Status</h2>
+            <h2>"📊" System Status</h2>
             <div class="stats">
                 <div class="stat-card">
                     <h3>{{stats.total_requests}}</h3>
@@ -364,18 +360,18 @@ class UnifiedInterfaceSystem:
                 <li>📚 Knowledge Sage: Ready for search operations</li>
                 <li>📋 Task Sage: Ready for task management</li>
                 <li>🚨 Incident Sage: Ready for monitoring</li>
-                <li>🔍 RAG Sage: Ready for enhanced search</li>
+                <li>"🔍" RAG Sage: Ready for enhanced search</li>
             </ul>
         </div>
 
         <div class="card">
-            <h2>🔍 Search & Analytics</h2>
+            <h2>"🔍" Search & Analytics</h2>
             <p class="status">✅ Advanced search platform operational</p>
             <ul>
                 <li>🎯 Hybrid Search: Vector + Full-text</li>
-                <li>📊 Advanced Analytics: 6 types available</li>
+                <li>"📊" Advanced Analytics: 6 types available</li>
                 <li>👤 Personalized Search: AI-powered</li>
-                <li>📈 Real-time Dashboard: Live monitoring</li>
+                <li>"📈" Real-time Dashboard: Live monitoring</li>
             </ul>
         </div>
 
@@ -386,7 +382,7 @@ class UnifiedInterfaceSystem:
                 <li>🎓 6 Learning Types: Supervised to Incremental</li>
                 <li>🤖 4 Learning Agents: Pattern to Quality</li>
                 <li>🔄 Continuous Learning: Background processing</li>
-                <li>📈 Performance Tracking: Real-time metrics</li>
+                <li>"📈" Performance Tracking: Real-time metrics</li>
             </ul>
         </div>
     </div>
@@ -737,32 +733,32 @@ async def demo_unified_interface():
     interface_system = UnifiedInterfaceSystem()
 
     try:
-        # 1. システム初期化
-        print("\n1. システム初期化...")
+        # 1.0 システム初期化
+        print("\n1.0 システム初期化...")
         init_result = await interface_system.initialize_system()
         print(f"   結果: {'成功' if init_result['success'] else '失敗'}")
 
-        # 2. システム状況確認
-        print("\n2. システム状況確認...")
+        # 2.0 システム状況確認
+        print("\n2.0 システム状況確認...")
         status = await interface_system.get_system_status()
         print(f"   インターフェース統計: {status['interface_stats']}")
 
-        # 3. 模擬API呼び出し
-        print("\n3. 模擬API呼び出し...")
+        # 3.0 模擬API呼び出し
+        print("\n3.0 模擬API呼び出し...")
         search_result = await interface_system.handle_search_request(
             {"query": "4賢者システム", "search_type": "hybrid", "limit": 5}
         )
         print(f"   検索結果: {search_result.get('total_found', 0)}件")
 
-        # 4. 4賢者分析
-        print("\n4. 4賢者分析...")
+        # 4.0 4賢者分析
+        print("\n4.0 4賢者分析...")
         analysis_result = await interface_system.handle_sages_analysis(
             {"title": "デモ分析", "query": "システム統合", "context": "デモ実行"}
         )
         print(f"   分析結果: {analysis_result.get('status', 'unknown')}")
 
-        # 5. 学習タスク作成
-        print("\n5. 学習タスク作成...")
+        # 5.0 学習タスク作成
+        print("\n5.0 学習タスク作成...")
         learning_result = await interface_system.handle_learning_task(
             {
                 "task_type": "supervised",

@@ -11,7 +11,7 @@ from ai_send import SendCommand
 
 
 class CodeCommand(SendCommand):
-    # Main class implementation
+    # Main class implementation:
     def __init__(self):
         """初期化メソッド"""
         # SendCommandを継承して初期化

@@ -138,17 +138,17 @@ class MonitoringOptimizationCLI:
                 print(f"   アクティブ: {'✅' if monitoring_status['active'] else '❌'}")
                 print(f"   監視間隔: {monitoring_status['interval']}秒")
                 print(f"   総サイクル: {monitoring_status['cycles']}")
-                print(f"   稼働時間: {monitoring_status['uptime']:.1f}秒")
+                print(f"   稼働時間: {monitoring_status['uptime']:0.1f}秒")
 
                 # システムメトリクス
                 if report.get("system_metrics"):
                     metrics = report["system_metrics"]
                     print(f"\n💻 システムメトリクス:")
-                    print(f"   CPU使用率: {metrics['cpu_usage']:.1f}%")
-                    print(f"   メモリ使用率: {metrics['memory_usage']:.1f}%")
-                    print(f"   ディスク使用率: {metrics['disk_usage']:.1f}%")
-                    print(f"   エラー率: {metrics['error_rate']:.1f}%")
-                    print(f"   応答時間: {metrics['response_time']:.3f}秒")
+                    print(f"   CPU使用率: {metrics['cpu_usage']:0.1f}%")
+                    print(f"   メモリ使用率: {metrics['memory_usage']:0.1f}%")
+                    print(f"   ディスク使用率: {metrics['disk_usage']:0.1f}%")
+                    print(f"   エラー率: {metrics['error_rate']:0.1f}%")
+                    print(f"   応答時間: {metrics['response_time']:0.3f}秒")
 
                 # 最新アラート
                 if report.get("recent_alerts"):
@@ -265,24 +265,24 @@ class MonitoringOptimizationCLI:
 
         try:
             # システム初期化
-            print("1. システム初期化...")
+            print("1.0 システム初期化...")
             if not await self.initialize():
                 return
 
             # パフォーマンス分析
-            print("\n2. パフォーマンス分析...")
+            print("\n2.0 パフォーマンス分析...")
             await self.run_analysis()
 
             # 緊急最適化
-            print("\n3. 緊急最適化...")
+            print("\n3.0 緊急最適化...")
             await self.emergency_optimize()
 
             # 状況確認
-            print("\n4. システム状況確認...")
+            print("\n4.0 システム状況確認...")
             await self.show_status()
 
             # 短時間監視
-            print("\n5. 短時間監視デモ...")
+            print("\n5.0 短時間監視デモ...")
             print("   5秒間隔で15秒間監視します...")
 
             self.monitoring_system.monitoring_interval = 5

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Enhanced Auto Issue Processor - 運用監視とメトリクス収集
+"📊" Enhanced Auto Issue Processor - 運用監視とメトリクス収集
 Issue #92 最終実装: リアルタイム監視ダッシュボード
 """
 
@@ -59,17 +59,14 @@ class SystemHealthMetrics:
 class MetricsDatabase:
     """メトリクス専用データベース"""
 
-    def __init__(self, db_path:
-        """初期化メソッド"""
-    str = "logs/auto_issue_metrics.db"):
-        self.db_path = Path(db_path)
+    def __init__(self, db_path: str = "logs/auto_issue_metrics.db")self.db_path = Path(db_path)
+    """初期化メソッド"""
         self.db_path.parent.mkdir(exist_ok=True)
         self._init_database()
         self._lock = threading.Lock()
 
-    def _init_database(self):
-        """データベース初期化"""
-        with sqlite3.connect(self.db_path) as conn:
+    def _init_database(self)with sqlite3connect(self.db_path) as conn:
+    """データベース初期化"""
             # 処理メトリクステーブル
             conn.execute(
                 """
@@ -128,7 +125,7 @@ class MetricsDatabase:
     def insert_processing_metrics(self, metrics: ProcessingMetrics):
         """処理メトリクスを挿入"""
         with self._lock:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO processing_metrics (
@@ -158,7 +155,7 @@ class MetricsDatabase:
     def insert_system_health_metrics(self, metrics: SystemHealthMetrics):
         """システムヘルスメトリクスを挿入"""
         with self._lock:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO system_health_metrics (
@@ -183,12 +180,11 @@ class MetricsDatabase:
                     ),
                 )
 
-    def get_processing_metrics(self, hours: int = 24) -> List[Dict[str, Any]]:
-        """処理メトリクスを取得"""
-        since = (datetime.now() - timedelta(hours=hours)).isoformat()
-
-        with sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
+    def get_processing_metrics(self, hours: int = 24) -> List[Dict[str, Any]]since = (datetime.now() - timedelta(hours=hours)).isoformat()
+    """処理メトリクスを取得"""
+:
+        with sqlite3connect(self.db_path) as conn:
+            conn.row_factory = sqlite3Row
             cursor = conn.execute(
                 """
                 SELECT * FROM processing_metrics
@@ -199,12 +195,11 @@ class MetricsDatabase:
             )
             return [dict(row) for row in cursor.fetchall()]
 
-    def get_system_health_metrics(self, hours: int = 24) -> List[Dict[str, Any]]:
-        """システムヘルスメトリクスを取得"""
-        since = (datetime.now() - timedelta(hours=hours)).isoformat()
-
-        with sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
+    def get_system_health_metrics(self, hours: int = 24) -> List[Dict[str, Any]]since = (datetime.now() - timedelta(hours=hours)).isoformat()
+    """システムヘルスメトリクスを取得"""
+:
+        with sqlite3connect(self.db_path) as conn:
+            conn.row_factory = sqlite3Row
             cursor = conn.execute(
                 """
                 SELECT * FROM system_health_metrics
@@ -215,12 +210,11 @@ class MetricsDatabase:
             )
             return [dict(row) for row in cursor.fetchall()]
 
-    def get_summary_stats(self, hours: int = 24) -> Dict[str, Any]:
-        """サマリー統計を取得"""
-        since = (datetime.now() - timedelta(hours=hours)).isoformat()
-
-        with sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
+    def get_summary_stats(self, hours: int = 24) -> Dict[str, Any]since = (datetime.now() - timedelta(hours=hours)).isoformat()
+    """サマリー統計を取得"""
+:
+        with sqlite3connect(self.db_path) as conn:
+            conn.row_factory = sqlite3Row
 
             # 処理統計
             cursor = conn.execute(
@@ -256,9 +250,8 @@ class MetricsDatabase:
 class AlertingSystem:
     """アラートシステム"""
 
-    def __init__(self, alert_config:
+    def __init__(self, alert_config: Dict[str, Any] = None):
         """初期化メソッド"""
-    Dict[str, Any] = None):
         self.alert_config = alert_config or {
             "success_rate_threshold": 80.0,  # 成功率80%未満でアラート
             "avg_processing_time_threshold": 300.0,  # 平均処理時間5分以上でアラート
@@ -281,7 +274,7 @@ class AlertingSystem:
                 {
                     "type": "low_success_rate",
                     "severity": "warning",
-                    "message": f"Success rate is {stats['success_rate']:.1f}% " \
+                    "message": f"Success rate is {stats['success_rate']:0.1f}% " \
                         "(threshold: {self.alert_config['success_rate_threshold']}%)",
                     "timestamp": datetime.now().isoformat(),
                     "details": {
@@ -302,7 +295,7 @@ class AlertingSystem:
                     "type": "high_processing_time",
                     "severity": "warning",
                     "message": f"Average processing time is 
-                        f"{stats['avg_processing_time']:.1f}s (threshold: {self.alert_config['avg_processing_time_threshold']}s)",
+                        f"{stats['avg_processing_time']:0.1f}s (threshold: {self.alert_config['avg_processing_time_threshold']}s)",
                     "timestamp": datetime.now().isoformat(),
                     "details": {
                         "current_time": stats["avg_processing_time"],
@@ -336,11 +329,10 @@ class AlertingSystem:
 
         return alerts
 
-    def _check_consecutive_failures(self, metrics_db: MetricsDatabase) -> int:
-        """連続失敗数をチェック"""
-        recent_metrics = metrics_db.get_processing_metrics(hours=1)
+    def _check_consecutive_failures(self, metrics_db: MetricsDatabase) -> intrecent_metrics = metrics_db.get_processing_metrics(hours=1)
+    """連続失敗数をチェック"""
         consecutive_failures = 0
-
+:
         for metric in recent_metrics:
             if metric["processing_status"] == "failed":
                 consecutive_failures += 1
@@ -349,9 +341,8 @@ class AlertingSystem:
 
         return consecutive_failures
 
-    def _log_alerts(self, alerts: List[Dict[str, Any]]):
-        """アラートをログに記録"""
-        with open(self.alert_log, "a", encoding="utf-8") as f:
+    def _log_alerts(self, alerts: List[Dict[str, Any]])with open(self.alert_log, "a", encoding="utf-8") as f:
+    """アラートをログに記録"""
             for alert in alerts:
                 f.write(f"{json.dumps(alert, ensure_ascii=False)}\n")
 
@@ -359,10 +350,8 @@ class AlertingSystem:
 class AutoIssueMonitoringDashboard:
     """Auto Issue Processor監視ダッシュボード"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        self.metrics_db = MetricsDatabase()
-        self.alerting = AlertingSystem()
+    def __init__(self)self.alerting = AlertingSystem()
+    """初期化メソッド"""
         self.is_monitoring = False
         self.monitoring_thread = None
 
@@ -423,7 +412,7 @@ class AutoIssueMonitoringDashboard:
         self.metrics_db.insert_processing_metrics(metrics)
 
         logger.info(
-            f"📊 Processing {status}: Issue #{issue_number} (Time: {processing_time:.2f}s)"
+            f"📊 Processing {status}: Issue #{issue_number} (Time: {processing_time:0.2f}s)"
         )
 
     def record_system_health(
@@ -459,14 +448,13 @@ class AutoIssueMonitoringDashboard:
 
         self.metrics_db.insert_system_health_metrics(metrics)
 
-    def get_dashboard_data(self, hours: int = 24) -> Dict[str, Any]:
-        """ダッシュボード用データを取得"""
-        processing_metrics = self.metrics_db.get_processing_metrics(hours)
+    def get_dashboard_data(self, hours: int = 24) -> Dict[str, Any]processing_metrics = self.metrics_db.get_processing_metrics(hours)
+    """ダッシュボード用データを取得"""
         health_metrics = self.metrics_db.get_system_health_metrics(hours)
         summary_stats = self.metrics_db.get_summary_stats(hours)
         alerts = self.alerting.check_and_alert(self.metrics_db)
 
-        return {
+        return {:
             "summary": summary_stats,
             "processing_metrics": processing_metrics[:50],  # 最新50件
             "health_metrics": health_metrics[:50],  # 最新50件
@@ -515,13 +503,12 @@ class AutoIssueMonitoringDashboard:
                 logger.error(f"Monitoring loop error: {e}")
                 time.sleep(interval_seconds)
 
-    def generate_report(self, hours: int = 24) -> str:
-        """レポートを生成"""
-        data = self.get_dashboard_data(hours)
+    def generate_report(self, hours: int = 24) -> strdata = self.get_dashboard_data(hours)
+    """レポートを生成"""
 
         report = f"""
 # Auto Issue Processor 監視レポート
-
+:
 **生成時刻**: {data['timestamp']}
 **監視期間**: 過去{hours}時間
 
@@ -531,11 +518,11 @@ class AutoIssueMonitoringDashboard:
 - **成功数**: {data['summary']['successful']}
 - **失敗数**: {data['summary']['failed']}
 - **スキップ数**: {data['summary']['skipped']}
-- **成功率**: {data['summary']['success_rate']:.1f}%
-- **平均処理時間**: {data['summary']['avg_processing_time']:.1f}秒
-- **平均相談時間**: {data['summary']['avg_consultation_time']:.1f}秒
-- **平均PR作成時間**: {data['summary']['avg_pr_creation_time']:.1f}秒
-- **平均信頼度**: {data['summary']['avg_confidence']:.1f}%
+- **成功率**: {data['summary']['success_rate']:0.1f}%
+- **平均処理時間**: {data['summary']['avg_processing_time']:0.1f}秒
+- **平均相談時間**: {data['summary']['avg_consultation_time']:0.1f}秒
+- **平均PR作成時間**: {data['summary']['avg_pr_creation_time']:0.1f}秒
+- **平均信頼度**: {data['summary']['avg_confidence']:0.1f}%
 
 ## 🚨 アクティブアラート
 
@@ -560,14 +547,13 @@ class AutoIssueMonitoringDashboard:
                 else "❌" if metric["processing_status"] == "failed" else "⏭️"
             )
             report += f"- {status_emoji} Issue #{metric['issue_number']}: " \
-                "{metric['issue_title']} ({metric['processing_time_seconds']:.1f}s)\n"
+                "{metric['issue_title']} ({metric['processing_time_seconds']:0.1f}s)\n"
 
         return report
 
-    def export_metrics(self, hours: int = 24, format: str = "json") -> str:
-        """メトリクスをエクスポート"""
-        data = self.get_dashboard_data(hours)
-
+    def export_metrics(self, hours: int = 24, format: str = "json") -> strdata = self.get_dashboard_data(hours)
+    """メトリクスをエクスポート"""
+:
         if format == "json":
             return json.dumps(data, indent=2, ensure_ascii=False)
         elif format == "csv":

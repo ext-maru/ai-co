@@ -7,9 +7,9 @@ PostgreSQL + pgvector + 全文検索の統合プラットフォーム
 4賢者システムとの連携による高度な検索・分析機能
 
 機能:
-📊 ハイブリッド検索 (ベクトル+全文検索)
-🔍 意味解析検索 (セマンティック検索)
-📈 リアルタイム分析 (統計・パターン認識)
+"📊" ハイブリッド検索 (ベクトル+全文検索)
+"🔍" 意味解析検索 (セマンティック検索)
+"📈" リアルタイム分析 (統計・パターン認識)
 🧠 機械学習分析 (予測・分類)
 🎯 パーソナライズド検索
 """
@@ -586,8 +586,8 @@ class AdvancedSearchAnalyticsPlatform:
             },
             "insights": [
                 f"総計{total_items}項目を分析",
-                f"平均類似度: {avg_similarity:.3f}",
-                f"高品質コンテンツ: {high_quality}項目 ({high_quality/total_items*100:.1f}%)",
+                f"平均類似度: {avg_similarity:0.3f}",
+                f"高品質コンテンツ: {high_quality}項目 ({high_quality/total_items*100:0.1f}%)",
             ],
             "recommendations": [
                 "高品質コンテンツの比率を向上させる",
@@ -627,7 +627,7 @@ class AdvancedSearchAnalyticsPlatform:
                 f"識別された総パターン数: {len(tag_counter)}",
                 f"最も一般的なパターン: {common_patterns[0][0] if common_patterns else 'なし'}",
                 (
-                    f"パターンの多様性: {len(tag_counter) / len(all_tags) * 100:.1f}%"
+                    f"パターンの多様性: {len(tag_counter) / len(all_tags) * 100:0.1f}%"
                     if all_tags
                     else "0%"
                 ),
@@ -722,7 +722,7 @@ class AdvancedSearchAnalyticsPlatform:
             },
             "insights": [
                 f"識別された分類: {len(categories)}種類",
-                f"最大分類: {max(categories.keys(), key=categories.get) if categories else 'なし'}",
+                f"最大分類: {max(categories.keys(), key=lambda x: categories[x]) if categories else 'なし'}",
                 f"分類精度: 90%",
             ],
             "recommendations": [
@@ -904,13 +904,13 @@ async def demo_advanced_search_analytics():
     platform = AdvancedSearchAnalyticsPlatform()
 
     try:
-        # 1. プラットフォーム初期化
-        print("\n1. プラットフォーム初期化...")
+        # 1.0 プラットフォーム初期化
+        print("\n1.0 プラットフォーム初期化...")
         init_result = await platform.initialize_platform()
         print(f"   結果: {'成功' if init_result['success'] else '失敗'}")
 
-        # 2. ハイブリッド検索テスト
-        print("\n2. ハイブリッド検索テスト...")
+        # 2.0 ハイブリッド検索テスト
+        print("\n2.0 ハイブリッド検索テスト...")
         search_query = SearchQuery(
             query="4賢者システム",
             search_type=SearchType.HYBRID,
@@ -921,22 +921,22 @@ async def demo_advanced_search_analytics():
         search_result = await platform.hybrid_search(search_query)
         print(f"   結果: {search_result.get('total_found', 0)}件発見")
 
-        # 3. 統計分析テスト
-        print("\n3. 統計分析テスト...")
+        # 3.0 統計分析テスト
+        print("\n3.0 統計分析テスト...")
         stats_result = await platform.advanced_analytics(
             AnalyticsType.STATISTICAL, "PostgreSQL MCP"
         )
-        print(f"   信頼度: {stats_result.confidence:.2f}")
+        print(f"   信頼度: {stats_result.confidence:0.2f}")
 
-        # 4. パターン認識テスト
-        print("\n4. パターン認識テスト...")
+        # 4.0 パターン認識テスト
+        print("\n4.0 パターン認識テスト...")
         pattern_result = await platform.advanced_analytics(
             AnalyticsType.PATTERN_RECOGNITION, "検索パターン"
         )
-        print(f"   信頼度: {pattern_result.confidence:.2f}")
+        print(f"   信頼度: {pattern_result.confidence:0.2f}")
 
-        # 5. パーソナライズド検索テスト
-        print("\n5. パーソナライズド検索テスト...")
+        # 5.0 パーソナライズド検索テスト
+        print("\n5.0 パーソナライズド検索テスト...")
         personalized_result = await platform.personalized_search(
             "user_001",
             "データベース統合",
@@ -946,8 +946,8 @@ async def demo_advanced_search_analytics():
             f"   パーソナライズ: {personalized_result.get('personalization_applied', False)}"
         )
 
-        # 6. リアルタイム分析ダッシュボード
-        print("\n6. リアルタイム分析ダッシュボード...")
+        # 6.0 リアルタイム分析ダッシュボード
+        print("\n6.0 リアルタイム分析ダッシュボード...")
         dashboard_result = await platform.real_time_analytics_dashboard()
         print(f"   ダッシュボード状況: {dashboard_result.get('status', 'unknown')}")
 

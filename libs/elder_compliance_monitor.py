@@ -82,9 +82,8 @@ class ElderComplianceMonitor:
     Automatically enforces Universal Claude Elder Standards
     """
 
-    def __init__(self, data_dir:
+    def __init__(self, data_dir: str = "data/compliance"):
         """初期化メソッド"""
-    str = "data/compliance"):
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -151,7 +150,7 @@ class ElderComplianceMonitor:
 
     def init_database(self):
         """Initialize compliance tracking database"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS violations (
@@ -581,7 +580,7 @@ class ElderComplianceMonitor:
 
     def _suspend_servant(self, servant_type: str, elder_instance: str):
         """Suspend a servant to resolve conflicts"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 UPDATE deployments
@@ -597,8 +596,8 @@ class ElderComplianceMonitor:
 
     def _get_active_servants(self, elder_instance: str) -> List[Dict]:
         """Get active servants for an elder"""
-        with sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
+        with sqlite3connect(self.db_path) as conn:
+            conn.row_factory = sqlite3Row
             cursor = conn.execute(
                 """
                 SELECT * FROM deployments
@@ -611,7 +610,7 @@ class ElderComplianceMonitor:
     def _get_last_progress_report(self, elder_instance: str) -> Optional[datetime]:
         """Get timestamp of last progress report"""
         # Check deployment progress reports
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT MAX(deployed_at) FROM deployments
@@ -636,7 +635,7 @@ class ElderComplianceMonitor:
 
     def _save_deployment(self, deployment: ElderServantDeployment):
         """Save deployment to database"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO deployments
@@ -656,7 +655,7 @@ class ElderComplianceMonitor:
 
     def _record_violation(self, violation: ComplianceViolation):
         """Record violation in database"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO violations
@@ -687,7 +686,7 @@ class ElderComplianceMonitor:
 
     def _update_violation_status(self, violation: ComplianceViolation):
         """Update violation status in database"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 UPDATE violations
@@ -705,8 +704,8 @@ class ElderComplianceMonitor:
 
     def get_compliance_report(self, elder_instance: str = None) -> Dict:
         """Generate compliance report"""
-        with sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
+        with sqlite3connect(self.db_path) as conn:
+            conn.row_factory = sqlite3Row
 
             # Get violations
             if elder_instance:
@@ -800,7 +799,7 @@ class ElderComplianceMonitor:
 
     def _save_metrics(self):
         """Save current metrics to database"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO compliance_metrics

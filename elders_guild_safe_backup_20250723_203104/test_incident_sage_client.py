@@ -19,6 +19,7 @@ from typing import Dict, Any, List
 
 
 class IncidentSageTestClient:
+    pass
 
 
 """Incident Sage A2Aテストクライアント""" str = "http://localhost:8810"):
@@ -27,6 +28,7 @@ class IncidentSageTestClient:
         self.messages = []
     
     def health_check(self) -> Dict[str, Any]:
+        pass
 
         """ヘルスチェック"""
             response = requests.get(f"{self.base_url}/health")
@@ -35,6 +37,7 @@ class IncidentSageTestClient:
             return {"error": str(e)}
     
     def list_skills(self) -> Dict[str, Any]:
+        pass
 
     
     """スキル一覧取得"""
@@ -91,18 +94,19 @@ class IncidentSageTestClient:
             return {"error": str(e)}
     
     def test_all_skills(self):
+        pass
 
     
     """全スキルテスト実行""" {health.get('status', 'unknown')}")
         
-        # 2. スキル一覧
+        # 2.0 スキル一覧
         print("\n📋 利用可能スキル確認...")
         skills_info = self.list_skills()
         if "total_skills" in skills_info:
             print(f"   総スキル数: {skills_info['total_skills']}")
-            print(f"   カテゴリ: {json.dumps(skills_info['categories'], indent=2)}")
+            print(f"   カテゴリ: {json.dumps(skills_info['categories'], indent}")
         
-        # 3. 各スキルテスト
+        # 3.0 各スキルテスト
         test_cases = [
             {
                 "name": "インシデント検知",
@@ -182,7 +186,7 @@ class IncidentSageTestClient:
                         print(f"      - インシデントID: {data['incident_id']}")
                     if "assessment_id" in data:
                         print(f"      - 評価ID: {data['assessment_id']}")
-                        print(f"      - 総合スコア: {data.get('overall_score', 0):.1f}%")
+                        print(f"      - 総合スコア: {data.get('overall_score', 0):0.1f}%")
                     if "rule_id" in data:
                         print(f"      - ルールID: {data['rule_id']}")
                     if "target_id" in data:
@@ -190,12 +194,12 @@ class IncidentSageTestClient:
             else:
                 print(f"   ❌ 失敗: {result.get('error', 'Unknown error')}")
         
-        # 4. 複雑なワークフローテスト
+        # 4.0 複雑なワークフローテスト
         print("\n\n🔄 複雑ワークフローテスト:")
         print("-" * 70)
         
         # インシデント検知→対応→修復フロー
-        print("\n1. インシデント検知→対応→修復フロー")
+        print("\n1.0 インシデント検知→対応→修復フロー")
         
         # 検知
         detection_result = self.send_a2a_request({
@@ -235,6 +239,7 @@ class IncidentSageTestClient:
 
 
 def main():
+    pass
 
         
         """メイン実行"""

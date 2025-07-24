@@ -398,9 +398,8 @@ class AnomalyDetector:
 class MLAnalyticsEngine:
     """機械学習分析エンジン統合"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = Path(project_root)
         self.models_dir = self.project_root / "ml_models"
         self.models_dir.mkdir(exist_ok=True)

@@ -92,13 +92,13 @@ def demo_workflow():
     print("-" * 28)
 
     workflow_steps = [
-        "1. 🚨 Claude Elder detects error",
-        "2. 🤖 Integrated Crisis Sage creates incident",
-        "3. 📋 Incident stored in existing system",
-        "4. 🏛️ Elder Council summoned (if high priority)",
-        "5. 📚 Learning record created",
-        "6. 🔍 4 Sages collaborate on resolution",
-        "7. ✅ Incident resolved with learning",
+        "1.0 🚨 Claude Elder detects error",
+        "2.0 🤖 Integrated Crisis Sage creates incident",
+        "3.0 📋 Incident stored in existing system",
+        "4.0 🏛️ Elder Council summoned (if high priority)",
+        "5.0 📚 Learning record created",
+        "6.0 🔍 4 Sages collaborate on resolution",
+        "7.0 ✅ Incident resolved with learning",
     ]
 
     for step in workflow_steps:
@@ -176,12 +176,12 @@ def demo_files_generated():
 
     print("🏛️ Elder Council Records:")
     print("  └── knowledge_base/")
-    print("      └── elder_council_incident_INC-20250709-0001.json")
+    print("      └── elder_council_incident_INC-20250709-0001.0json")
     print()
 
     print("📚 Learning Records:")
     print("  └── knowledge_base/failures/")
-    print("      └── incident_learning_INC-20250709-0001.md")
+    print("      └── incident_learning_INC-20250709-0001.0md")
     print()
 
     print("📊 Incident Database:")
@@ -215,10 +215,10 @@ def main():
     print("🤖 Claude Elder integration: Active")
 
     print("\n📋 Next Steps:")
-    print("1. 🔧 Implement integrated incident manager")
-    print("2. 🧪 Test with real Claude errors")
-    print("3. 📊 Monitor integration statistics")
-    print("4. 🔄 Refine based on usage patterns")
+    print("1.0 🔧 Implement integrated incident manager")
+    print("2.0 🧪 Test with real Claude errors")
+    print("3.0 📊 Monitor integration statistics")
+    print("4.0 🔄 Refine based on usage patterns")
 
 
 if __name__ == "__main__":

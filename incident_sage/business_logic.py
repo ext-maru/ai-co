@@ -501,7 +501,7 @@ class IncidentProcessor:
         self.incidents[incident.incident_id] = incident
         
         # データベース保存
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute("""
                 INSERT OR REPLACE INTO incidents VALUES (
                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
@@ -522,7 +522,7 @@ class IncidentProcessor:
     
     async def _save_quality_assessment(self, assessment: QualityAssessment):
         """品質評価保存"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute("""
                 INSERT INTO quality_assessments VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
@@ -768,7 +768,7 @@ class IncidentProcessor:
     
     def _initialize_database(self):
         """データベース初期化"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # インシデントテーブル
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS incidents (
@@ -914,8 +914,8 @@ class IncidentProcessor:
     def _load_all_data(self):
         """全データロード"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+            with sqlite3connect(self.db_path) as conn:
+                conn.row_factory = sqlite3Row
                 
                 # インシデントロード
                 for row in conn.execute("SELECT * FROM incidents"):
@@ -1115,7 +1115,7 @@ class IncidentProcessor:
             self.alert_rules[alert_rule.rule_id] = alert_rule
             
             # データベース保存（簡易版）
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute("""
                     INSERT OR REPLACE INTO alert_rules VALUES (
                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
@@ -1237,7 +1237,7 @@ class IncidentProcessor:
             self.monitoring_targets[target.target_id] = target
             
             # データベース保存（簡易版）
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute("""
                     INSERT OR REPLACE INTO monitoring_targets VALUES (
                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
@@ -1518,7 +1518,7 @@ class IncidentProcessor:
                     metric_dict['measured_at'] = metric_dict['measured_at'].isoformat()
                 metrics_json[name] = metric_dict
             
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute("""
                     INSERT OR REPLACE INTO quality_standards VALUES (
                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?

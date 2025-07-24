@@ -46,7 +46,7 @@ except ImportError as e:
 
     # テスト環境での代替実装
     class ElderCouncilProactiveSystem:
-        # Main class implementation
+        # Main class implementation:
         def __init__(self):
             """初期化メソッド"""
             self.guidance_engine = type(
@@ -65,7 +65,7 @@ except ImportError as e:
             pass
 
     class ProactiveTrendAnalyzer:
-        # Main class implementation
+        # Main class implementation:
         def __init__(self):
             """初期化メソッド"""
             pass
@@ -77,7 +77,7 @@ except ImportError as e:
             pass
 
     class ProactiveGuidanceType:
-        # Main class implementation
+        # Main class implementation:
         """ProactiveGuidanceTypeクラス"""
         STRATEGIC_GUIDANCE = "strategic_guidance"
         PREVENTIVE_ACTION = "preventive_action"
@@ -85,7 +85,7 @@ except ImportError as e:
 
     class UrgencyLevel:
         """UrgencyLevelクラス"""
-        # Main class implementation
+        # Main class implementation:
         IMMEDIATE = "immediate"
         HIGH = "high"
         MEDIUM = "medium"
@@ -177,8 +177,8 @@ class AIElderProactiveCommand:
         print(f"\n{urgency_icon} 洞察 #{index}: {insight.title}")
         print(f"   タイプ: {insight.guidance_type.value}")
         print(f"   緊急度: {insight.urgency.value}")
-        print(f"   予測影響度: {insight.predicted_impact:.1%}")
-        print(f"   信頼度: {insight.confidence_score:.1%}")
+        print(f"   予測影響度: {insight.predicted_impact:0.1%}")
+        print(f"   信頼度: {insight.confidence_score:0.1%}")
         print(f"   概要: {insight.description}")
 
         if insight.recommended_actions:
@@ -350,7 +350,7 @@ class AIElderProactiveCommand:
             )
 
             print(f"{trend_icon} {trend['metric']}: {trend['trend']} {impact_icon}")
-            print(f"   信頼度: {trend['confidence']:.1%} | 影響度: {trend['impact']}")
+            print(f"   信頼度: {trend['confidence']:0.1%} | 影響度: {trend['impact']}")
 
     def _generate_opportunities_report(self):
         """機会分析レポート"""
@@ -370,7 +370,7 @@ class AIElderProactiveCommand:
                 "🟢" if opp["score"] > 0.8 else "🟡" if opp["score"] > 0.6 else "🔴"
             )
             print(
-                f"{score_icon} {opp['area']}: {opp['score']:.1%} ({opp['actions']}件のアクション)"
+                f"{score_icon} {opp['area']}: {opp['score']:0.1%} ({opp['actions']}件のアクション)"
             )
 
     def _generate_effectiveness_report(self):
@@ -397,19 +397,19 @@ class AIElderProactiveCommand:
         )
 
         print(f"📊 総ガイダンス数: {effectiveness_data['total_guidances']}")
-        print(f"✅ 実装率: {implementation_rate:.1f}%")
-        print(f"🎯 成功率: {success_rate:.1f}%")
-        print(f"📈 平均改善度: {effectiveness_data['avg_improvement']:.1%}")
+        print(f"✅ 実装率: {implementation_rate:0.1f}%")
+        print(f"🎯 成功率: {success_rate:0.1f}%")
+        print(f"📈 平均改善度: {effectiveness_data['avg_improvement']:0.1%}")
 
         print("\n🚀 主要改善実績:")
         rt_data = effectiveness_data["response_time"]
         print(
-            f"   レスポンス時間: {rt_data['before']}ms → {rt_data['after']}ms ({rt_data['improvement']:.1f}%改善)"
+            f"   レスポンス時間: {rt_data['before']}ms → {rt_data['after']}ms ({rt_data['improvement']:0.1f}%改善)"
         )
 
         er_data = effectiveness_data["error_rate"]
         print(
-            f"   エラー率: {er_data['before']:.1%} → {er_data['after']:.1%} ({er_data['improvement']:.1f}%改善)"
+            f"   エラー率: {er_data['before']:0.1%} → {er_data['after']:0.1%} ({er_data['improvement']:0.1f}%改善)"
         )
 
     def _generate_comprehensive_report(self):
@@ -448,7 +448,7 @@ class AIElderProactiveCommand:
                 for metric, change in metrics_change.items():
                     # Process each item in collection
                     change_symbol = "📈" if change > 0 else "📉" if change < 0 else "➡️"
-                    print(f"     {change_symbol} {metric}: {change:+.1f}")
+                    print(f"     {change_symbol} {metric}: {change:+0.1f}")
 
             # 学習データとして保存
             self._save_feedback_data(insight_id, outcome, metrics_change)

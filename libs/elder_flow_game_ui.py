@@ -183,14 +183,14 @@ class ElderFlowGameUI:
         menu_text = f"""
 {UIElement.colorize('🌟 エルダーズギルド 開発者ポータル 🌟', GameColor.ELDER_GOLD, True)}
 
-{UIElement.colorize('1.', GameColor.CYAN)} 🕵️‍♂️ 違反検知システム
-{UIElement.colorize('2.', GameColor.CYAN)} ⏰ 毎時監査ダッシュボード
-{UIElement.colorize('3.', GameColor.CYAN)} 🔄 PDCA改善サイクル
-{UIElement.colorize('4.', GameColor.CYAN)} 🛡️ リアルタイム監視
-{UIElement.colorize('5.', GameColor.CYAN)} 📊 統計・実績
-{UIElement.colorize('6.', GameColor.CYAN)} 🎮 ミニゲーム
-{UIElement.colorize('7.', GameColor.CYAN)} ⚙️  設定
-{UIElement.colorize('0.', GameColor.RED)} 🚪 終了
+{UIElement.colorize('1.0', GameColor.CYAN)} 🕵️‍♂️ 違反検知システム
+{UIElement.colorize('2.0', GameColor.CYAN)} ⏰ 毎時監査ダッシュボード
+{UIElement.colorize('3.0', GameColor.CYAN)} 🔄 PDCA改善サイクル
+{UIElement.colorize('4.0', GameColor.CYAN)} 🛡️ リアルタイム監視
+{UIElement.colorize('5.0', GameColor.CYAN)} 📊 統計・実績
+{UIElement.colorize('6.0', GameColor.CYAN)} 🎮 ミニゲーム
+{UIElement.colorize('7.0', GameColor.CYAN)} ⚙️  設定
+{UIElement.colorize('0.0', GameColor.RED)} 🚪 終了
 
 {UIElement.colorize('選択してください:', GameColor.WHITE)}"""
 
@@ -238,7 +238,7 @@ class ElderFlowGameUI:
         )
         print(
             f"{UIElement.colorize(
-                f'成功率: {success_rate:.1f}%',
+                f'成功率: {success_rate:0.1f}%',
                 GameColor.GREEN if success_rate >= 80 else GameColor.RED
             )}"
         )
@@ -423,7 +423,7 @@ class ElderFlowGameUI:
             ("修正した違反", self.player_stats.violations_fixed, "件"),
             ("書いたテスト", self.player_stats.tests_written, "個"),
             ("コミット数", self.player_stats.commits_made, "回"),
-            ("エルダー承認率", f"{self.player_stats.elder_approval_rate:.1f}", "%"),
+            ("エルダー承認率", f"{self.player_stats.elder_approval_rate:0.1f}", "%"),
         ]
 
         for stat_name, value, unit in stats:
@@ -460,11 +460,11 @@ class ElderFlowGameUI:
         games_ui = f"""
 {UIElement.colorize('🎮 Elder Flow ミニゲーム', GameColor.MAGENTA, True)}
 
-{UIElement.colorize('1.', GameColor.CYAN)} 🎯 違反撃退ゲーム
-{UIElement.colorize('2.', GameColor.CYAN)} 🧩 コードパズル
-{UIElement.colorize('3.', GameColor.CYAN)} ⚡ スピードテスト作成
-{UIElement.colorize('4.', GameColor.CYAN)} 🏆 エルダー承認チャレンジ
-{UIElement.colorize('0.', GameColor.RED)} 🔙 戻る
+{UIElement.colorize('1.0', GameColor.CYAN)} 🎯 違反撃退ゲーム
+{UIElement.colorize('2.0', GameColor.CYAN)} 🧩 コードパズル
+{UIElement.colorize('3.0', GameColor.CYAN)} ⚡ スピードテスト作成
+{UIElement.colorize('4.0', GameColor.CYAN)} 🏆 エルダー承認チャレンジ
+{UIElement.colorize('0.0', GameColor.RED)} 🔙 戻る
 
 {UIElement.colorize('選択してください:', GameColor.WHITE)}"""
 
@@ -561,11 +561,11 @@ class ElderFlowGameUI:
         print("正しいElderFlow開発の順序を並べてください！\n")
 
         correct_order = [
-            "1. 4賢者への相談",
-            "2. テストファースト（TDD）",
-            "3. 実装",
-            "4. 品質チェック",
-            "5. コミット&プッシュ",
+            "1.0 4賢者への相談",
+            "2.0 テストファースト（TDD）",
+            "3.0 実装",
+            "4.0 品質チェック",
+            "5.0 コミット&プッシュ",
         ]
 
         shuffled = correct_order.copy()
@@ -723,11 +723,11 @@ def calculate_tax(price, tax_rate):
         settings_ui = f"""
 {UIElement.colorize('⚙️ 設定', GameColor.BLUE, True)}
 
-{UIElement.colorize('1.', GameColor.CYAN)} 🎨 カラーテーマ変更
-{UIElement.colorize('2.', GameColor.CYAN)} 🔊 サウンド設定
-{UIElement.colorize('3.', GameColor.CYAN)} 📊 統計リセット
-{UIElement.colorize('4.', GameColor.CYAN)} 💾 データエクスポート
-{UIElement.colorize('0.', GameColor.RED)} 🔙 戻る
+{UIElement.colorize('1.0', GameColor.CYAN)} 🎨 カラーテーマ変更
+{UIElement.colorize('2.0', GameColor.CYAN)} 🔊 サウンド設定
+{UIElement.colorize('3.0', GameColor.CYAN)} 📊 統計リセット
+{UIElement.colorize('4.0', GameColor.CYAN)} 💾 データエクスポート
+{UIElement.colorize('0.0', GameColor.RED)} 🔙 戻る
 
 {UIElement.colorize('選択してください:', GameColor.WHITE)}"""
 

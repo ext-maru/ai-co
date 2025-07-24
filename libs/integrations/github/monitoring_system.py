@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Auto Issue Processor A2A Monitoring & Observability System
+"📊" Auto Issue Processor A2A Monitoring & Observability System
 監視・可観測性・運用ダッシュボード構築システム
 
 Issue #193対応: リアルタイム処理ダッシュボード・包括的ログシステム・メトリクス監視
@@ -86,9 +86,8 @@ class HealthCheck:
 class MetricsCollector:
     """メトリクス収集システム"""
     
-    def __init__(self):
-        """初期化メソッド"""
-        self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
+    def __init__(self)self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
+    """初期化メソッド"""
         self.metric_types: Dict[str, MetricType] = {}
         self.metric_metadata: Dict[str, Dict[str, Any]] = {}
         
@@ -138,17 +137,14 @@ class MetricsCollector:
         except Exception as e:
             logger.error(f"Failed to record metric {name}: {str(e)}")
     
-    def increment_counter(self, name: str, value: int = 1, labels: Dict[str, str] = None):
-        """カウンター増加"""
-        self.record_metric(name, value, labels, MetricType.COUNTER)
+    def increment_counter(self, name: str, value: int = 1, labels: Dict[str, str] = None)self.record_metric(name, value, labels, MetricType.COUNTER)
+    """カウンター増加"""
     
-    def set_gauge(self, name: str, value: Union[int, float], labels: Dict[str, str] = None):
-        """ゲージ設定"""
-        self.record_metric(name, value, labels, MetricType.GAUGE)
+    def set_gauge(self, name: str, value: Union[int, float], labels: Dict[str, str] = None)self.record_metric(name, value, labels, MetricType.GAUGE)
+    """ゲージ設定"""
     
-    def record_timer(self, name: str, duration: float, labels: Dict[str, str] = None):
-        """タイマー記録"""
-        self.record_metric(name, duration, labels, MetricType.TIMER)
+    def record_timer(self, name: str, duration: float, labels: Dict[str, str] = None)self.record_metric(name, duration, labels, MetricType.TIMER)
+    """タイマー記録"""
     
     def get_metric_values(
         self, 
@@ -171,9 +167,8 @@ class MetricsCollector:
             return None
         return self.metrics[name][-1]
     
-    def get_average_value(self, name: str, duration_minutes: int = 5) -> Optional[float]:
-        """平均値取得"""
-        values = self.get_metric_values(name, duration_minutes)
+    def get_average_value(self, name: str, duration_minutes: int = 5) -> Optional[float]values = self.get_metric_values(name, duration_minutes)
+    """平均値取得""":
         if not values:
             return None
         
@@ -201,9 +196,8 @@ class MetricsCollector:
 class AlertManager:
     """アラート管理システム"""
     
-    def __init__(self, metrics_collector:
+    def __init__(self, metrics_collector: MetricsCollector):
         """初期化メソッド"""
-    MetricsCollector):
         self.metrics_collector = metrics_collector
         self.active_alerts: Dict[str, Alert] = {}
         self.alert_history: List[Alert] = []
@@ -355,23 +349,20 @@ class AlertManager:
             except Exception as e:
                 logger.error(f"Notification handler failed: {str(e)}")
     
-    def add_notification_handler(self, handler: Callable[[Alert], None]):
-        """通知ハンドラー追加"""
-        self.notification_handlers.append(handler)
+    def add_notification_handler(self, handler: Callable[[Alert], None])self.notification_handlers.append(handler)
+    """通知ハンドラー追加"""
     
-    def get_active_alerts(self) -> List[Alert]:
-        """アクティブアラート取得"""
-        return list(self.active_alerts.values())
-    
-    def get_alert_history(self, hours: int = 24) -> List[Alert]:
-        """アラート履歴取得"""
-        cutoff_time = datetime.now() - timedelta(hours=hours)
+    def get_active_alerts(self) -> List[Alert]return list(self.active_alerts.values())
+    """アクティブアラート取得"""
+    :
+    def get_alert_history(self, hours: int = 24) -> List[Alert]cutoff_time = datetime.now() - timedelta(hours=hours)
+    """アラート履歴取得"""
         return [
             alert for alert in self.alert_history
             if alert.triggered_at > cutoff_time
         ]
 
-
+:
 class HealthMonitor:
     """ヘルスモニター"""
     
@@ -555,10 +546,8 @@ class HealthMonitor:
 class LogSystem:
     """包括的ログシステム"""
     
-    def __init__(self):
-        """初期化メソッド"""
-        self.log_directory = Path("logs/a2a_monitoring")
-        self.log_directory.mkdir(parents=True, exist_ok=True)
+    def __init__(self)self.log_directory.mkdir(parents=True, exist_ok=True)
+    """初期化メソッド"""
         
         # ログレベル別ファイル
         self.log_files = {
@@ -643,8 +632,8 @@ class LogSystem:
                         new_backup.unlink()
                     old_backup.rename(new_backup)
             
-            # 現在のログファイルを.1にリネーム
-            backup_file = log_file.with_suffix(f"{log_file.suffix}.1")
+            # 現在のログファイルを0.1にリネーム
+            backup_file = log_file.with_suffix(f"{log_file.suffix}0.1")
             if backup_file.exists():
                 backup_file.unlink()
             log_file.rename(backup_file)
@@ -656,10 +645,8 @@ class LogSystem:
 class MonitoringDashboard:
     """リアルタイム監視ダッシュボード"""
     
-    def __init__(self):
-        """初期化メソッド"""
-        self.metrics_collector = MetricsCollector()
-        self.alert_manager = AlertManager(self.metrics_collector)
+    def __init__(self)self.alert_manager = AlertManager(self.metrics_collector)
+    """初期化メソッド"""
         self.health_monitor = HealthMonitor()
         self.log_system = LogSystem()
         
@@ -671,17 +658,13 @@ class MonitoringDashboard:
         # 通知設定
         self._setup_notification_handlers()
     
-    def _setup_notification_handlers(self):
-        """通知ハンドラー設定"""
-        def log_alert_handler(alert:
-            """log_alert_handlerメソッド"""
-        Alert):
+    def _setup_notification_handlers(self)def log_alert_handler(alert: Alert):
+    """通知ハンドラー設定"""
+        """log_alert_handlerメソッド"""
             self.log_system.log_alert(alert)
         
-        def console_alert_handler(alert:
-            """console_alert_handlerメソッド"""
-        Alert):
-            print(f"🚨 ALERT: {alert.title} - {alert.description}")
+        def console_alert_handler(alert: Alert)print(f"🚨 ALERT: {alert.title} - {alert.description}")
+    """console_alert_handlerメソッド"""
         
         self.alert_manager.add_notification_handler(log_alert_handler)
         self.alert_manager.add_notification_handler(console_alert_handler)
@@ -860,13 +843,12 @@ class MonitoringDashboard:
                 "error": str(e)
             }
     
-    def generate_monitoring_report(self) -> str:
-        """監視レポート生成"""
-        dashboard_data = self.get_dashboard_data()
+    def generate_monitoring_report(self) -> strdashboard_data = self.get_dashboard_data()
+    """監視レポート生成"""
         alert_history = self.alert_manager.get_alert_history(24)
         
         report_lines = [
-            "# A2A Monitoring Report",
+            "# A2A Monitoring Report",:
             f"Generated at: {dashboard_data['timestamp']}",
             "",
             f"## Overall Health: {dashboard_data.get('overall_health', 'Unknown')}",
@@ -886,7 +868,7 @@ class MonitoringDashboard:
                 f"### {component} {status_emoji}",
                 f"- Status: {health['status']}",
                 f"- Message: {health['message']}",
-                f"- Response Time: {health['response_time']:.2f}s",
+                f"- Response Time: {health['response_time']:0.2f}s",
                 ""
             ])
         

@@ -191,7 +191,7 @@ class AIRagCommand(BaseCommand):
             # テキスト形式
             lines = [f"🔍 検索結果: {len(results)}件\n"]
             for i, result in enumerate(results, 1):
-                lines.append(f"{i}. スコア: {result.get('score', 0):.3f}")
+                lines.append(f"{i}. スコア: {result.get('score', 0):0.3f}")
                 lines.append(f"   カテゴリ: {result.get('category', 'unknown')}")
                 lines.append(f"   内容: {result.get('content', '')[:100]}...")
                 lines.append("")

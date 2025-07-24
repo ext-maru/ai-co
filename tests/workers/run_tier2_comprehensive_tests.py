@@ -5,12 +5,12 @@ Worker基盤の完全制圧 - 全テストの統合実行
 
 実行順序:
     pass
-1. Task Worker 完全制圧テスト
-2. PM Worker 完全制圧テスト
-3. Result Worker 完全制圧テスト
-4. Worker間連携テスト
-5. ワーカー起動・動作確認テスト
-6. 最終レポート生成
+1.0 Task Worker 完全制圧テスト
+2.0 PM Worker 完全制圧テスト
+3.0 Result Worker 完全制圧テスト
+4.0 Worker間連携テスト
+5.0 ワーカー起動・動作確認テスト
+6.0 最終レポート生成
 """
 
 import importlib.util
@@ -159,7 +159,7 @@ def print_final_results(test_results, report_file):
     print(f"  📈 総テスト数: {total_tests}")
     print(f"  ✅ 成功: {successful_tests}")
     print(f"  ❌ 失敗: {failed_tests}")
-    print(f"  🎯 成功率: {success_rate:.1f}%")
+    print(f"  🎯 成功率: {success_rate:0.1f}%")
 
     # 成果判定
     if success_rate >= 90:
@@ -212,13 +212,13 @@ def main():
         },
         {
             "name": "Worker間連携テスト",
-            "file": "test_worker_inter_communication_tier2.py",
+            "file": "test_worker_inter_communication_tier2.0py",
             "function": "run_tier2_worker_inter_communication_tests",
             "priority": "HIGH",
         },
         {
             "name": "ワーカー起動・動作確認テスト",
-            "file": "test_worker_startup_tier2.py",
+            "file": "test_worker_startup_tier2.0py",
             "function": "run_tier2_worker_startup_tests",
             "priority": "MEDIUM",
         },
@@ -258,13 +258,13 @@ def main():
             duration = test_end - test_start
 
             status_icon = "✅" if success else "❌"
-            print(f"{status_icon} {test['name']} 完了 ({duration:.1f}秒)\n")
+            print(f"{status_icon} {test['name']} 完了 ({duration:0.1f}秒)\n")
 
             test_results.append(
                 {
                     "name": test["name"],
                     "success": success,
-                    "details": f"実行時間: {duration:.1f}秒",
+                    "details": f"実行時間: {duration:0.1f}秒",
                     "duration": duration,
                     "priority": test["priority"],
                 }
@@ -295,7 +295,7 @@ def main():
 
     # 最終レポート生成
     total_time = time.time() - start_time
-    print(f"\n⏱️ 総実行時間: {total_time:.1f}秒")
+    print(f"\n⏱️ 総実行時間: {total_time:0.1f}秒")
 
     report_data, report_file = generate_tier2_report(test_results)
 

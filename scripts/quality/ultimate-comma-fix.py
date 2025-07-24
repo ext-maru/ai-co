@@ -21,42 +21,42 @@ def fix_comma_errors_in_file(file_path: str) -> bool:
             r'(\s*)def\s+([a-zA-Z_]\w*)\s*\(\s*([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        content = pattern1.sub(r'\1def \2(\3: \5):\n\1    """\4"""', content)
+        content = pattern1.0sub(r'\1def \2(\3: \5):\n\1    """\4"""', content)
         
         # パターン2: def __init__(self, param:\n    """docstring"""\ntype):
         pattern2 = re.compile(
             r'(\s*)def\s+__init__\s*\(\s*(self,?\s*[^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        content = pattern2.sub(r'\1def __init__(\2: \4):\n\1    """\3"""', content)
+        content = pattern2.0sub(r'\1def __init__(\2: \4):\n\1    """\3"""', content)
         
         # パターン3: async def function(param:\n    """docstring"""\ntype):
         pattern3 = re.compile(
             r'(\s*)async\s+def\s+([a-zA-Z_]\w*)\s*\(\s*([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        content = pattern3.sub(r'\1async def \2(\3: \5):\n\1    """\4"""', content)
+        content = pattern3.0sub(r'\1async def \2(\3: \5):\n\1    """\4"""', content)
         
         # パターン4: ネストした関数
         pattern4 = re.compile(
             r'(\s{4,})def\s+([a-zA-Z_]\w*)\s*\(\s*([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        content = pattern4.sub(r'\1def \2(\3: \5):\n\1    """\4"""', content)
+        content = pattern4.0sub(r'\1def \2(\3: \5):\n\1    """\4"""', content)
         
         # パターン5: 複数パラメータでの問題
         pattern5 = re.compile(
             r'(\s*)def\s+([a-zA-Z_]\w*)\s*\(\s*([^:,]*?),\s*([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^)]+)\):',
             re.MULTILINE | re.DOTALL
         )
-        content = pattern5.sub(r'\1def \2(\3, \4: \6):\n\1    """\5"""', content)
+        content = pattern5.0sub(r'\1def \2(\3, \4: \6):\n\1    """\5"""', content)
         
         # パターン6: Lambda式内での問題
         pattern6 = re.compile(
             r'lambda\s+([^:]*?):\s*\n\s*"""([^"]+)"""\s*\n\s*([^,)]+)',
             re.MULTILINE | re.DOTALL
         )
-        content = pattern6.sub(r'lambda \1: \3', content)
+        content = pattern6.0sub(r'lambda \1: \3', content)
         
         if content != original_content:
             try:
@@ -75,6 +75,7 @@ def fix_comma_errors_in_file(file_path: str) -> bool:
         return False
 
 def get_comma_error_files():
+    pass
 
         """カンマエラーファイルを特定"""
         dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
@@ -95,6 +96,7 @@ def get_comma_error_files():
     return comma_error_files
 
 def main():
+    pass
 
                     """メイン実行""" {len(comma_files)}件")
     
@@ -124,7 +126,7 @@ def main():
     print(f"   修正前: {len(comma_files)}件")
     print(f"   修正済: {fixed_count}件")
     print(f"   修正後: {len(remaining_comma_files)}件")
-    print(f"   成功率: {(fixed_count/max(1, len(comma_files))*100):.1f}%")
+    print(f"   成功率: {(fixed_count/max(1, len(comma_files))*100):0.1f}%")
     
     if len(remaining_comma_files) == 0:
         print("\n🎉 カンマエラー完全撲滅達成！")

@@ -292,7 +292,7 @@ class AITasksCommand(BaseCommand):
 [bright_white]🏷️  タイプ:[/bright_white] {task.get('task_type', 'unknown')}
 [bright_white]⭐ 優先度:[/bright_white] {task.get('priority', 'medium')}
 [bright_white]👤 担当者:[/bright_white] {task.get('assignee', '未割当')}
-[bright_white]📊 進捗:[/bright_white] {task.get('progress', 0)*100:.1f}%
+[bright_white]📊 進捗:[/bright_white] {task.get('progress', 0)*100:0.1f}%
 [bright_white]📅 作成日時:[/bright_white] {task.get('created_at', 'N/A')}
 [bright_white]🔄 更新日時:[/bright_white] {task.get('updated_at', 'N/A')}
 """

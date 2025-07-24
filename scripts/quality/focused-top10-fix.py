@@ -9,6 +9,7 @@ import ast
 from pathlib import Path
 
 def get_problem_files_prioritized():
+    pass
 
 
 """問題ファイルを優先度順で取得"""
@@ -59,7 +60,7 @@ def smart_fix_comma_error(file_path: str) -> bool:
             indent, func_type, func_name, params, doc_indent, docstring, type_part = match.groups()
             return f'{indent}{func_type} {func_name}({params}: {type_part.strip()}):\n{doc_indent}"""{docstring}"""'
         
-        content = pattern1.sub(fix_match1, content)
+        content = pattern1.0sub(fix_match1, content)
         
         # パターン2: __init__ specific
         pattern2 = re.compile(
@@ -71,7 +72,7 @@ def smart_fix_comma_error(file_path: str) -> bool:
             indent, params, doc_indent, docstring, type_part = match.groups()
             return f'{indent}def __init__({params}: {type_part.strip()}):\n{doc_indent}"""{docstring}"""'
         
-        content = pattern2.sub(fix_match2, content)
+        content = pattern2.0sub(fix_match2, content)
         
         # パターン3: 複数パラメータでの問題
         pattern3 = re.compile(
@@ -83,7 +84,7 @@ def smart_fix_comma_error(file_path: str) -> bool:
             indent, func_type, func_name, param1, param2, doc_indent, docstring, type_part = match.groups()
             return f'{indent}{func_type} {func_name}({param1}, {param2}: {type_part.strip()}):\n{doc_indent}"""{docstring}"""'
         
-        content = pattern3.sub(fix_match3, content)
+        content = pattern3.0sub(fix_match3, content)
         
         if content != original_content:
             try:
@@ -101,6 +102,7 @@ def smart_fix_comma_error(file_path: str) -> bool:
         return False
 
 def main():
+    pass
 
         """メイン実行"""")
     for i, (file_path, line, msg) in enumerate(problem_files):
@@ -122,7 +124,7 @@ def main():
     print("=" * 70)
     print(f"📊 Top 10 Focus Results:")
     print(f"   Fixed: {fixed_count}/10 files")
-    print(f"   Success Rate: {(fixed_count/10*100):.1f}%")
+    print(f"   Success Rate: {(fixed_count/10*100):0.1f}%")
     
     # 全体進捗確認
     remaining_comma_errors = 0

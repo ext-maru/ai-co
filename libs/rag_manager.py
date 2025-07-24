@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 RAG Manager - エルダーズギルド知識探索システム
+"🔍" RAG Manager - エルダーズギルド知識探索システム
 RAG賢者 (Search Mystic) の完全実装
 
 機能:
@@ -58,7 +58,7 @@ class KnowledgeItem:
 
 class RagManager:
     """
-    🔍 RAG賢者 (Search Mystic) - 完全実装
+    "🔍" RAG賢者 (Search Mystic) - 完全実装
 
     エルダーズギルドの知識探索システム
     膨大な知識から最適解を発見する
@@ -86,7 +86,7 @@ class RagManager:
     def _init_database(self):
         """知識データベースを初期化"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 # 知識アイテムテーブル
@@ -170,7 +170,7 @@ class RagManager:
             # タグをJSON形式で保存
             tags_json = json.dumps(tags or [])
 
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
@@ -229,7 +229,7 @@ class RagManager:
             }
             self._save_cache()
 
-            logger.info(f"🔍 検索完了: '{query}' -> {len(results)}件 ({execution_time:.3f}s)")
+            logger.info(f"🔍 検索完了: '{query}' -> {len(results)}件 ({execution_time:0.3f}s)")
             return results
 
         except Exception as e:
@@ -241,7 +241,7 @@ class RagManager:
     ) -> List[SearchResult]:
         """データベースから検索"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 # 基本検索クエリ
@@ -340,7 +340,7 @@ class RagManager:
     ):
         """検索履歴を記録"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
@@ -443,7 +443,7 @@ class RagManager:
     def get_knowledge_stats(self) -> Dict[str, Any]:
         """知識ベース統計を取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 # 総知識数

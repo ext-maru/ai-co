@@ -110,7 +110,7 @@ class QualityGateSystem:
         if not passed:
             result[
                 "reason"
-            ] = f"テスト成功率が不足: {success_rate:.1f}% < {self.test_success_threshold}%"
+            ] = f"テスト成功率が不足: {success_rate:0.1f}% < {self.test_success_threshold}%"
 
         return result
 

@@ -119,7 +119,7 @@ class MetricsCollector:
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(str(self.db_path)) as conn:
+        with sqlite3connect(str(self.db_path)) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS metrics (
@@ -290,7 +290,7 @@ class MetricsCollector:
             worker_metrics = metrics.get("worker_metrics", [])
             error_stats = metrics.get("error_stats")
 
-            with sqlite3.connect(str(self.db_path)) as conn:
+            with sqlite3connect(str(self.db_path)) as conn:
                 conn.execute(
                     """
                     INSERT INTO metrics
@@ -317,7 +317,7 @@ class MetricsCollector:
         try:
             start_time = datetime.now() - timedelta(hours=hours)
 
-            with sqlite3.connect(str(self.db_path)) as conn:
+            with sqlite3connect(str(self.db_path)) as conn:
                 cursor = conn.execute(
                     """
                     SELECT timestamp, cpu_usage, memory_usage, disk_usage, worker_count,
@@ -595,7 +595,7 @@ class RealtimeUpdater:
                     "value": cpu_usage,
                     "threshold": thresholds["cpu_usage"],
                     "severity": "critical" if cpu_usage > 95 else "warning",
-                    "message": f"CPU使用率が高すぎます: {cpu_usage:.1f}%",
+                    "message": f"CPU使用率が高すぎます: {cpu_usage:0.1f}%",
                     "timestamp": datetime.now().isoformat(),
                 }
             )
@@ -610,7 +610,7 @@ class RealtimeUpdater:
                     "value": memory_usage,
                     "threshold": thresholds["memory_usage"],
                     "severity": "critical" if memory_usage > 95 else "warning",
-                    "message": f"メモリ使用率が高すぎます: {memory_usage:.1f}%",
+                    "message": f"メモリ使用率が高すぎます: {memory_usage:0.1f}%",
                     "timestamp": datetime.now().isoformat(),
                 }
             )
@@ -766,7 +766,7 @@ class DashboardAPI:
         <main class="dashboard-main">
             <!-- システムメトリクス -->
             <section class="metrics-section">
-                <h2>📊 システムメトリクス</h2>
+                <h2>"📊" システムメトリクス</h2>
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <h3>CPU使用率</h3>

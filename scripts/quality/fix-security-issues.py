@@ -20,7 +20,7 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
         original_content = content
         modified = False
         
-        # 1. hardcoded credentials/secrets
+        # 1.0 hardcoded credentials/secrets
         secret_patterns = [
             (r'password\s*=\s*[
                 "\'](?!test-|dummy-|placeholder)[^"\']{6,
@@ -37,7 +37,7 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
                 fixes.append(f"Replaced hardcoded credentials with environment variables")
                 modified = True
         
-        # 2. eval/exec usage
+        # 2.0 eval/exec usage
         if 'eval(' in content or 'exec(' in content:
             # eval()を安全な代替に置き換え
             content = re.sub(
@@ -56,7 +56,7 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
             fixes.append("Replaced eval() with safer alternatives")
             modified = True
         
-        # 3. subprocess shell=True
+        # 3.0 subprocess shell=True
         if 'shell=True' in content:
             lines = content.splitlines()
             new_lines = []
@@ -77,7 +77,7 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
             content = '\n'.join(new_lines)
             modified = True
         
-        # 4. os.system usage
+        # 4.0 os.system usage
         if 'os.system(' in content:
             content = re.sub(
                 r'os\.system\s*\(([^)]+)\)',
@@ -87,7 +87,7 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
             fixes.append("Replaced os.system with subprocess.run")
             modified = True
         
-        # 5. weak cryptography
+        # 5.0 weak cryptography
         weak_crypto = ['md5', 'sha1', 'DES', 'RC4']
         for crypto in weak_crypto:
             if crypto in content:
@@ -98,7 +98,7 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
                 fixes.append(f"Replaced weak {crypto} with stronger alternatives")
                 modified = True
         
-        # 6. unsafe file operations
+        # 6.0 unsafe file operations
         if 'open(' in content:
             # ファイルパスのバリデーションを追加
             lines = content.splitlines()
@@ -121,7 +121,7 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
             content = '\n'.join(new_lines)
             modified = True
         
-        # 7. SQL injection prevention
+        # 7.0 SQL injection prevention
         if 'execute(' in content and \
             ('SELECT' in content or 'INSERT' in content or 'UPDATE' in content or 'DELETE' in content):
             # パラメータ化クエリのチェック
@@ -130,18 +130,18 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
                 if 'execute(' in line and '%" %' in line:
                     fixes.append("Warning: Potential SQL injection - use parameterized queries")
         
-        # 8. Path traversal prevention
+        # 8.0 Path traversal prevention
         if '../' in content or '..\\' in content:
             # os.path.abspath()でパスを正規化
             content = re.sub(
                 r'(["\'])\.\.\/([^"\']+)(["\'])',
-                r'os.path.abspath(\1./\2\3)',
+                r'os.path.abspath(\1.0/\2\3)',
                 content
             )
             fixes.append("Fixed potential path traversal vulnerability")
             modified = True
         
-        # 9. Insecure random number generation
+        # 9.0 Insecure random number generation
         if 'random.random()' in content or 'random.randint' in content:
             # セキュリティ関連の文脈でのみ置き換え
             if any(keyword in content.lower() for keyword in ['password', 'token', 'key', 'secret']):
@@ -162,7 +162,7 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
                 fixes.append("Replaced insecure random with secrets module")
                 modified = True
         
-        # 10. SSRF prevention
+        # 10.0 SSRF prevention
         if 'requests.get(' in content or 'urllib.request.urlopen' in content:
             # URLバリデーションのコメントを追加
             lines = content.splitlines()
@@ -191,10 +191,8 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
     except Exception as e:
         return 0, [f"Error: {str(e)}"]
 
-def main():
-    """メイン処理"""
-    if len(sys.argv) < 2:
-        print("Usage: fix-security-issues.py <file1> [file2] ...")
+def main()if len(sys.argv) < 2print("Usage: fix-security-issues.py <file1> [file2] ...")
+"""メイン処理"""
         sys.exit(1)
     
     total_fixes = 0

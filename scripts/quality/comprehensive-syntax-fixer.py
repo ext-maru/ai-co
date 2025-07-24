@@ -60,7 +60,7 @@ class ComprehensiveSyntaxFixer:
         
         # パターン1: def func(): \n """docstring""" \n     """correct"""
         pattern1 = re.compile(
-            r'(^\s*(?:def|class)\s+\w+.*?:\s*\n)'  # function/class definition
+            r'(^\s*(?:def|class)\s+\w+.*?:\s*\n)'  # function/class definition:
             r'(\s*)"""[^"]*"""\s*\n'               # misplaced docstring
             r'(\s+)"""([^"]*)"""',                 # correct docstring
             re.MULTILINE | re.DOTALL
@@ -69,7 +69,7 @@ class ComprehensiveSyntaxFixer:
         
         # パターン2: def func(): \n """docstring""" (単独の不正配置)
         pattern2 = re.compile(
-            r'(^\s*(?:def|class)\s+\w+.*?:\s*\n)'  # function/class definition  
+            r'(^\s*(?:def|class)\s+\w+.*?:\s*\n)'  # function/class definition  :
             r'(\s*)"""([^"]*)"""\s*\n'             # misplaced docstring
             r'(?![\s]*""")',                       # not followed by another docstring
             re.MULTILINE | re.DOTALL
@@ -201,7 +201,7 @@ def main():
     print(f"\n🎯 Final Results:")
     print(f"Files processed: {len(syntax_error_files)}")
     print(f"Files fixed: {len(fixed_files)}")
-    print(f"Success rate: {len(fixed_files)/len(syntax_error_files)*100:.1f}%")
+    print(f"Success rate: {len(fixed_files)/len(syntax_error_files)*100:0.1f}%")
     
     if fixed_files:
         print(f"\n✅ Fixed files:")

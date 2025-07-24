@@ -160,7 +160,7 @@ class ImprovedBaseWorker(ABC):
             duration = time.time() - start_time
             self.processed_count += 1
             self.logger.info(
-                f"Message processed: {task_id} (duration: {duration:.3f}s, total: {self.processed_count})"
+                f"Message processed: {task_id} (duration: {duration:0.3f}s, total: {self.processed_count})"
             )
 
         except Exception as e:
@@ -168,7 +168,7 @@ class ImprovedBaseWorker(ABC):
             duration = time.time() - start_time
             self.logger.error(
                 f"Message processing failed: {task_id} - {type(e).__name__}: {str(e)} " \
-                    "(duration: {duration:.3f}s, errors: {self.error_count})"
+                    "(duration: {duration:0.3f}s, errors: {self.error_count})"
             )
 
             if self.logger.isEnabledFor(logging.DEBUG):
@@ -260,7 +260,7 @@ class ImprovedBaseWorker(ABC):
             rate = self.processed_count / runtime
             self.logger.info(
                 f"Final metrics: processed={self.processed_count}, errors={self.error_count}," \
-                    " runtime={runtime:.1f}s, rate={rate:.2f}/s"
+                    " runtime={runtime:0.1f}s, rate={rate:0.2f}/s"
             )
 
         try:

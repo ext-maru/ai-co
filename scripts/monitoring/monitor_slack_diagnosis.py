@@ -50,12 +50,12 @@ cd /home/aicompany/ai_co
 echo "=== 最新のSlack関連ログ ==="
 echo ""
 
-# 1. 最新のコマンド実行ログ
-echo "1. 最新のコマンドログ:"
+# 1.0 最新のコマンド実行ログ
+echo "1.0 最新のコマンドログ:"
 ls -lt ai_commands/logs/*slack*.log 2>/dev/null | head -5
 
 echo ""
-echo "2. check_results_nowの結果:"
+echo "2.0 check_results_nowの結果:"
 if [ -f ai_commands/logs/check_slack_auto*.log ]; then
     LATEST_LOG=$(ls -t ai_commands/logs/check_slack_auto*.log 2>/dev/null | head -1)
     echo "ファイル: $LATEST_LOG"
@@ -64,7 +64,7 @@ if [ -f ai_commands/logs/check_slack_auto*.log ]; then
 fi
 
 echo ""
-echo "3. Polling Worker状態:"
+echo "3.0 Polling Worker状態:"
 if pgrep -f "slack_polling_worker" > /dev/null; then
     echo "✅ Slack Polling Worker動作中"
     echo "最新ログ:"
@@ -74,7 +74,7 @@ else
 fi
 
 echo ""
-echo "4. 処理されたメッセージ:"
+echo "4.0 処理されたメッセージ:"
 if [ -f db/slack_messages.db ]; then
     sqlite3 db/slack_messages.db "SELECT COUNT(*) as total FROM processed_messages \
         WHERE text LIKE '%pm-ai%';" 2>/dev/null
@@ -98,10 +98,10 @@ fi
 
     print("\n診断完了！")
     print("\n次のアクション:")
-    print("1. Slack Polling Workerが停止している場合 → 起動が必要")
-    print("2. メッセージが取得できていない場合 → Bot Token/権限確認")
+    print("1.0 Slack Polling Workerが停止している場合 → 起動が必要")
+    print("2.0 メッセージが取得できていない場合 → Bot Token/権限確認")
     print(
-        "3. メッセージは取得できているがタスク化されない場合 → ワーカーのログ詳細確認"
+        "3.0 メッセージは取得できているがタスク化されない場合 → ワーカーのログ詳細確認"
     )
 
 

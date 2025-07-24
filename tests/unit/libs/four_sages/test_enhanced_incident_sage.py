@@ -469,7 +469,7 @@ async def test_end_to_end_flow():
         await sage.initialize_integration()
         
         try:
-            # 1. 高リスクメトリクスを投入
+            # 1.0 高リスクメトリクスを投入
             high_risk_metrics = {
                 "error_rate": 0.25,
                 "response_time": 12.0,
@@ -478,10 +478,10 @@ async def test_end_to_end_flow():
                 "failure_rate": 0.3
             }
             
-            # 2. メトリクス監視（アラート生成）
+            # 2.0 メトリクス監視（アラート生成）
             await sage.monitor_tracking_metrics(high_risk_metrics)
             
-            # 3. リスク予測実行
+            # 3.0 リスク予測実行
             prediction_response = await sage.process_request({
                 "type": "predict_risk",
                 "state": {
@@ -492,7 +492,7 @@ async def test_end_to_end_flow():
             
             assert prediction_response["success"] is True
             
-            # 4. インシデント作成（自動対応付き）
+            # 4.0 インシデント作成（自動対応付き）
             incident_response = await sage.process_request({
                 "type": "create_incident",
                 "title": "High System Load",
@@ -503,7 +503,7 @@ async def test_end_to_end_flow():
             
             assert incident_response["success"] is True
             
-            # 5. 統合ステータス確認
+            # 5.0 統合ステータス確認
             status_response = await sage.process_request({
                 "type": "get_integration_status"
             })

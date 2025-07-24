@@ -60,7 +60,7 @@ def test_docker_environment():
     print("🐳 Elders Guild Project Web Portal - Docker環境テスト")
     print("=" * 60)
 
-    # 1. Docker基本確認
+    # 1.0 Docker基本確認
     print("\n1️⃣ Docker基本環境確認...")
 
     # Docker確認
@@ -79,7 +79,7 @@ def test_docker_environment():
         print("   ❌ Docker Compose: インストールされていません")
         return False
 
-    # 2. 設定ファイル確認
+    # 2.0 設定ファイル確認
     print("\n2️⃣ 設定ファイル確認...")
 
     required_files = {
@@ -99,7 +99,7 @@ def test_docker_environment():
         else:
             print(f"   ❌ {description}: {file_path} が見つかりません")
 
-    # 3. 環境変数ファイル準備
+    # 3.0 環境変数ファイル準備
     print("\n3️⃣ 環境変数ファイル準備...")
 
     env_file = PROJECT_ROOT / ".env"
@@ -119,7 +119,7 @@ def test_docker_environment():
     else:
         print("   ❌ .env.example ファイルが見つかりません")
 
-    # 4. Docker Composeサービス確認
+    # 4.0 Docker Composeサービス確認
     print("\n4️⃣ Docker Composeサービス確認...")
 
     success, stdout, stderr = run_command("docker-compose config --services")
@@ -132,7 +132,7 @@ def test_docker_environment():
         print(f"   ❌ Docker Compose設定エラー: {stderr}")
         return False
 
-    # 5. 既存コンテナ状態確認
+    # 5.0 既存コンテナ状態確認
     print("\n5️⃣ 既存コンテナ状態確認...")
 
     success, stdout, stderr = run_command("docker-compose ps")
@@ -143,7 +143,7 @@ def test_docker_environment():
         else:
             print("   ✅ 稼働中のコンテナなし")
 
-    # 6. ポート使用状況確認
+    # 6.0 ポート使用状況確認
     print("\n6️⃣ ポート使用状況確認...")
 
     ports_to_check = [80, 3000, 5432, 6379, 8000]
@@ -156,7 +156,7 @@ def test_docker_environment():
         else:
             print(f"   ✅ ポート {port}: 利用可能")
 
-    # 7. Docker起動スクリプト確認
+    # 7.0 Docker起動スクリプト確認
     print("\n7️⃣ Docker起動スクリプト確認...")
 
     start_script = PROJECT_ROOT / "scripts" / "docker_start.sh"
@@ -175,7 +175,7 @@ def test_docker_environment():
     else:
         print("   ❌ 起動スクリプトが見つかりません")
 
-    # 8. 簡易接続テスト（起動している場合）
+    # 8.0 簡易接続テスト（起動している場合）
     print("\n8️⃣ サービス接続テスト（稼働中の場合）...")
 
     services_to_test = [
@@ -195,22 +195,22 @@ def test_docker_environment():
         except requests.exceptions.RequestException:
             print(f"   📴 {name}: 停止中")
 
-    # 9. 起動手順説明
+    # 9.0 起動手順説明
     print("\n9️⃣ Docker起動手順:")
     print("   🔧 手動起動:")
-    print("      1. cd /home/aicompany/ai_co")
-    print("      2. cp .env.example .env")
-    print("      3. .envファイルのOPENAI_API_KEYを設定")
-    print("      4. docker-compose up -d")
+    print("      1.0 cd /home/aicompany/ai_co")
+    print("      2.0 cp .env.example .env")
+    print("      3.0 .envファイルのOPENAI_API_KEYを設定")
+    print("      4.0 docker-compose up -d")
     print("")
     print("   🚀 自動起動スクリプト:")
-    print("      1. cd /home/aicompany/ai_co")
-    print("      2. ./scripts/docker_start.sh")
+    print("      1.0 cd /home/aicompany/ai_co")
+    print("      2.0 ./scripts/docker_start.sh")
     print("")
     print("   🛑 停止:")
     print("      docker-compose down")
 
-    # 10. 統合テスト手順
+    # 10.0 統合テスト手順
     print("\n🔟 統合テスト推奨手順:")
     test_steps = [
         "Docker環境起動",
@@ -235,9 +235,9 @@ def test_docker_environment():
     print("   ✅ 起動スクリプト準備済み")
 
     print("\n🎯 次のアクション:")
-    print("   1. OpenAI API キーを .env ファイルに設定")
-    print("   2. ./scripts/docker_start.sh で起動")
-    print("   3. http://localhost でアプリケーション確認")
+    print("   1.0 OpenAI API キーを .env ファイルに設定")
+    print("   2.0 ./scripts/docker_start.sh で起動")
+    print("   3.0 http://localhost でアプリケーション確認")
 
     print("\n✨ Elders Guild Project Web Portal Docker環境準備完了！")
     return True

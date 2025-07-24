@@ -207,9 +207,8 @@ class InputValidator:
 class AuthenticationManager:
     """認証・認可システム（RBAC対応）"""
     
-    def __init__(self, secret_key:
+    def __init__(self, secret_key: str = None):
         """初期化メソッド"""
-    str = None):
         self.secret_key = secret_key or os.getenv("A2A_SECRET_KEY", self._generate_secret_key())
         self.sessions: Dict[str, SecurityContext] = {}
         self.failed_attempts: Dict[str, List[datetime]] = {}
@@ -387,9 +386,8 @@ class AuthenticationManager:
 class DataProtectionManager:
     """データ保護・暗号化システム"""
     
-    def __init__(self, master_key:
+    def __init__(self, master_key: str = None):
         """初期化メソッド"""
-    str = None):
         self.master_key = master_key or os.getenv("A2A_MASTER_KEY")
         if not self.master_key:
             self.master_key = self._generate_master_key()
@@ -532,8 +530,8 @@ class VulnerabilityScanner:
         """脆弱な依存関係チェック（簡単な実装）"""
         # 実際の実装では、安全でないバージョンのデータベースを使用
         vulnerable_patterns = [
-            r'requests==2\.25\.0',  # 例: 既知の脆弱なバージョン
-            r'urllib3==1\.26\.0',
+            r'requests==2\0.25\0.0',  # 例: 既知の脆弱なバージョン
+            r'urllib3==1\0.26\0.0',
         ]
         
         return any(re.search(pattern, dependency) for pattern in vulnerable_patterns)

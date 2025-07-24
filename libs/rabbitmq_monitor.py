@@ -340,9 +340,8 @@ class RabbitMQMonitor:
 def create_slack_alert_handler():
     """Slack通知ハンドラー作成"""
 
-    def slack_handler(alert_type:
+    def slack_handler(alert_type: str, message: str):
         """slack_handlerメソッド"""
-    str, message: str):
         try:
             from libs.slack_notifier import SlackNotifier
 
@@ -384,7 +383,7 @@ if __name__ == "__main__":
             status = monitor.get_status_report()
             print(
                 f"🔍 監視状況: 接続={status['connection_status']['is_connected']}, "
-                f"成功率={status['statistics']['success_rate']:.1f}%"
+                f"成功率={status['statistics']['success_rate']:0.1f}%"
             )
 
             # ログ保存

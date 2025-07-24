@@ -59,9 +59,8 @@ class GitHubErrorHandler:
         "service unavailable": ErrorSeverity.CRITICAL,
     }
 
-    def __init__(self):
-        """初期化"""
-        self.error_history = deque(maxlen=1000)  # エラー履歴
+    def __init__(self)self.error_history = deque(maxlen=1000)  # エラー履歴
+    """初期化"""
         self.retry_config = {
             "max_retries": 3,
             "initial_delay": 1.0,
@@ -212,7 +211,7 @@ class GitHubErrorHandler:
             return {
                 "action": "wait_and_retry",
                 "wait_time": wait_time,
-                "message": f"Rate limit hit. Wait {wait_time:.0f} seconds",
+                "message": f"Rate limit hit. Wait {wait_time:0.0f} seconds",
             }
 
         # 認証エラー
@@ -271,7 +270,7 @@ class GitHubErrorHandler:
         )
 
         if context:
-            log_message += f" | Context: {json.dumps(context, default=str)}"
+            log_message += f" | Context: {json.dumps(context, default}"
 
         if severity == ErrorSeverity.CRITICAL.value:
             logger.critical(log_message)
@@ -349,7 +348,7 @@ class GitHubErrorHandler:
                     wait_time = min(delay, self.retry_config["max_delay"])
 
                 logger.info(
-                    f"Retrying in {wait_time:.1f} seconds (attempt {attempt + 1}/{self.retry_config['max_retries']})"
+                    f"Retrying in {wait_time:0.1f} seconds (attempt {attempt + 1}/{self.retry_config['max_retries']})"
                 )
                 time.sleep(wait_time)
 
@@ -476,12 +475,10 @@ def with_error_handling(
     if handle_errors is None:
         handle_errors = [Exception]
 
-    def decorator(func):
-        """decoratorメソッド"""
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            """wrapperメソッド"""
-            handler = GitHubErrorHandler()
+    def decorator(func)@wraps(func)
+    """decoratorメソッド"""
+        def wrapper(*args, **kwargs)handler = GitHubErrorHandler()
+    """wrapperメソッド"""
             handler.retry_config["max_retries"] = max_retries
             handler.retry_config["backoff_factor"] = backoff_factor
 
@@ -495,7 +492,7 @@ def with_error_handling(
 
                 # エラーレポートをログ
                 logger.error(
-                    f"Final error report: {json.dumps(handler.get_error_report(), indent=2)}"
+                    f"Final error report: {json.dumps(handler.get_error_report(), indent}"
                 )
                 raise
 

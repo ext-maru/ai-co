@@ -495,8 +495,8 @@ class EitmsAiEngine:
             skills_required=self._extract_required_skills(task)
         )
         
-        logger.info(f"🧠 AI分析完了: {task.title} (複雑度: {complexity_score:.2f}, 工数: {estimated_hours:.1f}h)" \
-            "🧠 AI分析完了: {task.title} (複雑度: {complexity_score:.2f}, 工数: {estimated_hours:.1f}h)")
+        logger.info(f"🧠 AI分析完了: {task.title} (複雑度: {complexity_score:0.2f}, 工数: {estimated_hours:0.1f}h)" \
+            "🧠 AI分析完了: {task.title} (複雑度: {complexity_score:0.2f}, 工数: {estimated_hours:0.1f}h)")
         return metrics
     
     async def generate_recommendations(self, task_id: str) -> List[AIRecommendation]:
@@ -510,7 +510,7 @@ class EitmsAiEngine:
         # 複雑度分析
         complexity_score = self.complexity_analyzer.analyze_complexity(task)
         
-        # 1. 優先度最適化推奨
+        # 1.0 優先度最適化推奨
         context = self._build_task_context(task)
         new_priority, confidence = self.priority_optimizer.optimize_priority(task, context)
         
@@ -521,11 +521,11 @@ class EitmsAiEngine:
                 current_value=task.priority.value,
                 recommended_value=new_priority.value,
                 confidence=confidence,
-                reasoning=f"コンテキスト分析により優先度調整を推奨 (信頼度: {confidence:.2f})",
+                reasoning=f"コンテキスト分析により優先度調整を推奨 (信頼度: {confidence:0.2f})",
                 impact_score=self._calculate_priority_impact(task.priority, new_priority)
             ))
         
-        # 2. 工数見積もり推奨
+        # 2.0 工数見積もり推奨
         estimated_hours = self.effort_estimator.estimate_effort(task, complexity_score)
         current_estimate = task.time_estimated or 0
         
@@ -536,11 +536,11 @@ class EitmsAiEngine:
                 current_value=current_estimate,
                 recommended_value=estimated_hours,
                 confidence=0.8,
-                reasoning=f"複雑度分析に基づく工数見積もり調整 (複雑度: {complexity_score:.2f})",
+                reasoning=f"複雑度分析に基づく工数見積もり調整 (複雑度: {complexity_score:0.2f})",
                 impact_score=abs(estimated_hours - current_estimate) / max(estimated_hours, 1)
             ))
         
-        # 3. 分解推奨 (大規模タスク用)
+        # 3.0 分解推奨 (大規模タスク用)
         if complexity_score > 3.0 and estimated_hours > 6.0:
             recommendations.append(AIRecommendation(
                 task_id=task_id,
@@ -548,11 +548,11 @@ class EitmsAiEngine:
                 current_value='single_task',
                 recommended_value='multiple_subtasks',
                 confidence=0.85,
-                reasoning=f"高複雑度・大工数タスクの分解を推奨 (複雑度: {complexity_score:.2f}, 工数: {estimated_hours:.1f}h)",
+                reasoning=f"高複雑度・大工数タスクの分解を推奨 (複雑度: {complexity_score:0.2f}, 工数: {estimated_hours:0.1f}h)",
                 impact_score=complexity_score / 5.0
             ))
         
-        # 4. スキルマッチング推奨
+        # 4.0 スキルマッチング推奨
         required_skills = self._extract_required_skills(task)
         if required_skills:
             recommendations.append(AIRecommendation(
@@ -790,7 +790,7 @@ async def main():
     # タスク分析
     task_id = "ai-test-task"
     metrics = await ai_engine.analyze_task(task_id)
-    logger.info(f"🎯 分析結果: 複雑度={metrics.complexity_score:.2f}, 工数={metrics.estimated_hours:.1f}h")
+    logger.info(f"🎯 分析結果: 複雑度={metrics.complexity_score:0.2f}, 工数={metrics.estimated_hours:0.1f}h")
     
     # AI推奨生成
     recommendations = await ai_engine.generate_recommendations(task_id)

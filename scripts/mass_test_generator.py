@@ -246,8 +246,8 @@ def main():
 
     if generated_count > 0:
         print("\n次のステップ:")
-        print("1. pytest tests/unit/ -v --tb=no でテスト実行")
-        print("2. pytest --cov=. --cov-report=html でカバレッジ確認")
+        print("1.0 pytest tests/unit/ -v --tb=no でテスト実行")
+        print("2.0 pytest --cov=. --cov-report=html でカバレッジ確認")
 
 
 if __name__ == "__main__":

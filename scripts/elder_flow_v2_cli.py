@@ -93,9 +93,9 @@ Examples:
         else:
             print("📊 Elder Flow v2.0 Statistics:")
             print(f"   Total Executions: {stats['total_executions']}")
-            print(f"   Success Rate: {stats['successful_executions'] / max(stats['total_executions'], 1) * 100:.1f}%")
-            print(f"   Mind Reading Accuracy: {stats['mind_reading_accuracy']:.2%}")
-            print(f"   Auto Execution Rate: {stats['auto_execution_rate']:.2%}")
+            print(f"   Success Rate: {stats['successful_executions'] / max(stats['total_executions'], 1) * 100:0.1f}%")
+            print(f"   Mind Reading Accuracy: {stats['mind_reading_accuracy']:0.2%}")
+            print(f"   Auto Execution Rate: {stats['auto_execution_rate']:0.2%}")
             print(f"   Mind Reading Available: {stats['mind_reading_available']}")
         return
 
@@ -169,7 +169,7 @@ async def run_interactive_mode(elder_flow: ElderFlowMindReading):
             elif instruction.lower() == "stats":
                 stats = elder_flow.get_statistics()
                 print(f"📊 Executions: {stats['total_executions']}, "
-                      f"Success: {stats['successful_executions'] / max(stats['total_executions'], 1) * 100:.1f}%, "
+                      f"Success: {stats['successful_executions'] / max(stats['total_executions'], 1) * 100:0.1f}%, "
                       f"Auto Mode: {stats['auto_mode']}")
                 continue
             elif instruction.lower() == "auto":
@@ -199,10 +199,10 @@ def print_result(result: dict, compact: bool = False):
 
     if compact:
         status = "✅" if result.get("executed") else "📋"
-        print(f"   {status} {result['intent']} ({result['confidence']:.0%}) → {result['command'][:40]}...")
+        print(f"   {status} {result['intent']} ({result['confidence']:0.0%}) → {result['command'][:40]}...")
     else:
         print(f"🧠 Intent: {result['intent']}")
-        print(f"📊 Confidence: {result['confidence']:.1%}")
+        print(f"📊 Confidence: {result['confidence']:0.1%}")
         print(f"💻 Command: {result['command']}")
         print(f"⚡ Auto-executed: {'Yes' if result['executed'] else 'No'}")
 

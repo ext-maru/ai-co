@@ -62,7 +62,7 @@ class PracticalAutoSystemGenerator:
                 "inventory": ["Redis", "PostgreSQL"],
             },
             "dashboard": {
-                "frontend": ["React", "D3.js", "Chart.js"],
+                "frontend": ["React", "D3.0js", "Chart.js"],
                 "backend": ["Python", "FastAPI", "Pandas"],
                 "database": ["PostgreSQL", "InfluxDB"],
                 "analytics": ["Pandas", "NumPy"],
@@ -307,10 +307,9 @@ volumes:
 
         return components
 
-    def _detect_system_type(self, description: str) -> str:
-        """システムタイプ検出"""
-        desc_lower = description.lower()
-
+    def _detect_system_type(self, description: str) -> strdesc_lower = description.lower()
+    """システムタイプ検出"""
+:
         if any(word in desc_lower for word in ["todo", "task"]):
             return "todo_app"
         elif any(word in desc_lower for word in ["shop", "store", "ecommerce"]):
@@ -473,28 +472,28 @@ async def websocket_endpoint(websocket: WebSocket):
 
         print(f"🛠️ Generating system for: '{user_description}'")
 
-        # 1. 要件分析
+        # 1.0 要件分析
         print("📋 Analyzing requirements...")
         requirements = self.analyze_requirements(user_description)
         print(f"✅ Identified {len(requirements)} requirements")
 
-        # 2. 依存関係確立
+        # 2.0 依存関係確立
         print("🔗 Establishing build order...")
         build_order = self.establish_dependency_order(requirements)
         print(
             f"✅ Build order: {' → '.join([req.technical_category for req in requirements])}"
         )
 
-        # 3. 並列コンポーネント生成
+        # 3.0 並列コンポーネント生成
         print("⚡ Generating components...")
         components = self.generate_system_components(requirements, user_description)
         print(f"✅ Generated {len(components)} components")
 
-        # 4. Docker Compose生成
+        # 4.0 Docker Compose生成
         print("🐳 Generating deployment configuration...")
         docker_compose = self._generate_docker_compose(components)
 
-        # 5. システム統合
+        # 5.0 システム統合
         system_architecture = {
             "system_id": f"sys_{uuid.uuid4().hex[:8]}",
             "description": user_description,
@@ -601,9 +600,8 @@ Generated at: {system["generated_at"]}
 
 
 # デモ実行
-async def practical_demo():
-    """実用的な自動システム生成デモ"""
-    print("🛠️ Practical Auto System Generator Demo")
+async def practical_demo()print("🛠️ Practical Auto System Generator Demo")
+"""実用的な自動システム生成デモ"""
     print("=" * 70)
 
     generator = PracticalAutoSystemGenerator()

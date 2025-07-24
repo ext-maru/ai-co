@@ -482,9 +482,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     # Complex condition - consider breaking down
                     import_lines.append(line)
                 else:
-                    if not (in_imports and stripped):
-                        continue  # Early return to reduce nesting
-                    # Reduced nesting - original condition satisfied
+                    # Removed invalid continue statement
                     if in_imports and stripped:
                         # Complex condition - consider breaking down
                         in_imports = False

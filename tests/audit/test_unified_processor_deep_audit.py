@@ -21,38 +21,31 @@ class CodeAnalyzer:
         self.issues = []
         self.base_path = Path("/home/aicompany/ai_co/libs/auto_issue_processor")
     
-    def analyze_all_files(self):
-        """すべてのPythonファイルを分析"""
-        for py_file in self.base_path.rglob("*.py"):
-            if "__pycache__" not in str(py_file):
-                self.analyze_file(py_file)
+    def analyze_all_files(self)for py_file in self.base_path.rglob("*.py")if "__pycache__" not in str(py_file)self.analyze_file(py_file)
+    """すべてのPythonファイルを分析"""
         return self.issues
     
-    def analyze_file(self, file_path: Path):
-        """個別ファイルの分析"""
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
+    def analyze_file(self, file_path: Path)with open(file_path, 'r', encoding='utf-8') as fcontent = f.read()
+    """個別ファイルの分析"""
         
-        # 1. AST解析
+        # 1.0 AST解析
         try:
             tree = ast.parse(content)
             self.analyze_ast(tree, file_path)
         except SyntaxError as e:
             self.issues.append(f"❌ 構文エラー in {file_path}: {e}")
         
-        # 2. セキュリティパターン検出
+        # 2.0 セキュリティパターン検出
         self.check_security_patterns(content, file_path)
         
-        # 3. コード品質チェック
+        # 3.0 コード品質チェック
         self.check_code_quality(content, file_path)
         
-        # 4. エラーハンドリングチェック
+        # 4.0 エラーハンドリングチェック
         self.check_error_handling(content, file_path)
     
-    def analyze_ast(self, tree: ast.AST, file_path: Path):
-        """AST解析による問題検出"""
-        class SecurityVisitor(ast.NodeVisitor):
-            def __init__(self, analyzer):
+    def analyze_ast(self, tree: ast.AST, file_path: Path)class SecurityVisitor(ast.NodeVisitor)def __init__(self, analyzer):
+    """AST解析による問題検出"""
                 self.analyzer = analyzer
                 self.file_path = file_path
             
@@ -108,21 +101,20 @@ class CodeAnalyzer:
                 line_no = content[:match.start()].count('\n') + 1
                 self.issues.append(f"⚠️ {description} in {file_path}:{line_no}")
     
-    def check_code_quality(self, content: str, file_path: Path):
-        """コード品質チェック"""
-        lines = content.split('\n')
+    def check_code_quality(self, content: str, file_path: Path)lines = content.split('\n')
+    """コード品質チェック"""
         
-        # 1. 長すぎる行
+        # 1.0 長すぎる行
         for i, line in enumerate(lines, 1):
             if len(line) > 120:
                 self.issues.append(f"⚠️ 行が長すぎる({len(line)}文字) in {file_path}:{i}")
         
-        # 2. TODO/FIXMEコメント
+        # 2.0 TODO/FIXMEコメント
         for i, line in enumerate(lines, 1):
             if 'TODO' in line or 'FIXME' in line:
                 self.issues.append(f"⚠️ 未完了タスク in {file_path}:{i}")
         
-        # 3. 複雑度の高い関数（簡易チェック）
+        # 3.0 複雑度の高い関数（簡易チェック）
         function_lines = []
         in_function = False
         indent_level = 0
@@ -144,15 +136,15 @@ class CodeAnalyzer:
     
     def check_error_handling(self, content: str, file_path: Path):
         """エラーハンドリングチェック"""
-        # 1. 裸のexcept
+        # 1.0 裸のexcept
         if re.search(r'except\s*:', content):
             self.issues.append(f"❌ 裸のexcept節 in {file_path}")
         
-        # 2. エラーの握りつぶし
+        # 2.0 エラーの握りつぶし
         if re.search(r'except.*:\s*\n\s*pass', content):
             self.issues.append(f"⚠️ エラーの握りつぶし in {file_path}")
         
-        # 3. assertの使用（本番コードで無効化される）
+        # 3.0 assertの使用（本番コードで無効化される）
         if 'assert ' in content and 'test' not in str(file_path):
             self.issues.append(f"⚠️ 本番コードでのassert使用 in {file_path}")
 
@@ -166,14 +158,14 @@ class DependencyAnalyzer:
     
     def analyze_dependencies(self):
         """依存関係の分析"""
-        # 1. 循環参照チェック
+        # 1.0 循環参照チェック
         imports = self.collect_imports()
         cycles = self.find_circular_dependencies(imports)
         
         for cycle in cycles:
             self.issues.append(f"❌ 循環参照: {' -> '.join(cycle)}")
         
-        # 2. 未使用インポート
+        # 2.0 未使用インポート
         for file_path, imported_modules in imports.items():
             content = file_path.read_text()
             for module in imported_modules:
@@ -229,7 +221,7 @@ class ConfigurationAnalyzer:
     
     def analyze_configs(self):
         """設定ファイルの分析"""
-        # 1. YAMLファイルの検証
+        # 1.0 YAMLファイルの検証
         yaml_files = [
             "configs/auto_issue_processor.yaml",
             "configs/elder_scheduler_config.yaml"
@@ -239,15 +231,13 @@ class ConfigurationAnalyzer:
             if os.path.exists(yaml_file):
                 self.check_yaml_security(yaml_file)
         
-        # 2. 環境変数の使用状況
+        # 2.0 環境変数の使用状況
         self.check_env_usage()
         
         return self.issues
     
-    def check_yaml_security(self, file_path: str):
-        """YAML設定のセキュリティチェック"""
-        with open(file_path, 'r') as f:
-            content = f.read()
+    def check_yaml_security(self, file_path: str)with open(file_path, 'r') as fcontent = f.read()
+    """YAML設定のセキュリティチェック"""
         
         # 危険なパターン
         if '!!' in content:  # YAMLタグ
@@ -274,9 +264,8 @@ class ProcessLockAnalyzer:
     def __init__(self):
         self.issues = []
     
-    def analyze_lock_implementation(self):
-        """ロック実装の分析"""
-        lock_file = Path("/home/aicompany/ai_co/libs/auto_issue_processor/utils/locking.py")
+    def analyze_lock_implementation(self)lock_file = Path("/home/aicompany/ai_co/libs/auto_issue_processor/utils/locking.py")
+    """ロック実装の分析"""
         
         if not lock_file.exists():
             self.issues.append("❌ ロック実装ファイルが存在しない")
@@ -285,19 +274,19 @@ class ProcessLockAnalyzer:
         with open(lock_file, 'r') as f:
             content = f.read()
         
-        # 1. アトミック操作の確認
+        # 1.0 アトミック操作の確認
         if 'rename' not in content and 'link' not in content:
             self.issues.append("⚠️ ファイルロックがアトミックでない可能性")
         
-        # 2. デッドロック対策
+        # 2.0 デッドロック対策
         if 'ttl' not in content.lower() and 'timeout' not in content.lower():
             self.issues.append("❌ TTL/タイムアウトが実装されていない")
         
-        # 3. クリーンアップ機能
+        # 3.0 クリーンアップ機能
         if 'cleanup' not in content.lower():
             self.issues.append("⚠️ 古いロックのクリーンアップ機能がない")
         
-        # 4. プロセス生存確認
+        # 4.0 プロセス生存確認
         if 'psutil' in content or 'kill' in content:
             # プロセス生存確認あり
             pass
@@ -307,16 +296,15 @@ class ProcessLockAnalyzer:
         return self.issues
 
 
-def run_deep_audit():
-    """深層監査の実行"""
-    print("=" * 80)
+def run_deep_audit()print("=" * 80)
+"""深層監査の実行"""
     print("統一Auto Issue Processor 深層監査")
     print("=" * 80)
     print()
     
     all_issues = []
     
-    # 1. コード品質分析
+    # 1.0 コード品質分析
     print("📝 コード品質分析")
     print("-" * 40)
     code_analyzer = CodeAnalyzer()
@@ -330,7 +318,7 @@ def run_deep_audit():
         print("  ✅ コード品質問題なし")
     print()
     
-    # 2. 依存関係分析
+    # 2.0 依存関係分析
     print("🔗 依存関係分析")
     print("-" * 40)
     dep_analyzer = DependencyAnalyzer()
@@ -344,7 +332,7 @@ def run_deep_audit():
         print("  ✅ 依存関係問題なし")
     print()
     
-    # 3. 設定分析
+    # 3.0 設定分析
     print("⚙️ 設定分析")
     print("-" * 40)
     config_analyzer = ConfigurationAnalyzer()
@@ -358,7 +346,7 @@ def run_deep_audit():
         print("  ✅ 設定問題なし")
     print()
     
-    # 4. ロック実装分析
+    # 4.0 ロック実装分析
     print("🔒 ロック実装分析")
     print("-" * 40)
     lock_analyzer = ProcessLockAnalyzer()

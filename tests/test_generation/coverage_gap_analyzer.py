@@ -120,9 +120,8 @@ class CoverageParser:
             print(f"Error running coverage analysis: {e}")
             return {}
 
-    def get_uncovered_functions(self, file_path: Path) -> List[Dict[str, any]]:
-        """Identify uncovered functions in a file"""
-        if not file_path.exists():
+    def get_uncovered_functions(self, file_path: Path) -> List[Dict[str, any]]if not file_path.exists():
+    """Identify uncovered functions in a file"""
             return []
 
         try:
@@ -198,15 +197,14 @@ class GapAnalyzer:
             "utils/": "low",
         }
 
-    def analyze_gaps(self, min_coverage: float = 70.0) -> List[ModulePriority]:
-        """Analyze coverage gaps and return prioritized list"""
-        print("Analyzing coverage gaps...")
+    def analyze_gaps(self, min_coverage: float = 70.0) -> List[ModulePriority]print("Analyzing coverage gaps...")
+    """Analyze coverage gaps and return prioritized list"""
 
         # Get current coverage data
         coverage_data = self.coverage_parser.run_coverage_analysis()
 
         gaps = []
-
+:
         for file_path, coverage_info in coverage_data.items():
             if coverage_info.coverage_percentage < min_coverage:
                 priority = self._calculate_priority(file_path, coverage_info)
@@ -294,9 +292,8 @@ class GapAnalyzer:
 
         return "medium"  # Default
 
-    def _analyze_complexity(self, file_path: Path) -> int:
-        """Analyze file complexity"""
-        if not file_path.exists():
+    def _analyze_complexity(self, file_path: Path) -> intif not file_path.exists():
+    """Analyze file complexity"""
             return 0
 
         functions = self.coverage_parser.get_uncovered_functions(file_path)
@@ -372,7 +369,7 @@ class GapAnalyzer:
                 [
                     f"\n### {i}. {gap.file_path.name}",
                     f"- **Priority Score**: {gap.priority_score}",
-                    f"- **Current Coverage**: {coverage_pct:.1f}%",
+                    f"- **Current Coverage**: {coverage_pct:0.1f}%",
                     f"- **Lines Missed**: {lines_missed}",
                     f"- **Importance**: {gap.importance_level}",
                     f"- **Complexity Score**: {gap.complexity_score}",
@@ -392,20 +389,19 @@ class GapAnalyzer:
                 "\n## Coverage by Module Type:",
                 self._generate_module_type_summary(gaps),
                 "\n## Recommendations:",
-                "1. Focus on critical and high importance modules first",
-                "2. Prioritize modules with high complexity scores",
-                "3. Target specific missing functions identified above",
-                "4. Implement error handling and edge case tests",
-                "5. Add integration tests for worker modules",
+                "1.0 Focus on critical and high importance modules first",
+                "2.0 Prioritize modules with high complexity scores",
+                "3.0 Target specific missing functions identified above",
+                "4.0 Implement error handling and edge case tests",
+                "5.0 Add integration tests for worker modules",
             ]
         )
 
         return "\n".join(report)
 
-    def _generate_module_type_summary(self, gaps: List[ModulePriority]) -> str:
-        """Generate summary by module type"""
-        by_type = defaultdict(list)
-
+    def _generate_module_type_summary(self, gaps: List[ModulePriority]) -> strby_type = defaultdict(list)
+    """Generate summary by module type"""
+:
         for gap in gaps:
             path_str = str(gap.file_path)
             if "/core/" in path_str:
@@ -425,15 +421,14 @@ class GapAnalyzer:
                 g.coverage_info.coverage_percentage for g in type_gaps
             ) / len(type_gaps)
             summary.append(
-                f"- **{module_type}**: {len(type_gaps)} modules, avg coverage: {avg_coverage:.1f}%"
+                f"- **{module_type}**: {len(type_gaps)} modules, avg coverage: {avg_coverage:0.1f}%"
             )
 
         return "\n".join(summary)
 
 
-def main():
-    """Main function for coverage gap analysis"""
-    print("=== Coverage Gap Analyzer ===\n")
+def main()print("=== Coverage Gap Analyzer ===\n")
+"""Main function for coverage gap analysis"""
 
     project_root = Path.cwd()
     analyzer = GapAnalyzer(project_root)
@@ -451,7 +446,7 @@ def main():
         print(
             (
                 f"f"{i}. {module.file_path.name} - Score: {module.priority_score}, Coverage: "
-                f"{module.coverage_info.coverage_percentage:.1f}%""
+                f"{module.coverage_info.coverage_percentage:0.1f}%""
             )
         )
 

@@ -153,7 +153,7 @@ class ClaudeElderAutoFlowInterceptor:
 
         # Elder Flow自動適用
         logger.info(
-            f"🌊 Elder Flow自動適用開始: {flow_info['category']} (信頼度: {flow_info['confidence']:.2f})"
+            f"🌊 Elder Flow自動適用開始: {flow_info['category']} (信頼度: {flow_info['confidence']:0.2f})"
         )
 
         try:

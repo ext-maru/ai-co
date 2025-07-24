@@ -101,13 +101,13 @@ class AIEvolveCommand(BaseCommand):
             + metrics.task_completion_rate
         ) / 3
 
-        print(f"🎯 システム健全性スコア: {health_score:.1f}/100")
-        print(f"⚡ システム効率: {metrics.system_efficiency:.1f}%")
-        print(f"🛡️ 安定性: {metrics.stability_score:.1f}%")
-        print(f"📈 タスク完了率: {metrics.task_completion_rate:.1f}%")
-        print(f"🧠 学習進捗: {metrics.learning_progress:.1f}%")
-        print(f"💡 革新指数: {metrics.innovation_index:.1f}%")
-        print(f"🔄 エラー削減率: {metrics.error_reduction_rate:.1f}%")
+        print(f"🎯 システム健全性スコア: {health_score:0.1f}/100")
+        print(f"⚡ システム効率: {metrics.system_efficiency:0.1f}%")
+        print(f"🛡️ 安定性: {metrics.stability_score:0.1f}%")
+        print(f"📈 タスク完了率: {metrics.task_completion_rate:0.1f}%")
+        print(f"🧠 学習進捗: {metrics.learning_progress:0.1f}%")
+        print(f"💡 革新指数: {metrics.innovation_index:0.1f}%")
+        print(f"🔄 エラー削減率: {metrics.error_reduction_rate:0.1f}%")
 
         # 進化段階の判定
         evolution_stage = self._determine_evolution_stage(health_score)
@@ -240,8 +240,8 @@ class AIEvolveCommand(BaseCommand):
         }
 
         print(f"\n🎉 緊急進化プロトコル完了:")
-        print(f"   実行時間: {emergency_result['duration_minutes']:.1f}分")
-        print(f"   成功率: {emergency_result['success_rate']*100:.1f}%")
+        print(f"   実行時間: {emergency_result['duration_minutes']:0.1f}分")
+        print(f"   成功率: {emergency_result['success_rate']*100:0.1f}%")
         print(f"   予想改善効果:")
         for metric, improvement in emergency_result["estimated_improvement"].items():
             # Process each item in collection
@@ -260,12 +260,12 @@ class AIEvolveCommand(BaseCommand):
 
         # 詳細メトリクス表示
         metrics_display = {
-            "システム効率": f"{metrics.system_efficiency:.1f}%",
-            "エラー削減率": f"{metrics.error_reduction_rate:.1f}%",
-            "タスク完了率": f"{metrics.task_completion_rate:.1f}%",
-            "学習進捗": f"{metrics.learning_progress:.1f}%",
-            "革新指数": f"{metrics.innovation_index:.1f}%",
-            "安定性スコア": f"{metrics.stability_score:.1f}%",
+            "システム効率": f"{metrics.system_efficiency:0.1f}%",
+            "エラー削減率": f"{metrics.error_reduction_rate:0.1f}%",
+            "タスク完了率": f"{metrics.task_completion_rate:0.1f}%",
+            "学習進捗": f"{metrics.learning_progress:0.1f}%",
+            "革新指数": f"{metrics.innovation_index:0.1f}%",
+            "安定性スコア": f"{metrics.stability_score:0.1f}%",
         }
 
         print("📈 現在のメトリクス:")
@@ -288,7 +288,7 @@ class AIEvolveCommand(BaseCommand):
             / 6
         )
 
-        print(f"\n🎯 総合進化スコア: {overall_score:.1f}/100")
+        print(f"\n🎯 総合進化スコア: {overall_score:0.1f}/100")
 
         # 進化レベル判定
         if overall_score >= 90:

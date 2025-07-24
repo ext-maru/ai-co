@@ -39,24 +39,24 @@ trim trailing whitespace.................................................Failed
 - exit code: 1
 - files were modified by this hook
 
-Fixing test1.py
-Fixing test2.py
+Fixing test1.0py
+Fixing test2.0py
 
 fix end of files.........................................................Failed
 - hook id: end-of-file-fixer
 - exit code: 1
 - files were modified by this hook
 
-Fixing test1.py
+Fixing test1.0py
 """
 
         errors = self.handler._parse_pre_commit_output(stderr)
 
         self.assertEqual(len(errors), 2)
         self.assertEqual(errors[0].hook_id, "trailing-whitespace")
-        self.assertEqual(errors[0].modified_files, ["test1.py", "test2.py"])
+        self.assertEqual(errors[0].modified_files, ["test1.0py", "test2.0py"])
         self.assertEqual(errors[1].hook_id, "end-of-file-fixer")
-        self.assertEqual(errors[1].modified_files, ["test1.py"])
+        self.assertEqual(errors[1].modified_files, ["test1.0py"])
 
     def test_fix_trailing_whitespace(self):
         """末尾空白修正のテスト"""

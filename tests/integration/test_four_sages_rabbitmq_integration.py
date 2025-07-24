@@ -83,7 +83,7 @@ class TestFourSagesRabbitMQIntegration:
         """テスト1: 賢者リクエスト・レスポンスパターンテスト"""
         print("\n🧪 テスト1: 賢者リクエスト・レスポンスパターンテスト開始...")
         
-        # 1. クロードエルダーからナレッジ賢者への要請
+        # 1.0 クロードエルダーからナレッジ賢者への要請
         request = {
             "request_id": str(uuid.uuid4()),
             "sender": "claude_elder",
@@ -96,7 +96,7 @@ class TestFourSagesRabbitMQIntegration:
             }
         }
         
-        # 2. リクエスト送信
+        # 2.0 リクエスト送信
         send_result = await rabbitmq_manager.publish_message(
             exchange="elder.direct",
             routing_key="sage.knowledge",
@@ -110,12 +110,12 @@ class TestFourSagesRabbitMQIntegration:
         assert send_result is True, "賢者への要請送信失敗"
         print("✓ ナレッジ賢者への要請送信成功")
         
-        # 3. 賢者の処理シミュレーション
+        # 3.0 賢者の処理シミュレーション
         sage = four_sages["knowledge_sage"]
         response = await sage.process_message(request)
         print(f"✓ ナレッジ賢者処理完了: {response['result']['status']}")
         
-        # 4. レスポンス送信
+        # 4.0 レスポンス送信
         response_result = await rabbitmq_manager.publish_message(
             exchange="elder.direct",
             routing_key="response",
@@ -128,7 +128,7 @@ class TestFourSagesRabbitMQIntegration:
         assert response_result is True, "レスポンス送信失敗"
         print("✓ レスポンス送信成功")
         
-        # 5. 処理統計確認
+        # 5.0 処理統計確認
         assert sage.processed_count == 1, "処理カウントが不正"
         assert len(sage.received_messages) == 1, "受信メッセージ数が不正"
         
@@ -139,7 +139,7 @@ class TestFourSagesRabbitMQIntegration:
         """テスト2: 4賢者協調動作テスト"""
         print("\n🧪 テスト2: 4賢者協調動作テスト開始...")
         
-        # 1. 複雑なタスクの分解と各賢者への割り当て
+        # 1.0 複雑なタスクの分解と各賢者への割り当て
         complex_task = {
             "task_id": str(uuid.uuid4()),
             "type": "complex_analysis",
@@ -150,7 +150,7 @@ class TestFourSagesRabbitMQIntegration:
             }
         }
         
-        # 2. 各賢者への並列要請
+        # 2.0 各賢者への並列要請
         sage_requests = [
             {
                 "sage": "knowledge_sage",
@@ -174,7 +174,7 @@ class TestFourSagesRabbitMQIntegration:
             }
         ]
         
-        # 3. 並列送信
+        # 3.0 並列送信
         send_tasks = []
         for sage_req in sage_requests:
             request = {
@@ -206,7 +206,7 @@ class TestFourSagesRabbitMQIntegration:
         assert all(send_results), "並列送信に失敗"
         print("✓ 4賢者への並列要請送信成功")
         
-        # 4. 各賢者の処理シミュレーション（並列処理）
+        # 4.0 各賢者の処理シミュレーション（並列処理）
         process_tasks = []
         for sage_req in sage_requests:
             sage = four_sages[sage_req["sage"]]
@@ -218,7 +218,7 @@ class TestFourSagesRabbitMQIntegration:
         responses = await asyncio.gather(*process_tasks)
         print(f"✓ 4賢者並列処理完了: {len(responses)}件")
         
-        # 5. 協調結果の統合
+        # 5.0 協調結果の統合
         integrated_result = {
             "task_id": complex_task["task_id"],
             "status": "completed",
@@ -251,7 +251,7 @@ class TestFourSagesRabbitMQIntegration:
         """テスト3: 賢者ヘルスチェック・監視テスト"""
         print("\n🧪 テスト3: 賢者ヘルスチェック・監視テスト開始...")
         
-        # 1. 各賢者のヘルスチェックメッセージ準備
+        # 1.0 各賢者のヘルスチェックメッセージ準備
         heartbeat_messages = []
         for sage_id, sage in four_sages.items():
             heartbeat = {
@@ -269,7 +269,7 @@ class TestFourSagesRabbitMQIntegration:
             }
             heartbeat_messages.append(heartbeat)
         
-        # 2. ヘルスチェックトピックへの送信
+        # 2.0 ヘルスチェックトピックへの送信
         for heartbeat in heartbeat_messages:
             result = await rabbitmq_manager.publish_message(
                 exchange="elder.topic",
@@ -285,7 +285,7 @@ class TestFourSagesRabbitMQIntegration:
         
         print(f"✓ {len(heartbeat_messages)}賢者のヘルスチェック送信成功")
         
-        # 3. 監視アラートのシミュレーション
+        # 3.0 監視アラートのシミュレーション
         # インシデント賢者が異常を検知したと仮定
         alert = {
             "alert_id": str(uuid.uuid4()),
@@ -315,7 +315,7 @@ class TestFourSagesRabbitMQIntegration:
         assert alert_result is True, "アラート送信失敗"
         print("✓ パフォーマンスアラート送信成功")
         
-        # 4. 監視統計サマリー
+        # 4.0 監視統計サマリー
         monitoring_summary = {
             "summary_id": str(uuid.uuid4()),
             "timestamp": datetime.now().isoformat(),

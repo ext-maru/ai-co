@@ -15,9 +15,8 @@ logger = logging.getLogger(__name__)
 class StringContext:
     """文字列のコンテキスト情報"""
 
-    def __init__(self, line:
+    def __init__(self, line: str, line_number: int, surrounding_lines: List[str]):
         """初期化メソッド"""
-    str, line_number: int, surrounding_lines: List[str]):
         self.line = line
         self.line_number = line_number
         self.surrounding_lines = surrounding_lines

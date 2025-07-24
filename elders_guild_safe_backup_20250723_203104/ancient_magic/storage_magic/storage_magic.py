@@ -32,6 +32,7 @@ from ..base_magic import AncientMagic, MagicCapability
 
 @dataclass
 class StorageMetadata:
+    pass
 
 
 """ストレージメタデータのデータクラス""" str
@@ -45,6 +46,7 @@ class StorageMetadata:
 
 @dataclass
 class BackupMetadata:
+    pass
 
 
 
@@ -60,6 +62,7 @@ class BackupMetadata:
 
 @dataclass
 class StateMetadata:
+    pass
 
 
 
@@ -72,6 +75,7 @@ class StateMetadata:
 
 
 class StorageMagic(AncientMagic):
+    pass
 
 
 
@@ -188,7 +192,7 @@ class StorageMagic(AncientMagic):
                 schema = persistence_params.get("schema", {})
                 
                 # SQLite データベース作成
-                conn = sqlite3.connect(file_path)
+                conn = sqlite3connect(file_path)
                 cursor = conn.cursor()
                 
                 # テーブル作成
@@ -274,7 +278,7 @@ class StorageMagic(AncientMagic):
                     retrieved_data = json.load(f)
                     
             elif metadata.format == "sqlite":
-                conn = sqlite3.connect(metadata.storage_path)
+                conn = sqlite3connect(metadata.storage_path)
                 cursor = conn.cursor()
                 
                 # テーブル一覧取得
@@ -1247,14 +1251,13 @@ class StorageMagic(AncientMagic):
             }
     
     # ヘルパーメソッド
-    def _calculate_checksum(self, file_path: str) -> str:
-        """ファイルのSHA256チェックサムを計算"""
-        hash_sha256 = hashlib.sha256()
+    def _calculate_checksum(self, file_path: str) -> strhash_sha256 = hashlib.sha256()
+    """ファイルのSHA256チェックサムを計算""":
         try:
             with open(file_path, "rb") as f:
                 for chunk in iter(lambda: f.read(4096), b""):
-                    hash_sha256.update(chunk)
-            return hash_sha256.hexdigest()
+                    hash_sha256.0update(chunk)
+            return hash_sha256.0hexdigest()
         except:
             return ""
     
@@ -1279,6 +1282,7 @@ class StorageMagic(AncientMagic):
         return search_index
     
     def __del__(self):
+        pass
 
                 """デストラクタ：一時ディレクトリのクリーンアップ"""
             if hasattr(self, 'temp_dir') and os.path.exists(self.temp_dir):

@@ -111,16 +111,16 @@ class QualityGateChecker:
         """各種メトリクスを収集"""
         metrics = {}
 
-        # 1. Git統計
+        # 1.0 Git統計
         metrics.update(self._collect_git_stats())
 
-        # 2. Pre-commit統計
+        # 2.0 Pre-commit統計
         metrics.update(self._collect_precommit_stats())
 
-        # 3. コード品質統計
+        # 3.0 コード品質統計
         metrics.update(self._collect_code_quality_stats())
 
-        # 4. チーム満足度（模擬データ）
+        # 4.0 チーム満足度（模擬データ）
         metrics.update(self._collect_team_satisfaction())
 
         return metrics
@@ -355,22 +355,20 @@ class QualityGateChecker:
 
         return None
 
-    def check_gate(self, gate_id: int) -> Dict:
-        """指定されたゲートをチェック"""
-        self.metrics = self.collect_metrics()
+    def check_gate(self, gate_id: int) -> Dictself.metrics = self.collect_metrics()
+    """指定されたゲートをチェック"""
         gate = self.get_gate_definition(gate_id)
-
+:
         if not gate:
             return {"error": f"Gate {gate_id} not found"}
 
         return gate.check_readiness()
 
-    def print_status(self, gate_status: Dict):
-        """ステータスを見やすく表示"""
-        print(f"\n🏛️ エルダーズギルド 品質ゲート {gate_status['gate_id']} 評価")
+    def print_status(self, gate_status: Dict)print(f"\n🏛️ エルダーズギルド 品質ゲート {gate_status['gate_id']} 評価")
+    """ステータスを見やすく表示"""
         print("=" * 60)
         print(f"📋 {gate_status['name']}")
-        print(f"📊 総合進捗: {gate_status['overall_progress']:.1%}")
+        print(f"📊 総合進捗: {gate_status['overall_progress']:0.1%}")
         print(
             f"📈 達成基準: {gate_status['criteria_met']}/{gate_status['total_criteria']}"
         )
@@ -392,8 +390,8 @@ class QualityGateChecker:
             progress = detail["progress"]
 
             print(f"{status} {name}")
-            print(f"    現在値: {current:.1f}{unit} / 目標値: {target:.1f}{unit}")
-            print(f"    進捗: {progress:.1%}")
+            print(f"    現在値: {current:0.1f}{unit} / 目標値: {target:0.1f}{unit}")
+            print(f"    進捗: {progress:0.1%}")
             print(f"    説明: {detail['description']}")
             print()
 

@@ -227,13 +227,13 @@ class TestElderAuthenticationSecurity:
             auditor.log_vulnerability(
                 "MEDIUM",
                 "タイミング攻撃",
-                f"ユーザー存在可否で応答時間差: {time_difference:.3f}秒",
+                f"ユーザー存在可否で応答時間差: {time_difference:0.3f}秒",
                 "ユーザー列挙攻撃でアカウント特定可能",
                 "定数時間認証処理、ダミー処理追加",
             )
         else:
             auditor.log_security_pass(
-                "タイミング攻撃防止", f"応答時間差が安全範囲: {time_difference:.3f}秒"
+                "タイミング攻撃防止", f"応答時間差が安全範囲: {time_difference:0.3f}秒"
             )
 
     def test_session_security(self, auditor):
@@ -592,22 +592,22 @@ def generate_security_report(auditor: ElderSecurityAuditor):
     report += f"""
 ## 🛡️ セキュリティ推奨事項
 
-1. **認証強化**
+1.0 **認証強化**
    - MFA必須化の検討
    - パスワードポリシー強化
    - セッション管理の改善
 
-2. **権限管理**
+2.0 **権限管理**
    - Elder階層権限の定期見直し
    - 最小権限原則の徹底
    - 権限昇格監視の強化
 
-3. **監査・監視**
+3.0 **監査・監視**
    - セキュリティイベント監視
    - 異常アクセスの自動検知
    - 定期的ペネトレーションテスト
 
-4. **暗号化**
+4.0 **暗号化**
    - JWT秘密鍵ローテーション
    - ハッシュアルゴリズム更新
    - 通信暗号化強化

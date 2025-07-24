@@ -75,7 +75,7 @@ class PRQualityChecker:
             total_weight = 0.0
             total_score = 0.0
             
-            # 1. テストコードチェック
+            # 1.0 テストコードチェック
             has_tests = await self._check_has_tests(pr)
             results["checks"]["has_tests"] = has_tests
             if has_tests:
@@ -85,7 +85,7 @@ class PRQualityChecker:
                 results["suggestions"].append("- 新機能・修正に対応するテストを追加してください")
             total_weight += self.QUALITY_CHECKS["has_tests"]["weight"]
             
-            # 2. PR説明チェック
+            # 2.0 PR説明チェック
             has_description = len(pr.body or "") >= 100
             results["checks"]["has_description"] = has_description
             if has_description:
@@ -95,7 +95,7 @@ class PRQualityChecker:
                 results["suggestions"].append("- 変更内容と理由を詳しく説明してください")
             total_weight += self.QUALITY_CHECKS["has_description"]["weight"]
             
-            # 3. TODO/FIXMEチェック
+            # 3.0 TODO/FIXMEチェック
             no_todos = await self._check_no_todos(pr)
             results["checks"]["no_todos"] = no_todos
             if no_todos:
@@ -104,7 +104,7 @@ class PRQualityChecker:
                 results["suggestions"].append("- TODO/FIXMEコメントを解決してください")
             total_weight += self.QUALITY_CHECKS["no_todos"]["weight"]
             
-            # 4. 変更量チェック
+            # 4.0 変更量チェック
             reasonable_size = pr.additions + pr.deletions <= 500
             results["checks"]["reasonable_size"] = reasonable_size
             if reasonable_size:
@@ -113,7 +113,7 @@ class PRQualityChecker:
                 results["suggestions"].append("- PRを小さく分割することを検討してください")
             total_weight += self.QUALITY_CHECKS["reasonable_size"]["weight"]
             
-            # 5. CIチェック
+            # 5.0 CIチェック
             ci_passed = await self._check_ci_status(pr)
             results["checks"]["ci_passed"] = ci_passed
             if ci_passed:
@@ -194,7 +194,7 @@ class PRQualityChecker:
             comment_text = "🔄 **PR品質チェック失敗 - 返却**\n\n"
             comment_text += f"このPRは品質基準を満たしていないため返却されました。\n\n"
             
-            comment_text += f"**品質スコア**: {quality_result['overall_score']:.1f}/100 (合格基準: 70)\n\n"
+            comment_text += f"**品質スコア**: {quality_result['overall_score']:0.1f}/100 (合格基準: 70)\n\n"
             
             if quality_result['required_failures']:
                 comment_text += "**必須項目の失敗**:\n"
@@ -215,9 +215,9 @@ class PRQualityChecker:
                     comment_text += f"{suggestion}\n"
             
             comment_text += "\n**次のステップ**:\n"
-            comment_text += "1. 上記の問題を修正してください\n"
-            comment_text += "2. 修正後、PRを更新してください\n"
-            comment_text += "3. 品質チェックが自動的に再実行されます\n"
+            comment_text += "1.0 上記の問題を修正してください\n"
+            comment_text += "2.0 修正後、PRを更新してください\n"
+            comment_text += "3.0 品質チェックが自動的に再実行されます\n"
             
             # コメントを追加
             issue.create_comment(comment_text)

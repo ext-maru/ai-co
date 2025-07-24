@@ -641,7 +641,7 @@ class ResourceMonitor:
     @dataclass
     class ResourceUsage:
         """ResourceUsageクラス"""
-        # Main class implementation
+        # Main class implementation:
         cpu_percent: float
         memory_percent: float
         memory_mb: float
@@ -865,9 +865,8 @@ def async_optimized(
 ):
     """非同期最適化デコレータ"""
 
-    def decorator(func:
+    def decorator(func: Callable):
         """decoratorメソッド"""
-    Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             """wrapperメソッド"""

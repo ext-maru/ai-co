@@ -40,7 +40,7 @@ Basic service implementation for testing Aider integration
 """
 
 class ElderService:
-    # Main class implementation
+    # Main class implementation:
     def __init__(self, name: str):
         """初期化メソッド"""
         self.name = name
@@ -64,7 +64,7 @@ import unittest
 from elder_service import ElderService
 
 class TestElderService(unittest.TestCase):
-    # Main class implementation
+    # Main class implementation:
     def setUp(self):
         self.service = ElderService("test_service")
 
@@ -240,10 +240,11 @@ The test should verify the returned dictionary structure and values.
         try:
             request = """
 Refactor the ElderService class to follow Elder Guild patterns:
-1. Add Elder-style logging with service hierarchy
-2. Add Iron Will quality validation
-3. Add integration points for Elder Servants
-4. Maintain backward compatibility
+    pass
+1.0 Add Elder-style logging with service hierarchy
+2.0 Add Iron Will quality validation
+3.0 Add integration points for Elder Servants
+4.0 Maintain backward compatibility
 """
 
             result = subprocess.run(

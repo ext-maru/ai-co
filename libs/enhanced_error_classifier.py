@@ -423,7 +423,7 @@ def main():
         print(f"   カテゴリ: {classified.category}")
         print(f"   詳細: {classified.subcategory}")
         print(f"   重要度: {classified.severity}")
-        print(f"   信頼度: {classified.confidence:.2f}")
+        print(f"   信頼度: {classified.confidence:0.2f}")
         if classified.auto_fix_suggestion:
             print(f"   修正案: {classified.auto_fix_suggestion}")
 

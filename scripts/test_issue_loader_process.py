@@ -26,24 +26,23 @@ from github import Github
 OUTPUT_DIR = Path("generated_code_samples")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-async def process_single_issue(processor, issue, template_manager):
-    """単一のIssueを処理"""
-    print(f"\n{'='*80}")
+async def process_single_issue(processor, issue, template_manager)print(f"\n{'}")
+"""単一のIssueを処理"""
     print(f"📋 Issue #{issue.number}: {issue.title}")
-    print(f"{'='*80}")
+    print(f"{'}")
     
     try:
-        # 1. 複雑度評価
+        # 1.0 複雑度評価
         print("\n🔍 複雑度評価中...")
         complexity = await processor.evaluator.evaluate(issue)
-        print(f"  - 複雑度スコア: {complexity.score:.3f}")
+        print(f"  - 複雑度スコア: {complexity.score:0.3f}")
         print(f"  - 処理可能: {'✅ Yes' if complexity.is_processable else '❌ No'}")
         
         if not complexity.is_processable:
             print("  ⚠️  このIssueは複雑すぎるため処理をスキップします")
             return None
         
-        # 2. 4賢者相談
+        # 2.0 4賢者相談
         print("\n🧙‍♂️ 4賢者に相談中...")
         sage_advice = await processor.consult_four_sages(issue)
         
@@ -52,7 +51,7 @@ async def process_single_issue(processor, issue, template_manager):
         print(f"  - インシデント賢者: リスクレベル {sage_advice.get('risks', {}).get('risk_level', 'N/A')}")
         print(f"  - RAG賢者: {len(sage_advice.get('solution', []))}件の解決策")
         
-        # 3. コード生成
+        # 3.0 コード生成
         print("\n🔨 コード生成中...")
         tech_stack = template_manager.detect_tech_stack(
             f"{issue.title} {issue.body or ''}",
@@ -106,7 +105,7 @@ async def process_single_issue(processor, issue, template_manager):
             print(f"  ✅ コード生成完了: {len(code.split('\n'))}行")
             print(f"  📁 保存先: {output_file}")
             
-            # 4. テスト生成
+            # 4.0 テスト生成
             print("\n🧪 テスト生成中...")
             if template_manager.has_template('test', tech_stack):
                 test_context = context.copy()
@@ -130,7 +129,7 @@ async def process_single_issue(processor, issue, template_manager):
                 print(f"  ✅ テスト生成完了: {len(test_code.split('\n'))}行")
                 print(f"  📁 保存先: {test_file}")
             
-            # 5. 品質評価
+            # 5.0 品質評価
             print("\n📊 品質評価:")
             lines = code.split('\n')
             
@@ -145,7 +144,7 @@ async def process_single_issue(processor, issue, template_manager):
             
             print(f"  - クラス数: {classes}")
             print(f"  - 関数数: {functions}")
-            print(f"  - 型ヒント使用率: {(type_hints / max(functions, 1)) * 100:.1f}%")
+            print(f"  - 型ヒント使用率: {(type_hints / max(functions, 1)) * 100:0.1f}%")
             print(f"  - Docstring数: {docstrings}")
             print(f"  - エラーハンドリング: {'✅' if error_handling > 0 else '❌'}")
             print(f"  - ロギング実装: {'✅' if logging > 0 else '❌'}")
@@ -167,9 +166,8 @@ async def process_single_issue(processor, issue, template_manager):
         traceback.print_exc()
         return None
 
-async def main():
-    """メイン処理"""
-    print("="*80)
+async def main()print("="*80)
+"""メイン処理"""
     print("🚀 イシューローダー実処理テスト")
     print("="*80)
     
@@ -234,14 +232,14 @@ async def main():
         avg_quality = sum(r['quality_score'] for r in results) / len(results)
         
         print(f"\n📈 統計:")
-        print(f"  - 平均コード行数: {avg_lines:.1f}行")
-        print(f"  - 平均品質スコア: {avg_quality:.1f}/100")
+        print(f"  - 平均コード行数: {avg_lines:0.1f}行")
+        print(f"  - 平均品質スコア: {avg_quality:0.1f}/100")
     else:
         print("\n❌ 処理できたIssueがありませんでした")
     
     # 処理時間
     total_time = time.time() - start_time
-    print(f"\n⏱️  総処理時間: {total_time:.2f}秒")
+    print(f"\n⏱️  総処理時間: {total_time:0.2f}秒")
     
     # 結果をJSONに保存
     summary = {

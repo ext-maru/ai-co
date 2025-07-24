@@ -11,7 +11,7 @@ from commands.base_command import BaseCommand
 
 
 class StartCommand(BaseCommand):
-    # Main class implementation
+    # Main class implementation:
     """StartCommandクラス"""
     def __init__(self):
         """初期化メソッド"""

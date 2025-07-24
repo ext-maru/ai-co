@@ -20,9 +20,8 @@ from libs.intent_parser import IntentParser
 from libs.learning_data_collector import LearningDataCollector, ExecutionStatus
 
 
-async def main():
-    """統合デモのメイン関数"""
-    print("🌌 nWo Mind Reading Protocol v0.1 - Integration Demo")
+async def main()print("🌌 nWo Mind Reading Protocol v0.1 - Integration Demo")
+"""統合デモのメイン関数"""
     print("=" * 60)
     print("💭 Think it, Rule it, Own it")
     print("=" * 60)
@@ -69,21 +68,21 @@ async def main():
     for i, scenario in enumerate(test_scenarios, 1):
         print(f"\n[Scenario {i}] \"{scenario['text']}\"")
 
-        # 1. Mind Reading Core - 意図理解
+        # 1.0 Mind Reading Core - 意図理解
         print("\n1️⃣ Mind Reading Core - Understanding intent...")
         intent_result = await mind_reader.understand_intent(scenario['text'])
         print(f"   ✅ Intent: {intent_result.intent_type.value}")
-        print(f"   📊 Confidence: {intent_result.confidence:.2%}")
+        print(f"   📊 Confidence: {intent_result.confidence:0.2%}")
         print(f"   🎯 Priority: {intent_result.priority}, Urgency: {intent_result.urgency}")
 
-        # 2. Intent Parser - コマンド生成
+        # 2.0 Intent Parser - コマンド生成
         print("\n2️⃣ Intent Parser - Generating command...")
         parsed_command = await parser.parse_intent(intent_result, scenario['text'])
         command = await parser.generate_command(parsed_command)
         print(f"   ✅ Command Type: {parsed_command.command_type.value}")
         print(f"   💻 Generated: {command}")
 
-        # 3. Learning Data Collector - 実行記録
+        # 3.0 Learning Data Collector - 実行記録
         print("\n3️⃣ Learning Data Collector - Recording execution...")
 
         # シミュレート実行結果
@@ -125,13 +124,13 @@ async def main():
     stats = collector.get_statistics()
     print(f"   Total Executions: {stats['total_executions']}")
     print(f"   Success Rate: 100%")
-    print(f"   Average Execution Time: {stats['avg_execution_time']:.2f}s")
+    print(f"   Average Execution Time: {stats['avg_execution_time']:0.2f}s")
 
     # 洞察レポート生成
     print("\n🔍 Generating Insights Report...")
     report = await collector.generate_insights(period_days=1)
-    print(f"   Success Rate: {report.success_rate:.2%}")
-    print(f"   Average Confidence: {report.avg_confidence:.2f}")
+    print(f"   Success Rate: {report.success_rate:0.2%}")
+    print(f"   Average Confidence: {report.avg_confidence:0.2f}")
     print(f"   Top Intents: {', '.join([f'{intent}({count})' for intent, count in report.top_intents[:3]])}")
 
     # フィードバック学習デモ
@@ -154,7 +153,7 @@ async def main():
     print("\n🧠 Mind Reading Core Statistics:")
     mind_stats = mind_reader.get_stats()
     print(f"   Total Patterns: {mind_stats['total_patterns']}")
-    print(f"   Average Confidence: {mind_stats['avg_confidence']:.2%}")
+    print(f"   Average Confidence: {mind_stats['avg_confidence']:0.2%}")
     print(f"   Feedback Count: {mind_stats['feedback_count']}")
 
     print("\n✨ Integration Demo Complete!")

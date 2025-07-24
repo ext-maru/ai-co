@@ -69,28 +69,28 @@ class UnifiedSystemSetup:
         logger.info("=== Elders Guild 統合システムセットアップ開始 ===")
 
         try:
-            # 1. ディレクトリ作成
+            # 1.0 ディレクトリ作成
             self._create_directories()
 
-            # 2. データベース初期化
+            # 2.0 データベース初期化
             self._initialize_database()
 
-            # 3. マネージャー初期化
+            # 3.0 マネージャー初期化
             self._initialize_managers()
 
-            # 4. 既存データのマイグレーション
+            # 4.0 既存データのマイグレーション
             self._migrate_existing_data()
 
-            # 5. サンプルデータ作成
+            # 5.0 サンプルデータ作成
             self._create_sample_data()
 
-            # 6. 初期関係性構築
+            # 6.0 初期関係性構築
             self._build_initial_relationships()
 
-            # 7. 検証とテスト
+            # 7.0 検証とテスト
             self._verify_system()
 
-            # 8. レポート生成
+            # 8.0 レポート生成
             self._generate_setup_report()
 
             logger.info("=== 統合システムセットアップ完了 ===")
@@ -158,13 +158,13 @@ class UnifiedSystemSetup:
         """既存データのマイグレーション"""
         logger.info("既存データマイグレーション開始...")
 
-        # 1. ナレッジベースファイルのマイグレーション
+        # 1.0 ナレッジベースファイルのマイグレーション
         self._migrate_knowledge_base_files()
 
-        # 2. 既存SQLiteデータベースのマイグレーション
+        # 2.0 既存SQLiteデータベースのマイグレーション
         self._migrate_existing_databases()
 
-        # 3. 設定ファイルの統合
+        # 3.0 設定ファイルの統合
         self._migrate_configuration_files()
 
         logger.info("データマイグレーション完了")
@@ -260,8 +260,8 @@ class UnifiedSystemSetup:
         logger.info(f"データベースマイグレーション: {db_path}")
 
         try:
-            with sqlite3.connect(db_path) as conn:
-                conn.row_factory = sqlite3.Row
+            with sqlite3connect(db_path) as conn:
+                conn.row_factory = sqlite3Row
                 cursor = conn.cursor()
 
                 # テーブル一覧取得
@@ -276,7 +276,7 @@ class UnifiedSystemSetup:
             raise
 
     def _migrate_table_data(
-        self, cursor: sqlite3.Cursor, table_name: str, db_source: str
+        self, cursor: sqlite3Cursor, table_name: str, db_source: str
     ):
         """テーブルデータのマイグレーション"""
         try:

@@ -14,23 +14,24 @@ from python_a2a import Message, TextContent, MessageRole
 from knowledge_sage.a2a_agent import KnowledgeSageAgent
 
 async def test_real_knowledge_sage():
+    pass
 
 
 """実際のKnowledge Sage A2A Agent動作テスト"""
         # 初期化
-        print("\n🔧 1. エージェント初期化...")
+        print("\n🔧 1.0 エージェント初期化...")
         init_result = await agent.initialize()
         print(f"   初期化結果: {init_result}")
         assert init_result is True, "初期化失敗"
         
         # 基本情報確認
-        print(f"\n📋 2. エージェント情報確認...")
+        print(f"\n📋 2.0 エージェント情報確認...")
         print(f"   エージェント名: {agent.agent_name}")
         print(f"   ポート: {agent.port}")
         print(f"   説明: {agent.description}")
         
         # テスト1: 基本的な知識検索
-        print(f"\n🔍 3. 基本的な知識検索テスト...")
+        print(f"\n🔍 3.0 基本的な知識検索テスト...")
         search_message = Message(
             content=TextContent(text="python programming"),
             role=MessageRole.USER
@@ -47,7 +48,7 @@ async def test_real_knowledge_sage():
             print(f"   検索結果数: {len(results)}")
         
         # テスト2: JSON構造化データ検索
-        print(f"\n📄 4. JSON構造化データ検索テスト...")
+        print(f"\n📄 4.0 JSON構造化データ検索テスト...")
         json_query = {
             "query": "machine learning",
             "limit": 5,
@@ -64,7 +65,7 @@ async def test_real_knowledge_sage():
         print(f"   JSON検索成功: {json_data.get('success', False)}")
         
         # テスト3: 統計情報取得
-        print(f"\n📊 5. 統計情報取得テスト...")
+        print(f"\n📊 5.0 統計情報取得テスト...")
         stats_message = Message(
             content=TextContent(text=""),
             role=MessageRole.USER
@@ -82,17 +83,17 @@ async def test_real_knowledge_sage():
             print("   get_statistics_skill未実装（予想通り）")
         
         # テスト4: ヘルスチェック
-        print(f"\n🏥 6. ヘルスチェックテスト...")
+        print(f"\n🏥 6.0 ヘルスチェックテスト...")
         if hasattr(agent, 'health_check_skill'):
             health_response = await agent.health_check_skill(stats_message)
             health_data = json.loads(health_response.content.text)
             print(f"   ヘルス状態: {health_data.get('status', 'unknown')}")
-            print(f"   ヘルスチェック成功: {health_data.get('status') == 'healthy'}")
+            print(f"   ヘルスチェック成功: {health_data.get('status') }")
         else:
             print("   health_check_skill未実装（予想通り）")
         
         # テスト5: エラーケース
-        print(f"\n🚨 7. エラーハンドリングテスト...")
+        print(f"\n🚨 7.0 エラーハンドリングテスト...")
         
         # 無効なJSONでテスト（プレーンテキストとして処理される）
         invalid_message = Message(
@@ -105,7 +106,7 @@ async def test_real_knowledge_sage():
         print(f"   無効JSON処理成功: {error_data.get('success', False)}")
         
         # テスト6: パフォーマンステスト
-        print(f"\n⚡ 8. パフォーマンステスト...")
+        print(f"\n⚡ 8.0 パフォーマンステスト...")
         import time
         
         start_time = time.time()
@@ -122,12 +123,12 @@ async def test_real_knowledge_sage():
         total_time = end_time - start_time
         avg_time = total_time / 10
         
-        print(f"   10回実行総時間: {total_time:.3f}秒")
-        print(f"   平均応答時間: {avg_time:.3f}秒")
+        print(f"   10回実行総時間: {total_time:0.3f}秒")
+        print(f"   平均応答時間: {avg_time:0.3f}秒")
         print(f"   パフォーマンス目標達成: {avg_time < 0.1}")
         
         # 実際のビジネスロジック動作確認
-        print(f"\n🧠 9. ビジネスロジック実動作確認...")
+        print(f"\n🧠 9.0 ビジネスロジック実動作確認...")
         
         # Knowledge Processorが実際にファイルからデータを読み込んでいるかチェック
         processor = agent.knowledge_processor
@@ -148,7 +149,7 @@ async def test_real_knowledge_sage():
         print(f"     - ベストプラクティス数: {practices_count}")
         print(f"     - 学習パターン数: {patterns_count}")
         
-        print(f"\n✅ 10. テスト完了サマリー")
+        print(f"\n✅ 10.0 テスト完了サマリー")
         print("=" * 60)
         print("🎉 Knowledge Sage A2A Agent実動作テスト成功！")
         print(f"✅ A2AServerベース実装動作確認")
@@ -174,6 +175,7 @@ async def test_real_knowledge_sage():
         print("✅ エージェント正常終了")
 
 async def main():
+    pass
 
         """メイン実行"""
         print(f"\n🏛️ 実動作テスト完全成功！")

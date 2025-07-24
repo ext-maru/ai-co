@@ -50,9 +50,8 @@ class TestBaseSage:
         assert isinstance(mock_sage.last_activity, datetime)
 
     @pytest.mark.asyncio
-    async def test_health_check(self, mock_sage):
-        """ヘルスチェックテスト"""
-        health = await mock_sage.health_check()
+    async def test_health_check(self, mock_sage)health = await mock_sage.health_check()
+    """ヘルスチェックテスト"""
 
         assert health["sage_name"] == "Mock"
         assert health["status"] == "ready"
@@ -89,9 +88,8 @@ class TestBaseSage:
         assert isinstance(mock_sage.last_activity, datetime)
 
     @pytest.mark.asyncio
-    async def test_error_logging(self, mock_sage):
-        """エラーログテスト"""
-        error = ValueError("test error")
+    async def test_error_logging(self, mock_sage)error = ValueError("test error")
+    """エラーログテスト"""
         context = {"test": "context"}
 
         initial_count = mock_sage._metrics["errors_count"]
@@ -121,9 +119,8 @@ class TestSageRegistry:
 
         return MockSage("TestSage")
 
-    def test_sage_registration(self, registry, mock_sage):
-        """賢者登録テスト"""
-        registry.register_sage(mock_sage)
+    def test_sage_registration(self, registry, mock_sage)registry.register_sage(mock_sage)
+    """賢者登録テスト"""
 
         retrieved_sage = registry.get_sage("TestSage")
         assert retrieved_sage is mock_sage
@@ -133,9 +130,8 @@ class TestSageRegistry:
         assert all_sages["TestSage"] is mock_sage
 
     @pytest.mark.asyncio
-    async def test_broadcast_request(self, registry, mock_sage):
-        """ブロードキャストテスト"""
-        registry.register_sage(mock_sage)
+    async def test_broadcast_request(self, registry, mock_sage)registry.register_sage(mock_sage)
+    """ブロードキャストテスト"""
 
         request = {"type": "test_broadcast"}
         result = await registry.broadcast_request(request)
@@ -146,9 +142,8 @@ class TestSageRegistry:
         assert result["broadcast_results"]["TestSage"]["success"] is True
 
     @pytest.mark.asyncio
-    async def test_health_check_all(self, registry, mock_sage):
-        """全賢者ヘルスチェックテスト"""
-        registry.register_sage(mock_sage)
+    async def test_health_check_all(self, registry, mock_sage)registry.register_sage(mock_sage)
+    """全賢者ヘルスチェックテスト"""
 
         health_result = await registry.health_check_all()
 
@@ -628,9 +623,8 @@ class TestFourSagesIntegration:
         return registry
 
     @pytest.mark.asyncio
-    async def test_all_sages_health_check(self, four_sages_registry):
-        """全賢者ヘルスチェック"""
-        health_result = await four_sages_registry.health_check_all()
+    async def test_all_sages_health_check(self, four_sages_registry)health_result = await four_sages_registry.health_check_all()
+    """全賢者ヘルスチェック"""
 
         assert health_result["total_sages"] == 4
 
@@ -642,14 +636,13 @@ class TestFourSagesIntegration:
             assert "capabilities" in sage_health
 
     @pytest.mark.asyncio
-    async def test_cross_sage_workflow(self, four_sages_registry):
-        """賢者間連携ワークフローテスト"""
-        knowledge_sage = four_sages_registry.get_sage("Knowledge")
+    async def test_cross_sage_workflow(self, four_sages_registry)knowledge_sage = four_sages_registry.get_sage("Knowledge")
+    """賢者間連携ワークフローテスト"""
         task_sage = four_sages_registry.get_sage("Task")
         incident_sage = four_sages_registry.get_sage("Incident")
         rag_sage = four_sages_registry.get_sage("RAG")
 
-        # 1. 知識保存
+        # 1.0 知識保存
         knowledge_result = await knowledge_sage.process_request(
             {
                 "type": "store_knowledge",
@@ -660,7 +653,7 @@ class TestFourSagesIntegration:
         )
         assert knowledge_result["success"] is True
 
-        # 2. 関連タスク作成
+        # 2.0 関連タスク作成
         task_result = await task_sage.process_request(
             {
                 "type": "create_task",
@@ -671,7 +664,7 @@ class TestFourSagesIntegration:
         )
         assert task_result["success"] is True
 
-        # 3. 性能メトリクス記録
+        # 3.0 性能メトリクス記録
         metric_result = await incident_sage.process_request(
             {
                 "type": "record_metric",
@@ -683,7 +676,7 @@ class TestFourSagesIntegration:
         )
         assert metric_result["success"] is True
 
-        # 4. ドキュメント追加
+        # 4.0 ドキュメント追加
         doc_result = await rag_sage.process_request(
             {
                 "type": "add_document",
@@ -695,7 +688,7 @@ class TestFourSagesIntegration:
         )
         assert doc_result["success"] is True
 
-        # 5. 統合検証: 知識検索
+        # 5.0 統合検証: 知識検索
         search_result = await knowledge_sage.process_request(
             {"type": "search_knowledge", "query": "database optimization"}
         )
@@ -703,9 +696,8 @@ class TestFourSagesIntegration:
         assert len(search_result["results"]) > 0
 
     @pytest.mark.asyncio
-    async def test_sage_capabilities_coverage(self, four_sages_registry):
-        """賢者能力網羅性テスト"""
-        all_capabilities = set()
+    async def test_sage_capabilities_coverage(self, four_sages_registry)all_capabilities = set()
+    """賢者能力網羅性テスト"""
 
         for sage_name, sage in four_sages_registry.get_all_sages().items():
             capabilities = sage.get_capabilities()

@@ -169,9 +169,8 @@ class WorkerHealthMonitorService:
         finally:
             self.logger.info(f"{EMOJI['stop']} Worker Health Monitor Service stopped")
 
-    def _handle_signal(self, signum, frame):
-        """シグナルハンドラ"""
-        self.logger.info(f"{EMOJI['stop']} Received signal {signum}, shutting down...")
+    def _handle_signal(self, signum, frame)self.logger.info(f"{EMOJI['stop']} Received signal {signum}, shutting down...")
+    """シグナルハンドラ"""
         self.running = False
 
     def _perform_health_checks(self):
@@ -335,9 +334,8 @@ class WorkerHealthMonitorService:
                         f"Worker restart failed", f"Failed to restart worker: {result}"
                     )
 
-    def _handle_performance_issues(self, bottlenecks: Dict[str, Any]):
-        """パフォーマンス問題の対処"""
-        for worker_name, issue in bottlenecks.items():
+    def _handle_performance_issues(self, bottlenecks: Dict[str, Any])for worker_name, issue in bottlenecks.items():
+    """パフォーマンス問題の対処"""
             # Process each item in collection
             issue_type = issue.get("type")
 
@@ -348,9 +346,8 @@ class WorkerHealthMonitorService:
             elif issue_type == "high_error_rate":
                 self._send_critical_alert(worker_name, "High error rate detected")
 
-    def _handle_scaling_recommendations(self, recommendations: Dict[str, Any]):
-        """スケーリング推奨の対処"""
-        for worker_name, rec in recommendations.items():
+    def _handle_scaling_recommendations(self, recommendations: Dict[str, Any])for worker_name, rec in recommendations.items():
+    """スケーリング推奨の対処"""
             # Process each item in collection
             action = rec.get("action")
             current_count = rec.get("current_count", 1)
@@ -384,19 +381,17 @@ class WorkerHealthMonitorService:
             datetime.now() - self.last_scaling_check
         ).total_seconds() >= self.scaling_check_interval
 
-    def _add_to_history(self, metrics: Dict[str, Any]):
-        """メトリクス履歴に追加"""
-        self.metrics_history.append(metrics)
+    def _add_to_history(self, metrics: Dict[str, Any])self.metrics_history.append(metrics)
+    """メトリクス履歴に追加"""
 
         # 履歴サイズ制限
         if len(self.metrics_history) > self.max_history_length:
             self.metrics_history = self.metrics_history[-self.max_history_length :]
 
-    def _get_recent_metrics(self, minutes: int = 30) -> list:
-        """最近のメトリクス取得"""
-        cutoff_time = datetime.now() - timedelta(minutes=minutes)
+    def _get_recent_metrics(self, minutes: int = 30) -> listcutoff_time = datetime.now() - timedelta(minutes=minutes)
+    """最近のメトリクス取得"""
 
-        recent_metrics = []
+        recent_metrics = []:
         for metric in reversed(self.metrics_history):
             # Process each item in collection
             timestamp_str = metric.get("timestamp")

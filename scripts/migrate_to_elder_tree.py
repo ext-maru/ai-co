@@ -33,7 +33,7 @@ MIGRATION_MAPPING = {
             "libs/task_sage.py",
             "libs/task_sage_enhanced.py",
             "libs/claude_task_tracker.py",
-            "libs/claude_task_tracker_v2.py",
+            "libs/claude_task_tracker_v2.0py",
             "libs/four_sages/task/",
         ],
         "target": "task_sage/abilities/",

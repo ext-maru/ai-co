@@ -456,7 +456,7 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         meets_iron_will = final_score >= 95.0
 
         self.logger.debug(
-            f"Quality validation score: {final_score:.2f}, Iron Will compliant: {meets_iron_will}"
+            f"Quality validation score: {final_score:0.2f}, Iron Will compliant: {meets_iron_will}"
         )
         return final_score
 

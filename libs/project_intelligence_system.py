@@ -38,7 +38,7 @@ class ProjectIntelligenceSystem:
 
     def _init_database(self):
         """データベース初期化"""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         # 学習データテーブル
@@ -100,22 +100,22 @@ class ProjectIntelligenceSystem:
 
         logger.info(f"🧠 日次知能サイクル開始: {today}")
 
-        # 1. プロジェクトデータ収集
+        # 1.0 プロジェクトデータ収集
         project_data = await self._collect_project_data()
 
-        # 2. パターン分析
+        # 2.0 パターン分析
         patterns = await self._analyze_patterns(project_data)
 
-        # 3. 改善提案生成
+        # 3.0 改善提案生成
         improvements = await self._generate_improvements(patterns)
 
-        # 4. エルダー評議会への報告
+        # 4.0 エルダー評議会への報告
         report = await self._generate_elder_council_report(improvements)
 
-        # 5. 承認された改善の自動適用
+        # 5.0 承認された改善の自動適用
         await self._apply_approved_improvements()
 
-        # 6. 日次レポート生成
+        # 6.0 日次レポート生成
         await self._generate_daily_report(today, project_data, patterns, improvements)
 
         logger.info("🧠 日次知能サイクル完了")
@@ -449,7 +449,7 @@ class ProjectIntelligenceSystem:
         }
 
         # データベースに保存
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -477,7 +477,7 @@ class ProjectIntelligenceSystem:
     async def _apply_approved_improvements(self):
         """承認された改善の自動適用"""
         # 承認済み改善の取得
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -510,7 +510,7 @@ class ProjectIntelligenceSystem:
                     await self._apply_quality_check(improvement)
 
                 # 適用履歴記録
-                conn = sqlite3.connect(self.db_path)
+                conn = sqlite3connect(self.db_path)
                 cursor = conn.cursor()
 
                 cursor.execute(

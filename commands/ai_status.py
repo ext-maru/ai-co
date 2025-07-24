@@ -119,9 +119,9 @@ class AIStatusCommand(BaseCommand):
         disk = psutil.disk_usage(str(PROJECT_ROOT))
 
         info = f"""
-CPU使用率: {cpu_percent:.1f}%
-メモリ使用: {memory.percent:.1f}% ({memory.used / 1024 / 1024 / 1024:.1f}GB / {memory.total / 1024 / 1024 / 1024:.1f}GB)
-ディスク使用: {disk.percent:.1f}% ({disk.used / 1024 / 1024 / 1024:.1f}GB / {disk.total / 1024 / 1024 / 1024:.1f}GB)
+CPU使用率: {cpu_percent:0.1f}%
+メモリ使用: {memory.percent:0.1f}% ({memory.used / 1024 / 1024 / 1024:0.1f}GB / {memory.total / 1024 / 1024 / 1024:0.1f}GB)
+ディスク使用: {disk.percent:0.1f}% ({disk.used / 1024 / 1024 / 1024:0.1f}GB / {disk.total / 1024 / 1024 / 1024:0.1f}GB)
 """
         return info.strip()
 
@@ -155,8 +155,8 @@ CPU使用率: {cpu_percent:.1f}%
                 worker_name,
                 status_text,
                 str(pid) if pid else "-",
-                f"{cpu:.1f}%" if cpu is not None else "-",
-                f"{mem:.1f}MB" if mem is not None else "-",
+                f"{cpu:0.1f}%" if cpu is not None else "-",
+                f"{mem:0.1f}MB" if mem is not None else "-",
             )
 
         return table

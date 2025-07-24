@@ -205,7 +205,7 @@ def main():
             print(f"    - コード行数: {analysis['metrics']['code_lines']}行")
             print(f"    - クラス数: {analysis['metrics']['classes']}")
             print(f"    - 関数数: {analysis['metrics']['functions']}")
-            print(f"    - 型ヒント率: {analysis['metrics']['type_hint_ratio']*100:.1f}%")
+            print(f"    - 型ヒント率: {analysis['metrics']['type_hint_ratio']*100:0.1f}%")
             print(f"    - 循環的複雑度: {analysis['metrics']['complexity']['total']}")
             
             print(f"\n  🎯 Elder Flow互換性:")
@@ -225,7 +225,7 @@ def main():
         
         avg_score = sum(r['score'] for r in results) / len(results)
         print(f"\n  - 分析ファイル数: {len(results)}")
-        print(f"  - 平均品質スコア: {avg_score:.1f}/100点")
+        print(f"  - 平均品質スコア: {avg_score:0.1f}/100点")
         
         # グレード判定
         if avg_score >= 90:

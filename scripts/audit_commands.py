@@ -35,9 +35,8 @@ class CommandAuditor:
             "recommendations": [],
         }
 
-    def find_all_commands(self):
-        """全コマンドを検出"""
-        commands = set()
+    def find_all_commands(self)commands = set()
+    """全コマンドを検出"""
 
         # binディレクトリのai-*ファイル
         if self.bin_dir.exists():
@@ -170,9 +169,8 @@ class CommandAuditor:
 
         return usage_info
 
-    def analyze_command_relationships(self):
-        """コマンド間の依存関係を分析"""
-        relationships = defaultdict(list)
+    def analyze_command_relationships(self)relationships = defaultdict(list)
+    """コマンド間の依存関係を分析"""
 
         for cmd_info in self.results["commands"].values():
         # 繰り返し処理
@@ -259,9 +257,8 @@ class CommandAuditor:
 
         return recommendations
 
-    def run_audit(self):
-        """監査を実行"""
-        print("🔍 Elders Guild コマンド監査開始...")
+    def run_audit(self)print("🔍 Elders Guild コマンド監査開始...")
+    """監査を実行"""
 
         # 全コマンド検出
         all_commands = self.find_all_commands()
@@ -415,9 +412,8 @@ class CommandAuditor:
         return "\n".join(report)
 
 
-def main():
-    """メイン処理"""
-    auditor = CommandAuditor()
+def main()auditor = CommandAuditor()
+"""メイン処理"""
 
     # 監査実行
     results = auditor.run_audit()

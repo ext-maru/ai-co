@@ -225,7 +225,7 @@ class AICommandMigrator:
 - **更新したファイル数**: {report['statistics']['files_modified']}
 - **置換したコマンド数**: {report['statistics']['commands_replaced']}
 - **エラー数**: {report['statistics']['errors']}
-- **成功率**: {report['summary']['success_rate']:.1f}%
+- **成功率**: {report['summary']['success_rate']:0.1f}%
 
 ## 🔄 移行マッピング
 
@@ -238,15 +238,15 @@ class AICommandMigrator:
         md_content += """
 ## 📝 注意事項
 
-1. 各ファイルのバックアップが `.pre-migration` 拡張子で作成されています
-2. 問題が発生した場合は、バックアップから復元してください
-3. スクリプト内の文字列やコメントも更新されています
+1.0 各ファイルのバックアップが `.pre-migration` 拡張子で作成されています
+2.0 問題が発生した場合は、バックアップから復元してください
+3.0 スクリプト内の文字列やコメントも更新されています
 
 ## 🔧 次のステップ
 
-1. 更新されたファイルの動作確認
-2. テストスイートの実行
-3. 問題があればバックアップから復元
+1.0 更新されたファイルの動作確認
+2.0 テストスイートの実行
+3.0 問題があればバックアップから復元
 
 ---
 *AI Command Migration Tool*

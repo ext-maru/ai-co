@@ -9,15 +9,15 @@ import asyncio
 import os
 
 class SimpleTestAgent(A2AServer):
+    pass
 
 
 """シンプルなテストエージェント"""
         super().__init__(name="simple_test", description="Simple test agent")
         self.port = port
         
-    async def handle_message(self, message: Message):
-        """メッセージハンドラー"""
-        print(f"Received message: {message}")
+    async def handle_message(self, message: Message)print(f"Received message: {message}")
+    """メッセージハンドラー"""
         
         # Messageオブジェクトの内容を辞書として扱う
         if hasattr(message, 'content'):
@@ -28,6 +28,7 @@ class SimpleTestAgent(A2AServer):
         return {"status": "ok", "echo": str(message)}
     
     def create_app(self):
+        pass
 
     
     """Flask appを作成"""
@@ -36,6 +37,7 @@ class SimpleTestAgent(A2AServer):
         # メッセージ受信エンドポイント
         @app.route('/message', methods=['POST'])
         async def receive_message():
+            pass
 
         
         """receive_messageメソッド"""

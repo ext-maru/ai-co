@@ -83,12 +83,11 @@ class EntanglementPair:
 class QuantumCircuit:
     """量子回路シミュレーター"""
 
-    def __init__(self, num_qubits:
+    def __init__(self, num_qubits: int):
         """初期化メソッド"""
-    int):
         self.num_qubits = num_qubits
         self.qubits = np.zeros(2**num_qubits, dtype=complex)
-        self.qubits[0] = 1.0  # |0...0⟩ 状態で初期化
+        self.qubits[0] = 1  # |0.0⟩ 状態で初期化
 
         self.gate_history = []
         self.entanglements = []
@@ -123,7 +122,7 @@ class QuantumCircuit:
             ]
         )
         self._apply_single_qubit_gate(ry_matrix, qubit)
-        self.gate_history.append(f"RY({qubit},{theta:.3f})")
+        self.gate_history.append(f"RY({qubit},{theta:0.3f})")
 
     def _apply_single_qubit_gate(self, gate_matrix: np.ndarray, qubit: int):
         """単一量子ビットゲート適用"""
@@ -198,9 +197,8 @@ class QuantumCircuit:
 class QuantumProcessor:
     """量子プロセッサ"""
 
-    def __init__(self, num_qubits:
+    def __init__(self, num_qubits: int = 10):
         """初期化メソッド"""
-    int = 10):
         self.num_qubits = num_qubits
         self.circuit = QuantumCircuit(num_qubits)
         self.logger = self._setup_logger()
@@ -256,7 +254,7 @@ class QuantumProcessor:
         entanglement_fidelity = (
             np.mean([e.fidelity for e in self.circuit.entanglements])
             if self.circuit.entanglements
-            else 0.0
+            else 0
         )
 
         return QuantumResult(
@@ -462,10 +460,10 @@ class QuantumProcessor:
         # アルゴリズム別の理論的スピードアップ
         advantages = {
             "quantum_search": (
-                np.sqrt(problem_size) / problem_size if problem_size > 1 else 1.0
+                np.sqrt(problem_size) / problem_size if problem_size > 1 else 1
             ),
             "quantum_fourier_transform": (
-                np.log2(problem_size) / problem_size if problem_size > 1 else 1.0
+                np.log2(problem_size) / problem_size if problem_size > 1 else 1
             ),
             "quantum_optimization": 0.8,  # QAOA
             "quantum_ml": 0.7,  # VQC
@@ -478,9 +476,8 @@ class QuantumProcessor:
 class ParallelExecutionEngine:
     """並列実行エンジン"""
 
-    def __init__(self, max_classical_workers:
+    def __init__(self, max_classical_workers: int = 8, max_quantum_workers: int = 4):
         """初期化メソッド"""
-    int = 8, max_quantum_workers: int = 4):
         self.max_classical_workers = max_classical_workers
         self.max_quantum_workers = max_quantum_workers
 
@@ -689,8 +686,8 @@ class ParallelExecutionEngine:
             task1, task2 = pair_tasks
 
             # 量子エンタングルメント状態の作成
-            processor1.circuit.hadamard(0)
-            processor1.circuit.cnot(0, 1)
+            processor1circuit.hadamard(0)
+            processor1circuit.cnot(0, 1)
 
             # 同期実行
             result1_coroutine = processor1.execute_quantum_algorithm(
@@ -709,20 +706,20 @@ class ParallelExecutionEngine:
 
             # エンタングルメント相関の計算
             correlation = (
-                np.abs(result1.entanglement_fidelity + result2.entanglement_fidelity)
+                np.abs(result1entanglement_fidelity + result2entanglement_fidelity)
                 / 2
             )
 
             return {
                 task1["id"]: {
-                    "result": result1.result,
-                    "quantum_advantage": result1.quantum_advantage,
+                    "result": result1result,
+                    "quantum_advantage": result1quantum_advantage,
                     "entanglement_correlation": correlation,
                     "success": True,
                 },
                 task2["id"]: {
-                    "result": result2.result,
-                    "quantum_advantage": result2.quantum_advantage,
+                    "result": result2result,
+                    "quantum_advantage": result2quantum_advantage,
                     "entanglement_correlation": correlation,
                     "success": True,
                 },
@@ -802,9 +799,8 @@ class ParallelExecutionEngine:
 class QuantumParallelEngine:
     """量子並列エンジン統合システム"""
 
-    def __init__(self, max_classical_workers:
+    def __init__(self, max_classical_workers: int = 8, max_quantum_workers: int = 4):
         """初期化メソッド"""
-    int = 8, max_quantum_workers: int = 4):
         self.execution_engine = ParallelExecutionEngine(
             max_classical_workers, max_quantum_workers
         )
@@ -816,8 +812,8 @@ class QuantumParallelEngine:
             "quantum_executions": 0,
             "classical_executions": 0,
             "hybrid_executions": 0,
-            "average_quantum_advantage": 0.0,
-            "average_execution_time": 0.0,
+            "average_quantum_advantage": 0,
+            "average_execution_time": 0,
         }
 
         self.logger.info("⚛️ Quantum Parallel Engine initialized")
@@ -939,10 +935,10 @@ class QuantumParallelEngine:
                 )
 
                 # スピードアップ計算
-                quantum_time = quantum_result.get("execution_time", 1.0)
-                classical_time = classical_result.get("execution_time", 1.0)
+                quantum_time = quantum_result.get("execution_time", 1)
+                classical_time = classical_result.get("execution_time", 1)
 
-                speedup = classical_time / quantum_time if quantum_time > 0 else 1.0
+                speedup = classical_time / quantum_time if quantum_time > 0 else 1
                 benchmark_results[algorithm].append(speedup)
 
         return benchmark_results
@@ -1005,7 +1001,7 @@ async def demo_quantum_parallel_engine():
 
         result = await engine.process_workload(workload, strategy)
 
-        print(f"  ⏱️ Execution time: {result['execution_time']:.3f}s")
+        print(f"  ⏱️ Execution time: {result['execution_time']:0.3f}s")
         print(
             f"  ✅ Successful tasks: {result['successful_tasks']}/{result['total_tasks']}"
         )
@@ -1014,7 +1010,7 @@ async def demo_quantum_parallel_engine():
         for task_id, task_result in result["results"].items():
             if isinstance(task_result, dict) and "quantum_advantage" in task_result:
                 advantage = task_result["quantum_advantage"]
-                print(f"     🌟 {task_id}: Quantum advantage = {advantage:.3f}")
+                print(f"     🌟 {task_id}: Quantum advantage = {advantage:0.3f}")
 
     # ベンチマーク実行
     print(f"\n📊 Running quantum advantage benchmark...")
@@ -1026,14 +1022,14 @@ async def demo_quantum_parallel_engine():
     for algorithm, speedups in benchmark.items():
         print(f"  {algorithm}:")
         for size, speedup in zip(problem_sizes, speedups):
-            print(f"    Size {size}: {speedup:.2f}x speedup")
+            print(f"    Size {size}: {speedup:0.2f}x speedup")
 
     # 性能メトリクス表示
     print(f"\n📈 Performance Metrics:")
     metrics = engine.get_performance_metrics()
     for metric, value in metrics.items():
         if isinstance(value, float):
-            print(f"  {metric}: {value:.3f}")
+            print(f"  {metric}: {value:0.3f}")
         else:
             print(f"  {metric}: {value}")
 

@@ -62,13 +62,13 @@ def show_menu():
         f"""
 {Colors.BLUE}🎯 利用可能なオプション:{Colors.ENDC}
 
-1. 📊 日次知能サイクル実行
-2. 📅 自動スケジュール開始
-3. 🏛️ 評議会状況確認
-4. 📋 レポート表示
-5. 📈 統計情報表示
-6. 🔧 テストモード
-7. 🚪 終了
+1.0 "📊" 日次知能サイクル実行
+2.0 📅 自動スケジュール開始
+3.0 🏛️ 評議会状況確認
+4.0 📋 レポート表示
+5.0 "📈" 統計情報表示
+6.0 🔧 テストモード
+7.0 🚪 終了
 
 {Colors.YELLOW}💡 ヒント:{Colors.ENDC}
 - 通常は「2」で自動スケジュールを開始してください
@@ -161,19 +161,19 @@ def show_quick_start():
         f"""
 {Colors.GREEN}{Colors.BOLD}🚀 クイックスタートガイド{Colors.ENDC}
 
-{Colors.BLUE}1. 初回セットアップ{Colors.ENDC}
+{Colors.BLUE}1.0 初回セットアップ{Colors.ENDC}
    このスクリプトを実行 → オプション「1」で動作確認
 
-{Colors.BLUE}2. 自動運用開始{Colors.ENDC}
+{Colors.BLUE}2.0 自動運用開始{Colors.ENDC}
    オプション「2」で自動スケジュール開始
    または systemd サービスとして登録
 
-{Colors.BLUE}3. 日常運用{Colors.ENDC}
+{Colors.BLUE}3.0 日常運用{Colors.ENDC}
    - 毎日午前6時に自動実行
    - エルダー評議会への自動報告
    - 承認された改善の自動適用
 
-{Colors.BLUE}4. 監視・管理{Colors.ENDC}
+{Colors.BLUE}4.0 監視・管理{Colors.ENDC}
    - オプション「3」で評議会状況確認
    - オプション「4」で日次レポート確認
    - オプション「5」で統計情報確認

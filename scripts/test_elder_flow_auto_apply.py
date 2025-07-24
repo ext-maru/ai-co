@@ -62,7 +62,7 @@ async def test_auto_apply():
         
         print("")
     
-    print(f"📊 テスト結果: {passed}/{total} 成功 ({passed/total*100:.0f}%)")
+    print(f"📊 テスト結果: {passed}/{total} 成功 ({passed/total*100:0.0f}%)")
     
     if passed == total:
         print("🎉 Elder Flow自動適用メカニズムは完璧に動作しています！")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 RAG Sage Business Logic - 検索・分析・洞察生成
+"🔍" RAG Sage Business Logic - 検索・分析・洞察生成
 ================================================
 
 Elder Loop Phase 1: ビジネスロジック分離
@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class SearchType(Enum):
+    pass
 
 
 """検索タイプ"""
@@ -47,6 +48,7 @@ class SearchType(Enum):
 
 @dataclass
 class SearchResult:
+    pass
 
 
 
@@ -58,6 +60,7 @@ class SearchResult:
 
 @dataclass
 class SearchQuery:
+    pass
 
 
 
@@ -71,6 +74,7 @@ class SearchQuery:
 
 @dataclass
 class IndexResult:
+    pass
 
 
 
@@ -82,6 +86,7 @@ class IndexResult:
 
 @dataclass
 class CacheEntry:
+    pass
 
 
 
@@ -98,6 +103,7 @@ class CacheEntry:
 
 
 class RAGProcessor:
+    pass
 
         """
     RAG処理エンジン
@@ -139,6 +145,7 @@ class RAGProcessor:
         logger.info("RAG Processor initialized successfully")
     
     def _init_database(self):
+        pass
 
         """データベース初期化"""
             # ドキュメントテーブル
@@ -363,7 +370,7 @@ class RAGProcessor:
             limit = data.get("limit", 5)
             
             # 元ドキュメント取得
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 cursor = conn.execute(
                     "SELECT content, category, tags FROM documents WHERE id = ?",
@@ -512,7 +519,7 @@ class RAGProcessor:
         try:
             start_time = time.time()
             
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # VACUUM実行
                 conn.execute("VACUUM")
@@ -548,7 +555,7 @@ class RAGProcessor:
     async def _get_search_statistics_action(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """検索統計取得アクション"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # 総検索数
                 cursor = conn.execute("SELECT COUNT(*) FROM search_history")
@@ -601,7 +608,7 @@ class RAGProcessor:
     async def _get_index_info_action(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """インデックス情報取得アクション"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # ドキュメント数
                 cursor = conn.execute("SELECT COUNT(*) FROM documents")
@@ -656,7 +663,7 @@ class RAGProcessor:
         try:
             document_id = data.get("document_id", "")
             
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 # 削除実行
                 cursor = conn.execute(
@@ -699,7 +706,7 @@ class RAGProcessor:
             # ブースト値の範囲チェック
             boost_value = max(0.1, min(10.0, boost_value))
             
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 cursor = conn.execute(
                     "UPDATE documents SET relevance_boost = ? WHERE id = ?",
@@ -746,7 +753,7 @@ class RAGProcessor:
             
             # データベース接続チェック
             try:
-                conn = sqlite3.connect(str(self.db_path))
+                conn = sqlite3connect(str(self.db_path))
                 cursor = conn.execute("SELECT COUNT(*) FROM documents")
                 document_count = cursor.fetchone()[0]
                 conn.close()
@@ -773,13 +780,12 @@ class RAGProcessor:
     
     # === Core Search Functions ===
     
-    async def _search(self, query: SearchQuery) -> List[SearchResult]:
-        """検索実行"""
-        start_time = time.time()
+    async def _search(self, query: SearchQuery) -> List[SearchResult]start_time = time.time()
+    """検索実行"""
         
         # キャッシュチェック
         cache_key = self._generate_cache_key(query)
-        cached_result = self._get_cached_result(cache_key)
+        cached_result = self._get_cached_result(cache_key):
         if cached_result:
             logger.info(f"Cache hit for query: {query.query[:50]}")
             return cached_result
@@ -803,9 +809,8 @@ class RAGProcessor:
         
         return results
     
-    async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]:
-        """全文検索"""
-        conn = sqlite3.connect(str(self.db_path))
+    async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path))
+    """全文検索""":
         try:
             # SQLクエリ構築
             where_conditions = ["(content LIKE ? OR title LIKE ?)"]
@@ -895,9 +900,8 @@ class RAGProcessor:
         
         return merged_results[:query.limit]
     
-    async def _exact_search(self, query: SearchQuery) -> List[SearchResult]:
-        """完全一致検索"""
-        conn = sqlite3.connect(str(self.db_path))
+    async def _exact_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path))
+    """完全一致検索""":
         try:
             sql = """
                 SELECT id, content, source, title, category, tags, author,
@@ -927,12 +931,11 @@ class RAGProcessor:
     
     # === Document Management ===
     
-    async def _index_document(self, document: Document) -> IndexResult:
-        """ドキュメントインデックス"""
-        start_time = time.time()
-        
+    async def _index_document(self, document: Document) -> IndexResultstart_time = time.time()
+    """ドキュメントインデックス"""
+        :
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             try:
                 sql = """
                     INSERT OR REPLACE INTO documents
@@ -1008,16 +1011,15 @@ class RAGProcessor:
                 del self.cache[cache_key]
         return None
     
-    def _cache_result(self, cache_key: str, results: List[SearchResult]) -> None:
-        """結果をキャッシュ"""
-        expires_at = datetime.now() + timedelta(seconds=self.cache_ttl_seconds)
+    def _cache_result(self, cache_key: str, results: List[SearchResult]) -> Noneexpires_at = datetime.now() + timedelta(seconds=self.cache_ttl_seconds)
+    """結果をキャッシュ"""
         self.cache[cache_key] = CacheEntry(
             key=cache_key,
             value=results,
             expires_at=expires_at
         )
         
-        # キャッシュサイズ制限
+        # キャッシュサイズ制限:
         if len(self.cache) > 1000:
             # 最も古いエントリを削除
             oldest_key = min(self.cache.keys(),
@@ -1100,9 +1102,8 @@ class RAGProcessor:
             relevance_boost=row[11] or 1.0
         )
     
-    async def _increment_access_count(self, document_id: str) -> None:
-        """アクセス数増加"""
-        conn = sqlite3.connect(str(self.db_path))
+    async def _increment_access_count(self, document_id: str) -> Noneconn = sqlite3connect(str(self.db_path))
+    """アクセス数増加""":
         try:
             conn.execute(
                 "UPDATE documents SET access_count = access_count + 1 WHERE id = ?",
@@ -1112,9 +1113,8 @@ class RAGProcessor:
         finally:
             conn.close()
     
-    async def _save_search_history(self, query: SearchQuery, result_count: int, search_time_ms: float) -> None:
-        """検索履歴保存"""
-        conn = sqlite3.connect(str(self.db_path))
+    async def _save_search_history(self, query: SearchQuery, result_count: int, search_time_ms: float) -> Noneconn = sqlite3connect(str(self.db_path))
+    """検索履歴保存""":
         try:
             conn.execute("""
                 INSERT INTO search_history

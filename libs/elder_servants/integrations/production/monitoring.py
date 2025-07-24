@@ -1,5 +1,5 @@
 """
-📊 Elder Servants統合監視システム
+"📊" Elder Servants統合監視システム
 Phase 3 プロダクション対応：包括的ログ・監視・メトリクス
 
 EldersServiceLegacy統合: Iron Will品質基準とエルダー評議会令第27号完全準拠
@@ -516,7 +516,7 @@ class AlertingSystem:
 
 class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]]):
     """
-    📊 Elder Servants統合監視システム
+    "📊" Elder Servants統合監視システム
 
     EldersServiceLegacyから継承し、Iron Will品質基準に完全準拠。
     構造化ログ・Prometheus統合・リアルタイム監視を提供。

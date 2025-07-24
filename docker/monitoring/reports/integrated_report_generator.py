@@ -95,7 +95,7 @@ class SageReportCollector:
 
             # インサイトを生成
             insights = [
-                f"インシデント解決率: {(metrics['resolved_incidents']/metrics['total_incidents']*100):.1f}%",
+                f"インシデント解決率: {(metrics['resolved_incidents']/metrics['total_incidents']*100):0.1f}%",
                 f"自動回復により{int(metrics['auto_recovery_rate'])}%のインシデントが自動解決",
                 "Connection timeout が最も頻繁なエラーパターン（34件）",
                 "Critical インシデントは全体の4.9%に留まる",
@@ -621,10 +621,10 @@ class IntegratedReportGenerator:
                 "avg_response_time": rag_metrics.get("avg_response_time", 0),
             },
             "highlights": [
-                f"システム健全性スコア: {health_score:.1f}/100",
-                f"インシデント自動回復率: {incident_metrics.get('auto_recovery_rate', 0):.1f}%",
-                f"タスク完了率: {task_metrics.get('completion_rate', 0):.1f}%",
-                f"検索精度: {rag_metrics.get('retrieval_accuracy', 0):.1f}%",
+                f"システム健全性スコア: {health_score:0.1f}/100",
+                f"インシデント自動回復率: {incident_metrics.get('auto_recovery_rate', 0):0.1f}%",
+                f"タスク完了率: {task_metrics.get('completion_rate', 0):0.1f}%",
+                f"検索精度: {rag_metrics.get('retrieval_accuracy', 0):0.1f}%",
             ],
             "alerts_summary": {
                 "critical": 0,  # 実際のアラートシステムから取得
@@ -817,7 +817,7 @@ class IntegratedReportGenerator:
     <div class="summary-box">
         <h2>Executive Summary</h2>
         <div class="metric">
-            <div class="metric-value">{{ "%.1f"|format(report.executive_summary.health_score) }}/100</div>
+            <div class="metric-value">{{ "%0.1f"|format(report.executive_summary.health_score) }}/100</div>
             <div class="metric-label">System Health Score</div>
         </div>
         {% for key, value in report.executive_summary.key_metrics.items() %}

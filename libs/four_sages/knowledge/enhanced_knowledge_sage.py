@@ -147,7 +147,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
         similarities = []
 
         # Use synchronous sqlite3 connection from parent class
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT id, title, content, category, tags FROM knowledge_entries"
             )
@@ -260,7 +260,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
         new_embedding = await self.generate_embedding(new_text)
 
         # Check against existing entries
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute("SELECT id, title, content FROM knowledge_entries")
             entries = cursor.fetchall()
 
@@ -304,7 +304,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
 
         if is_duplicate:
             self.logger.warning(
-                f"Potential duplicate detected (similarity: {similarity:.2f})"
+                f"Potential duplicate detected (similarity: {similarity:0.2f})"
             )
 
         # Store using parent's process_request method
@@ -350,7 +350,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
     async def update_knowledge(self, knowledge_id: str, **updates) -> bool:
         """Update knowledge with versioning"""
         # Get current version
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT title, content, category, tags FROM knowledge_entries WHERE id = ?",
                 (knowledge_id,),
@@ -383,7 +383,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
 
     async def get_knowledge(self, knowledge_id: str) -> Optional[Dict[str, Any]]:
         """Get knowledge entry by ID"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT id, title, content, category, tags, created_at, access_count FROM " \
                     "knowledge_entries WHERE id = ?",
@@ -441,7 +441,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
         related = []
 
         for rel in relationships:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.execute(
                     "SELECT id, title, category FROM knowledge_entries WHERE id = ?",
                     (rel["target"],),
@@ -546,7 +546,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
 
     async def get_knowledge_analytics(self) -> Dict[str, Any]:
         """Get analytics about knowledge base"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # Total entries
             cursor = conn.execute("SELECT COUNT(*) FROM knowledge_entries")
             total = cursor.fetchone()[0]
@@ -588,7 +588,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
 
     async def export_knowledge(self, format: str = "json") -> str:
         """Export knowledge base in different formats"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT id, title, content, category, tags FROM knowledge_entries"
             )

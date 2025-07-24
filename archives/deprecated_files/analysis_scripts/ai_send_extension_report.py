@@ -11,16 +11,15 @@ PROJECT_ROOT = Path("/home/aicompany/ai_co")
 sys.path.insert(0, str(PROJECT_ROOT))
 
 
-def generate_report():
-    """実装結果のレポートを生成"""
-    print("=" * 60)
+def generate_report()print("=" * 60)
+"""実装結果のレポートを生成"""
     print("📊 Elders Guild ai-send拡張 実装結果レポート")
     print("=" * 60)
     print(f"実行日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
 
-    # 1. タスクタイプ設定の確認
-    print("【1. タスクタイプ設定】")
+    # 1.0 タスクタイプ設定の確認
+    print("【1.0 タスクタイプ設定】")
     config_file = PROJECT_ROOT / "config" / "task_types.json"
     if config_file.exists():
         print("✅ config/task_types.json: 作成成功")
@@ -41,8 +40,8 @@ def generate_report():
     else:
         print("❌ config/task_types.json: 未作成")
 
-    # 2. ai_send.pyの更新状況
-    print("\n【2. ai_send.pyの更新状況】")
+    # 2.0 ai_send.pyの更新状況
+    print("\n【2.0 ai_send.pyの更新状況】")
     ai_send_path = PROJECT_ROOT / "commands" / "ai_send.py"
     if ai_send_path.exists():
         with open(ai_send_path) as f:
@@ -53,8 +52,8 @@ def generate_report():
                 print("⚠️ 未拡張（基本タイプのみ）")
                 print("  → implement_ai_send_extension.shの実行が必要です")
 
-    # 3. テンプレートファイル
-    print("\n【3. タスクテンプレート】")
+    # 3.0 テンプレートファイル
+    print("\n【3.0 タスクテンプレート】")
     template_dir = PROJECT_ROOT / "templates" / "task_types"
     if template_dir.exists():
         templates = list(template_dir.glob("*.yaml"))
@@ -64,16 +63,16 @@ def generate_report():
     else:
         print("❌ テンプレートディレクトリが見つかりません")
 
-    # 4. ドキュメント
-    print("\n【4. ドキュメント】")
+    # 4.0 ドキュメント
+    print("\n【4.0 ドキュメント】")
     guide_path = PROJECT_ROOT / "docs" / "AI_SEND_EXTENDED_GUIDE.md"
     if guide_path.exists():
         print("✅ AI_SEND_EXTENDED_GUIDE.md: 作成済み")
     else:
         print("❌ ガイドドキュメント: 未作成")
 
-    # 5. 実装スクリプト
-    print("\n【5. 実装スクリプト】")
+    # 5.0 実装スクリプト
+    print("\n【5.0 実装スクリプト】")
     scripts = [
         "apply_ai_send_extension.py",
         "implement_ai_send_extension.sh",
@@ -100,9 +99,9 @@ def generate_report():
     else:
         print("⚠️ ai-send拡張の実装が不完全です")
         print("\n🔧 対処方法:")
-        print("  1. AI Command Executorが起動していることを確認")
-        print("  2. cd /home/aicompany/ai_co")
-        print("  3. ./implement_ai_send_extension.sh を実行")
+        print("  1.0 AI Command Executorが起動していることを確認")
+        print("  2.0 cd /home/aicompany/ai_co")
+        print("  3.0 ./implement_ai_send_extension.sh を実行")
 
 
 if __name__ == "__main__":

@@ -405,7 +405,7 @@ class GUITestRunner:
         )
 
         success_rate = successful_frameworks / total_frameworks * 100
-        logger.info(f"\n🎉 Overall Success Rate: {success_rate:.1f}%")
+        logger.info(f"\n🎉 Overall Success Rate: {success_rate:0.1f}%")
 
         if success_rate >= 80:
             logger.info("✅ GUI Testing Framework is ready for production use!")

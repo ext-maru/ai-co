@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔍 RAG Sage A2A Agent - 実動作検証
+"🔍" RAG Sage A2A Agent - 実動作検証
 =================================
 
 Elder Loop Phase 5: 実動作検証
@@ -48,14 +48,14 @@ class RAGSageRealExecution:
             info = info_result["data"]
             print(f"✅ プロセッサ初期化完了")
             print(f"   - ドキュメント数: {info['document_count']}個")
-            print(f"   - インデックスサイズ: {info['size_bytes'] / 1024:.1f}KB")
+            print(f"   - インデックスサイズ: {info['size_bytes'] / 1024:0.1f}KB")
         print()
     
     async def test_document_management_flow(self):
         """ドキュメント管理フロー検証"""
         print("\n📚 === ドキュメント管理フロー検証 ===")
         
-        # 1. ドキュメントインデックス
+        # 1.0 ドキュメントインデックス
         print("\n1️⃣ ドキュメントインデックステスト")
         
         test_documents = [
@@ -100,9 +100,9 @@ class RAGSageRealExecution:
                 self.indexed_documents.append(doc["id"])
                 print(f"   ✅ ドキュメントインデックス成功: {doc['id']}")
                 print(f"      - タイトル: {doc['title']}")
-                print(f"      - インデックス時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - インデックス時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 2. バッチインデックス
+        # 2.0 バッチインデックス
         print("\n2️⃣ バッチインデックステスト")
         batch_docs = [
             {
@@ -128,9 +128,9 @@ class RAGSageRealExecution:
             print(f"   ✅ バッチインデックス成功")
             print(f"      - 総ドキュメント数: {result['data']['total_documents']}")
             print(f"      - 成功数: {result['data']['successful_count']}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 3. ドキュメントブースト更新
+        # 3.0 ドキュメントブースト更新
         print("\n3️⃣ ドキュメントブースト更新テスト")
         
         start_time = time.time()
@@ -144,13 +144,13 @@ class RAGSageRealExecution:
             print(f"   ✅ ブースト更新成功")
             print(f"      - ドキュメントID: {result['data']['document_id']}")
             print(f"      - 新ブースト値: {result['data']['boost_value']}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
     
     async def test_search_flow(self):
         """検索フロー検証"""
         print("\n\n🔍 === 検索フロー検証 ===")
         
-        # 1. 全文検索
+        # 1.0 全文検索
         print("\n1️⃣ 全文検索テスト")
         queries = ["Elder Loop", "4賢者", "品質", "AI"]
         
@@ -166,13 +166,13 @@ class RAGSageRealExecution:
             if result.get("success"):
                 print(f"\n   🔍 クエリ: '{query}'")
                 print(f"   ✅ 検索成功 - {result['data']['total_count']}件ヒット")
-                print(f"      - 検索時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - 検索時間: {(end_time - start_time) * 1000:0.1f}ms")
                 
                 # 上位結果表示
                 for i, doc in enumerate(result['data']['results'][:3]):
-                    print(f"      {i+1}. [{doc['score']:.2f}] {doc['title']}")
+                    print(f"      {i+1}. [{doc['score']:0.2f}] {doc['title']}")
         
-        # 2. フィルター検索
+        # 2.0 フィルター検索
         print("\n2️⃣ フィルター検索テスト")
         filter_tests = [
             {"filters": {"category": "development"}, "description": "開発カテゴリ"},
@@ -192,9 +192,9 @@ class RAGSageRealExecution:
             if result.get("success"):
                 print(f"\n   🔍 フィルター: {test['description']}")
                 print(f"   ✅ 検索成功 - {result['data']['total_count']}件ヒット")
-                print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 3. 類似ドキュメント検索
+        # 3.0 類似ドキュメント検索
         print("\n3️⃣ 類似ドキュメント検索テスト")
         
         start_time = time.time()
@@ -208,16 +208,16 @@ class RAGSageRealExecution:
             print(f"   ✅ 類似検索成功")
             print(f"      - 基準ドキュメント: Elder Loop開発手法ガイド")
             print(f"      - 類似ドキュメント数: {len(result['data']['similar_documents'])}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
             
             for doc in result['data']['similar_documents'][:3]:
-                print(f"      - [{doc['similarity_score']:.2f}] {doc['title']}")
+                print(f"      - [{doc['similarity_score']:0.2f}] {doc['title']}")
     
     async def test_analysis_flow(self):
         """分析・洞察フロー検証"""
         print("\n\n🧠 === 分析・洞察フロー検証 ===")
         
-        # 1. クエリ意図分析
+        # 1.0 クエリ意図分析
         print("\n1️⃣ クエリ意図分析テスト")
         test_queries = [
             "How to implement Elder Loop methodology?",
@@ -239,9 +239,9 @@ class RAGSageRealExecution:
                 print(f"   ✅ 意図分析成功")
                 print(f"      - 意図タイプ: {intent['intent_type']}")
                 print(f"      - キーワード: {', '.join(intent['keywords'])}")
-                print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 2. 洞察生成
+        # 2.0 洞察生成
         print("\n2️⃣ 洞察生成テスト")
         
         # まず検索実行
@@ -266,13 +266,13 @@ class RAGSageRealExecution:
                 if insights['key_themes']:
                     print(f"      - トップテーマ: {insights['key_themes'][0]['theme']} ({insights['key_themes'][0]['count']}件)")
                 print(f"      - 推奨事項: {len(insights['recommendations'])}件")
-                print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+                print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
     
     async def test_system_management_flow(self):
         """システム管理フロー検証"""
         print("\n\n⚙️ === システム管理フロー検証 ===")
         
-        # 1. インデックス情報取得
+        # 1.0 インデックス情報取得
         print("\n1️⃣ インデックス情報取得テスト")
         
         start_time = time.time()
@@ -284,11 +284,11 @@ class RAGSageRealExecution:
             print(f"   ✅ インデックス情報取得成功")
             print(f"      - インデックス名: {info['index_name']}")
             print(f"      - ドキュメント数: {info['document_count']}")
-            print(f"      - サイズ: {info['size_bytes'] / 1024:.1f}KB")
+            print(f"      - サイズ: {info['size_bytes'] / 1024:0.1f}KB")
             print(f"      - カテゴリ分布: {len(info['category_distribution'])}種類")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 2. 検索統計取得
+        # 2.0 検索統計取得
         print("\n2️⃣ 検索統計取得テスト")
         
         start_time = time.time()
@@ -299,13 +299,13 @@ class RAGSageRealExecution:
             stats = result['data']
             print(f"   ✅ 検索統計取得成功")
             print(f"      - 総検索数: {stats['total_searches']}回")
-            print(f"      - 平均検索時間: {stats['average_search_time_ms']:.1f}ms")
+            print(f"      - 平均検索時間: {stats['average_search_time_ms']:0.1f}ms")
             print(f"      - 人気クエリ数: {len(stats['popular_queries'])}個")
             if stats['popular_queries']:
                 print(f"      - トップクエリ: '{stats['popular_queries'][0]['query']}' ({stats['popular_queries'][0]['count']}回)")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
         
-        # 3. インデックス最適化
+        # 3.0 インデックス最適化
         print("\n3️⃣ インデックス最適化テスト")
         
         start_time = time.time()
@@ -314,10 +314,10 @@ class RAGSageRealExecution:
         
         if result.get("success"):
             print(f"   ✅ インデックス最適化成功")
-            print(f"      - 最適化時間: {result['data']['optimization_time_ms']:.1f}ms")
+            print(f"      - 最適化時間: {result['data']['optimization_time_ms']:0.1f}ms")
             print(f"      - メッセージ: {result['data']['message']}")
         
-        # 4. ヘルスチェック
+        # 4.0 ヘルスチェック
         print("\n4️⃣ システムヘルスチェックテスト")
         
         start_time = time.time()
@@ -332,7 +332,7 @@ class RAGSageRealExecution:
             print(f"      - キャッシュサイズ: {health['cache_size']}")
             print(f"      - DB接続: {'✅' if health['db_accessible'] else '❌'}")
             print(f"      - 検索機能: {'✅' if health['search_functional'] else '❌'}")
-            print(f"      - 処理時間: {(end_time - start_time) * 1000:.1f}ms")
+            print(f"      - 処理時間: {(end_time - start_time) * 1000:0.1f}ms")
     
     async def test_cleanup_flow(self):
         """クリーンアップフロー"""

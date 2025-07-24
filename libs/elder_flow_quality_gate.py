@@ -667,6 +667,7 @@ def create_quality_config(**kwargs) -> QualityGateConfig:
 
 # Example Usage
 if __name__ == "__main__":
+    pass
 
     async def main():
         """mainメソッド"""
@@ -683,7 +684,7 @@ if __name__ == "__main__":
         result = await run_quality_gate(context)
 
         print(f"Overall Status: {result['summary']['overall_status']}")
-        print(f"Overall Score: {result['summary']['overall_score']:.2f}")
+        print(f"Overall Score: {result['summary']['overall_score']:0.2f}")
         print(f"Passed Checks: {result['summary']['passed_checks']}")
         print(f"Failed Checks: {result['summary']['failed_checks']}")
         print(f"Recommendations: {len(result['recommendations'])}")

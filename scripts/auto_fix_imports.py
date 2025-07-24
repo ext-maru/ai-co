@@ -9,9 +9,8 @@ import sys
 from pathlib import Path
 
 
-def fix_import_errors():
-    """テストファイルのインポートエラーを自動修復"""
-    test_files = list(Path("tests").glob("**/*.py"))
+def fix_import_errors()test_files = list(Path("tests").glob("**/*.py"))
+"""テストファイルのインポートエラーを自動修復"""
     fixed_count = 0
     error_files = []
 

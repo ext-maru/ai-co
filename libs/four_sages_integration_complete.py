@@ -91,7 +91,7 @@ class FourSagesIntegrationComplete:
             self.system_status = "operational"
             self.initialization_time = time.time() - start_time
 
-            self.logger.info(f"✅ 4賢者統合システム初期化完了 ({self.initialization_time:.2f}秒)")
+            self.logger.info(f"✅ 4賢者統合システム初期化完了 ({self.initialization_time:0.2f}秒)")
 
             return {
                 "status": "success",

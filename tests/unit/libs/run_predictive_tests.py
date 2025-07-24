@@ -119,10 +119,10 @@ def test_prediction_model_training():
         print("  ❌ Wrong model type")
 
     if model.accuracy > 0.5:
-        print(f"  ✅ 精度が閾値以上: {model.accuracy:.3f}")
+        print(f"  ✅ 精度が閾値以上: {model.accuracy:0.3f}")
         tests_passed += 1
     else:
-        print(f"  ❌ 精度が低い: {model.accuracy:.3f}")
+        print(f"  ❌ 精度が低い: {model.accuracy:0.3f}")
 
     if model.model_type in [
         "threshold_based",
@@ -166,7 +166,7 @@ def test_model_validation():
     required_metrics = ["accuracy", "precision", "recall", "f1_score"]
     for metric in required_metrics:
         if metric in result and 0 <= result[metric] <= 1:
-            print(f"  ✅ {metric}: {result[metric]:.3f}")
+            print(f"  ✅ {metric}: {result[metric]:0.3f}")
             tests_passed += 1
         else:
             print(f"  ❌ Invalid {metric}")
@@ -201,7 +201,7 @@ async def test_incident_prediction():
         prediction = predictions[0]
         if isinstance(prediction, IncidentForecast):
             print(
-                f"  ✅ 予測内容: {prediction.incident_type} (信頼度: {prediction.confidence:.3f})"
+                f"  ✅ 予測内容: {prediction.incident_type} (信頼度: {prediction.confidence:0.3f})"
             )
             tests_passed += 1
         else:
@@ -252,7 +252,7 @@ def test_risk_assessment():
 
     # 複雑な条件判定
     if 0 <= risk.probability <= 1:
-        print(f"  ✅ 確率: {risk.probability:.3f}")
+        print(f"  ✅ 確率: {risk.probability:0.3f}")
         tests_passed += 1
     else:
         print(f"  ❌ Invalid probability: {risk.probability}")
@@ -584,12 +584,12 @@ async def main():
         print(f"✨ 99.99%稼働率の基盤が完成しました")
         return 0
     elif success_rate >= 80:
-        print(f"✅ 大部分のテストが成功しました ({success_rate:.1f}%)")
+        print(f"✅ 大部分のテストが成功しました ({success_rate:0.1f}%)")
         print("🔮 予測システムは基本的に正常に動作しています")
         return 0
     else:
         print(f"❌ {total_tests - total_passed}個のテストが失敗しました")
-        print(f"成功率: {success_rate:.1f}%")
+        print(f"成功率: {success_rate:0.1f}%")
         return 1
 
 

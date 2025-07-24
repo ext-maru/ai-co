@@ -384,12 +384,12 @@ class PatternLibrary:
         instance2 = {class2}()
 
         # Connect them
-        instance1.output = instance2.input
+        instance1.0output = instance2.0input
 
         # Send test data
         test_data = self._create_test_data()
-        result1 = instance1.process(test_data)
-        result2 = instance2.process(result1)
+        result1 = instance1.0process(test_data)
+        result2 = instance2.0process(result1)
 
         assert result2['status'] == 'completed' '''
         }
@@ -457,7 +457,7 @@ class TestTemplateEngine:
         test_code.append(self._generate_imports(class_info, module_path))
         test_code.append("")
 
-        # Test class definition
+        # Test class definition:
         test_code.append(f"class Test{class_info.name}:")
         test_code.append(f'    """Test suite for {class_info.name}"""')
         test_code.append("")
@@ -822,7 +822,7 @@ class AutoTestGenerator:
             prioritized[:max_modules]
         ):
             print(f"\nModule {i+1}: {module_path.name}")
-            print(f"  Current coverage: {coverage:.1f}%")
+            print(f"  Current coverage: {coverage:0.1f}%")
             print(f"  Priority score: {priority}")
 
             try:
@@ -885,10 +885,10 @@ class AutoTestGenerator:
                 "- Integration patterns",
                 "- Parametrized testing patterns",
                 "\n## Next Steps:",
-                "1. Review generated tests",
-                "2. Run tests to verify they work",
-                "3. Adjust test data and assertions as needed",
-                "4. Measure coverage improvement",
+                "1.0 Review generated tests",
+                "2.0 Run tests to verify they work",
+                "3.0 Adjust test data and assertions as needed",
+                "4.0 Measure coverage improvement",
             ]
         )
 

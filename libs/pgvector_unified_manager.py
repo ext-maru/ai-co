@@ -38,17 +38,16 @@ class PgVectorUnifiedManager:
             'docker_command_prefix': ['sg', 'docker', '-c']
         }
         
-    async def health_check(self) -> Dict[str, Any]:
-        """システムヘルスチェック"""
-        logger.info("🔍 pgvectorシステムヘルスチェック開始")
+    async def health_check(self) -> Dict[str, Any]logger.info("🔍 pgvectorシステムヘルスチェック開始")
+    """システムヘルスチェック"""
         
-        health = {
+        health = {:
             'timestamp': datetime.now().isoformat(),
             'overall_status': 'unknown',
             'components': {}
         }
         
-        # 1. Dockerコンテナ状況
+        # 1.0 Dockerコンテナ状況
         try:
             result = subprocess.run(['docker', 'ps'], capture_output=True, text=True)
             postgres_running = 'elders-guild-postgres-new' in result.stdout
@@ -62,7 +61,7 @@ class PgVectorUnifiedManager:
                 'details': f'Docker check failed: {e}'
             }
             
-        # 2. PostgreSQL接続
+        # 2.0 PostgreSQL接続
         try:
             cmd = self.config['docker_command_prefix'] + [
                 f"docker exec elders-guild-postgres-new psql -U {self.config['postgres']['user']} "
@@ -87,7 +86,7 @@ class PgVectorUnifiedManager:
                 'details': f'PostgreSQL check failed: {e}'
             }
             
-        # 3. pgvector拡張
+        # 3.0 pgvector拡張
         try:
             cmd = self.config['docker_command_prefix'] + [
                 f"docker exec elders-guild-postgres-new psql -U admin "
@@ -113,13 +112,13 @@ class PgVectorUnifiedManager:
                 'details': f'pgvector check failed: {e}'
             }
             
-        # 4. SQLiteバックアップ
+        # 4.0 SQLiteバックアップ
         try:
             if os.path.exists(self.config['sqlite_backup']):
                 size = os.path.getsize(self.config['sqlite_backup'])
                 health['components']['sqlite_backup'] = {
                     'status': 'healthy',
-                    'details': f'SQLite backup available ({size/1024/1024:.2f}MB)'
+                    'details': f'SQLite backup available ({size/1024/1024:0.2f}MB)'
                 }
             else:
                 health['components']['sqlite_backup'] = {
@@ -132,7 +131,7 @@ class PgVectorUnifiedManager:
                 'details': f'SQLite check failed: {e}'
             }
             
-        # 5. ナレッジベースファイル
+        # 5.0 ナレッジベースファイル
         try:
             md_files = list(Path(self.config['knowledge_base_path']).rglob('*.md'))
             health['components']['knowledge_base'] = {
@@ -157,10 +156,9 @@ class PgVectorUnifiedManager:
         logger.info(f"✅ ヘルスチェック完了: {health['overall_status']}")
         return health
         
-    async def setup_tables(self) -> bool:
-        """PostgreSQLテーブル初期化"""
-        logger.info("🔧 PostgreSQLテーブル初期化開始")
-        
+    async def setup_tables(self) -> boollogger.info("🔧 PostgreSQLテーブル初期化開始")
+    """PostgreSQLテーブル初期化"""
+        :
         try:
             # テーブル作成SQL
             create_table_sql = """
@@ -209,11 +207,10 @@ class PgVectorUnifiedManager:
             logger.error(f"❌ テーブル初期化エラー: {e}")
             return False
             
-    async def migrate_from_sqlite(self) -> Dict[str, Any]:
-        """SQLiteからPostgreSQLへのデータマイグレーション"""
-        logger.info("🔄 SQLite→PostgreSQLデータマイグレーション開始")
+    async def migrate_from_sqlite(self) -> Dict[str, Any]logger.info("🔄 SQLite→PostgreSQLデータマイグレーション開始")
+    """SQLiteからPostgreSQLへのデータマイグレーション"""
         
-        migration_stats = {
+        migration_stats = {:
             'start_time': datetime.now().isoformat(),
             'source_records': 0,
             'migrated_records': 0,
@@ -223,8 +220,8 @@ class PgVectorUnifiedManager:
         
         try:
             # SQLiteデータ読み込み
-            sqlite_conn = sqlite3.connect(self.config['sqlite_backup'])
-            sqlite_conn.row_factory = sqlite3.Row
+            sqlite_conn = sqlite3connect(self.config['sqlite_backup'])
+            sqlite_conn.row_factory = sqlite3Row
             
             cursor = sqlite_conn.execute("SELECT COUNT(*) FROM knowledge_documents")
             migration_stats['source_records'] = cursor.fetchone()[0]
@@ -287,9 +284,8 @@ class PgVectorUnifiedManager:
         """バッチデータのマイグレーション"""
         try:
             # 簡易埋め込みベクトル生成（384次元）
-            def generate_simple_embedding(text:
-                """generate_simple_embedding生成メソッド"""
-            str) -> str:
+            def generate_simple_embedding(textstr) -> str:
+    """generate_simple_embedding生成メソッド"""
                 # 文字頻度ベースの簡易ベクトル
                 vector = [0.0] * 384
                 for i, char in enumerate(text.lower()[:384]):
@@ -348,9 +344,8 @@ class PgVectorUnifiedManager:
             logger.error(f"❌ バッチマイグレーションエラー: {e}")
             return 0
             
-    async def search_knowledge(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
-        """統合知識検索"""
-        logger.info(f"🔍 知識検索: '{query}' (limit: {limit})")
+    async def search_knowledge(self, query: str, limit: int = 10) -> List[Dict[str, Any]]logger.info(f"🔍 知識検索: '{query}' (limit: {limit})")
+    """統合知識検索"""
         
         try:
             # PostgreSQL検索を試行（similarity関数なしの簡易版）
@@ -400,8 +395,8 @@ class PgVectorUnifiedManager:
             
         # フォールバック: SQLite検索
         try:
-            sqlite_conn = sqlite3.connect(self.config['sqlite_backup'])
-            sqlite_conn.row_factory = sqlite3.Row
+            sqlite_conn = sqlite3connect(self.config['sqlite_backup'])
+            sqlite_conn.row_factory = sqlite3Row
             
             cursor = sqlite_conn.execute(
                 "SELECT title, content, source_file, category, priority "
@@ -429,13 +424,12 @@ class PgVectorUnifiedManager:
             logger.error(f"❌ SQLite検索も失敗: {e}")
             return []
             
-    async def get_status(self) -> Dict[str, Any]:
-        """システム状況取得"""
-        logger.info("📊 システム状況取得")
+    async def get_status(self) -> Dict[str, Any]logger.info("📊 システム状況取得")
+    """システム状況取得"""
         
         health = await self.health_check()
         
-        # 追加統計情報
+        # 追加統計情報:
         try:
             # PostgreSQL統計
             cmd = self.config['docker_command_prefix'] + [
@@ -452,7 +446,7 @@ class PgVectorUnifiedManager:
             # SQLite統計
             sqlite_count = 0
             if os.path.exists(self.config['sqlite_backup']):
-                sqlite_conn = sqlite3.connect(self.config['sqlite_backup'])
+                sqlite_conn = sqlite3connect(self.config['sqlite_backup'])
                 cursor = sqlite_conn.execute("SELECT COUNT(*) FROM knowledge_documents")
                 sqlite_count = cursor.fetchone()[0]
                 sqlite_conn.close()

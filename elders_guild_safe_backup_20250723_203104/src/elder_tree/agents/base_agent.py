@@ -12,6 +12,7 @@ from flask import Flask, jsonify, request
 
 
 class ElderTreeAgent:
+    pass
 
 
 """
@@ -46,12 +47,14 @@ class ElderTreeAgent:
         self.logger.info("ElderTreeAgent initialized")
     
     def _setup_metrics(self):
+        pass
 
         """Prometheusメトリクス設定"""
         """基本メッセージハンドラー登録"""
         pass  # A2AServerでは直接ハンドラー登録方法が異なる
     
     def create_app(self) -> Flask:
+        pass
 
         """Flask appを作成"""
             return jsonify(self.get_health_status())
@@ -70,10 +73,9 @@ class ElderTreeAgent:
         
         return app
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """メッセージハンドラー"""
-        message_type = data.get('type', 'unknown')
-        
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
+    """メッセージハンドラー"""
+        :
         if message_type == "health_check":
             return self.get_health_status()
         elif message_type == "get_metrics":
@@ -82,6 +84,7 @@ class ElderTreeAgent:
             return {"status": "error", "message": f"Unknown message type: {message_type}"}
     
     def get_health_status(self) -> Dict[str, Any]:
+        pass
 
     
     """ヘルスチェック処理""" "healthy",
@@ -92,6 +95,7 @@ class ElderTreeAgent:
         }
     
     def get_metrics_info(self) -> Dict[str, Any]:
+        pass
 
         """メトリクス取得""" self.name,
             "metrics_endpoint": "/metrics",

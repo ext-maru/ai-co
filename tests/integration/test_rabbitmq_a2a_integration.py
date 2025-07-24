@@ -48,11 +48,11 @@ class TestA2ACommunicationIntegration:
         """テスト1: 基本的なA2A通信テスト"""
         print("\n🧪 テスト1: A2A基本通信テスト開始...")
         
-        # 1. テスト用の送信者と受信者を定義
+        # 1.0 テスト用の送信者と受信者を定義
         sender_id = "claude_elder"
         receiver_id = "knowledge_sage"
         
-        # 2. テストメッセージ作成
+        # 2.0 テストメッセージ作成
         test_request = {
             "request_id": str(uuid.uuid4()),
             "sender": sender_id,
@@ -65,7 +65,7 @@ class TestA2ACommunicationIntegration:
             }
         }
         
-        # 3. メッセージ送信
+        # 3.0 メッセージ送信
         # Elder.directエクスチェンジ使用
         send_result = await rabbitmq_manager.publish_message(
             exchange="elder.direct",
@@ -80,7 +80,7 @@ class TestA2ACommunicationIntegration:
         assert send_result is True, "A2Aメッセージ送信失敗"
         print(f"✓ A2Aメッセージ送信成功: {sender_id} → {receiver_id}")
         
-        # 4. 送信メッセージの記録確認
+        # 4.0 送信メッセージの記録確認
         print(f"✓ Request ID: {test_request['request_id']}")
         print(f"✓ Routing Key: a2a.{receiver_id}")
         
@@ -91,7 +91,7 @@ class TestA2ACommunicationIntegration:
         """テスト2: エルダーツリー階層通信テスト"""
         print("\n🧪 テスト2: エルダーツリー階層通信テスト開始...")
         
-        # 1. 階層間通信パターンテスト
+        # 1.0 階層間通信パターンテスト
         communication_patterns = [
             # クロードエルダー → 4賢者
             {"from": "claude_elder", "to": "knowledge_sage", "type": "sage_request"},
@@ -106,7 +106,7 @@ class TestA2ACommunicationIntegration:
             {"from": "claude_elder", "to": "code_artisan", "type": "servant_command"},
         ]
         
-        # 2. 各パターンでメッセージ送信
+        # 2.0 各パターンでメッセージ送信
         for pattern in communication_patterns:
             request = {
                 "request_id": str(uuid.uuid4()),
@@ -141,7 +141,7 @@ class TestA2ACommunicationIntegration:
         """テスト3: ブロードキャスト通信テスト"""
         print("\n🧪 テスト3: ブロードキャスト通信テスト開始...")
         
-        # 1. エルダー評議会からの全体通知
+        # 1.0 エルダー評議会からの全体通知
         council_announcement = {
             "announcement_id": str(uuid.uuid4()),
             "sender": "elder_council",
@@ -155,7 +155,7 @@ class TestA2ACommunicationIntegration:
             }
         }
         
-        # 2. Fanoutエクスチェンジでブロードキャスト
+        # 2.0 Fanoutエクスチェンジでブロードキャスト
         broadcast_result = await rabbitmq_manager.publish_message(
             exchange="elder.fanout",
             routing_key="",  # fanoutは routing_key 不要
@@ -169,7 +169,7 @@ class TestA2ACommunicationIntegration:
         assert broadcast_result is True, "ブロードキャスト送信失敗"
         print("✓ エルダー評議会ブロードキャスト送信成功")
         
-        # 3. 複数の緊急度でのブロードキャストテスト
+        # 3.0 複数の緊急度でのブロードキャストテスト
         priorities = ["low", "medium", "high", "critical"]
         for priority in priorities:
             alert = {

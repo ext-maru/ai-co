@@ -109,15 +109,15 @@ class AiderElderIntegration:
 
         # Determine if commit should proceed
         if failed_files:
-            message = f"❌ Iron Will quality check failed (avg: {avg_score:.1f}%)\n"
+            message = f"❌ Iron Will quality check failed (avg: {avg_score:0.1f}%)\n"
             message += "Failed files:\n"
             for file_path, score in failed_files:
-                message += f"  - {file_path}: {score:.1f}%\n"
+                message += f"  - {file_path}: {score:0.1f}%\n"
             return False, message
         else:
             return (
                 True,
-                f"✅ All files pass Iron Will quality check (avg: {avg_score:.1f}%)",
+                f"✅ All files pass Iron Will quality check (avg: {avg_score:0.1f}%)",
             )
 
     async def enhance_commit_message(
@@ -142,7 +142,7 @@ class AiderElderIntegration:
             avg_score = sum(self._last_quality_scores.values()) / len(
                 self._last_quality_scores
             )
-            enhanced += f"Quality Score: {avg_score:.1f}%\n"
+            enhanced += f"Quality Score: {avg_score:0.1f}%\n"
 
         # Add Elder metadata
         enhanced += "\n🤖 Aider + Elder Servants Integration\n"
@@ -234,7 +234,7 @@ class AiderElderIntegration:
         if score < 95:
             grade = quality_data.get("grade", "F")
             suggestions.append(
-                f"Improve code quality (current grade: {grade}, score: {score:.1f}%)"
+                f"Improve code quality (current grade: {grade}, score: {score:0.1f}%)"
             )
 
         # Suggest based on issue counts

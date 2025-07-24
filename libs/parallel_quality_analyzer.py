@@ -49,9 +49,8 @@ class BatchAnalysisResult:
 class ResourceManager:
     """Resource usage monitoring and limiting"""
     
-    def __init__(self, max_memory_mb:
+    def __init__(self, max_memory_mb: int = 500, max_processes: int = None):
         """初期化メソッド"""
-    int = 500, max_processes: int = None):
         self.max_memory_bytes = max_memory_mb * 1024 * 1024
         self.max_processes = max_processes or min(4, multiprocessing.cpu_count())
         self.start_time = time.time()
@@ -95,9 +94,8 @@ class ResourceManager:
 class AnalysisCache:
     """File analysis caching system"""
     
-    def __init__(self, cache_dir:
+    def __init__(self, cache_dir: Path, ttl_hours: int = 24):
         """初期化メソッド"""
-    Path, ttl_hours: int = 24):
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.ttl_seconds = ttl_hours * 3600
@@ -432,8 +430,8 @@ class ParallelQualityAnalyzer:
             
             # Log progress
             processed = len(results)
-            logger.info(f"Analyzed {processed}/{len(files)} files ({processed/len(files)*100:.1f}%)" \
-                "Analyzed {processed}/{len(files)} files ({processed/len(files)*100:.1f}%)")
+            logger.info(f"Analyzed {processed}/{len(files)} files ({processed/len(files)*100:0.1f}%)" \
+                "Analyzed {processed}/{len(files)} files ({processed/len(files)*100:0.1f}%)")
         
         total_time = time.time() - start_time
         
@@ -559,10 +557,10 @@ class ParallelQualityAnalyzer:
         
         logger.info("📊 Performance Statistics:")
         logger.info(f"   Files analyzed: {result.processed_files}/{result.total_files}")
-        logger.info(f"   Total time: {result.total_analysis_time:.2f}s")
-        logger.info(f"   Files/second: {files_per_second:.1f}")
-        logger.info(f"   Cache hit rate: {cache_hit_rate:.1f}%")
-        logger.info(f"   Average quality: {result.average_quality_score:.1f}/100")
+        logger.info(f"   Total time: {result.total_analysis_time:0.2f}s")
+        logger.info(f"   Files/second: {files_per_second:0.1f}")
+        logger.info(f"   Cache hit rate: {cache_hit_rate:0.1f}%")
+        logger.info(f"   Average quality: {result.average_quality_score:0.1f}/100")
         logger.info(f"   Resource usage: {self.resource_manager.get_stats()}")
 
 # Convenience functions
@@ -587,7 +585,7 @@ async def quick_quality_check(project_root: Path,
         'cache_efficiency': f"{result.cache_hits / max(
             1,
             result.cache_hits + result.cache_misses
-        ) * 100:.1f}%",
+        ) * 100:0.1f}%",
         'detailed_results': [asdict(r) for r in result.results[:10]]  # First 10 results
     }
 
@@ -605,8 +603,8 @@ if __name__ == "__main__":
         result = await quick_quality_check(project_root, max_files=20)
         
         end_time = time.time()
-        print(f"✅ Analysis completed in {end_time - start_time:.2f}s")
-        print(f"📊 Overall score: {result['overall_score']:.1f}/100")
+        print(f"✅ Analysis completed in {end_time - start_time:0.2f}s")
+        print(f"📊 Overall score: {result['overall_score']:0.1f}/100")
         print(f"📈 Performance improvement: {result['performance_improvement']}")
         
     asyncio.run(test_analyzer())

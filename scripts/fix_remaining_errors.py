@@ -47,7 +47,7 @@ class RemainingErrorFixer:
             with open(test_file, "r") as f:
                 content = f.read()
 
-            # Add the missing class definition
+            # Add the missing class definition:
             if (
                 "class DialogTaskWorker:" not in content
                 and "NameError: name 'D" in content

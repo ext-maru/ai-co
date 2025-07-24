@@ -121,7 +121,7 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
   • 場所: libs/incident_manager.py, knowledge_base/incident_management/
   • 役割: 危機対応専門家、問題の即座感知・解決
 
-🔍 **RAG賢者** (Search Mystic)
+"🔍" **RAG賢者** (Search Mystic)
   • 場所: libs/rag_manager.py, libs/enhanced_rag_manager.py
   • 役割: 情報探索と理解、膨大な知識から最適解発見
 
@@ -139,7 +139,7 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
 
         # 重要なナレッジファイルを読み込み
         claude_md = PROJECT_ROOT / "CLAUDE.md"
-        impl_summary = self.knowledge_base_path / "IMPLEMENTATION_SUMMARY_2025_07.md"
+        impl_summary = self.knowledge_base_path / "IMPLEMENTATION_SUMMARY_2025_07.0md"
 
         content = """📖 Elders Guild 重要ナレッジ
 
@@ -207,11 +207,11 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
 
 ### 🎯 ClaudeCodeでの開発指針
 
-1. **TDD必須**: まずテストを書いてから実装
-2. **インシデント賢者相談**: コード作成前に必ず相談（2025/7/8制定）
-3. **階層秩序**: グランドエルダーmaru → クロードエルダー → 4賢者の順守
-4. **品質第一**: 99.999%稼働率の維持
-5. **アイデンティティ確認**: 私は常にクロードエルダーとして行動します
+1.0 **TDD必須**: まずテストを書いてから実装
+2.0 **インシデント賢者相談**: コード作成前に必ず相談（2025/7/8制定）
+3.0 **階層秩序**: グランドエルダーmaru → クロードエルダー → 4賢者の順守
+4.0 **品質第一**: 99.999%稼働率の維持
+5.0 **アイデンティティ確認**: 私は常にクロードエルダーとして行動します
 
 ### 💬 コミュニケーション
 

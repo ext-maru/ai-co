@@ -55,11 +55,10 @@ class MockElderFlowCore:
         self.processed_tasks = []
         self.success_rate = 100.0
 
-    async def execute(self, task_name: str, priority: str = "medium") -> Dict[str, Any]:
-        """Elder Flow実行のモック"""
-        await asyncio.sleep(0.1)  # 非同期処理をシミュレート
+    async def execute(self, task_name: str, priority: str = "medium") -> Dict[str, Any]await asyncio.sleep(0.1)  # 非同期処理をシミュレート
+    """Elder Flow実行のモック"""
 
-        result = {
+        result = {:
             "task_id": f"elder_flow_{len(self.processed_tasks)}",
             "task_name": task_name,
             "priority": priority,
@@ -100,13 +99,12 @@ class TestDwarfServant(DwarfServant):
             ServantCapability.REFACTORING,
         ]
 
-    async def process_request(self, request: ServantRequest) -> ServantResponse:
-        """テスト用処理実装"""
-        await asyncio.sleep(0.1)  # 処理時間をシミュレート
+    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)  # 処理時間をシミュレート
+    """テスト用処理実装"""
 
         return ServantResponse(
             task_id=request.task_id,
-            status="success",
+            status="success",:
             data={"result": f"Dwarf {self.name} processed {request.task_type}"},
             errors=[],
             warnings=[],
@@ -139,13 +137,12 @@ class TestWizardServant(WizardServant):
             ServantCapability.DOCUMENTATION,
         ]
 
-    async def process_request(self, request: ServantRequest) -> ServantResponse:
-        """テスト用処理実装"""
-        await asyncio.sleep(0.1)
+    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)
+    """テスト用処理実装"""
 
         return ServantResponse(
             task_id=request.task_id,
-            status="success",
+            status="success",:
             data={"result": f"Wizard {self.name} analyzed {request.task_type}"},
             errors=[],
             warnings=[],
@@ -179,13 +176,12 @@ class TestElfServant(ElfServant):
             ServantCapability.PERFORMANCE,
         ]
 
-    async def process_request(self, request: ServantRequest) -> ServantResponse:
-        """テスト用処理実装"""
-        await asyncio.sleep(0.1)
+    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)
+    """テスト用処理実装"""
 
         return ServantResponse(
             task_id=request.task_id,
-            status="success",
+            status="success",:
             data={"result": f"Elf {self.name} monitored {request.task_type}"},
             errors=[],
             warnings=[],
@@ -217,13 +213,12 @@ class TestKnightServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
         self.specialization = name.replace("knight_", "").replace("_", " ").title()
         self.capabilities = [ServantCapability.SECURITY, ServantCapability.TESTING]
 
-    async def process_request(self, request: ServantRequest) -> ServantResponse:
-        """テスト用処理実装"""
-        await asyncio.sleep(0.1)
+    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)
+    """テスト用処理実装"""
 
         return ServantResponse(
             task_id=request.task_id,
-            status="success",
+            status="success",:
             data={"result": f"Knight {self.name} secured {request.task_type}"},
             errors=[],
             warnings=[],
@@ -677,9 +672,8 @@ class ElderServantsIntegrationTester:
 
         return results
 
-    async def run_full_integration_test(self) -> Dict[str, Any]:
-        """完全統合テスト実行"""
-        test_start_time = time.time()
+    async def run_full_integration_test(self) -> Dict[str, Any]test_start_time = time.time()
+    """完全統合テスト実行"""
 
         # セットアップ
         await self.setup_servants()
@@ -707,7 +701,7 @@ class ElderServantsIntegrationTester:
         test_duration = time.time() - test_start_time
 
         # 総合結果
-        overall_results = {
+        overall_results = {:
             "test_summary": {
                 "start_time": datetime.fromtimestamp(test_start_time),
                 "duration_seconds": test_duration,
@@ -783,16 +777,14 @@ class TestElderServantsIntegration:
     """pytest用Elder Servants統合テストクラス"""
 
     @pytest.fixture
-    async def integration_tester(self):
-        """統合テスター用フィクスチャ"""
-        config = IntegrationTestConfig()
+    async def integration_tester(self)config = IntegrationTestConfig()
+    """統合テスター用フィクスチャ"""
         tester = ElderServantsIntegrationTester(config)
         yield tester
 
     @pytest.mark.asyncio
-    async def test_setup_32_servants(self, integration_tester):
-        """32体サーバントセットアップテスト"""
-        await integration_tester.setup_servants()
+    async def test_setup_32_servants(self, integration_tester)await integration_tester.setup_servants()
+    """32体サーバントセットアップテスト"""
 
         stats = integration_tester.registry.get_statistics()
         assert stats["total_registered"] == 32
@@ -802,9 +794,8 @@ class TestElderServantsIntegration:
         assert stats["domain_distribution"]["incident_knights"] == 4
 
     @pytest.mark.asyncio
-    async def test_individual_servant_processing(self, integration_tester):
-        """個別サーバント処理テスト"""
-        await integration_tester.setup_servants()
+    async def test_individual_servant_processing(self, integration_tester)await integration_tester.setup_servants()
+    """個別サーバント処理テスト"""
 
         results = await integration_tester.test_individual_servants()
 
@@ -823,9 +814,8 @@ class TestElderServantsIntegration:
         ), "All domains should have at least one successful servant"
 
     @pytest.mark.asyncio
-    async def test_organization_coordination(self, integration_tester):
-        """組織間協調テスト"""
-        await integration_tester.setup_servants()
+    async def test_organization_coordination(self, integration_tester)await integration_tester.setup_servants()
+    """組織間協調テスト"""
 
         results = await integration_tester.test_organization_coordination()
 
@@ -838,9 +828,8 @@ class TestElderServantsIntegration:
                 assert len(test["participant_results"]) >= 2  # 最低2組織の参加
 
     @pytest.mark.asyncio
-    async def test_elder_flow_integration(self, integration_tester):
-        """Elder Flow統合テスト"""
-        await integration_tester.setup_servants()
+    async def test_elder_flow_integration(self, integration_tester)await integration_tester.setup_servants()
+    """Elder Flow統合テスト"""
 
         results = await integration_tester.test_elder_flow_integration()
 
@@ -854,9 +843,8 @@ class TestElderServantsIntegration:
                 assert len(test["servant_results"]) >= 2  # 最低2体のサーバントが関与
 
     @pytest.mark.asyncio
-    async def test_load_balancing(self, integration_tester):
-        """負荷分散テスト"""
-        await integration_tester.setup_servants()
+    async def test_load_balancing(self, integration_tester)await integration_tester.setup_servants()
+    """負荷分散テスト"""
 
         results = await integration_tester.test_load_balancing()
 
@@ -873,9 +861,8 @@ class TestElderServantsIntegration:
         assert active_servants >= 5  # 最低5体のサーバントがタスクを処理
 
     @pytest.mark.asyncio
-    async def test_health_check(self, integration_tester):
-        """ヘルスチェックテスト"""
-        await integration_tester.setup_servants()
+    async def test_health_check(self, integration_tester)await integration_tester.setup_servants()
+    """ヘルスチェックテスト"""
 
         health_status = await integration_tester.registry.health_check()
 
@@ -891,9 +878,8 @@ class TestElderServantsIntegration:
         assert healthy_count >= 30  # 最低30体が健全
 
     @pytest.mark.asyncio
-    async def test_iron_will_quality_integration(self, integration_tester):
-        """Iron Will品質基準統合テスト"""
-        await integration_tester.setup_servants()
+    async def test_iron_will_quality_integration(self, integration_tester)await integration_tester.setup_servants()
+    """Iron Will品質基準統合テスト"""
 
         # 品質基準評価
         quality_assessment = integration_tester._assess_quality_criteria()
@@ -907,9 +893,8 @@ class TestElderServantsIntegration:
         assert quality_assessment["meets_iron_will_criteria"] is True
 
     @pytest.mark.asyncio
-    async def test_full_integration_workflow(self, integration_tester):
-        """完全統合ワークフローテスト"""
-        results = await integration_tester.run_full_integration_test()
+    async def test_full_integration_workflow(self, integration_tester)results = await integration_tester.run_full_integration_test()
+    """完全統合ワークフローテスト"""
 
         # 全体的な成功確認
         assert results["test_summary"]["overall_success"] is True
@@ -929,9 +914,8 @@ class TestElderServantsIntegration:
 
 
 # メイン実行関数
-async def main():
-    """統合テストのメイン実行"""
-    print("🏛️ Elder Servants 32体制統合テスト開始")
+async def main()print("🏛️ Elder Servants 32体制統合テスト開始")
+"""統合テストのメイン実行"""
     print("=" * 60)
 
     config = IntegrationTestConfig()
@@ -943,7 +927,7 @@ async def main():
         print("\n📊 統合テスト結果サマリー")
         print("=" * 60)
         print(f"✅ 総合成功: {results['test_summary']['overall_success']}")
-        print(f"⏱️  実行時間: {results['test_summary']['duration_seconds']:.2f}秒")
+        print(f"⏱️  実行時間: {results['test_summary']['duration_seconds']:0.2f}秒")
         print(f"🤖 テスト対象サーバント数: {results['test_summary']['total_servants_tested']}")
 
         print(
@@ -973,12 +957,12 @@ async def main():
 
         print(f"\n🏛️ Iron Will品質基準")
         quality = results["quality_assessment"]
-        print(f"  根本解決度: {quality['root_cause_resolution']:.1f}%")
-        print(f"  依存関係完全性: {quality['dependency_completeness']:.1f}%")
-        print(f"  テストカバレッジ: {quality['test_coverage']:.1f}%")
-        print(f"  セキュリティスコア: {quality['security_score']:.1f}%")
-        print(f"  パフォーマンススコア: {quality['performance_score']:.1f}%")
-        print(f"  保守性スコア: {quality['maintainability_score']:.1f}%")
+        print(f"  根本解決度: {quality['root_cause_resolution']:0.1f}%")
+        print(f"  依存関係完全性: {quality['dependency_completeness']:0.1f}%")
+        print(f"  テストカバレッジ: {quality['test_coverage']:0.1f}%")
+        print(f"  セキュリティスコア: {quality['security_score']:0.1f}%")
+        print(f"  パフォーマンススコア: {quality['performance_score']:0.1f}%")
+        print(f"  保守性スコア: {quality['maintainability_score']:0.1f}%")
         print(f"  Iron Will基準達成: {'✅' if quality['meets_iron_will_criteria'] else '❌'}")
 
         if results["test_summary"]["overall_success"]:

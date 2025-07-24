@@ -58,7 +58,7 @@ async def main():
     """Main demo function"""
     logger.info("🚀 Starting Worker Auto-Recovery System Demo")
 
-    # 1. Initialize components
+    # 1.0 Initialize components
     logger.info("📦 Initializing components...")
 
     # Configure monitor with custom settings
@@ -84,7 +84,7 @@ async def main():
     health_service = HealthCheckService(port=8888)
     health_service.set_health_monitor(monitor)
 
-    # 2. Connect components
+    # 2.0 Connect components
     logger.info("🔗 Connecting components...")
 
     # Track recovery events
@@ -102,7 +102,7 @@ async def main():
     # Connect monitor to recovery engine
     monitor.on_health_change(recovery_engine.handle_health_change)
 
-    # 3. Register workers
+    # 3.0 Register workers
     logger.info("👷 Registering workers...")
     workers = [
         {
@@ -138,7 +138,7 @@ async def main():
         await monitor.register_worker(worker["id"], worker["config"])
         logger.info(f"✅ Registered {worker['id']}")
 
-    # 4. Start services
+    # 4.0 Start services
     logger.info("🏃 Starting services...")
 
     # Start monitoring
@@ -156,7 +156,7 @@ async def main():
         f"📉 Prometheus metrics at http://localhost:{health_service.port}/metrics/prometheus"
     )
 
-    # 5. Demonstrate functionality
+    # 5.0 Demonstrate functionality
     logger.info("🎭 Starting demonstration...")
 
     # Let system run normally for a bit
@@ -190,7 +190,7 @@ async def main():
     metrics = await health_service.collect_metrics()
     logger.info(f"📊 System metrics: {metrics['system']}")
 
-    # 6. Cleanup
+    # 6.0 Cleanup
     logger.info("🧹 Shutting down...")
     await monitor.stop_monitoring()
 

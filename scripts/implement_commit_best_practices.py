@@ -98,10 +98,10 @@ echo "  • ai-git changelog        - Generate CHANGELOG"
 echo "  • ai-git best-practices   - Show guidelines"
 echo ""
 echo "💡 Example workflow:"
-echo "  1. Make changes to files"
-echo "  2. git add ."
-echo "  3. ai-git commit --preview"
-echo "  4. ai-git commit"
+echo "  1.0 Make changes to files"
+echo "  2.0 git add ."
+echo "  3.0 ai-git commit --preview"
+echo "  4.0 ai-git commit"
 echo ""
 echo "🔍 All commits now follow Conventional Commits!"
 echo "   Format: <type>(<scope>): <subject>"
@@ -136,9 +136,9 @@ date
             print(f"⏳ Still executing... ({(i+1)*5}s)")
 
     print("\n🎯 Next Steps:")
-    print("1. Check Slack for detailed results")
-    print("2. Try 'ai-git commit --preview' to test")
-    print("3. All future commits will use best practices!")
+    print("1.0 Check Slack for detailed results")
+    print("2.0 Try 'ai-git commit --preview' to test")
+    print("3.0 All future commits will use best practices!")
 
     # サマリー生成
     print("\n📋 Implementation Summary:")

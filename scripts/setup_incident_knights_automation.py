@@ -4,11 +4,11 @@
 エルダーズギルドのセルフヒーリングシステムを設定
 
 機能:
-1. 921個の問題を自動修正
-2. pre-commitフックの設定
-3. GitHub Actions連携
-4. Slack/ログ通知設定
-5. 自己修復機能の有効化
+1.0 921個の問題を自動修正
+2.0 pre-commitフックの設定
+3.0 GitHub Actions連携
+4.0 Slack/ログ通知設定
+5.0 自己修復機能の有効化
 """
 
 import json
@@ -400,7 +400,7 @@ jobs:
       run: |
         python scripts/knights_self_healing.py --auto-fix --batch-mode
 
-    - name: 📊 Generate Report
+    - name: "📊" Generate Report
       if: always()
       run: |
         python scripts/generate_incident_report.py
@@ -668,7 +668,7 @@ if webhook_url:
 
 **セットアップID**: {report['setup_id']}
 **実行日時**: {report['start_time']} ～ {report['end_time']}
-**所要時間**: {report['duration_seconds']:.1f}秒
+**所要時間**: {report['duration_seconds']:0.1f}秒
 
 ## 📊 セットアップ結果
 
@@ -744,9 +744,9 @@ def main():
             print("✅ 今後の問題も自動的に検出・修正されます")
             print("=" * 60)
             print("\n次のステップ:")
-            print("1. git add .")
-            print("2. git commit -m '⚔️ インシデント騎士団完全自動化'")
-            print("3. git push")
+            print("1.0 git add .")
+            print("2.0 git commit -m '⚔️ インシデント騎士団完全自動化'")
+            print("3.0 git push")
             print("\nGitHub Actionsが自動的に定期実行されます！")
         else:
             print("\n⚠️ セットアップは部分的に完了しました")

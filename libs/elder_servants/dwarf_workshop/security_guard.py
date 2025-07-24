@@ -831,7 +831,7 @@ from functools import wraps
 from typing import List, Dict
 
 class AccessController:
-    # Main class implementation
+    # Main class implementation:
     def __init__(self, user_roles: Dict[str, List[str]], role_permissions: Dict[str, List[str]]):
         self.user_roles = user_roles
         self.role_permissions = role_permissions

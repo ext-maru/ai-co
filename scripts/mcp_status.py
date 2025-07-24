@@ -49,9 +49,9 @@ for file in files:
 if all_exist:
     print("\n🎉 MCP is ready to use!")
     print("\nNext steps:")
-    print("1. Start MCP servers: ai-mcp start")
-    print("2. Check server status: ai-mcp status")
-    print("3. Use MCP tools in your Claude conversations!")
+    print("1.0 Start MCP servers: ai-mcp start")
+    print("2.0 Check server status: ai-mcp status")
+    print("3.0 Use MCP tools in your Claude conversations!")
 else:
     print("\n⚠️ MCP setup incomplete. Run:")
     print("  python3 mcp_execute_now.py")

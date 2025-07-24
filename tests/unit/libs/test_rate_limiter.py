@@ -147,7 +147,7 @@ async def test_backoff_mechanism():
     end_time = asyncio.get_event_loop().time()
     
     wait_time = end_time - start_time
-    print(f"  ⏰ バックオフ待機時間: {wait_time:.2f}秒")
+    print(f"  ⏰ バックオフ待機時間: {wait_time:0.2f}秒")
     
     # 元に戻す
     limiter.consecutive_errors = original_errors

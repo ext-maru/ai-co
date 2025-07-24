@@ -16,9 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class SimpleDialogWorker:
-    def __init__(self):
-        """初期化メソッド"""
-        self.conversation_manager = ConversationManager()
+    def __init__(self)self.conversation_manager = ConversationManager()
+    """初期化メソッド"""
     """SimpleDialogWorkerワーカークラス"""
         logger.info("SimpleDialogWorker初期化")
 
@@ -69,9 +68,8 @@ class SimpleDialogWorker:
             logger.error(f"エラー: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
-    def start(self):
-        """startメソッド"""
-        if not self.connect():
+    def start(self)if not self.connect():
+    """startメソッド"""
             return
 
         self.channel.basic_qos(prefetch_count=1)

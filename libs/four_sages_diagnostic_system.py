@@ -46,22 +46,22 @@ class FourSagesDiagnosticSystem:
         self.results = []
         self.auto_fixes_applied = []
         
-        # 1. Environment checks
+        # 1 Environment checks
         await self._check_environment()
         
-        # 2. Database connectivity
+        # 2 Database connectivity
         await self._check_databases()
         
-        # 3. Knowledge base status
+        # 3 Knowledge base status
         await self._check_knowledge_base()
         
-        # 4. Sage process health
+        # 4 Sage process health
         await self._check_sage_processes()
         
-        # 5. File system integrity
+        # 5 File system integrity
         await self._check_file_system()
         
-        # 6. Configuration validation
+        # 6 Configuration validation
         await self._check_configuration()
         
         # Generate report
@@ -134,7 +134,7 @@ class FourSagesDiagnosticSystem:
         for db_path in sqlite_dbs:
             if db_path.exists():
                 try:
-                    conn = sqlite3.connect(str(db_path))
+                    conn = sqlite3connect(str(db_path))
                     cursor = conn.cursor()
                     cursor.execute("SELECT 1")
                     conn.close()
@@ -371,12 +371,12 @@ class FourSagesDiagnosticSystem:
         disk_usage = psutil.disk_usage(str(self.base_path))
         free_gb = disk_usage.free / 1024 / 1024 / 1024
         
-        if free_gb > 1.0:
+        if free_gb > 1:
             self.results.append(DiagnosticResult(
                 component="filesystem",
                 test_name="disk_space",
                 status="healthy",
-                message=f"Sufficient disk space: {free_gb:.1f} GB free",
+                message=f"Sufficient disk space: {free_gb:0.1f} GB free",
                 details={"free_gb": free_gb, "total_gb": disk_usage.total / 1024 / 1024 / 1024},
                 recommended_action="None",
                 auto_fixable=False
@@ -386,7 +386,7 @@ class FourSagesDiagnosticSystem:
                 component="filesystem",
                 test_name="disk_space",
                 status="warning",
-                message=f"Low disk space: {free_gb:.1f} GB free",
+                message=f"Low disk space: {free_gb:0.1f} GB free",
                 details={"free_gb": free_gb},
                 recommended_action="Free up disk space",
                 auto_fixable=False
@@ -491,7 +491,7 @@ class FourSagesDiagnosticSystem:
             if "task_history" in result.test_name:
                 # Create task history database
                 db_path = self.base_path / "task_history.db"
-                conn = sqlite3.connect(str(db_path))
+                conn = sqlite3connect(str(db_path))
                 conn.execute("""
                     CREATE TABLE IF NOT EXISTS tasks (
                         id INTEGER PRIMARY KEY,
@@ -514,7 +514,7 @@ class FourSagesDiagnosticSystem:
                 db_path = self.base_path / "data" / "rag_knowledge.db"
                 db_path.parent.mkdir(exist_ok=True)
                 
-                conn = sqlite3.connect(str(db_path))
+                conn = sqlite3connect(str(db_path))
                 conn.execute("""
                     CREATE TABLE IF NOT EXISTS knowledge_entries (
                         id INTEGER PRIMARY KEY,
@@ -564,7 +564,7 @@ This is the knowledge base for the 4 Sages system.
 - 📚 Knowledge Sage - Knowledge management
 - 📋 Task Sage - Task planning
 - 🚨 Incident Sage - Risk assessment  
-- 🔍 RAG Sage - Information retrieval
+- "🔍" RAG Sage - Information retrieval
 """)
             
             return {
@@ -720,7 +720,7 @@ async def run_four_sages_diagnosis():
     # レポート表示
     print(f"\n📊 診断レポート - {report['timestamp']}")
     print(f"全体ステータス: {report['overall_status'].upper()}")
-    print(f"健全性スコア: {report['health_score']:.1f}/100")
+    print(f"健全性スコア: {report['health_score']:0.1f}/100")
     
     summary = report['summary']
     print(f"\n📋 サマリー:")
@@ -742,7 +742,7 @@ async def run_four_sages_diagnosis():
             # 再診断
             print("\n🔄 再診断を実行中...")
             report = await diagnostic.run_full_diagnosis()
-            print(f"新しい健全性スコア: {report['health_score']:.1f}/100")
+            print(f"新しい健全性スコア: {report['health_score']:0.1f}/100")
     
     # 推奨事項表示
     if report['recommendations']:

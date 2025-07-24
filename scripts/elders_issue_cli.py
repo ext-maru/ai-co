@@ -83,7 +83,7 @@ class EldersIssueCLI:
             print(f"- **Opened Issues**: {report['summary']['opened_issues']}")
             print(f"- **Closed Issues**: {report['summary']['closed_issues']}")
             print(f"- **Active Issues**: {report['summary']['active_issues']}")
-            print(f"- **Completion Rate**: {report['metrics']['completion_rate']:.1f}%")
+            print(f"- **Completion Rate**: {report['metrics']['completion_rate']:0.1f}%")
             print()
 
             if report.get("sage_insights"):

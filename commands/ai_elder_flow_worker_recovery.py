@@ -4,11 +4,11 @@ Elder Flow Worker Recovery System
 エルダーフロー Worker復旧システム
 
 🌊 Elder Flow 5段階プロセス:
-1. 4賢者会議 - Worker問題診断相談
-2. エルダーサーバント実行 - Worker復旧実装
-3. 品質ゲート - Worker動作検証
-4. 評議会報告 - 復旧状況報告
-5. 自動化 - Worker監視継続
+1.0 4賢者会議 - Worker問題診断相談
+2.0 エルダーサーバント実行 - Worker復旧実装
+3.0 品質ゲート - Worker動作検証
+4.0 評議会報告 - 復旧状況報告
+5.0 自動化 - Worker監視継続
 """
 
 import asyncio
@@ -365,7 +365,7 @@ class WorkerRecoverySystem:
         print("\n🔍 Phase 3: 品質ゲート検証")
         validation = await self.validate_worker_recovery(recovery_results)
         print(f"  検証結果: {validation['metrics']['running_workers']}/{validation['metrics']['total_workers']} Workers稼働中")
-        print(f"  成功率: {validation['metrics']['recovery_success_rate']*100:.1f}%")
+        print(f"  成功率: {validation['metrics']['recovery_success_rate']*100:0.1f}%")
 
         # Phase 4: 評議会報告
         print("\n📊 Phase 4: 評議会報告書生成")

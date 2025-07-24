@@ -4,6 +4,7 @@ Four Sages Integration for Elder Council Quality Review System
 Integration layer connecting Elder Council with the existing 4 Sages System
 
 This module provides specialized integration for test quality management:
+    pass
 - Knowledge Sage: Test pattern learning and quality database management
 - Task Sage: Quality objectives tracking and workflow optimization
 - Incident Sage: Quality issue detection and prevention
@@ -151,7 +152,7 @@ class FourSagesQualityIntegration:
         """Initialize 4 Sages quality integration database"""
         try:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Quality learning sessions
@@ -925,7 +926,7 @@ class FourSagesQualityIntegration:
     async def _save_quality_session(self, session_summary: Dict[str, Any]):
         """Save quality learning session to database"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Save main session record
@@ -992,7 +993,7 @@ class FourSagesQualityIntegration:
             end_date = datetime.now()
             start_date = end_date - timedelta(days=time_range_days)
 
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Get session statistics
@@ -1207,7 +1208,7 @@ if __name__ == "__main__":
         print("4 Sages Quality Consultation Results:")
         print(f"Consensus Reached: {result['consensus_reached']}")
         print(
-            f"Expected Quality Improvement: {result['expected_quality_improvement']:.2f}"
+            f"Expected Quality Improvement: {result['expected_quality_improvement']:0.2f}"
         )
         print(
             f"Final Recommendation: {result['quality_consensus']['final_recommendation']}"

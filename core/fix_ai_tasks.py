@@ -33,11 +33,11 @@ def fix_ai_tasks():
         # Provide fix suggestion
         print("\n📋 Suggested fixes:")
         print(
-            "1. Update the command implementation to use argparse.add_argument instead of " \
+            "1.0 Update the command implementation to use argparse.add_argument instead of " \
                 "add_option"
         )
-        print("2. Or switch to click library if using that framework")
-        print("3. Check if AITasksCommand inherits from the correct base class")
+        print("2.0 Or switch to click library if using that framework")
+        print("3.0 Check if AITasksCommand inherits from the correct base class")
 
     print("\n💡 Alternative: Use direct Python scripts instead:")
     print('   python3 scripts/send_task.py "your task" code')

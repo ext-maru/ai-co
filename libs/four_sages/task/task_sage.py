@@ -36,9 +36,8 @@ class TaskPriority(Enum):
 class TaskSage(BaseSage):
     """タスク賢者 - プロジェクト管理とタスク追跡"""
 
-    def __init__(self, data_path:
+    def __init__(self, data_path: str = "data/tasks"):
         """初期化メソッド"""
-    str = "data/tasks"):
         super().__init__("Task")
 
         self.data_path = data_path
@@ -65,7 +64,7 @@ class TaskSage(BaseSage):
         """タスクデータベースの初期化"""
         os.makedirs(self.data_path, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # タスクテーブル
             conn.execute(
                 """
@@ -245,7 +244,7 @@ class TaskSage(BaseSage):
 
         task_id = str(uuid.uuid4())
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # タスク作成
@@ -314,7 +313,7 @@ class TaskSage(BaseSage):
         params = []
         logs = []
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 既存データ取得
@@ -392,7 +391,7 @@ class TaskSage(BaseSage):
         if not task_id:
             return {"success": False, "error": "Task ID is required"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # タスク詳細取得
@@ -459,7 +458,7 @@ class TaskSage(BaseSage):
         limit = request.get("limit", 50)
         offset = request.get("offset", 0)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # WHERE句構築
@@ -530,7 +529,7 @@ class TaskSage(BaseSage):
         if not task_id:
             return {"success": False, "error": "Task ID is required"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # タスク存在確認
@@ -572,7 +571,7 @@ class TaskSage(BaseSage):
 
         project_id = str(uuid.uuid4())
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             cursor.execute(
@@ -603,7 +602,7 @@ class TaskSage(BaseSage):
         if not project_id:
             return {"success": False, "error": "Project ID is required"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # プロジェクト情報取得
@@ -678,7 +677,7 @@ class TaskSage(BaseSage):
         if task_id == depends_on_task_id:
             return {"success": False, "error": "Task cannot depend on itself"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 両方のタスクが存在するかチェック
@@ -730,7 +729,7 @@ class TaskSage(BaseSage):
         end_date = request.get("end_date")
         assignee = request.get("assignee")
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             where_conditions = ["due_date IS NOT NULL"]
@@ -786,7 +785,7 @@ class TaskSage(BaseSage):
 
         start_date = (datetime.now() - timedelta(days=period_days)).isoformat()
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 完了タスク統計
@@ -908,7 +907,7 @@ class TaskSage(BaseSage):
         if not update_fields:
             return {"success": False, "error": "No valid fields to update"}
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # バルク更新

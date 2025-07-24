@@ -77,23 +77,23 @@ class SlackGuardianKnight(IncidentKnight):
 
         self.logger.info("🔍 Slack統合システムスキャン開始...")
 
-        # 1. Slack API権限チェック
+        # 1.0 Slack API権限チェック
         api_issues = await self._check_slack_api_permissions()
         issues.extend(api_issues)
 
-        # 2. Slackワーカー状態チェック
+        # 2.0 Slackワーカー状態チェック
         worker_issues = await self._check_slack_workers()
         issues.extend(worker_issues)
 
-        # 3. PM統合チェック
+        # 3.0 PM統合チェック
         pm_issues = await self._check_pm_integration()
         issues.extend(pm_issues)
 
-        # 4. 設定整合性チェック
+        # 4.0 設定整合性チェック
         config_issues = await self._check_config_consistency()
         issues.extend(config_issues)
 
-        # 5. インフラ健全性チェック
+        # 5.0 インフラ健全性チェック
         infra_issues = await self._check_infrastructure()
         issues.extend(infra_issues)
 
@@ -473,13 +473,13 @@ Slack統合を正常に動作させるために、以下のスコープが必要
 
 ## 修復手順
 
-1. https://api.slack.com/apps にアクセス
-2. Elders Guild appを選択
-3. "OAuth & Permissions" に移動
-4. "Scopes" > "Bot Token Scopes" で上記スコープを追加
-5. "Reinstall App" を実行
-6. 新しいBot Tokenを取得
-7. .envファイルのSLACK_BOT_TOKENを更新
+1.0 https://api.slack.com/apps にアクセス
+2.0 Elders Guild appを選択
+3.0 "OAuth & Permissions" に移動
+4.0 "Scopes" > "Bot Token Scopes" で上記スコープを追加
+5.0 "Reinstall App" を実行
+6.0 新しいBot Tokenを取得
+7.0 .envファイルのSLACK_BOT_TOKENを更新
 
 ## 自動修復の制限
 
@@ -805,29 +805,29 @@ class SlackWorker:
 
 ## 修復手順
 
-1. RabbitMQサービス停止
+1.0 RabbitMQサービス停止
    ```bash
    sudo systemctl stop rabbitmq-server
    ```
 
-2. プロセス確認・強制終了
+2.0 プロセス確認・強制終了
    ```bash
    sudo pkill -f rabbitmq
    sudo pkill -f beam
    ```
 
-3. ポート確認
+3.0 ポート確認
    ```bash
    sudo netstat -tulpn | grep 25672
    ```
 
-4. RabbitMQサービス再起動
+4.0 RabbitMQサービス再起動
    ```bash
    sudo systemctl start rabbitmq-server
    sudo systemctl status rabbitmq-server
    ```
 
-5. 動作確認
+5.0 動作確認
    ```bash
    sudo rabbitmqctl status
    ```
@@ -879,6 +879,7 @@ class SlackWorker:
 
 
 if __name__ == "__main__":
+    pass
 
     async def main():
         """mainメソッド"""

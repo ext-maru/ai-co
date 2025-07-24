@@ -194,11 +194,11 @@ class ElderClaudeOrchestrator:
 指令: {directive}
 
 以下を明確にしてください：
-1. 指令の主要な目的
-2. 必要なアクション
-3. 関与すべき賢者（Knowledge/Task/Incident/RAG）
-4. 優先度
-5. 成功基準
+1.0 指令の主要な目的
+2.0 必要なアクション
+3.0 関与すべき賢者（Knowledge/Task/Incident/RAG）
+4.0 優先度
+5.0 成功基準
 """
 
         response = await self.request_claude(
@@ -330,10 +330,10 @@ class KnowledgeClaudeSage:
 状況: {json.dumps(context, ensure_ascii=False, indent=2)}
 
 以下の観点から分析してください：
-1. 既存の知識ベースとの整合性
-2. 新たに必要な知識
-3. 推奨されるアプローチ
-4. リスクと注意点
+1.0 既存の知識ベースとの整合性
+2.0 新たに必要な知識
+3.0 推奨されるアプローチ
+4.0 リスクと注意点
 """
 
         response = await self.orchestrator.request_claude(
@@ -359,11 +359,11 @@ class TaskClaudeSage:
 要件: {json.dumps(context, ensure_ascii=False, indent=2)}
 
 以下を提供してください：
-1. タスクの階層的分解（WBS）
-2. 各タスクの推定時間
-3. 依存関係
-4. 優先順位
-5. リスク評価
+1.0 タスクの階層的分解（WBS）
+2.0 各タスクの推定時間
+3.0 依存関係
+4.0 優先順位
+5.0 リスク評価
 """
 
         response = await self.orchestrator.request_claude(
@@ -393,11 +393,11 @@ class IncidentClaudeSage:
 状況: {json.dumps(context, ensure_ascii=False, indent=2)}
 
 以下を分析してください：
-1. 潜在的なリスク
-2. セキュリティ上の懸念
-3. 障害シナリオ
-4. 予防策
-5. 緊急時対応計画
+1.0 潜在的なリスク
+2.0 セキュリティ上の懸念
+3.0 障害シナリオ
+4.0 予防策
+5.0 緊急時対応計画
 """
 
         response = await self.orchestrator.request_claude(
@@ -437,10 +437,10 @@ RAGの賢者として、以下の情報を統合してください：
 検索結果: {search_results}
 
 以下を提供してください：
-1. 最も関連性の高い情報
-2. 情報の信頼性評価
-3. 追加で必要な情報
-4. 統合された知見
+1.0 最も関連性の高い情報
+2.0 情報の信頼性評価
+3.0 追加で必要な情報
+4.0 統合された知見
 """
 
         response = await self.orchestrator.request_claude(

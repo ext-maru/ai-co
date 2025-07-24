@@ -107,7 +107,7 @@ def preview_hourly_report():
     print("=" * 60)
     print(
         """
-📊 **Hourly Performance Report**
+"📊" **Hourly Performance Report**
 Period: 2025-07-02 18:00
 
 • Total Tasks: `47`
@@ -175,7 +175,7 @@ Type: `template` | Duration: `2.15s` | Files: `1`
 **Quick Actions:**
 ```bash
 # View output
-cat /home/aicompany/ai_co/reports/daily_report_20250702.md
+cat /home/aicompany/ai_co/reports/daily_report_20250702.0md
 
 # Check logs
 ai-logs template_daily_report_20250702_150000

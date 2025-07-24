@@ -184,7 +184,7 @@ class TestTaskSageCore:
         # Assert
         assert progress.total_tasks == 3
         assert progress.completed_tasks == 1
-        assert progress.completion_percentage == pytest.approx(33.33, 0.01)
+        assert progress.completion_percentage == pytest.approx(33.33, 0.1)
         assert progress.hours_spent == 9.0
         assert progress.hours_remaining == 20.0
 

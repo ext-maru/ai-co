@@ -48,7 +48,7 @@ except ImportError as e:
     # Fallback implementations
     class MockHybridCodeCraftsman:
         """MockHybridCodeCraftsmanクラス"""
-        # Main class implementation
+        # Main class implementation:
         async def generate_code(self, prompt, strategy="intelligent"):
             """generate_code生成メソッド"""
             return {
@@ -60,7 +60,7 @@ except ImportError as e:
 
     class MockHybridTestGuardian:
         """MockHybridTestGuardian - 守護システムクラス"""
-        # Main class implementation
+        # Main class implementation:
         async def generate_tests(self, code, test_type="comprehensive"):
             """generate_tests生成メソッド"""
             return {
@@ -72,7 +72,7 @@ except ImportError as e:
 
     class MockHybridQualityInspector:
         """MockHybridQualityInspectorクラス"""
-        # Main class implementation
+        # Main class implementation:
         async def check_quality(self, code, file_path="code.py"):
             """check_qualityチェックメソッド"""
             return {
@@ -83,16 +83,15 @@ except ImportError as e:
 
     class MockQualityGateIntegration:
         """MockQualityGateIntegrationクラス"""
-        # Main class implementation
+        # Main class implementation:
         async def execute_quality_gate(self, code, context=None):
             """execute_quality_gate実行メソッド"""
             # Core functionality implementation
             class MockResult:
                 """MockResultクラス"""
-                # Main class implementation
-                def __init__(self):
-                    """初期化メソッド"""
-                    self.status = type("Status", (), {"value": "passed"})()
+                # Main class implementation:
+                def __init__(self)self.status = type("Status", (), {"value": "passed"})()
+    """初期化メソッド"""
                     self.overall_score = 87.3
                     self.iron_will_compliant = False
                     self.quality_level = type("Level", (), {"value": "good"})()
@@ -103,14 +102,14 @@ except ImportError as e:
 
     class MockSecurityValidationLayer:
         """MockSecurityValidationLayerクラス"""
-        # Main class implementation
+        # Main class implementation:
         async def execute_comprehensive_security_scan(
             """execute_comprehensive_security_scanを実行"""
             self, code, file_path=None, context=None
         ):
             class MockResult:
                 """MockResultクラス"""
-                # Main class implementation
+                # Main class implementation:
                 def __init__(self):
                     """初期化メソッド"""
                     self.scan_id = "SEC_MOCK_001"
@@ -305,9 +304,8 @@ from typing import Dict
 class SecureSystem:
     """Secure Elder implementation"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger(__name__)
+    def __init__(self)self.logger = logging.getLogger(__name__)
+    """初期化メソッド"""
 
     def validate_input(self, data: Dict) -> bool:
         if not isinstance(data, dict):
@@ -336,37 +334,37 @@ class SecureSystem:
         print("=" * 70)
 
         try:
-            # 1. ハイブリッドコードクラフトマンテスト
+            # 1.0 ハイブリッドコードクラフトマンテスト
             print("\n🔧 Testing Hybrid Code Craftsman...")
             code_craftsman_results = await self._test_hybrid_code_craftsman()
             test_results.extend(code_craftsman_results)
 
-            # 2. ハイブリッドテストガーディアンテスト
+            # 2.0 ハイブリッドテストガーディアンテスト
             print("\n🧪 Testing Hybrid Test Guardian...")
             test_guardian_results = await self._test_hybrid_test_guardian()
             test_results.extend(test_guardian_results)
 
-            # 3. ハイブリッド品質インスペクターテスト
+            # 3.0 ハイブリッド品質インスペクターテスト
             print("\n🔍 Testing Hybrid Quality Inspector...")
             quality_inspector_results = await self._test_hybrid_quality_inspector()
             test_results.extend(quality_inspector_results)
 
-            # 4. 品質ゲート統合テスト
+            # 4.0 品質ゲート統合テスト
             print("\n🚪 Testing Quality Gate Integration...")
             quality_gate_results = await self._test_quality_gate_integration()
             test_results.extend(quality_gate_results)
 
-            # 5. セキュリティ検証レイヤーテスト
+            # 5.0 セキュリティ検証レイヤーテスト
             print("\n🛡️ Testing Security Validation Layer...")
             security_layer_results = await self._test_security_validation_layer()
             test_results.extend(security_layer_results)
 
-            # 6. エンドツーエンド統合テスト
+            # 6.0 エンドツーエンド統合テスト
             print("\n🔄 Testing End-to-End Integration...")
             e2e_results = await self._test_end_to_end_integration()
             test_results.extend(e2e_results)
 
-            # 7. パフォーマンステスト
+            # 7.0 パフォーマンステスト
             print("\n⚡ Testing System Performance...")
             performance_results = await self._test_system_performance()
             test_results.extend(performance_results)
@@ -486,7 +484,7 @@ class SecureSystem:
                 execution_time_ms=execution_time_ms,
                 success=meets_threshold,
                 expected_result=f"Quality score >= {scenario['expected_min_score']}%",
-                actual_result=f"Quality score: {quality_score:.1f}%",
+                actual_result=f"Quality score: {quality_score:0.1f}%",
                 details={
                     "quality_score": quality_score,
                     "threshold": scenario["expected_min_score"],
@@ -496,7 +494,7 @@ class SecureSystem:
             results.append(test_result)
             self.test_id_counter += 1
 
-            print(f"  ✅ Code Craftsman: {quality_score:.1f}% quality score")
+            print(f"  ✅ Code Craftsman: {quality_score:0.1f}% quality score")
 
         except Exception as e:
             # Handle specific exception case
@@ -646,7 +644,7 @@ class SecureSystem:
                 execution_time_ms=execution_time_ms,
                 success=meets_threshold,
                 expected_result=f"Quality score >= {scenario['expected_min_score']}%",
-                actual_result=f"Quality score: {quality_score:.1f}%",
+                actual_result=f"Quality score: {quality_score:0.1f}%",
                 details={
                     "quality_score": quality_score,
                     "threshold": scenario["expected_min_score"],
@@ -655,7 +653,7 @@ class SecureSystem:
             results.append(test_result)
             self.test_id_counter += 1
 
-            print(f"  ✅ Quality Inspector: {quality_score:.1f}% quality score")
+            print(f"  ✅ Quality Inspector: {quality_score:0.1f}% quality score")
 
         except Exception as e:
             # Handle specific exception case
@@ -717,7 +715,7 @@ class SecureSystem:
             self.test_id_counter += 1
 
             print(
-                f"  ✅ Quality Gate: {getattr(result, 'overall_score', 0):.1f}% overall score"
+                f"  ✅ Quality Gate: {getattr(result, 'overall_score', 0):0.1f}% overall score"
             )
 
         except Exception as e:
@@ -797,7 +795,7 @@ class SecureSystem:
                 execution_time_ms=execution_time_ms,
                 success=meets_threshold,
                 expected_result=f"Security score >= {scenario['expected_secure_score']}%",
-                actual_result=f"Security score: {security_score:.1f}%",
+                actual_result=f"Security score: {security_score:0.1f}%",
                 details={
                     "security_score": security_score,
                     "threshold": scenario["expected_secure_score"],
@@ -811,7 +809,7 @@ class SecureSystem:
 
             print(
                 f"  ✅ Security Validator: {vulnerabilities_detected} vulns detected, " \
-                    "{security_score:.1f}% secure score"
+                    "{security_score:0.1f}% secure score"
             )
 
         except Exception as e:
@@ -911,7 +909,7 @@ class SecureSystem:
             results.append(test_result_obj)
             self.test_id_counter += 1
 
-            print(f"  ✅ E2E Workflow: Complete in {execution_time_ms:.2f}ms")
+            print(f"  ✅ E2E Workflow: Complete in {execution_time_ms:0.2f}ms")
 
         except Exception as e:
             # Handle specific exception case
@@ -972,7 +970,7 @@ class SecureSystem:
                 execution_time_ms=avg_time,
                 success=performance_acceptable,
                 expected_result="Average response time < 5000ms",
-                actual_result=f"Average response time: {avg_time:.2f}ms",
+                actual_result=f"Average response time: {avg_time:0.2f}ms",
                 details={
                     "iterations": iterations,
                     "total_time_ms": total_time,
@@ -983,7 +981,7 @@ class SecureSystem:
             results.append(test_result)
             self.test_id_counter += 1
 
-            print(f"  ✅ Performance: {avg_time:.2f}ms average response time")
+            print(f"  ✅ Performance: {avg_time:0.2f}ms average response time")
 
         except Exception as e:
             # Handle specific exception case
@@ -1161,9 +1159,8 @@ class SecureSystem:
 
 
 # メイン実行関数
-async def run_comprehensive_integration_tests():
-    """包括的統合テスト実行"""
-    print("🚀 Elder Servants + OSS Hybrid System Integration Test")
+async def run_comprehensive_integration_tests()print("🚀 Elder Servants + OSS Hybrid System Integration Test")
+"""包括的統合テスト実行"""
     print("=" * 80)
     print(f"📅 Test Suite Execution: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("🎯 Testing all hybrid components and their interactions")
@@ -1182,7 +1179,7 @@ async def run_comprehensive_integration_tests():
 
         print(f"🆔 Suite ID: {suite_result.suite_id}")
         print(f"📋 Suite Name: {suite_result.suite_name}")
-        print(f"⏱️  Total Execution Time: {suite_result.execution_time_ms:.2f}ms")
+        print(f"⏱️  Total Execution Time: {suite_result.execution_time_ms:0.2f}ms")
         print()
 
         # 統計表示
@@ -1192,13 +1189,13 @@ async def run_comprehensive_integration_tests():
         print(f"  ❌ Failed: {suite_result.failed_tests}")
         print(f"  ⚠️  Errors: {suite_result.error_tests}")
         print(f"  ⏭️  Skipped: {suite_result.skipped_tests}")
-        print(f"  🎯 Success Rate: {suite_result.overall_success_rate:.1f}%")
+        print(f"  🎯 Success Rate: {suite_result.overall_success_rate:0.1f}%")
         print()
 
         # システムヘルス表示
         health = suite_result.system_health
         print(f"🏥 System Health: {health.get('status', 'unknown').upper()}")
-        print(f"💯 Health Score: {health.get('health_score', 0):.1f}%")
+        print(f"💯 Health Score: {health.get('health_score', 0):0.1f}%")
         print()
 
         # 推奨事項表示

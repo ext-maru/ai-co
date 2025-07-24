@@ -21,9 +21,8 @@ class TestAncientMagicFast:
     """古代魔法の高速テスト"""
     
     @pytest.fixture
-    def mock_auditor(self):
-        """モック監査者を作成"""
-        auditor = Mock(spec=AncientElderBase)
+    def mock_auditor(self)auditor = Mock(spec=AncientElderBase)
+    """モック監査者を作成"""
         auditor.name = "MockAuditor"
         auditor.specialty = "mock_audit"
         
@@ -76,9 +75,8 @@ class TestAncientMagicFast:
         return auditor
     
     @pytest.fixture
-    def audit_engine(self, mock_auditor):
-        """テスト用の監査エンジン"""
-        engine = AncientElderAuditEngine()
+    def audit_engine(self, mock_auditor)engine = AncientElderAuditEngine()
+    """テスト用の監査エンジン"""
         engine.register_auditor("mock", mock_auditor)
         return engine
     
@@ -113,18 +111,16 @@ class TestAncientMagicFast:
         assert result["statistics"]["successful_audits"] == 1
     
     @pytest.mark.asyncio
-    async def test_multiple_auditors(self):
-        """複数監査者の並列実行テスト"""
-        engine = AncientElderAuditEngine()
+    async def test_multiple_auditors(self)engine = AncientElderAuditEngine()
+    """複数監査者の並列実行テスト"""
         
         # 3つのモック監査者を作成
         for i in range(3):
             auditor = Mock(spec=AncientElderBase)
             auditor.name = f"MockAuditor{i}"
             
-            async def process_request(request):
-                """process_requestを処理"""
-                await asyncio.sleep(0.1)  # 短い遅延
+            async def process_request(request)await asyncio.sleep(0.1)  # 短い遅延
+    """process_requestを処理"""
                 return {
                     "status": "success",
                     "result": {"auditor": f"MockAuditor{i}"},
@@ -144,9 +140,8 @@ class TestAncientMagicFast:
         assert execution_time < 0.3
         assert result["statistics"]["successful_audits"] == 3
     
-    def test_violation_severity_handling(self):
-        """違反重要度の処理テスト"""
-        result = AuditResult()
+    def test_violation_severity_handling(self)result = AuditResult()
+    """違反重要度の処理テスト"""
         result.auditor_name = "TestAuditor"
         
         # 各重要度の違反を追加

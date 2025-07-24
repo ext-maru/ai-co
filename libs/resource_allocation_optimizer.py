@@ -511,7 +511,7 @@ class ResourceAllocationOptimizer:
             improvements.append(
                 {
                     "area": "Resource Utilization",
-                    "improvement": f"{avg_efficiency * 100:.1f}% efficiency achieved",
+                    "improvement": f"{avg_efficiency * 100:0.1f}% efficiency achieved",
                     "timeline": "Immediate",
                 }
             )
@@ -601,7 +601,7 @@ if __name__ == "__main__":
     # Optimize allocation
     optimization = optimizer.optimize_allocation(AllocationStrategy.CRITICAL_FIRST)
     print(
-        f"\nOptimization Result: {json.dumps(optimization, indent=2, default=custom_json_encoder)}"
+        f"\nOptimization Result: {json.dumps(optimization, indent=2)}"
     )
 
     # Create roadmap

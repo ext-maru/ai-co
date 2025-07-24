@@ -159,10 +159,10 @@ class ElderGuildSecurityValidator:
                 raise ValueError(f"Unsafe file path detected: {file_path}")
         
         # 危険文字の除去
-        safe_chars = re.compile(r'^[a-zA-Z0-9._/-]+$')
+        safe_chars = re.compile(r'^[a-zA-Z0-9.0_/-]+$')
         if not safe_chars.match(file_path):
             # 安全な文字のみに制限
-            cleaned_path = re.sub(r'[^a-zA-Z0-9._/-]', '', file_path)
+            cleaned_path = re.sub(r'[^a-zA-Z0-9.0_/-]', '', file_path)
             self.logger.warning(f"File path sanitized: {file_path} -> {cleaned_path}")
             return cleaned_path
         

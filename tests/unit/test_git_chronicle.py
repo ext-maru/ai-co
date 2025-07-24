@@ -34,9 +34,8 @@ from libs.ancient_elder.base import ViolationSeverity
 class TestGitBranchAnalyzer(unittest.TestCase):
     """Gitブランチ戦略分析システムテスト"""
     
-    def setUp(self):
-        """テスト環境セットアップ"""
-        self.temp_dir = tempfile.mkdtemp()
+    def setUp(self)self.temp_dir = tempfile.mkdtemp()
+    """テスト環境セットアップ"""
         self.project_root = Path(self.temp_dir)
         self.analyzer = GitBranchAnalyzer(self.project_root)
         
@@ -45,9 +44,8 @@ class TestGitBranchAnalyzer(unittest.TestCase):
         import shutil
         shutil.rmtree(self.temp_dir)
         
-    def test_analyzer_initialization(self):
-        """アナライザーの初期化テスト"""
-        self.assertIsInstance(self.analyzer, GitBranchAnalyzer)
+    def test_analyzer_initialization(self)self.assertIsInstance(self.analyzer, GitBranchAnalyzer)
+    """アナライザーの初期化テスト"""
         self.assertEqual(self.analyzer.project_root, self.project_root)
         
         # ブランチ命名パターンが設定されていることを確認
@@ -211,9 +209,8 @@ def456|2025-01-20 11:00:00|Another direct commit|developer"""
 class TestGitCommitAnalyzer(unittest.TestCase):
     """Gitコミットメッセージ・規約分析システムテスト"""
     
-    def setUp(self):
-        """テスト環境セットアップ"""
-        self.temp_dir = tempfile.mkdtemp()
+    def setUp(self)self.temp_dir = tempfile.mkdtemp()
+    """テスト環境セットアップ"""
         self.project_root = Path(self.temp_dir)
         self.analyzer = GitCommitAnalyzer(self.project_root)
         
@@ -222,9 +219,8 @@ class TestGitCommitAnalyzer(unittest.TestCase):
         import shutil
         shutil.rmtree(self.temp_dir)
         
-    def test_analyzer_initialization(self):
-        """アナライザーの初期化テスト"""
-        self.assertIsInstance(self.analyzer, GitCommitAnalyzer)
+    def test_analyzer_initialization(self)self.assertIsInstance(self.analyzer, GitCommitAnalyzer)
+    """アナライザーの初期化テスト"""
         self.assertEqual(self.analyzer.project_root, self.project_root)
         
         # コミット規約パターンが設定されていることを確認
@@ -366,9 +362,8 @@ class TestGitCommitAnalyzer(unittest.TestCase):
 class TestGitChronicle(unittest.TestCase):
     """Git年代記魔法総合テスト"""
     
-    def setUp(self):
-        """テスト環境セットアップ"""
-        self.temp_dir = tempfile.mkdtemp()
+    def setUp(self)self.temp_dir = tempfile.mkdtemp()
+    """テスト環境セットアップ"""
         self.project_root = Path(self.temp_dir)
         self.chronicle = GitChronicle(self.project_root)
         
@@ -377,16 +372,14 @@ class TestGitChronicle(unittest.TestCase):
         import shutil
         shutil.rmtree(self.temp_dir)
         
-    def test_chronicle_initialization(self):
-        """Git年代記の初期化テスト"""
-        self.assertIsInstance(self.chronicle, GitChronicle)
+    def test_chronicle_initialization(self)self.assertIsInstance(self.chronicle, GitChronicle)
+    """Git年代記の初期化テスト"""
         self.assertEqual(self.chronicle.project_root, self.project_root)
         self.assertIsInstance(self.chronicle.branch_analyzer, GitBranchAnalyzer)
         self.assertIsInstance(self.chronicle.commit_analyzer, GitCommitAnalyzer)
         
-    def test_get_audit_scope(self):
-        """監査スコープ取得テスト"""
-        scope = self.chronicle.get_audit_scope()
+    def test_get_audit_scope(self)scope = self.chronicle.get_audit_scope()
+    """監査スコープ取得テスト"""
         
         self.assertIsInstance(scope, list)
         self.assertIn("git_branch_strategy", scope)
@@ -509,9 +502,8 @@ class TestGitChronicle(unittest.TestCase):
 class TestGitChronicleIntegration(unittest.TestCase):
     """Git年代記魔法統合テスト"""
     
-    def setUp(self):
-        """テスト環境セットアップ"""
-        self.temp_dir = tempfile.mkdtemp()
+    def setUp(self)self.temp_dir = tempfile.mkdtemp()
+    """テスト環境セットアップ"""
         self.project_root = Path(self.temp_dir)
         self.chronicle = GitChronicle(self.project_root)
         
@@ -551,6 +543,7 @@ class TestGitChronicleIntegration(unittest.TestCase):
         # GitHub Flow遵守不足のシナリオをテスト
         with patch.object(self.chronicle.branch_analyzer, 'analyze_branch_strategy') as mock_branch:
             with patch.object(self.chronicle.commit_analyzer, 'analyze_commit_quality') as mock_commit:
+                pass
                 
                 # ワークフロー遵守不足のレスポンス設定
                 mock_branch.return_value = {

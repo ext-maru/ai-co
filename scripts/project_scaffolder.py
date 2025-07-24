@@ -68,9 +68,8 @@ class ProjectScaffolder:
         # プロジェクトドキュメント
         await self.create_project_docs(project_path, config)
 
-    async def create_fastapi_backend(self, backend_path: Path, config: Dict):
-        """FastAPIバックエンド生成"""
-        backend_path.mkdir(parents=True)
+    async def create_fastapi_backend(self, backend_path: Path, config: Dict)backend_path.mkdir(parents=True)
+    """FastAPIバックエンド生成"""
 
         # ディレクトリ構造
         dirs = [
@@ -141,9 +140,8 @@ class ProjectScaffolder:
         # テストファイル
         await self.create_backend_tests(backend_path, config)
 
-    async def create_react_frontend(self, frontend_path: Path, config: Dict):
-        """React + TypeScriptフロントエンド生成"""
-        frontend_path.mkdir(parents=True)
+    async def create_react_frontend(self, frontend_path: Path, config: Dict)frontend_path.mkdir(parents=True)
+    """React + TypeScriptフロントエンド生成"""
 
         # ディレクトリ構造
         dirs = [
@@ -223,9 +221,8 @@ class ProjectScaffolder:
             nginx_path.mkdir(exist_ok=True)
             await self.write_file(nginx_path / "nginx.conf", self.get_nginx_config())
 
-    async def integrate_elders_guild(self, project_path: Path, config: Dict):
-        """エルダーズギルド統合"""
-        integrations = config.get("elders_integration", [])
+    async def integrate_elders_guild(self, project_path: Path, config: Dict)integrations = config.get("elders_integration", [])
+    """エルダーズギルド統合"""
 
         # TDD設定
         if "tdd" in integrations:
@@ -395,9 +392,8 @@ async def upload_multiple_files(
     return results
 
 @router.get("/status/{file_id}", response_model=UploadStatus)
-async def get_upload_status(file_id: str):
-    """アップロードステータス取得"""
-    status = await upload_service.get_upload_status(file_id)
+async def get_upload_status(file_id: str)status = await upload_service.get_upload_status(file_id)
+"""アップロードステータス取得"""
     if not status:
         raise HTTPException(status_code=404, detail="File not found")
     return status
@@ -673,9 +669,8 @@ volumes:
   }
 }"""
 
-    async def write_file(self, path: Path, content: str):
-        """ファイル書き込み"""
-        path.parent.mkdir(parents=True, exist_ok=True)
+    async def write_file(self, path: Path, content: str)path.parent.mkdir(parents=True, exist_ok=True)
+    """ファイル書き込み"""
         async with aiofiles.open(path, "w", encoding="utf-8") as f:
             await f.write(content)
 
@@ -1110,19 +1105,16 @@ class AuthService:
     """認証サービス"""
 
     @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
-        """パスワード検証"""
-        return pwd_context.verify(plain_password, hashed_password)
+    def verify_password(plain_password: str, hashed_password: str) -> boolreturn pwd_context.verify(plain_password, hashed_password)
+    """パスワード検証"""
 
-    @staticmethod
-    def get_password_hash(password: str) -> str:
-        """パスワードハッシュ化"""
-        return pwd_context.hash(password)
+    @staticmethod:
+    def get_password_hash(password: str) -> strreturn pwd_context.hash(password)
+    """パスワードハッシュ化"""
 
-    @staticmethod
-    def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-        """アクセストークン生成"""
-        to_encode = data.copy()
+    @staticmethod:
+    def create_access_token(data: dict, expires_delta: Optional[timedelta] = None)to_encode = data.copy()
+    """アクセストークン生成"""
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
@@ -1162,9 +1154,8 @@ class AuthService:
         return user
 
 # 依存性注入用
-def get_current_user(token: str = Depends(oauth2_scheme)):
-    """現在のユーザー取得（依存性注入用）"""
-    return AuthService.get_current_user(token)
+def get_current_user(token: str = Depends(oauth2_scheme))return AuthService.get_current_user(token)
+"""現在のユーザー取得（依存性注入用）"""
 
 def get_current_active_user(current_user = Depends(get_current_user)):
     """アクティブユーザー取得"""
@@ -1850,6 +1841,7 @@ exclude_lines =
     raise AssertionError
     raise NotImplementedError
     if __name__ == .__main__.:
+        pass
 
 [html]
 directory = htmlcov

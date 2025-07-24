@@ -109,6 +109,7 @@ from tests.mock_utils import (
 
 # Import module under test
 try:
+    pass
 except ImportError:
     # Try alternative import
     import importlib.util

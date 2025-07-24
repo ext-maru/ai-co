@@ -76,9 +76,8 @@ class EnrichmentResult:
 class KnowledgeGapDetector:
     """知識ギャップ検出ウィザード"""
 
-    def __init__(self, knowledge_base_path:
+    def __init__(self, knowledge_base_path: Path):
         """初期化メソッド"""
-    Path):
         self.knowledge_base_path = knowledge_base_path
         self.detected_gaps: Dict[str, KnowledgeGap] = {}
         self._analysis_cache: Dict[str, Any] = {}
@@ -87,19 +86,19 @@ class KnowledgeGapDetector:
         """知識ベースを分析して欠損を検出"""
         gaps = []
 
-        # 1. ドキュメントの完全性チェック
+        # 1.0 ドキュメントの完全性チェック
         doc_gaps = await self._check_documentation_completeness()
         gaps.extend(doc_gaps)
 
-        # 2. コンテキストの一貫性チェック
+        # 2.0 コンテキストの一貫性チェック
         context_gaps = await self._check_context_consistency()
         gaps.extend(context_gaps)
 
-        # 3. 関連性マッピングのチェック
+        # 3.0 関連性マッピングのチェック
         relationship_gaps = await self._check_relationship_coverage()
         gaps.extend(relationship_gaps)
 
-        # 4. 実例の充実度チェック
+        # 4.0 実例の充実度チェック
         example_gaps = await self._check_example_sufficiency()
         gaps.extend(example_gaps)
 
@@ -161,9 +160,8 @@ class KnowledgeGapDetector:
 class InformationHunterWizard:
     """情報収集ウィザード"""
 
-    def __init__(self, wizard_id:
+    def __init__(self, wizard_id: str):
         """初期化メソッド"""
-    str):
         self.wizard_id = wizard_id
         self.state = WizardState.IDLE
         self.current_hunt: Optional[KnowledgeGap] = None
@@ -212,19 +210,19 @@ class InformationHunterWizard:
         """コンテキスト情報を収集"""
         findings = []
 
-        # 1. 内部知識ベースから関連情報を検索
+        # 1.0 内部知識ベースから関連情報を検索
         internal_findings = await self._search_internal_knowledge(gap.topic)
         findings.extend(internal_findings)
 
-        # 2. コードベースから使用例を検索
+        # 2.0 コードベースから使用例を検索
         code_examples = await self._search_code_examples(gap.topic)
         findings.extend(code_examples)
 
-        # 3. Web検索で外部情報を収集
+        # 3.0 Web検索で外部情報を収集
         web_findings = await self._fetch_web_information(gap.topic)
         findings.extend(web_findings)
 
-        # 4. GitHub/技術文書の検索
+        # 4.0 GitHub/技術文書の検索
         tech_findings = await self._fetch_technical_documentation(gap.topic)
         findings.extend(tech_findings)
 
@@ -303,15 +301,15 @@ class InformationHunterWizard:
         try:
             # 複数の戦略で情報収集
 
-            # 1. DuckDuckGo Instant Answer API
+            # 1.0 DuckDuckGo Instant Answer API
             ddg_results = await self._try_duckduckgo_api(topic)
             findings.extend(ddg_results)
 
-            # 2. Wikipedia API（より安定）
+            # 2.0 Wikipedia API（より安定）
             wiki_results = await self._try_wikipedia_api(topic)
             findings.extend(wiki_results)
 
-            # 3. GitHub API（オープンソースプロジェクト検索）
+            # 3.0 GitHub API（オープンソースプロジェクト検索）
             github_results = await self._try_github_search(topic)
             findings.extend(github_results)
 
@@ -492,9 +490,8 @@ class InformationHunterWizard:
 class KnowledgeEnricher:
     """知識拡充ウィザード"""
 
-    def __init__(self, knowledge_base_path:
+    def __init__(self, knowledge_base_path: Path):
         """初期化メソッド"""
-    Path):
         self.knowledge_base_path = knowledge_base_path
         self.enrichment_history: List[EnrichmentResult] = []
 
@@ -505,20 +502,20 @@ class KnowledgeEnricher:
         logger.info(f"Enriching knowledge for gap: {gap.gap_id}")
 
         try:
-            # 1. 収集情報を統合・検証
+            # 1.0 収集情報を統合・検証
             integrated_knowledge = await self._integrate_findings(
                 hunt_results["findings"]
             )
 
-            # 2. 既存知識との整合性チェック
+            # 2.0 既存知識との整合性チェック
             validated_knowledge = await self._validate_against_existing(
                 integrated_knowledge
             )
 
-            # 3. 知識ベースに統合
+            # 3.0 知識ベースに統合
             success = await self._merge_into_knowledge_base(gap, validated_knowledge)
 
-            # 4. メタ知識の生成
+            # 4.0 メタ知識の生成
             meta_knowledge = await self._generate_meta_knowledge(
                 gap, validated_knowledge
             )
@@ -580,9 +577,8 @@ class KnowledgeEnricher:
 class ProactiveLearningEngine:
     """主体的学習エンジン"""
 
-    def __init__(self, idle_threshold_minutes:
+    def __init__(self, idle_threshold_minutes: int = 5):
         """初期化メソッド"""
-    int = 5):
         self.idle_threshold = timedelta(minutes=idle_threshold_minutes)
         self.last_activity = datetime.now()
         self.learning_queue: List[KnowledgeGap] = []
@@ -605,18 +601,18 @@ class ProactiveLearningEngine:
         self.is_learning = True
 
         try:
-            # 1. 知識ギャップを検出
+            # 1.0 知識ギャップを検出
             detector = KnowledgeGapDetector(
                 Path("/home/aicompany/ai_co/knowledge_base")
             )
             gaps = await detector.analyze_knowledge_base()
 
-            # 2. 優先度の高いギャップから処理
+            # 2.0 優先度の高いギャップから処理
             for gap in gaps[:5]:  # 上位5件を処理
                 if gap.priority > 0.5:  # 優先度が高いもののみ
                     self.learning_queue.append(gap)
 
-            # 3. ウィザードを起動して情報収集
+            # 3.0 ウィザードを起動して情報収集
             wizard = InformationHunterWizard("proactive_wizard_1")
             enricher = KnowledgeEnricher(Path("/home/aicompany/ai_co/knowledge_base"))
 

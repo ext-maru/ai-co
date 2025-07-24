@@ -91,7 +91,7 @@ class IssueCompletionManager:
     def _init_database(self):
         """データベースを初期化"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 # イシュー記録テーブル
@@ -167,7 +167,7 @@ class IssueCompletionManager:
     ) -> bool:
         """イシュー処理開始を記録"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 # 既存記録確認
@@ -237,7 +237,7 @@ class IssueCompletionManager:
     ) -> bool:
         """PR作成を記録"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 cursor.execute(
@@ -273,7 +273,7 @@ class IssueCompletionManager:
     ) -> bool:
         """イシュー完了を記録"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 # 開始時刻を取得して処理時間を計算
@@ -344,7 +344,7 @@ class IssueCompletionManager:
     def get_issue_record(self, issue_number: int) -> Optional[IssueRecord]:
         """イシュー記録を取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
@@ -381,7 +381,7 @@ class IssueCompletionManager:
     def get_pending_issues(self) -> List[IssueRecord]:
         """処理待ちイシューを取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
@@ -419,7 +419,7 @@ class IssueCompletionManager:
     def get_failed_issues(self, max_retries: int = 3) -> List[IssueRecord]:
         """失敗イシューを取得（再処理対象）"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """
@@ -465,7 +465,7 @@ class IssueCompletionManager:
                 return cached_stats
 
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 # 期間指定
@@ -590,13 +590,13 @@ class IssueCompletionManager:
 - **PR作成数**: {stats['pr_created_count']}件
 
 ## 📈 成功率
-- **成功率**: {stats['success_rate']:.1f}%
-- **完了率**: {stats['completion_rate']:.1f}%
+- **成功率**: {stats['success_rate']:0.1f}%
+- **完了率**: {stats['completion_rate']:0.1f}%
 
 ## ⏱️ 処理時間
-- **平均処理時間**: {stats['avg_processing_time']:.2f}秒
-- **最大処理時間**: {stats['max_processing_time']:.2f}秒
-- **最小処理時間**: {stats['min_processing_time']:.2f}秒
+- **平均処理時間**: {stats['avg_processing_time']:0.2f}秒
+- **最大処理時間**: {stats['max_processing_time']:0.2f}秒
+- **最小処理時間**: {stats['min_processing_time']:0.2f}秒
 
 ## 🚨 エラー分析
 """
@@ -618,7 +618,7 @@ class IssueCompletionManager:
                     else 0
                 )
                 report += f"- **{day_stat['date']}**: {day_stat['total']}件処理, " \
-                    "{day_stat['completed']}件完了 ({success_rate:.1f}%)\n"
+                    "{day_stat['completed']}件完了 ({success_rate:0.1f}%)\n"
 
             report += f"""
 ---
@@ -657,7 +657,7 @@ class IssueCompletionManager:
         try:
             cutoff_date = datetime.now() - timedelta(days=days)
 
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
                 # 完了した古い記録を削除

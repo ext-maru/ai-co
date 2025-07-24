@@ -843,7 +843,7 @@ if __name__ == "__main__":
 
             print(f"Security Level: {recommendation.security_level.value}")
             print(f"Isolation: {recommendation.isolation_type}")
-            print(f"Confidence: {recommendation.confidence_score:.2f}")
+            print(f"Confidence: {recommendation.confidence_score:0.2f}")
             print(f"Setup Time: {recommendation.estimated_setup_time} minutes")
             print(f"Justifications: {len(recommendation.justification)}")
             for justification in recommendation.justification:

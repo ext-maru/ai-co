@@ -147,6 +147,7 @@ class TestAutoIssueProcessorEnhanced(unittest.TestCase):
             with patch.object(self.processor.task_sage, 'process_request') as mock_task:
                 with patch.object(self.processor.incident_sage, 'process_request') as mock_incident:
                     with patch.object(self.processor.rag_sage, 'process_request') as mock_rag:
+                        pass
                         
                         # 各賢者の応答を設定
                         mock_knowledge.return_value = {
@@ -325,12 +326,12 @@ class TestEndToEndEnhanced(unittest.TestCase):
         """Issue #92実装項目のカバレッジテスト"""
         print("\n🔍 === Issue #92実装カバレッジテスト ===")
         
-        # 1. Auto Issue ProcessorにPR作成機能が統合されていることを確認
+        # 1.0 Auto Issue ProcessorにPR作成機能が統合されていることを確認
         print("1️⃣ PR作成機能統合確認...")
         self.assertTrue(hasattr(AutoIssueElderFlowEngine, 'execute_flow'))
         self.assertTrue(hasattr(AutoIssueElderFlowEngine, '_create_pull_request'))
         
-        # 2. 4賢者システムが実際のクラスを使用していることを確認
+        # 2.0 4賢者システムが実際のクラスを使用していることを確認
         print("2️⃣ 4賢者システム統合確認...")
         processor_module = sys.modules['libs.integrations.github.auto_issue_processor']
         self.assertTrue(hasattr(processor_module, 'ActualKnowledgeSage'))
@@ -338,11 +339,11 @@ class TestEndToEndEnhanced(unittest.TestCase):
         self.assertTrue(hasattr(processor_module, 'ActualIncidentSage'))
         self.assertTrue(hasattr(processor_module, 'ActualRAGSage'))
         
-        # 3. Elder Flow Engineが実際のクラスを使用していることを確認
+        # 3.0 Elder Flow Engineが実際のクラスを使用していることを確認
         print("3️⃣ Elder Flow Engine統合確認...")
         self.assertTrue(hasattr(processor_module, 'ActualElderFlowEngine'))
         
-        # 4. Iron Will品質基準への対応確認
+        # 4.0 Iron Will品質基準への対応確認
         print("4️⃣ Iron Will品質基準対応確認...")
         # AutoIssueProcessorがEldersServiceLegacyを継承していることを確認
         self.assertTrue(issubclass(AutoIssueProcessor, processor_module.EldersServiceLegacy))

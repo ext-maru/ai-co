@@ -217,16 +217,16 @@ def test_{module_name}_file_structure():
         current_coverage = self.get_current_coverage()
         elapsed_time = (datetime.now() - self.start_time).total_seconds() / 60
 
-        self.log_progress(f"📊 Current Coverage: {current_coverage:.2f}%")
+        self.log_progress(f"📊 Current Coverage: {current_coverage:0.2f}%")
         self.log_progress(f"🎯 Target Coverage: {self.target_coverage}%")
-        self.log_progress(f"⏱️ Elapsed Time: {elapsed_time:.1f} minutes")
+        self.log_progress(f"⏱️ Elapsed Time: {elapsed_time:0.1f} minutes")
 
         if current_coverage >= self.target_coverage:
             self.log_progress("🎉 TARGET ACHIEVED! 60% coverage reached!")
             return True
         else:
             progress = (current_coverage / self.target_coverage) * 100
-            self.log_progress(f"📈 Progress: {progress:.1f}% towards target")
+            self.log_progress(f"📈 Progress: {progress:0.1f}% towards target")
             return False
 
     def execute_unified_assault(self):
@@ -236,7 +236,7 @@ def test_{module_name}_file_structure():
 
         # Initial coverage check
         initial_coverage = self.get_current_coverage()
-        self.log_progress(f"Initial Coverage: {initial_coverage:.2f}%")
+        self.log_progress(f"Initial Coverage: {initial_coverage:0.2f}%")
 
         # Phase 1: Fix critical failures
         fixed_tests = self.fix_critical_test_failures()
@@ -254,9 +254,9 @@ def test_{module_name}_file_structure():
         # Summary report
         self.log_progress("=" * 60)
         self.log_progress("🏛️ ELDER COUNCIL PHASE 3 ASSAULT SUMMARY")
-        self.log_progress(f"Initial Coverage: {initial_coverage:.2f}%")
-        self.log_progress(f"Final Coverage: {final_coverage:.2f}%")
-        self.log_progress(f"Coverage Gain: {final_coverage - initial_coverage:.2f}%")
+        self.log_progress(f"Initial Coverage: {initial_coverage:0.2f}%")
+        self.log_progress(f"Final Coverage: {final_coverage:0.2f}%")
+        self.log_progress(f"Coverage Gain: {final_coverage - initial_coverage:0.2f}%")
         self.log_progress(f"Tests Fixed: {fixed_tests}")
         self.log_progress(f"Tests Generated: {generated_tests}")
         self.log_progress(f"Enhancement Success: {enhancement_success}")

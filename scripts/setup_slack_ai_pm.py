@@ -17,13 +17,13 @@ def print_setup_guide():
     """Slack App設定ガイドを表示"""
     print("🤖 AI-PM Slack App セットアップガイド")
     print("=" * 60)
-    print("\n1. Slack Appの作成:")
+    print("\n1.0 Slack Appの作成:")
     print("   - https://api.slack.com/apps にアクセス")
     print("   - 'Create New App' → 'From scratch'")
     print("   - App名: AI-PM")
     print("   - ワークスペースを選択")
 
-    print("\n2. Bot Token Scopesの設定:")
+    print("\n2.0 Bot Token Scopesの設定:")
     print("   OAuth & Permissions → Scopes → Bot Token Scopes")
     print("   必須スコープ:")
     print("   - channels:history")
@@ -38,7 +38,7 @@ def print_setup_guide():
     print("   - app_mentions:read")
     print("   - users:read")
 
-    print("\n3. Event Subscriptionsの設定:")
+    print("\n3.0 Event Subscriptionsの設定:")
     print("   Event Subscriptions → Enable Events")
     print("   Subscribe to bot events:")
     print("   - app_mention")
@@ -46,20 +46,20 @@ def print_setup_guide():
     print("   - message.groups")
     print("   - message.im")
 
-    print("\n4. Socket Modeの設定（推奨）:")
+    print("\n4.0 Socket Modeの設定（推奨）:")
     print("   Socket Mode → Enable Socket Mode")
     print("   Generate App-Level Token:")
     print("   - Token Name: socket-mode-token")
     print("   - Scope: connections:write")
 
-    print("\n5. トークンの取得:")
+    print("\n5.0 トークンの取得:")
     print("   - Bot User OAuth Token (xoxb-...)")
     print("   - App-Level Token (xapp-...)")
 
-    print("\n6. インストール:")
+    print("\n6.0 インストール:")
     print("   OAuth & Permissions → Install to Workspace")
 
-    print("\n7. チャンネルに招待:")
+    print("\n7.0 チャンネルに招待:")
     print("   Slackで: /invite @AI-PM")
 
 

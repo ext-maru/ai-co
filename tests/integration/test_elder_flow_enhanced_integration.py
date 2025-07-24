@@ -114,7 +114,7 @@ class TestElderFlowEnhancedIntegration:
         assert word_count >= 500, f"Document too short: {word_count} words"
         
         print(f"\n🎉 Integration Test Success!")
-        print(f"📊 Quality Score: {quality_score:.1f}")
+        print(f"📊 Quality Score: {quality_score:0.1f}")
         print(f"📝 Word Count: {word_count}")
         print(f"🔍 Entities Found: {len(entity_names)}")
         print(f"📋 Business Rules: {len(business_rules)}")
@@ -188,7 +188,7 @@ class TestElderFlowEnhancedIntegration:
         
         # 成功とパフォーマンス確認
         assert result["success"] is True
-        assert execution_time < 10.0, f"Too slow: {execution_time:.2f}s"
+        assert execution_time < 10.0, f"Too slow: {execution_time:0.2f}s"
         
         # 複雑な要件でも適切に分析
         analysis = result["analysis_results"]
@@ -199,4 +199,4 @@ class TestElderFlowEnhancedIntegration:
         # 品質維持確認
         assert result["quality_score"] >= 70.0
         
-        print(f"⚡ Performance Test: {execution_time:.2f}s")
+        print(f"⚡ Performance Test: {execution_time:0.2f}s")

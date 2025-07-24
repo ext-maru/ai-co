@@ -4,9 +4,9 @@ Elder Flow Enhancement Engine
 Phase 2-4統合: Issue分類と技術要件抽出を組み合わせたエンジン
 
 主な機能:
-1. Issue種別を自動判定
-2. 実装系の場合は技術要件を抽出
-3. Elder Flowに渡すための構造化データを生成
+1.0 Issue種別を自動判定
+2.0 実装系の場合は技術要件を抽出
+3.0 Elder Flowに渡すための構造化データを生成
 """
 
 import logging
@@ -51,10 +51,10 @@ class ElderFlowEnhancementEngine:
             if 'body' not in issue_data:
                 issue_data['body'] = ''
             
-            # 1. Issue種別を判定
+            # 1.0 Issue種別を判定
             classification = self.issue_classifier.classify(issue_data)
             
-            # 2. 基本情報を構築
+            # 2.0 基本情報を構築
             result = {
                 'issue_number': issue_data.get('number'),
                 'issue_title': issue_data.get('title', ''),
@@ -65,7 +65,7 @@ class ElderFlowEnhancementEngine:
                 'timestamp': datetime.now().isoformat()
             }
             
-            # 3. カテゴリに応じた処理
+            # 3.0 カテゴリに応じた処理
             if classification.category == IssueCategory.IMPLEMENTATION_ORIENTED:
                 # 実装系: 技術要件を抽出
                 extraction_result = self.requirements_extractor.extract_requirements(issue_data)
@@ -86,12 +86,12 @@ class ElderFlowEnhancementEngine:
                 result['design_analysis'] = self._extract_design_elements(issue_data)
                 result['recommended_approach'] = 'hybrid'
             
-            # 4. Elder Flow実行のための推奨設定
+            # 4.0 Elder Flow実行のための推奨設定
             result['elder_flow_config'] = self._generate_elder_flow_config(
                 classification, result.get('technical_analysis')
             )
             
-            # 5. リスク評価
+            # 5.0 リスク評価
             result['risk_assessment'] = self._assess_risks(
                 classification, result.get('technical_analysis')
             )

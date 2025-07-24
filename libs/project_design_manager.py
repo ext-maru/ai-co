@@ -42,7 +42,7 @@ class ProjectDesignManager(BaseManager):
             with open(sql_file, "r", encoding="utf-8") as f:
                 sql = f.read()
 
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.executescript(sql)
                 conn.commit()
 
@@ -64,7 +64,7 @@ class ProjectDesignManager(BaseManager):
         """新規プロジェクト作成"""
         project_id = f"proj_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO projects (project_id, task_id, name, description)
@@ -100,7 +100,7 @@ class ProjectDesignManager(BaseManager):
         """要件定義追加"""
         req_id = f"req_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO requirements
@@ -133,7 +133,7 @@ class ProjectDesignManager(BaseManager):
         """設計書作成"""
         design_id = f"des_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO designs (design_id, project_id, type, content)
@@ -172,7 +172,7 @@ class ProjectDesignManager(BaseManager):
         """開発タスク作成"""
         dev_task_id = f"dev_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO development_tasks
@@ -196,7 +196,7 @@ class ProjectDesignManager(BaseManager):
         self, dev_task_id: str, status: str, result: Optional[Dict[str, Any]] = None
     ):
         """タスクステータス更新"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             if status == "completed":
                 conn.execute(
                     """
@@ -228,7 +228,7 @@ class ProjectDesignManager(BaseManager):
         """テスト結果記録"""
         test_id = f"test_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO test_results
@@ -268,7 +268,7 @@ class ProjectDesignManager(BaseManager):
         self, project_id: str, phase: str, status: str, notes: str = ""
     ):
         """フェーズステータス更新"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             if status == "in_progress":
                 conn.execute(
                     """
@@ -302,7 +302,7 @@ class ProjectDesignManager(BaseManager):
         self, project_id: str, file_path: str, file_type: str, phase: str
     ):
         """プロジェクトファイル登録"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT INTO project_files (project_id, file_path, file_type, phase)
@@ -314,8 +314,8 @@ class ProjectDesignManager(BaseManager):
 
     def get_project_status(self, project_id: str) -> Dict[str, Any]:
         """プロジェクトステータス取得"""
-        with sqlite3.connect(self.db_path) as conn:
-            conn.row_factory = sqlite3.Row
+        with sqlite3connect(self.db_path) as conn:
+            conn.row_factory = sqlite3Row
 
             # プロジェクト基本情報
             project = conn.execute(
@@ -378,7 +378,7 @@ class ProjectDesignManager(BaseManager):
                 "current_phase": self._get_current_phase(phases),
             }
 
-    def _get_current_phase(self, phases: List[sqlite3.Row]) -> str:
+    def _get_current_phase(self, phases: List[sqlite3Row]) -> str:
         """現在のフェーズを判定"""
         for phase in phases:
             if phase["status"] == "in_progress":

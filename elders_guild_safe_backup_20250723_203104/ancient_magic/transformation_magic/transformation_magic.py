@@ -34,6 +34,7 @@ from ..base_magic import AncientMagic, MagicCapability
 
 @dataclass
 class TransformationMetadata:
+    pass
 
 
 """変換メタデータのデータクラス""" str
@@ -47,6 +48,7 @@ class TransformationMetadata:
 
 @dataclass
 class BridgeMetadata:
+    pass
 
 
 
@@ -61,6 +63,7 @@ class BridgeMetadata:
 
 
 class TransformationMagic(AncientMagic):
+    pass
 
 
 
@@ -709,7 +712,7 @@ class TransformationMagic(AncientMagic):
                             field_errors.append(f"{field_name}: Value '{value}' does not match pattern '{pattern}'")
                     
                     if "format" in prop_schema and prop_schema["format"] == "email":
-                        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+                        email_pattern = r'^[a-zA-Z0-9.0_%+-]+@[a-zA-Z0-9.0-]+\.[a-zA-Z]{2,}$'
                         if not re.match(email_pattern, value):
                             field_errors.append(f"{field_name}: Invalid email format '{value}'")
                 
@@ -1048,10 +1051,8 @@ class TransformationMagic(AncientMagic):
             }
     
     # ヘルパーメソッド
-    def _count_nested_keys(self, data: Any, count: int = 0) -> int:
-        """ネストされた辞書のキー数をカウント"""
-        if isinstance(data, dict):
-            count += len(data)
+    def _count_nested_keys(self, data: Any, count: int = 0) -> intif isinstance(data, dict)count += len(data)
+    """ネストされた辞書のキー数をカウント""":
             for value in data.values():
                 count = self._count_nested_keys(value, count)
         elif isinstance(data, list):

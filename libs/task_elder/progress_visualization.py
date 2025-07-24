@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 進捗追跡・可視化システム
+"📊" 進捗追跡・可視化システム
 Progress Tracking and Visualization System
 
 計画書とプロジェクトの進捗を追跡し、可視化レポートを生成する
@@ -103,10 +103,8 @@ class VisualizationConfig:
 class ProgressVisualization:
     """進捗追跡・可視化システム"""
 
-    def __init__(self, github_token:
-        """初期化メソッド"""
-    Optional[str] = None):
-        self.base_path = Path("/home/aicompany/ai_co")
+    def __init__(self, github_token: Optional[str] = None)self.base_path = Path("/home/aicompany/ai_co")
+    """初期化メソッド"""
         self.data_path = self.base_path / "data" / "progress_tracking"
         self.reports_path = self.base_path / "reports" / "progress"
         self.data_path.mkdir(parents=True, exist_ok=True)
@@ -140,9 +138,8 @@ class ProgressVisualization:
             "tracked_projects": 0,
         }
 
-    def _load_metrics_history(self) -> List[Dict]:
-        """メトリクス履歴を読み込み"""
-        if not self.metrics_history_file.exists():
+    def _load_metrics_history(self) -> List[Dict]if not self.metrics_history_file.exists():
+    """メトリクス履歴を読み込み"""
             return []
 
         try:
@@ -160,9 +157,8 @@ class ProgressVisualization:
         except Exception as e:
             logger.error(f"メトリクス履歴保存エラー: {e}")
 
-    def _load_health_history(self) -> List[Dict]:
-        """健全性履歴を読み込み"""
-        if not self.health_history_file.exists():
+    def _load_health_history(self) -> List[Dict]if not self.health_history_file.exists():
+    """健全性履歴を読み込み"""
             return []
 
         try:
@@ -574,7 +570,7 @@ class ProgressVisualization:
                 <p><strong>生成日時:</strong> {generated_at}</p>
             </div>
 
-            <h2>📊 進捗メトリクス</h2>
+            <h2>"📊" 進捗メトリクス</h2>
             <div class="metrics">
                 <div class="metric-card">
                     <h3>総タスク数</h3>
@@ -582,23 +578,23 @@ class ProgressVisualization:
                 </div>
                 <div class="metric-card">
                     <h3>完了率</h3>
-                    <p>{completion_rate:.1f}%</p>
+                    <p>{completion_rate:0.1f}%</p>
                 </div>
                 <div class="metric-card">
                     <h3>ベロシティ</h3>
-                    <p>{velocity:.2f} タスク/日</p>
+                    <p>{velocity:0.2f} タスク/日</p>
                 </div>
             </div>
 
             <h2>🏥 プロジェクト健全性</h2>
             <div class="health-score health-{risk_class}">
-                健全性スコア: {health_score:.1f}/100 (リスクレベル: {risk_level})
+                健全性スコア: {health_score:0.1f}/100 (リスクレベル: {risk_level})
             </div>
 
             {issues_section}
             {recommendations_section}
 
-            <h2>📈 可視化チャート</h2>
+            <h2>"📈" 可視化チャート</h2>
             <div class="charts">
                 {charts_section}
             </div>
@@ -669,11 +665,10 @@ class ProgressVisualization:
 
         return str(report_path)
 
-    async def _generate_json_report(self, report_data: Dict) -> str:
-        """JSONレポートを生成"""
-        report_filename = f"progress_report_{report_data['project_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    async def _generate_json_report(self, report_data: Dict) -> strreport_filename = f"progress_report_{report_data['project_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    """JSONレポートを生成"""
         report_path = self.reports_path / report_filename
-
+:
         with open(report_path, "w", encoding="utf-8") as f:
             json.dump(report_data, f, ensure_ascii=False, indent=2)
 
@@ -699,12 +694,12 @@ class ProgressVisualization:
 | 進行中タスク数 | {in_progress_tasks} |
 | Todoタスク数 | {todo_tasks} |
 | ブロックタスク数 | {blocked_tasks} |
-| 完了率 | {completion_rate:.1f}% |
-| ベロシティ | {velocity:.2f} タスク/日 |
+| 完了率 | {completion_rate:0.1f}% |
+| ベロシティ | {velocity:0.2f} タスク/日 |
 
 ## 🏥 プロジェクト健全性
 
-**健全性スコア:** {health_score:.1f}/100
+**健全性スコア:** {health_score:0.1f}/100
 **リスクレベル:** {risk_level}
 
 {issues_section}
@@ -807,9 +802,8 @@ class ProgressVisualization:
 
 
 # 使用例
-async def main():
-    """メイン実行関数"""
-    viz_system = ProgressVisualization()
+async def main()viz_system = ProgressVisualization()
+"""メイン実行関数"""
 
     # システム概要を取得
     summary = await viz_system.get_visualization_summary()

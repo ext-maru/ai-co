@@ -69,8 +69,8 @@ class TestElderLegacyPerformance:
         
         # 統計情報出力
         print(f"\nConversationManager Performance:")
-        print(f"  会話作成: 平均 {mean(create_times)*1000:.2f}ms, 標準偏差 {stdev(create_times)*1000:.2f}ms")
-        print(f"  メッセージ追加: 平均 {mean(add_times)*1000:.2f}ms, 標準偏差 {stdev(add_times)*1000:.2f}ms")
+        print(f"  会話作成: 平均 {mean(create_times)*1000:0.2f}ms, 標準偏差 {stdev(create_times)*1000:0.2f}ms")
+        print(f"  メッセージ追加: 平均 {mean(add_times)*1000:0.2f}ms, 標準偏差 {stdev(add_times)*1000:0.2f}ms")
         
         # 性能基準チェック
         assert mean(create_times) < 0.1  # 100ms以下
@@ -113,8 +113,8 @@ class TestElderLegacyPerformance:
         
         # 統計情報出力
         print(f"\nRAGManager Performance:")
-        print(f"  ドキュメント追加: 平均 {mean(add_times)*1000:.2f}ms, 標準偏差 {stdev(add_times)*1000:.2f}ms")
-        print(f"  検索: 平均 {mean(search_times)*1000:.2f}ms, 標準偏差 {stdev(search_times)*1000:.2f}ms")
+        print(f"  ドキュメント追加: 平均 {mean(add_times)*1000:0.2f}ms, 標準偏差 {stdev(add_times)*1000:0.2f}ms")
+        print(f"  検索: 平均 {mean(search_times)*1000:0.2f}ms, 標準偏差 {stdev(search_times)*1000:0.2f}ms")
         
         # 性能基準チェック
         assert mean(add_times) < 0.2     # 200ms以下
@@ -160,9 +160,9 @@ class TestElderLegacyPerformance:
         
         # 統計情報出力
         print(f"\nTaskWorker Performance:")
-        print(f"  タスク投入: 平均 {mean(submit_times)*1000:.2f}ms, 標準偏差 {stdev(submit_times)*1000:.2f}ms")
-        print(f"  キュー処理: 平均 {mean(process_times)*1000:.2f}ms, 標準偏差 {stdev(process_times)*1000:.2f}ms")
-        print(f"  統計取得: 平均 {mean(stats_times)*1000:.2f}ms, 標準偏差 {stdev(stats_times)*1000:.2f}ms")
+        print(f"  タスク投入: 平均 {mean(submit_times)*1000:0.2f}ms, 標準偏差 {stdev(submit_times)*1000:0.2f}ms")
+        print(f"  キュー処理: 平均 {mean(process_times)*1000:0.2f}ms, 標準偏差 {stdev(process_times)*1000:0.2f}ms")
+        print(f"  統計取得: 平均 {mean(stats_times)*1000:0.2f}ms, 標準偏差 {stdev(stats_times)*1000:0.2f}ms")
         
         # 性能基準チェック
         assert mean(submit_times) < 0.01    # 10ms以下
@@ -221,8 +221,8 @@ class TestElderLegacyPerformance:
         
         # 統計情報出力
         print(f"\nConcurrent Operations Performance:")
-        print(f"  30タスク並行実行: {total_time:.2f}秒")
-        print(f"  平均タスク時間: {total_time/30*1000:.2f}ms")
+        print(f"  30タスク並行実行: {total_time:0.2f}秒")
+        print(f"  平均タスク時間: {total_time/30*1000:0.2f}ms")
         
         # 性能基準チェック
         assert total_time < 3.0  # 3秒以内に完了
@@ -250,9 +250,9 @@ class TestElderLegacyPerformance:
         memory_increase = final_memory - initial_memory
         
         print(f"\nMemory Efficiency:")
-        print(f"  初期メモリ: {initial_memory:.2f}MB")
-        print(f"  最終メモリ: {final_memory:.2f}MB")
-        print(f"  増加量: {memory_increase:.2f}MB")
+        print(f"  初期メモリ: {initial_memory:0.2f}MB")
+        print(f"  最終メモリ: {final_memory:0.2f}MB")
+        print(f"  増加量: {memory_increase:0.2f}MB")
         
         # メモリ効率基準チェック
         assert memory_increase < 50  # 50MB以下の増加

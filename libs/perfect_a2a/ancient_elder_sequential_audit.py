@@ -37,9 +37,8 @@ logger = logging.getLogger(__name__)
 class AncientElderAuditor:
     """Ancient Elder監査官クラス"""
 
-    def __init__(self, elder_id:
+    def __init__(self, elder_id: int, specialization: str):
         """初期化メソッド"""
-    int, specialization: str):
         self.elder_id = elder_id
         self.specialization = specialization
         self.name = f"Ancient Elder #{elder_id} ({specialization})"
@@ -145,7 +144,7 @@ class AncientElderAuditor:
                 f"✅ {self.name} completed audit - Verdict: {verdict}, Score: {metrics.get(
                     'weighted_score',
                     0
-                ):.2%}"
+                ):0.2%}"
             )
 
         except Exception as e:
@@ -1027,23 +1026,23 @@ def generate_markdown_report(results: Dict[str, Any], timestamp: str) -> None:
         f.write(f"**Audit ID**: {results['audit_id']}\n")
         f.write(f"**Date**: {results['start_time']}\n")
         f.write(f"**Target**: {results['target']}\n")
-        f.write(f"**Execution Time**: {results['execution_time']:.2f} seconds\n\n")
+        f.write(f"**Execution Time**: {results['execution_time']:0.2f} seconds\n\n")
 
         f.write(f"## 🎯 Final Verdict: **{results['final_verdict']}**\n\n")
 
         # コンセンサス
         consensus = results.get("consensus", {})
         f.write("## 📊 Consensus Results\n\n")
-        f.write(f"- **Average Score**: {consensus.get('average_score', 0):.2%}\n")
+        f.write(f"- **Average Score**: {consensus.get('average_score', 0):0.2%}\n")
         f.write(
             f"- **Score Range**: {consensus.get(
                 'min_score',
-                0):.2%} - {consensus.get('max_score',
+                0):0.2%} - {consensus.get('max_score',
                 0
-            ):.2%}\n"
+            ):0.2%}\n"
         )
         f.write(
-            f"- **Iron Will Average**: {consensus.get('iron_will_average', 0):.2%}\n"
+            f"- **Iron Will Average**: {consensus.get('iron_will_average', 0):0.2%}\n"
         )
         f.write(f"- **Total Findings**: {consensus.get('total_findings', 0)}\n\n")
 
@@ -1059,7 +1058,7 @@ def generate_markdown_report(results: Dict[str, Any], timestamp: str) -> None:
                     'Unknown')} | {audit.get('specialization',
                     'N/A')} | {audit.get('verdict',
                     'ERROR'
-                )} | {score:.2%} |\n"
+                )} | {score:0.2%} |\n"
             )
         f.write("\n")
 
@@ -1082,7 +1081,7 @@ def generate_markdown_report(results: Dict[str, Any], timestamp: str) -> None:
                     'tests_passed',
                     0) / max(test.get('tests_run', 1),
                     1) * 100
-                ):.1f}%\n\n"
+                ):0.1f}%\n\n"
             )
 
         # 推奨事項
@@ -1099,16 +1098,16 @@ def generate_markdown_report(results: Dict[str, Any], timestamp: str) -> None:
             f.write(f"- **Verdict**: {audit.get('verdict', 'ERROR')}\n")
             if "metrics" in audit:
                 metrics = audit["metrics"]
-                f.write(f"- **Score**: {metrics.get('weighted_score', 0):.2%}\n")
+                f.write(f"- **Score**: {metrics.get('weighted_score', 0):0.2%}\n")
                 f.write(f"- **Critical Issues**: {metrics.get('critical_issues', 0)}\n")
                 f.write(f"- **High Issues**: {metrics.get('high_issues', 0)}\n")
             f.write(f"- **Files Analyzed**: {audit.get('files_analyzed', 0)}\n")
-            f.write(f"- **Execution Time**: {audit.get('execution_time', 0):.2f}s\n\n")
+            f.write(f"- **Execution Time**: {audit.get('execution_time', 0):0.2f}s\n\n")
 
         # Iron Will準拠状況
         f.write("## 🗡️ Iron Will Compliance\n\n")
         f.write(
-            f"- **Average Compliance Score**: {consensus.get('iron_will_average', 0):.2%}\n"
+            f"- **Average Compliance Score**: {consensus.get('iron_will_average', 0):0.2%}\n"
         )
         f.write(f"- **Iron Will Threshold**: 95%\n")
         f.write(
@@ -1131,9 +1130,9 @@ async def main():
     # 結果サマリー
     logger.info("=" * 80)
     logger.info(f"🎯 FINAL VERDICT: {results['final_verdict']}")
-    logger.info(f"📊 Consensus Score: {results['consensus']['average_score']:.2%}")
-    logger.info(f"🗡️ Iron Will Average: {results['consensus']['iron_will_average']:.2%}")
-    logger.info(f"⏱️ Total Execution Time: {results['execution_time']:.2f} seconds")
+    logger.info(f"📊 Consensus Score: {results['consensus']['average_score']:0.2%}")
+    logger.info(f"🗡️ Iron Will Average: {results['consensus']['iron_will_average']:0.2%}")
+    logger.info(f"⏱️ Total Execution Time: {results['execution_time']:0.2f} seconds")
     logger.info(
         f"🧪 Test Success: {results.get('test_results', {}).get('success', False)}"
     )

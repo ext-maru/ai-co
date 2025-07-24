@@ -9,9 +9,8 @@ import json
 import time
 import sys
 
-def test_server_health():
-    """サーバーのヘルスチェック"""
-    print("🏥 Testing server health...")
+def test_server_health()print("🏥 Testing server health...")
+"""サーバーのヘルスチェック"""
     try:
         response = requests.get("http://localhost:8000/health", timeout=5)
         if response.status_code == 200:
@@ -25,14 +24,13 @@ def test_server_health():
         print(f"❌ Connection failed: {e}")
         return False
 
-def test_server_status():
-    """サーバー状態確認"""
-    print("📊 Testing server status...")
+def test_server_status()print("📊 Testing server status...")
+"""サーバー状態確認"""
     try:
         response = requests.get("http://localhost:8000/", timeout=5)
         if response.status_code == 200:
             data = response.json()
-            print(f"📋 Server status: {json.dumps(data, indent=2)}")
+            print(f"📋 Server status: {json.dumps(data, indent}")
             return True
         else:
             print(f"❌ Status check failed: {response.status_code}")
@@ -41,9 +39,8 @@ def test_server_status():
         print(f"❌ Status request failed: {e}")
         return False
 
-def test_chat_functionality():
-    """チャット機能のテスト"""
-    print("💬 Testing chat functionality...")
+def test_chat_functionality()print("💬 Testing chat functionality...")
+"""チャット機能のテスト"""
     
     test_messages = [
         "Hello Elder Agent!",
@@ -74,9 +71,8 @@ def test_chat_functionality():
         
         time.sleep(1)  # 1秒待機
 
-def run_comprehensive_test():
-    """包括的なテスト実行"""
-    print("🏛️ Micro A2A+FastAPI Integration Test")
+def run_comprehensive_test()print("🏛️ Micro A2A+FastAPI Integration Test")
+"""包括的なテスト実行"""
     print("=" * 50)
     
     # Step 1: サーバー接続テスト

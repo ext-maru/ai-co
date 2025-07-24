@@ -108,9 +108,8 @@ class FourOrganizationsCoordinator:
     最適な実行パターンでタスクを分散実行する。
     """
 
-    def __init__(self, registry: Optional[ServantRegistry] = None):
-        """初期化メソッド"""
-        self.logger = logging.getLogger("elder_servants.coordination")
+    def __init__(self, registry: Optional[ServantRegistry] = None)self.logger = logging.getLogger("elder_servants.coordination")
+    """初期化メソッド"""
         self.registry = registry or get_registry()
 
         # 組織能力定義
@@ -907,7 +906,7 @@ class FourOrganizationsCoordinator:
 
             if org_health["utilization_rate"] > 0.9:
                 health_status["issues"].append(
-                    f"High utilization in {domain.value}: {org_health['utilization_rate']:.1%}"
+                    f"High utilization in {domain.value}: {org_health['utilization_rate']:0.1%}"
                 )
 
             health_status["organization_health"][domain.value] = org_health

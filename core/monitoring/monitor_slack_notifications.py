@@ -64,7 +64,7 @@ def analyze_slack_logs(log_file="logs/result_worker.log", hours=24):
     total = success_count + error_count + warning_count
     if total > 0:
         success_rate = (success_count / total) * 100
-        print(f"成功率: {success_rate:.1f}%")
+        print(f"成功率: {success_rate:0.1f}%")
     else:
         print("通知履歴なし")
 

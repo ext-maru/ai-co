@@ -22,7 +22,7 @@ except ImportError:
     # Mock redis for testing environments
     class MockRedis:
         """MockRedisクラス"""
-        # Main class implementation
+        # Main class implementation:
         async def get(self, key):
             """getメソッド"""
             return None

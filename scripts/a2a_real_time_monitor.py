@@ -63,7 +63,7 @@ class A2ARealTimeMonitor:
         # 最新通信記録
         if self.db_path.exists():
             try:
-                with sqlite3.connect(self.db_path) as conn:
+                with sqlite3connect(self.db_path) as conn:
                     cursor = conn.execute(
                         """
                         SELECT timestamp, source_agent, target_agent, message_type, status
@@ -153,7 +153,7 @@ class A2ARealTimeMonitor:
             # データベース状況
             if self.db_path.exists():
                 try:
-                    with sqlite3.connect(self.db_path) as conn:
+                    with sqlite3connect(self.db_path) as conn:
                         cursor = conn.execute("SELECT COUNT(*) FROM a2a_communications")
                         comm_count = cursor.fetchone()[0]
 

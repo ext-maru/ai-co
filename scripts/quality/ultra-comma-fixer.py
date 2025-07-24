@@ -7,6 +7,7 @@ import os
 import re
 
 def fix_comma_errors():
+    pass
 
 
 """カンマエラーを超高速修正"""
@@ -34,6 +35,7 @@ def fix_comma_errors():
     print(f"\n📊 修正結果: {fixed_count}/{len(error_files[:10])}件修正完了")
 
 def fix_single_file(file_path):
+    pass
 
 
 """単一ファイルのカンマエラー修正"""

@@ -101,9 +101,8 @@ class SoulProcessInfo:
     capabilities: List[str] = field(default_factory=list)
     configuration: Dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
-        """辞書形式に変換"""
-        data = asdict(self)
+    def to_dict(self) -> Dict[str, Any]data = asdict(self)
+    """辞書形式に変換"""
         data["elder_type"] = self.elder_type.value
         data["state"] = self.state.value
         data["created_at"] = self.created_at.isoformat() if self.created_at else None
@@ -113,7 +112,7 @@ class SoulProcessInfo:
             self.last_heartbeat.isoformat() if self.last_heartbeat else None
         )
         return data
-
+:
     def get_uptime(self) -> Optional[timedelta]:
         """稼働時間を取得"""
         if self.started_at and self.state == SoulProcessState.RUNNING:
@@ -136,10 +135,8 @@ class SoulProcessInfo:
 class SoulProcessManager:
     """魂プロセス管理システム"""
 
-    def __init__(self, max_processes:
-        """初期化メソッド"""
-    int = None):
-        self.max_processes = max_processes or mp.cpu_count() * 2
+    def __init__(self, max_processesint = None)self.max_processes = max_processes or mp.cpu_count() * 2
+    """初期化メソッド"""
         self.processes: Dict[str, SoulProcessInfo] = {}
         self.running_processes: Dict[str, mp.Process] = {}
         self.a2a_protocols: Dict[str, A2ACommunicationProtocol] = {}
@@ -645,9 +642,8 @@ class SoulProcessManager:
                 self.logger.error(f"❌ Statistics loop error: {e}")
                 await asyncio.sleep(60)
 
-    def _can_create_soul(self, elder_type: ElderType) -> bool:
-        """魂作成可能チェック"""
-        hierarchy_info = self.elder_hierarchy.get(elder_type)
+    def _can_create_soul(self, elder_type: ElderType) -> boolhierarchy_info = self.elder_hierarchy.get(elder_type)
+    """魂作成可能チェック""":
         if not hierarchy_info:
             return False
 
@@ -704,9 +700,8 @@ class SoulProcessManager:
             # 現在は基本的なループのみ
 
             # A2A通信プロトコル（簡略版）
-            async def run_soul():
-                """run_soulメソッド"""
-                protocol = await create_a2a_protocol(soul_identity, a2a_port)
+            async def run_soul()protocol = await create_a2a_protocol(soul_identity, a2a_port)
+    """run_soulメソッド"""
 
                 # シンプルなメッセージループ
                 while True:
@@ -722,10 +717,9 @@ class SoulProcessManager:
 # === 便利な関数 ===
 
 
-async def create_soul_process_manager(max_processes: int = None) -> SoulProcessManager:
-    """魂プロセス管理システムの作成"""
-    manager = SoulProcessManager(max_processes)
-
+async def create_soul_process_manager(max_processes: int = None) -> SoulProcessManagermanager = SoulProcessManager(max_processes)
+"""魂プロセス管理システムの作成"""
+:
     if await manager.start_manager():
         return manager
     else:
@@ -818,9 +812,8 @@ def create_standard_elder_tree() -> List[SoulIdentity]:
     return souls
 
 
-async def test_soul_process_manager():
-    """魂プロセス管理システムのテスト"""
-    print("🏛️ Testing Soul Process Manager...")
+async def test_soul_process_manager()print("🏛️ Testing Soul Process Manager...")
+"""魂プロセス管理システムのテスト"""
 
     # 管理システム作成
     manager = await create_soul_process_manager(max_processes=8)
@@ -841,7 +834,7 @@ async def test_soul_process_manager():
         # 統計表示
         await asyncio.sleep(5)
         stats = manager.get_manager_statistics()
-        print(f"📊 Manager statistics: {json.dumps(stats, indent=2, default=str)}")
+        print(f"📊 Manager statistics: {json.dumps(stats, indent}")
 
         # 魂ステータス表示
         for soul_id in list(manager.processes.keys())[:3]:

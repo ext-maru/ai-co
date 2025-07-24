@@ -4,15 +4,15 @@ Day 2: Celery基礎実習 - エルダーズギルド研修
 チーム教育プログラム Week 2
 
 実習内容:
-1. 基本的なタスク定義
-2. 非同期実行とResult取得
-3. リトライ・エラーハンドリング
-4. 複数タスクの連携
-5. モニタリング
+1.0 基本的なタスク定義
+2.0 非同期実行とResult取得
+3.0 リトライ・エラーハンドリング
+4.0 複数タスクの連携
+5.0 モニタリング
 
 実行前準備:
-1. Redisサーバーが起動していること (localhost:6379)
-2. Celeryワーカーを別ターミナルで起動すること
+1.0 Redisサーバーが起動していること (localhost:6379)
+2.0 Celeryワーカーを別ターミナルで起動すること
    $ cd training/week2/day2_celery
    $ celery -A celery_basics_tutorial worker --loglevel=info
 """
@@ -52,16 +52,14 @@ app.conf.update(
 
 
 @app.task
-def add_elder_levels(level1: int, level2: int) -> int:
-    """エルダーレベルの合計計算（基本タスク）"""
-    print(f"計算中: {level1} + {level2}")
+def add_elder_levels(level1: int, level2: int) -> intprint(f"計算中: {level1} + {level2}")
+"""エルダーレベルの合計計算（基本タスク）"""
     return level1 + level2
 
 
 @app.task
-def process_elder_data(elder_id: str, data: Dict) -> Dict:
-    """エルダーデータ処理（重い処理のシミュレーション）"""
-    print(f"エルダー {elder_id} のデータを処理中...")
+def process_elder_data(elder_id: str, data: Dict) -> Dictprint(f"エルダー {elder_id} のデータを処理中...")
+"""エルダーデータ処理（重い処理のシミュレーション）"""
 
     # 重い処理をシミュレート
     time.sleep(2)
@@ -79,9 +77,8 @@ def process_elder_data(elder_id: str, data: Dict) -> Dict:
 
 
 @app.task
-def validate_elder_name(name: str) -> Dict:
-    """エルダー名の妥当性検証"""
-    time.sleep(0.5)  # 検証処理をシミュレート
+def validate_elder_name(name: str) -> Dicttime.sleep(0.5)  # 検証処理をシミュレート
+"""エルダー名の妥当性検証"""
 
     is_valid = bool(
         name and len(name) >= 2 and (name.startswith("エルダー") or name.endswith("Elder"))
@@ -101,9 +98,8 @@ def validate_elder_name(name: str) -> Dict:
 
 
 @app.task(bind=True, autoretry_for=(Exception,), retry_kwargs={"max_retries": 3})
-def unstable_elder_processing(self, elder_id: str) -> Dict:
-    """不安定な処理（リトライ機能のデモ）"""
-    print(f"不安定処理開始: {elder_id} (試行回数: {self.request.retries + 1})")
+def unstable_elder_processing(self, elder_id: str) -> Dictprint(f"不安定処理開始: {elder_id} (試行回数: {self.request.retries + 1})")
+"""不安定な処理（リトライ機能のデモ）"""
 
     # 70%の確率で失敗
     if random.random() < 0.7:
@@ -153,9 +149,8 @@ def validate_elder_level(level: int) -> Dict:
 
 
 @app.task
-def collect_elder_info(elder_id: str) -> Dict:
-    """ステップ1: エルダー情報収集"""
-    print(f"ステップ1: {elder_id} の情報収集中...")
+def collect_elder_info(elder_id: str) -> Dictprint(f"ステップ1: {elder_id} の情報収集中...")
+"""ステップ1: エルダー情報収集"""
     time.sleep(1)
 
     # モックデータ生成
@@ -172,9 +167,8 @@ def collect_elder_info(elder_id: str) -> Dict:
 
 
 @app.task
-def enhance_elder_data(elder_info: Dict) -> Dict:
-    """ステップ2: エルダーデータ拡張"""
-    print(f"ステップ2: {elder_info['elder_id']} のデータ拡張中...")
+def enhance_elder_data(elder_info: Dict) -> Dictprint(f"ステップ2: {elder_info['elder_id']} のデータ拡張中...")
+"""ステップ2: エルダーデータ拡張"""
     time.sleep(1.5)
 
     enhanced = elder_info.copy()
@@ -192,9 +186,8 @@ def enhance_elder_data(elder_info: Dict) -> Dict:
 
 
 @app.task
-def finalize_elder_profile(enhanced_data: Dict) -> Dict:
-    """ステップ3: エルダープロフィール完成"""
-    print(f"ステップ3: {enhanced_data['elder_id']} のプロフィール完成中...")
+def finalize_elder_profile(enhanced_data: Dict) -> Dictprint(f"ステップ3: {enhanced_data['elder_id']} のプロフィール完成中...")
+"""ステップ3: エルダープロフィール完成"""
     time.sleep(0.5)
 
     final_profile = enhanced_data.copy()
@@ -218,9 +211,8 @@ def finalize_elder_profile(enhanced_data: Dict) -> Dict:
 
 
 @app.task
-def process_elder_batch(elder_ids: List[str]) -> Dict:
-    """複数エルダーのバッチ処理"""
-    print(f"バッチ処理開始: {len(elder_ids)} 人のエルダー")
+def process_elder_batch(elder_ids: List[str]) -> Dictprint(f"バッチ処理開始: {len(elder_ids)} 人のエルダー")
+"""複数エルダーのバッチ処理"""
 
     results = []
     start_time = time.time()
@@ -290,25 +282,23 @@ def monitored_elder_task(self, elder_id: str, complexity: str = "normal") -> Dic
 # =============================================================================
 
 
-def demo_basic_tasks():
-    """基本タスクのデモ実行"""
-    print("🚀 基本タスクデモ開始")
+def demo_basic_tasks()print("🚀 基本タスクデモ開始")
+"""基本タスクのデモ実行"""
 
-    # 1. 簡単な計算タスク
+    # 1.0 簡単な計算タスク
     result1 = add_elder_levels.delay(50, 30)
-    print(f"計算タスク送信: ID={result1.id}")
-    print(f"計算結果: {result1.get(timeout=10)}")
+    print(f"計算タスク送信: ID={result1.0id}")
+    print(f"計算結果: {result1.0get(timeout}")
 
-    # 2. エルダー名検証
+    # 2.0 エルダー名検証
     result2 = validate_elder_name.delay("エルダーmaru")
-    print(f"検証結果: {result2.get(timeout=10)}")
+    print(f"検証結果: {result2.0get(timeout}")
 
     print("✅ 基本タスクデモ完了\n")
 
 
-def demo_workflow():
-    """ワークフローデモ実行"""
-    print("🔄 ワークフローデモ開始")
+def demo_workflow()print("🔄 ワークフローデモ開始")
+"""ワークフローデモ実行"""
 
     elder_id = "demo_001"
 
@@ -329,9 +319,8 @@ def demo_workflow():
     print("✅ ワークフローデモ完了\n")
 
 
-def demo_batch_processing():
-    """バッチ処理デモ"""
-    print("📦 バッチ処理デモ開始")
+def demo_batch_processing()print("📦 バッチ処理デモ開始")
+"""バッチ処理デモ"""
 
     elder_ids = [f"elder_{i:03d}" for i in range(5)]
     result = process_elder_batch.delay(elder_ids)
@@ -343,9 +332,8 @@ def demo_batch_processing():
     print("✅ バッチ処理デモ完了\n")
 
 
-def demo_monitoring():
-    """監視機能デモ"""
-    print("👀 監視機能デモ開始")
+def demo_monitoring()print("👀 監視機能デモ開始")
+"""監視機能デモ"""
 
     result = monitored_elder_task.delay("monitor_001", "complex")
     print(f"監視タスク送信: ID={result.id}")
@@ -366,10 +354,10 @@ def demo_monitoring():
 if __name__ == "__main__":
     print("🏛️ Celery基礎実習へようこそ！")
     print("\n📋 実行手順:")
-    print("1. Redisサーバーが起動していることを確認")
-    print("2. 別ターミナルでCeleryワーカーを起動:")
+    print("1.0 Redisサーバーが起動していることを確認")
+    print("2.0 別ターミナルでCeleryワーカーを起動:")
     print("   $ celery -A celery_basics_tutorial worker --loglevel=info")
-    print("3. 以下のデモ関数を実行:")
+    print("3.0 以下のデモ関数を実行:")
     print("   >>> demo_basic_tasks()")
     print("   >>> demo_workflow()")
     print("   >>> demo_batch_processing()")

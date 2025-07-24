@@ -88,7 +88,7 @@ class TaskWorkerNew(BaseWorker, ImprovedLoggingMixin):
                 )
 
             # 客観的な完了ログ
-            summary = f"Type: {task_type}, Duration: {execution_time:.2f}s"
+            summary = f"Type: {task_type}, Duration: {execution_time:0.2f}s"
             if result.get("files_created"):
                 summary += f", Files: {result['files_created']}"
 
@@ -189,29 +189,29 @@ Task completed: code_20250702_100000 | Duration: 2.34s | Worker: task-1 | Files:
 MIGRATION_CHECKLIST = """
 # TaskWorker ログ改善チェックリスト
 
-## 1. 依存関係の更新
+## 1.0 依存関係の更新
 - [ ] ImprovedLoggingMixinをインポート
 - [ ] ImprovedSlackNotifierをインポート
 - [ ] 多重継承の設定
 
-## 2. ログメソッドの置換
+## 2.0 ログメソッドの置換
 - [ ] logger.info("🚀...") → log_task_start()
 - [ ] logger.info("✨...") → log_processing()
 - [ ] logger.info("🎉...") → log_task_complete()
 - [ ] logger.error("😱...") → log_task_error()
 
-## 3. メトリクスの追加
+## 3.0 メトリクスの追加
 - [ ] 実行時間の計測
 - [ ] 処理件数の記録
 - [ ] エラー率の追跡
 - [ ] リソース使用量
 
-## 4. Slack通知の改善
+## 4.0 Slack通知の改善
 - [ ] 絵文字を最小化
 - [ ] 技術的データを含める
 - [ ] モバイル対応フォーマット
 
-## 5. テストと検証
+## 5.0 テストと検証
 - [ ] ログ出力の確認
 - [ ] Slack通知のテスト
 - [ ] パフォーマンスへの影響確認

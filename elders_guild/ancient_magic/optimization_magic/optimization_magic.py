@@ -1940,19 +1940,19 @@ class OptimizationMagic(AncientMagic):
                     # メモリ使用量削減効果
                     improvement_ratio = 0.25  # 25%削減をシミュレート
                     final_metrics[metric_name] = baseline_value * (1 - improvement_ratio)
-                    improvement_summary[metric_name] = f"{improvement_ratio:.1%} reduction"
+                    improvement_summary[metric_name] = f"{improvement_ratio:0.1%} reduction"
                 
                 elif metric_name == "cpu_time":
                     # CPU時間短縮効果
                     speedup_ratio = 1.8  # 1.8倍高速化をシミュレート
                     final_metrics[metric_name] = baseline_value / speedup_ratio  
-                    improvement_summary[metric_name] = f"{speedup_ratio:.1f}x speedup"
+                    improvement_summary[metric_name] = f"{speedup_ratio:0.1f}x speedup"
                 
                 elif metric_name == "io_time":
                     # I/O時間改善効果
                     improvement_ratio = 0.35  # 35%改善をシミュレート
                     final_metrics[metric_name] = baseline_value * (1 - improvement_ratio)
-                    improvement_summary[metric_name] = f"{improvement_ratio:.1%} improvement"
+                    improvement_summary[metric_name] = f"{improvement_ratio:0.1%} improvement"
                 
                 else:
                     # その他のメトリクス
@@ -2130,6 +2130,6 @@ if __name__ == "__main__":
         print(f"Memory optimization result: {result['success']}")
         if result["success"]:
             memory_result = result["memory_optimization"]
-            print(f"Memory reduction: {memory_result['reduction_ratio']:.2%}")
+            print(f"Memory reduction: {memory_result['reduction_ratio']:0.2%}")
     
     asyncio.run(test_optimization_magic())

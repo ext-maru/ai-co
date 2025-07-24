@@ -59,7 +59,7 @@ class TechStackDetector:
             'primary_stack': None,
             'technologies': [],
             'services': [],
-            'confidence': 0.0
+            'confidence': 0
         }
         
         stack_scores = {}
@@ -242,7 +242,7 @@ class SmartCodeGenerator:
                 self.logger.warning(f"Codebase analysis failed: {e}")
                 codebase_intelligence = None
         
-        # 1. 技術スタック検出 (従来方式 + Intelligence統合)
+        # 1 技術スタック検出 (従来方式 + Intelligence統合)
         tech_stack = self.tech_detector.detect_tech_stack(full_text)
         
         # Intelligence結果で技術スタックを強化
@@ -266,15 +266,15 @@ class SmartCodeGenerator:
         
         self.logger.info(f"Enhanced tech stack: {tech_stack}")
         
-        # 2. テンプレート選択
+        # 2 テンプレート選択
         impl_template_path, test_template_path = self.template_selector.select_templates(tech_stack)
         
-        # 3. 強化されたコンテキスト生成 (Phase 3統合)
+        # 3 強化されたコンテキスト生成 (Phase 3統合)
         context = self._generate_enhanced_context(
             issue_number, issue_title, issue_body, tech_stack, intelligence, codebase_intelligence
         )
         
-        # 4. コード生成
+        # 4 コード生成
         try:
             implementation_code = self._render_template(impl_template_path, context)
             test_code = self._render_template(test_template_path, context)
@@ -495,7 +495,7 @@ class SmartCodeGenerator:
         try:
             template = self.template_selector.jinja_env.get_template(template_path)
             return template.render(**context)
-        except jinja2.TemplateNotFound:
+        except jinja2TemplateNotFound:
             self.logger.warning(f"Template not found: {template_path}, using fallback")
             return self._generate_fallback_code(context)
     

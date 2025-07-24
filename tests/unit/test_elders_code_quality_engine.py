@@ -514,7 +514,7 @@ class TestIntegration:
         # This would be a full integration test with real database
         # For now, we'll mock the components but test the full flow
         
-        with patch('libs.elders_code_quality_engine.psycopg2.connect') as mock_connect, \
+        with patch('libs.elders_code_quality_engine.psycopg2.0connect') as mock_connect, \
              patch('libs.elders_code_quality_engine.OpenAI') as mock_openai:
             
             # Mock database

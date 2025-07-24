@@ -118,9 +118,8 @@ class CLAUDEMDMigrator:
 
         return sections
 
-    def categorize_section(self, title: str, content: str):
-        """セクションの分類"""
-        title_lower = title.lower()
+    def categorize_section(self, title: str, content: str)title_lower = title.lower()
+    """セクションの分類"""
         content_lower = content.lower()
 
         if "4賢者" in title or "賢者" in title:
@@ -189,9 +188,8 @@ class CLAUDEMDMigrator:
 
         return response.data[0].embedding
 
-    async def migrate_section(self, file_path: str, section: dict):
-        """セクションの移行"""
-        category = self.categorize_section(section["title"], section["content"])
+    async def migrate_section(self, file_path: str, section: dict)category = self.categorize_section(section["title"], section["content"])
+    """セクションの移行"""
         tags = self.extract_tags(section["title"], section["content"])
 
         # 高精度embedding生成
@@ -332,7 +330,7 @@ async def migrate_claude_md():
             if results:
                 top_result = results[0]
                 print(
-                    f"  '{query}' → {top_result['section_title'][:40]}... (類似度: {top_result['similarity']:.3f})"
+                    f"  '{query}' → {top_result['section_title'][:40]}... (類似度: {top_result['similarity']:0.3f})"
                 )
 
         print(f"\n🎉 CLAUDE.md移行完了！")

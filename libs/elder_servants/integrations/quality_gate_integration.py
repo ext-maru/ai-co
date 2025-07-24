@@ -31,7 +31,7 @@ except ImportError:
     # Fallback for simplified testing
     class MockAdapterRequest:
         """MockAdapterRequestクラス"""
-        # Main class implementation
+        # Main class implementation:
         def __init__(self, tool_name, operation, data, context):
             """初期化メソッド"""
             self.tool_name = tool_name
@@ -41,13 +41,13 @@ except ImportError:
 
     class MockFramework:
         """MockFrameworkクラス"""
-        # Main class implementation
+        # Main class implementation:
         async def execute_with_fallback(self, request):
             """execute_with_fallback実行メソッド"""
             # Core functionality implementation
             class MockResponse:
                 """MockResponseクラス"""
-                # Main class implementation
+                # Main class implementation:
                 def __init__(self):
                     """初期化メソッド"""
                     self.success = True
@@ -710,7 +710,7 @@ class QualityGateIntegration:
         # 全体スコアに基づく推奨
         if overall_score < self.iron_will_threshold:
             recommendations.append(
-                f"Overall quality score ({overall_score:.1f}%) below Iron Will standard (95%+)"
+                f"Overall quality score ({overall_score:0.1f}%) below Iron Will standard (95%+)"
             )
 
         # 個別メトリクス推奨
@@ -819,10 +819,10 @@ class ElderQualitySystem:
     )
 
     print(f"✅ Gate Status: {result.status.value}")
-    print(f"🎯 Overall Score: {result.overall_score:.1f}%")
+    print(f"🎯 Overall Score: {result.overall_score:0.1f}%")
     print(f"⚡ Iron Will Compliant: {result.iron_will_compliant}")
     print(f"📊 Quality Level: {result.quality_level.value}")
-    print(f"⏱️  Execution Time: {result.execution_time_ms:.2f}ms")
+    print(f"⏱️  Execution Time: {result.execution_time_ms:0.2f}ms")
     print(f"📋 Metrics Count: {len(result.metrics)}")
 
     # テストケース2: 低品質コード
@@ -837,7 +837,7 @@ class ElderQualitySystem:
     )
 
     print(f"❌ Gate Status: {result2.status.value}")
-    print(f"📉 Overall Score: {result2.overall_score:.1f}%")
+    print(f"📉 Overall Score: {result2.overall_score:0.1f}%")
     print(f"⚡ Iron Will Compliant: {result2.iron_will_compliant}")
     print(f"📊 Quality Level: {result2.quality_level.value}")
     print(f"📋 Recommendations: {len(result2.recommendations)}")
@@ -866,7 +866,7 @@ def process_data():
     result3 = await integration.execute_quality_gate(mixed_quality_code)
 
     print(f"⚖️  Gate Status: {result3.status.value}")
-    print(f"📊 Overall Score: {result3.overall_score:.1f}%")
+    print(f"📊 Overall Score: {result3.overall_score:0.1f}%")
     print(f"⚡ Iron Will Compliant: {result3.iron_will_compliant}")
     print(f"📈 Quality Level: {result3.quality_level.value}")
 
@@ -874,13 +874,13 @@ def process_data():
     print("\n" + "=" * 60)
     print("📊 Quality Gate Integration Summary:")
     print(
-        f"  🎯 High Quality Test: {result.overall_score:.1f}% ({result.status.value})"
+        f"  🎯 High Quality Test: {result.overall_score:0.1f}% ({result.status.value})"
     )
     print(
-        f"  ⚠️  Low Quality Test: {result2.overall_score:.1f}% ({result2.status.value})"
+        f"  ⚠️  Low Quality Test: {result2.overall_score:0.1f}% ({result2.status.value})"
     )
     print(
-        f"  ⚖️  Mixed Quality Test: {result3.overall_score:.1f}% ({result3.status.value})"
+        f"  ⚖️  Mixed Quality Test: {result3.overall_score:0.1f}% ({result3.status.value})"
     )
     print("  🔗 Elder + OSS integration working properly")
     print("  ⚡ Iron Will standards enforced")

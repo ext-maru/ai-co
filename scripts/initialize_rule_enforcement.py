@@ -48,22 +48,22 @@ class RuleEnforcementInitializer:
         logger.info("🛡️ Claude Elder Rule Enforcement System 初期化開始")
 
         try:
-            # 1. ディレクトリ構造の確認・作成
+            # 1.0 ディレクトリ構造の確認・作成
             self._ensure_directory_structure()
 
-            # 2. 設定ファイルの検証
+            # 2.0 設定ファイルの検証
             self._validate_configuration()
 
-            # 3. Git Hooksの設置
+            # 3.0 Git Hooksの設置
             self._setup_git_hooks()
 
-            # 4. ルール遵守システムの初期化
+            # 4.0 ルール遵守システムの初期化
             self._initialize_rule_system()
 
-            # 5. 4賢者システムとの統合確認
+            # 5.0 4賢者システムとの統合確認
             self._verify_four_sages_integration()
 
-            # 6. 監視システムの起動
+            # 6.0 監視システムの起動
             self._start_monitoring_system()
 
             logger.info("✅ Claude Elder Rule Enforcement System 初期化完了")
@@ -295,9 +295,9 @@ def main():
 
             print("\n🎉 Claude Elder Rule Enforcement System の準備が完了しました!")
             print("\n📋 次のステップ:")
-            print("   1. 設定ファイルをカスタマイズ: config/elder_rules.json")
-            print("   2. 監視ログを確認: logs/rule_violations.json")
-            print("   3. システムの稼働状況を確認: logs/rule_enforcement_init.log")
+            print("   1.0 設定ファイルをカスタマイズ: config/elder_rules.json")
+            print("   2.0 監視ログを確認: logs/rule_violations.json")
+            print("   3.0 システムの稼働状況を確認: logs/rule_enforcement_init.log")
 
         else:
             print("\n❌ 初期化に失敗しました。ログを確認してください。")

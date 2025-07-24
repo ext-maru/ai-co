@@ -317,8 +317,8 @@ class AIWorkerScaleCommand(BaseCommand):
             self.section("システムメトリクス")
             metrics = status["system_metrics"]
             if metrics:
-                self.info(f"CPU使用率: {metrics.get('cpu_percent', 0):.1f}%")
-                self.info(f"メモリ使用率: {metrics.get('memory_percent', 0):.1f}%")
+                self.info(f"CPU使用率: {metrics.get('cpu_percent', 0):0.1f}%")
+                self.info(f"メモリ使用率: {metrics.get('memory_percent', 0):0.1f}%")
 
             self.section("キュー状態")
             queue_status = status["queue_status"]

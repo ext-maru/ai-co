@@ -42,9 +42,8 @@ class RagGrimoireConfig:
 class RagGrimoireIntegration:
     """RAG Grimoire統合クラス - 既存RAGシステムと魔法書システムの橋渡し"""
 
-    def __init__(self, config:
+    def __init__(self, config: Optional[RagGrimoireConfig] = None):
         """初期化メソッド"""
-    Optional[RagGrimoireConfig] = None):
         self.config = config or RagGrimoireConfig()
         self.logger = logging.getLogger(__name__)
 
@@ -179,7 +178,7 @@ class RagGrimoireIntegration:
                                 "id", "legacy_" + str(hash(result.get("content", "")))
                             ),
                             "content": result.get("content", ""),
-                            "similarity_score": result.get("score", 0.0),
+                            "similarity_score": result.get("score", 0),
                             "metadata": result.get("metadata", {}),
                             "source": "legacy_rag",
                             "category": result.get("category", "unknown"),
@@ -297,7 +296,7 @@ class RagGrimoireIntegration:
                 # 進捗ログ
                 progress = (i + len(batch)) / len(knowledge_files) * 100
                 self.logger.info(
-                    f"移行進捗: {progress:.1f}% ({i + len(batch)}/{len(knowledge_files)})"
+                    f"移行進捗: {progress:0.1f}% ({i + len(batch)}/{len(knowledge_files)})"
                 )
 
         except Exception as e:
@@ -432,7 +431,7 @@ class RagGrimoireIntegration:
                 return False
 
             # 内容の重複度チェック
-            overlap = self._calculate_content_overlap(spell1.content, spell2.content)
+            overlap = self._calculate_content_overlap(spell1content, spell2content)
             return overlap > 0.7  # 70%以上の重複でマージ候補
 
         except Exception:
@@ -445,12 +444,12 @@ class RagGrimoireIntegration:
         words2 = set(content2.lower().split())
 
         if not words1 or not words2:
-            return 0.0
+            return 0
 
         intersection = words1.intersection(words2)
         union = words1.union(words2)
 
-        return len(intersection) / len(union) if union else 0.0
+        return len(intersection) / len(union) if union else 0
 
     async def _generate_embedding(self, content: str) -> List[float]:
         """コンテンツの埋め込みベクトル生成"""

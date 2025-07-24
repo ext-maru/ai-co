@@ -122,9 +122,8 @@ class CoverageMonitoringDashboard:
     - 4 Sages system integration
     """
 
-    def __init__(self, config_path: Optional[str] = None):
-        """Initialize Coverage Monitoring Dashboard"""
-        self.logger = logging.getLogger(__name__)
+    def __init__(self, config_path: Optional[str] = None)self.logger = logging.getLogger(__name__)
+    """Initialize Coverage Monitoring Dashboard"""
         self.project_root = PROJECT_ROOT
         self.db_path = self.project_root / "data" / "coverage_monitoring.db"
 
@@ -192,7 +191,7 @@ class CoverageMonitoringDashboard:
         """Initialize monitoring database"""
         try:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Coverage metrics history
@@ -316,7 +315,7 @@ class CoverageMonitoringDashboard:
                     await self._update_dashboard_data(metrics)
 
                     self.logger.debug(
-                        f"Coverage measured: {metrics.total_coverage:.1f}%"
+                        f"Coverage measured: {metrics.total_coverage:0.1f}%"
                     )
 
                 # Wait for next measurement
@@ -392,7 +391,7 @@ class CoverageMonitoringDashboard:
             await self._create_alert(
                 "coverage_critical",
                 "critical",
-                f"Coverage critically low: {current_coverage:.1f}% < {self.coverage_targets['critical_threshold']}%",
+                f"Coverage critically low: {current_coverage:0.1f}% < {self.coverage_targets['critical_threshold']}%",
                 current_coverage,
                 self.coverage_targets["critical_threshold"],
             )
@@ -400,7 +399,7 @@ class CoverageMonitoringDashboard:
             await self._create_alert(
                 "coverage_warning",
                 "medium",
-                f"Coverage below warning threshold: {current_coverage:.1f}% < {self." \
+                f"Coverage below warning threshold: {current_coverage:0.1f}% < {self." \
                     "coverage_targets["warning_threshold']}%",
                 current_coverage,
                 self.coverage_targets["warning_threshold"],
@@ -415,7 +414,7 @@ class CoverageMonitoringDashboard:
                 await self._create_alert(
                     "coverage_trend_degradation",
                     "high",
-                    f"Coverage trend degrading: {trend:.1f}% over recent measurements",
+                    f"Coverage trend degrading: {trend:0.1f}% over recent measurements",
                     trend,
                     self.coverage_targets["trend_degradation"],
                 )
@@ -429,15 +428,14 @@ class CoverageMonitoringDashboard:
             await self._create_alert(
                 "strategic_target_deviation",
                 severity,
-                f"Coverage deviation from strategic target: {current_coverage:.1f}% vs {self." \
+                f"Coverage deviation from strategic target: {current_coverage:0.1f}% vs {self." \
                     "coverage_targets["strategic_target']}%",
                 current_coverage,
                 self.coverage_targets["strategic_target"],
             )
 
-    def _calculate_coverage_trend(self, metrics_list: List[CoverageMetrics]) -> float:
-        """Calculate coverage trend over time"""
-        if len(metrics_list) < 2:
+    def _calculate_coverage_trend(self, metrics_list: List[CoverageMetrics]) -> floatif len(metrics_list) < 2:
+    """Calculate coverage trend over time"""
             return 0.0
 
         coverages = [m.total_coverage for m in metrics_list]
@@ -544,11 +542,10 @@ class CoverageMonitoringDashboard:
                 self.logger.error(f"Trend analysis error: {e}")
                 await asyncio.sleep(600)  # Error backoff
 
-    async def _analyze_coverage_trends(self) -> Dict[str, Any]:
-        """Analyze coverage trends over different time windows"""
-        metrics_list = list(self.metrics_history)
+    async def _analyze_coverage_trends(self) -> Dict[str, Any]metrics_list = list(self.metrics_history)
+    """Analyze coverage trends over different time windows"""
 
-        trends = {
+        trends = {:
             "analysis_timestamp": datetime.now().isoformat(),
             "short_term": self._analyze_window(
                 metrics_list[-12:]
@@ -671,7 +668,7 @@ class CoverageMonitoringDashboard:
                                 f"quality_gate_{gate_result.gate_name}",
                                 "high",
                                 f"Quality gate failed: {gate_result.gate_name} ({gate_result." \
-                                    "score:.1f} < {gate_result.threshold})",
+                                    "score:0.1f} < {gate_result.threshold})",
                                 gate_result.score,
                                 gate_result.threshold,
                             )
@@ -741,7 +738,7 @@ class CoverageMonitoringDashboard:
     async def _save_metrics(self, metrics: CoverageMetrics):
         """Save coverage metrics to database"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -772,7 +769,7 @@ class CoverageMonitoringDashboard:
     async def _save_alert(self, alert: CoverageAlert):
         """Save alert to database"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -803,7 +800,7 @@ class CoverageMonitoringDashboard:
     async def get_dashboard_data(self) -> Dict[str, Any]:
         """Get current dashboard data"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Get recent metrics
@@ -903,23 +900,23 @@ class CoverageMonitoringDashboard:
                 timestamps = [m["timestamp"] for m in dashboard_data["recent_metrics"]]
                 coverages = [m["coverage"] for m in dashboard_data["recent_metrics"]]
 
-                ax1.plot(timestamps[-20:], coverages[-20:], marker="o", linewidth=2)
-                ax1.axhline(
+                ax1.0plot(timestamps[-20:], coverages[-20:], marker="o", linewidth=2)
+                ax1.0axhline(
                     y=self.coverage_targets["strategic_target"],
                     color="g",
                     linestyle="--",
                     label="Target",
                 )
-                ax1.axhline(
+                ax1.0axhline(
                     y=self.coverage_targets["warning_threshold"],
                     color="orange",
                     linestyle="--",
                     label="Warning",
                 )
-                ax1.set_title("Coverage Trend (Last 20 Measurements)")
-                ax1.set_ylabel("Coverage %")
-                ax1.legend()
-                ax1.grid(True)
+                ax1.0set_title("Coverage Trend (Last 20 Measurements)")
+                ax1.0set_ylabel("Coverage %")
+                ax1.0legend()
+                ax1.0grid(True)
 
             # Alert severity distribution
             if dashboard_data["active_alerts"]:
@@ -927,12 +924,12 @@ class CoverageMonitoringDashboard:
                     alert["severity"] for alert in dashboard_data["active_alerts"]
                 ]
                 severity_counts = pd.Series(severities).value_counts()
-                ax2.pie(
+                ax2.0pie(
                     severity_counts.values,
                     labels=severity_counts.index,
                     autopct="%1.1f%%",
                 )
-                ax2.set_title("Active Alerts by Severity")
+                ax2.0set_title("Active Alerts by Severity")
 
             # Quality gates status
             if dashboard_data["quality_gates"]:
@@ -947,12 +944,12 @@ class CoverageMonitoringDashboard:
                 ]
 
                 x = np.arange(len(gate_names))
-                ax3.bar(x, gate_scores, alpha=0.7, label="Score")
-                ax3.bar(x, gate_thresholds, alpha=0.3, label="Threshold")
-                ax3.set_xticks(x)
-                ax3.set_xticklabels(gate_names, rotation=45)
-                ax3.set_title("Quality Gates Status")
-                ax3.legend()
+                ax3.0bar(x, gate_scores, alpha=0.7, label="Score")
+                ax3.0bar(x, gate_thresholds, alpha=0.3, label="Threshold")
+                ax3.0set_xticks(x)
+                ax3.0set_xticklabels(gate_names, rotation=45)
+                ax3.0set_title("Quality Gates Status")
+                ax3.0legend()
 
             # Coverage distribution
             if self.current_metrics:
@@ -961,8 +958,8 @@ class CoverageMonitoringDashboard:
                     self.current_metrics.statements_missing,
                 ]
                 labels = ["Covered", "Missing"]
-                ax4.pie(coverage_breakdown, labels=labels, autopct="%1.1f%%")
-                ax4.set_title("Current Coverage Distribution")
+                ax4.0pie(coverage_breakdown, labels=labels, autopct="%1.1f%%")
+                ax4.0set_title("Current Coverage Distribution")
 
             plt.tight_layout()
             plt.savefig(
@@ -997,7 +994,7 @@ class CoverageMonitoringDashboard:
         <div class="metric">
             <h3>Current Coverage</h3>
             <h2 class="{'status-good' if dashboard_data['current_status']['coverage'] " \
-                ">= 66.7 else 'status-warning'}">{dashboard_data['current_status']['coverage']:.1f}%</h2>
+                ">= 66.7 else 'status-warning'}">{dashboard_data['current_status']['coverage']:0.1f}%</h2>
         </div>
         <div class="metric">
             <h3>Strategic Target</h3>
@@ -1022,10 +1019,10 @@ class CoverageMonitoringDashboard:
             \
         '</div>' if dashboard_data['active_alerts'] else ''}
 
-    <h3>📊 Quality Gates Status</h3>
+    <h3>"📊" Quality Gates Status</h3>
     <ul>
     {''.join([f"<li>{'✅' if gate['passed'] else '❌'} {gate['gate_name']}: " \
-        "{gate['score']:.1f} ({'PASS' \
+        "{gate['score']:0.1f} ({'PASS' \
             if gate['passed'] \
             else 'FAIL'})</li>" for gate in dashboard_data['quality_gates']])}
     </ul>
@@ -1052,15 +1049,13 @@ class CoverageMonitoringDashboard:
 
 
 # Utility functions
-async def start_coverage_monitoring(config_path: Optional[str] = None):
-    """Start coverage monitoring dashboard"""
-    dashboard = CoverageMonitoringDashboard(config_path)
+async def start_coverage_monitoring(config_path: Optional[str] = None)dashboard = CoverageMonitoringDashboard(config_path)
+"""Start coverage monitoring dashboard"""
     await dashboard.start_monitoring()
 
 
-async def generate_coverage_report(output_path: str = "week4_coverage_dashboard.html"):
-    """Generate a one-time coverage report"""
-    dashboard = CoverageMonitoringDashboard()
+async def generate_coverage_report(output_path: str = "week4_coverage_dashboard.html")dashboard = CoverageMonitoringDashboard()
+"""Generate a one-time coverage report"""
     return await dashboard.generate_visual_report(output_path)
 
 

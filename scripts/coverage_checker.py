@@ -181,7 +181,7 @@ class CoverageAnalyzer:
                     else "🟡" if result["coverage_percentage"] >= 70 else "❌"
                 )
                 print(f"\n{status} {result['lib_file']}")
-                print(f"   📊 カバレッジ: {result['coverage_percentage']:.1f}%")
+                print(f"   📊 カバレッジ: {result['coverage_percentage']:0.1f}%")
                 print(f"   📝 定義数: {result['total_definitions']}")
                 print(f"   ✅ テスト済み: {result['tested_definitions']}")
 
@@ -201,7 +201,7 @@ class CoverageAnalyzer:
 
         print("\n🎯 全体カバレッジサマリー")
         print("=" * 30)
-        print(f"📊 総合カバレッジ: {overall_coverage:.1f}%")
+        print(f"📊 総合カバレッジ: {overall_coverage:0.1f}%")
         print(f"📝 総定義数: {total_definitions}")
         print(f"✅ テスト済み: {total_tested}")
         print(f"❌ 未テスト: {total_definitions - total_tested}")
@@ -271,7 +271,7 @@ def main():
 
     # 目標到達チェック
     if results["overall_coverage"] < 90:
-        print(f"\n🎯 90%カバレッジまであと {90 - results['overall_coverage']:.1f}% !")
+        print(f"\n🎯 90%カバレッジまであと {90 - results['overall_coverage']:0.1f}% !")
         needed_tests = int(
             (90 * results["total_definitions"] / 100) - results["total_tested"]
         )

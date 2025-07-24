@@ -165,7 +165,7 @@ def main():
 
     print(f"✅ 成功: {passed_tests}/{total_tests}")
     print(f"❌ 失敗: {failed_tests}/{total_tests}")
-    print(f"📊 成功率: {passed_tests/total_tests*100:.1f}%")
+    print(f"📊 成功率: {passed_tests/total_tests*100:0.1f}%")
 
     if passed_tests == total_tests:
         print("\n🎉 全テスト成功！PostgreSQL AsyncIO修正が正常に動作しています。")

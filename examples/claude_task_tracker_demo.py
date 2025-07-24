@@ -114,7 +114,7 @@ def demonstrate_integration():
     print("🤖 Claude CLI × Task Tracker 統合デモ")
     print("=" * 60)
 
-    # 1. クラスベースの例
+    # 1.0 クラスベースの例
     worker = ClaudeDevelopmentWorker()
 
     # 複数のタスクを実行
@@ -129,14 +129,14 @@ def demonstrate_integration():
 
         time.sleep(2)
 
-    # 2. デコレータベースの例
+    # 2.0 デコレータベースの例
     print("\n📋 デコレータ例:")
     create_utility_function()
 
     print("\n✅ デモ完了!")
     print("\n💡 Task Trackerで確認:")
-    print("1. Webダッシュボード: http://localhost:5555")
-    print("2. CLIコマンド: ./scripts/task list -a claude_cli")
+    print("1.0 Webダッシュボード: http://localhost:5555")
+    print("2.0 CLIコマンド: ./scripts/task list -a claude_cli")
 
 
 def create_claude_cli_integration_script():

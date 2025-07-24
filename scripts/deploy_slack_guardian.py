@@ -27,7 +27,7 @@ def deploy_slack_guardian():
 
     deployment_log = []
 
-    # 1. Slack Monitor Worker復元
+    # 1.0 Slack Monitor Worker復元
     print("🔧 Slack Monitor Worker復元中...")
 
     monitor_worker_content = '''#!/usr/bin/env python3
@@ -163,7 +163,7 @@ if __name__ == "__main__":
     print("  ✅ Slack Monitor Worker復元完了")
     deployment_log.append("slack_monitor_worker_restored")
 
-    # 2. PM統合修復
+    # 2.0 PM統合修復
     print("🔧 PM統合修復中...")
 
     pm_files = ["workers/slack_pm_worker.py", "libs/slack_pm_manager.py"]
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     print(f"  ✅ PM統合修復完了 ({fixed_pm_count} files)")
     deployment_log.append(f"pm_integration_fixed_{fixed_pm_count}")
 
-    # 3. 設定統合
+    # 3.0 設定統合
     print("🔧 設定ファイル統合中...")
 
     config_files = ["config/slack.conf", "config/slack_config.json"]
@@ -230,7 +230,7 @@ if __name__ == "__main__":
     print(f"  ✅ 設定統合完了 ({backed_up_count} files backed up)")
     deployment_log.append(f"config_consolidated_{backed_up_count}")
 
-    # 4. 修復ガイド作成
+    # 4.0 修復ガイド作成
     print("📋 修復ガイド作成中...")
 
     # Slack API権限修復ガイド
@@ -246,12 +246,12 @@ Slack Guardian Knightが以下の問題を検出しました：
 
 ### 📱 修復手順
 
-1. **Slack App設定に移動**
+1.0 **Slack App設定に移動**
    ```
    https://api.slack.com/apps → Elders Guild app選択
    ```
 
-2. **OAuth & Permissions**
+2.0 **OAuth & Permissions**
    - "Scopes" > "Bot Token Scopes" に移動
    - 以下を追加:
      - channels:read
@@ -260,17 +260,17 @@ Slack Guardian Knightが以下の問題を検出しました：
      - im:read
      - channels:history
 
-3. **アプリ再インストール**
+3.0 **アプリ再インストール**
    - "Reinstall App" ボタンクリック
    - 新しいBot Tokenを取得
 
-4. **環境変数更新**
+4.0 **環境変数更新**
    ```bash
    # .envファイルのSLACK_BOT_TOKENを新しい値に更新
    vim .env
    ```
 
-5. **ワーカー再起動**
+5.0 **ワーカー再起動**
    ```bash
    # Slackワーカーを再起動
    pkill -f slack_polling_worker
@@ -295,7 +295,7 @@ Slack Guardian Knightが以下の問題を検出しました：
     print(f"    ✅ 修復ガイド作成: {guide_file}")
     deployment_log.append("repair_guide_created")
 
-    # 5. 展開完了レポート
+    # 5.0 展開完了レポート
     print("📊 展開レポート作成中...")
 
     report = {
@@ -327,7 +327,7 @@ Slack Guardian Knightが以下の問題を検出しました：
 
     print(f"    ✅ 展開レポート保存: {report_file}")
 
-    # 6. 動作テスト
+    # 6.0 動作テスト
     print("🧪 動作テスト実行中...")
 
     try:
@@ -350,10 +350,10 @@ Slack Guardian Knightが以下の問題を検出しました：
         print(f"  {i}. {action}")
 
     print("\n💡 次のステップ:")
-    print("  1. docs/slack_guardian_repair_guide.md を参照")
-    print("  2. Slack API権限を手動で修復")
-    print("  3. Slackワーカーを再起動")
-    print("  4. 統合テストを実行")
+    print("  1.0 docs/slack_guardian_repair_guide.md を参照")
+    print("  2.0 Slack API権限を手動で修復")
+    print("  3.0 Slackワーカーを再起動")
+    print("  4.0 統合テストを実行")
 
     print(f"\n🛡️ Slack Guard Knight: Ready for Battle!")
 

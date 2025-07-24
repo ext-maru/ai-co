@@ -526,9 +526,8 @@ class PatternExtractor:
 class CodebaseAnalysisEngine:
     """コードベース分析エンジン (Phase 3)"""
     
-    def __init__(self, project_root:
+    def __init__(self, project_root: str = "."):
         """初期化メソッド"""
-    str = "."):
         self.project_root = Path(project_root)
         self.ast_analyzer = ASTAnalyzer()
         self.pattern_extractor = PatternExtractor()

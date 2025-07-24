@@ -162,9 +162,9 @@ class TaskElderFlowAdapter:
         self.save_integration_history()
 
         print(f"✅ Elder Flow統合実行完了!")
-        print(f"   成功率: {results['success_rate']:.1f}%")
-        print(f"   平均品質スコア: {results['average_quality_score']:.1f}")
-        print(f"   総実行時間: {results['total_duration']:.2f}秒")
+        print(f"   成功率: {results['success_rate']:0.1f}%")
+        print(f"   平均品質スコア: {results['average_quality_score']:0.1f}")
+        print(f"   総実行時間: {results['total_duration']:0.2f}秒")
 
         return results
 
@@ -456,8 +456,8 @@ async def main():
     status = adapter.get_integration_status()
     print("🌊 Task Elder ⟷ Elder Flow統合状況:")
     print(f"  - 総統合数: {status['total_integrations']}")
-    print(f"  - 成功率: {status.get('success_rate', 0):.1f}%")
-    print(f"  - 平均品質スコア: {status['average_quality_score']:.1f}")
+    print(f"  - 成功率: {status.get('success_rate', 0):0.1f}%")
+    print(f"  - 平均品質スコア: {status['average_quality_score']:0.1f}")
 
     # 統合レポートの表示
     report = await adapter.get_integration_report()

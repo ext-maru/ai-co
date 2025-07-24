@@ -13,7 +13,7 @@ from commands.base_command import BaseCommand
 
 
 class HealthCommand(BaseCommand):
-    # Main class implementation
+    # Main class implementation:
     def __init__(self):
         """初期化メソッド"""
         super().__init__(
@@ -478,11 +478,11 @@ class HealthCommand(BaseCommand):
             if health_data["overall"]["status"] != "healthy":
                 self.section("推奨アクション")
                 if health_data["overall"]["summary"]["critical"] > 0:
-                    self.info("1. ai-restart --force で再起動")
-                    self.info("2. ai-health --fix で自動修復")
+                    self.info("1.0 ai-restart --force で再起動")
+                    self.info("2.0 ai-health --fix で自動修復")
                 if health_data["overall"]["summary"]["warning"] > 0:
-                    self.info("1. ai-logs --error で詳細確認")
-                    self.info("2. ai-queue でキュー状態確認")
+                    self.info("1.0 ai-logs --error で詳細確認")
+                    self.info("2.0 ai-queue でキュー状態確認")
 
 
 if __name__ == "__main__":

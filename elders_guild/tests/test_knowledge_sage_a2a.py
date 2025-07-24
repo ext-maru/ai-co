@@ -558,7 +558,7 @@ class TestKnowledgeSageAgent:
         """完全ワークフローシミュレーション"""
         # ワークフロー: 知識検索 → 統計取得 → ヘルスチェック
         
-        # 1. 知識検索
+        # 1.0 知識検索
         agent.knowledge_processor.process_action.return_value = {
             "success": True,
             "data": {"results": [{"title": "Test"}]}
@@ -568,7 +568,7 @@ class TestKnowledgeSageAgent:
         search_response = await agent.search_knowledge_skill(search_msg)
         assert search_response.content.data["success"] is True
         
-        # 2. 統計取得
+        # 2.0 統計取得
         agent.knowledge_processor.process_action.return_value = {
             "success": True,
             "data": {"total_items": 50}
@@ -578,7 +578,7 @@ class TestKnowledgeSageAgent:
         stats_response = await agent.get_statistics_skill(stats_msg)
         assert stats_response.content.data["success"] is True
         
-        # 3. ヘルスチェック
+        # 3.0 ヘルスチェック
         health_msg = Message(content=TextContent(text=""))
         health_response = await agent.health_check_skill(health_msg)
         assert health_response.content.data["status"] == "healthy"
@@ -621,7 +621,7 @@ class TestKnowledgeSagePerformance:
         response_time = end_time - start_time
         
         # 応答時間は100ms以下であることを確認
-        assert response_time < 0.1, f"Response time {response_time:.3f}s exceeds 100ms limit"
+        assert response_time < 0.1, f"Response time {response_time:0.3f}s exceeds 100ms limit"
         assert response.content.data["success"] is True
     
     @pytest.mark.asyncio
@@ -648,7 +648,7 @@ class TestKnowledgeSagePerformance:
         total_time = end_time - start_time
         
         # 全リクエスト処理時間は5秒以下
-        assert total_time < 5.0, f"High load processing time {total_time:.3f}s exceeds 5s limit"
+        assert total_time < 5.0, f"High load processing time {total_time:0.3f}s exceeds 5s limit"
         
         # 全て成功確認
         assert len(responses) == 100

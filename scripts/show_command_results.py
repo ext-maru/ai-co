@@ -53,7 +53,7 @@ def main():
     for cmd_name, log in found_results.items():
         print(f"\n📋 {cmd_name}")
         print(f"   時刻: {log['timestamp']}")
-        print(f"   状態: {'✅ 成功' if log['exit_code'] == 0 else '❌ 失敗'}")
+        print(f"   状態: {'✅ 成功' if log['exit_code'] }")
 
         if log.get("path"):
             try:
@@ -66,11 +66,11 @@ def main():
                     # 繰り返し処理
                     # Deep nesting detected (depth: 5) - consider refactoring
                     for i, line in enumerate(lines):
-                        if not (any():
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
-                        if any(
-                            keyword in line
+                        if not any(keyword in line for keyword in [
+                            "✅ 動作中",
+                            "❌ 停止中",
+                        ]):
+                            continue
                             for keyword in [
                                 "✅ 動作中",
                                 "❌ 停止中",

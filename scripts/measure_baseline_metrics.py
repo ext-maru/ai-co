@@ -85,9 +85,8 @@ class BaselineMetrics:
         except Exception as e:
             return {"error": str(e)}
 
-    def check_tests(self, filepath):
-        """対応するテストファイルの存在と数を確認"""
-        test_file = filepath.replace("libs/", "tests/unit/test_")
+    def check_tests(self, filepath)test_file = filepath.replace("libs/", "tests/unit/test_")
+    """対応するテストファイルの存在と数を確認"""
         test_path = self.base_dir / test_file
 
         if test_path.exists():
@@ -194,9 +193,8 @@ class BaselineMetrics:
         except Exception as e:
             return {"error": str(e)}
 
-    def collect_all_metrics(self):
-        """すべてのメトリクスを収集"""
-        timestamp = datetime.now().isoformat()
+    def collect_all_metrics(self)timestamp = datetime.now().isoformat()
+    """すべてのメトリクスを収集"""
 
         for filepath in self.target_files:
             print(f"Analyzing {filepath}...")
@@ -245,7 +243,7 @@ class BaselineMetrics:
             "total_functions": total_functions,
             "total_tests": total_tests,
             "test_coverage_estimate": (
-                f"{(total_tests / (total_classes + total_functions) * 100):.1f}%"
+                f"{(total_tests / (total_classes + total_functions) * 100):0.1f}%"
                 if (total_classes + total_functions) > 0
                 else "0%"
             ),
@@ -265,9 +263,8 @@ class BaselineMetrics:
 
         print(f"\nBaseline metrics saved to: {output_path}")
 
-    def print_summary(self):
-        """サマリーを表示"""
-        print("\n" + "=" * 60)
+    def print_summary(self)print("\n" + "=" * 60)
+    """サマリーを表示"""
         print("📊 OSS移行プロジェクト - ベースラインメトリクス")
         print("=" * 60)
 

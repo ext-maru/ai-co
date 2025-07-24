@@ -791,7 +791,7 @@ async def blackhole_computation_demo():
 
     unit = BlackHoleComputationUnit()
 
-    # 1. 様々なタイプのブラックホール作成
+    # 1.0 様々なタイプのブラックホール作成
     print("\n🌌 Creating various types of black holes...")
 
     blackholes = []
@@ -818,7 +818,7 @@ async def blackhole_computation_demo():
 
     print(f"Created {len(blackholes)} black holes of different types")
 
-    # 2. 事象の地平面での計算
+    # 2.0 事象の地平面での計算
     print("\n🌀 Testing computation at event horizon...")
 
     horizon_task = ComputationTask(
@@ -834,10 +834,10 @@ async def blackhole_computation_demo():
     horizon_result = await unit.execute_blackhole_computation(stellar_bh, horizon_task)
     print(
         f"Event horizon computation: {horizon_result['result']['quantum_result']['comput \
-            ational_advantage']:.2f}x speedup"
+            ational_advantage']:0.2f}x speedup"
     )
 
-    # 3. エルゴ領域でのペンローズ過程計算
+    # 3.0 エルゴ領域でのペンローズ過程計算
     print("\n⚡ Testing Penrose process computation...")
 
     ergosphere_task = ComputationTask(
@@ -853,10 +853,10 @@ async def blackhole_computation_demo():
         kerr_bh, ergosphere_task
     )
     print(
-        f"Penrose process efficiency: {ergosphere_result['result']['penrose_efficiency']:.1%}"
+        f"Penrose process efficiency: {ergosphere_result['result']['penrose_efficiency']:0.1%}"
     )
 
-    # 4. ホーキング放射計算
+    # 4.0 ホーキング放射計算
     print("\n☢️ Testing Hawking radiation computation...")
 
     hawking_task = ComputationTask(
@@ -872,11 +872,11 @@ async def blackhole_computation_demo():
     hawking_result = await unit.execute_blackhole_computation(micro_bh, hawking_task)
     radiation_data = hawking_result["result"]["radiation_data"]
     print(
-        f"Hawking radiation: {radiation_data['temperature']:.2e} K, "
-        f"{radiation_data['particle_creation_rate']:.2e} particles/s"
+        f"Hawking radiation: {radiation_data['temperature']:0.2e} K, "
+        f"{radiation_data['particle_creation_rate']:0.2e} particles/s"
     )
 
-    # 5. 特異点計算（理論的）
+    # 5.0 特異点計算（理論的）
     print("\n🔬 Testing computation at singularity (theoretical)...")
 
     singularity_task = ComputationTask(
@@ -896,7 +896,7 @@ async def blackhole_computation_demo():
         f"Singularity computation: quantum gravity regime = {singularity_result['result']['quantum_gravity_regime']}"
     )
 
-    # 6. 大規模並列ブラックホール計算
+    # 6.0 大規模並列ブラックホール計算
     print("\n🚀 Testing massive parallel black hole computation...")
 
     parallel_tasks = []
@@ -916,17 +916,17 @@ async def blackhole_computation_demo():
         f"Parallel computation: {len(parallel_results)} black holes processed simultaneously"
     )
 
-    # 7. システム状態レポート
+    # 7.0 システム状態レポート
     print("\n📊 System Status Report:")
     status = await unit.get_system_status()
 
     print("Black Hole Statistics:")
     print(f"  Total black holes: {status['blackhole_statistics']['total_blackholes']}")
     print(
-        f"  Total mass: {status['blackhole_statistics']['total_mass']:.2e} solar masses"
+        f"  Total mass: {status['blackhole_statistics']['total_mass']:0.2e} solar masses"
     )
     print(
-        f"  Average temperature: {status['blackhole_statistics']['average_temperature']:.2e} K"
+        f"  Average temperature: {status['blackhole_statistics']['average_temperature']:0.2e} K"
     )
 
     print("Computation Statistics:")
@@ -942,7 +942,7 @@ async def blackhole_computation_demo():
 
     print("Performance Metrics:")
     print(
-        f"  Average execution time: {status['performance_metrics']['average_execution_time']:.4f}s"
+        f"  Average execution time: {status['performance_metrics']['average_execution_time']:0.4f}s"
     )
     print(f"  Regions utilized: {status['performance_metrics']['regions_utilized']}")
 

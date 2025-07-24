@@ -214,17 +214,17 @@ class TestClaudeElderDefaultSoul:
 
     def test_integration_comprehensive_flow(self):
         """包括的フロー統合テスト"""
-        # 1. リクエスト受信（魂モード未指定）
+        # 1.0 リクエスト受信（魂モード未指定）
         incoming_request = {
             "task_name": "Comprehensive Test Task",
             "priority": "high"
         }
         
-        # 2. デフォルト魂モード適用
+        # 2.0 デフォルト魂モード適用
         soul_mode = incoming_request.get("soul_mode", "claude_elder_default")
         claude_elder_soul_active = (soul_mode == "claude_elder_default")
         
-        # 3. フローデータ準備
+        # 3.0 フローデータ準備
         flow_data = {
             "soul_mode": soul_mode,
             "claude_elder_soul_active": claude_elder_soul_active,
@@ -232,7 +232,7 @@ class TestClaudeElderDefaultSoul:
             "priority": incoming_request["priority"]
         }
         
-        # 4. フェーズ実行（例：Phase 1）
+        # 4.0 フェーズ実行（例：Phase 1）
         if flow_data["claude_elder_soul_active"]:
             phase = "CLAUDE_ELDER_SAGE_COUNCIL"
             phase_description = "Claude Elder魂統合4賢者会議"
@@ -240,7 +240,7 @@ class TestClaudeElderDefaultSoul:
             phase = "SAGE_COUNCIL"
             phase_description = "通常4賢者会議"
         
-        # 5. オーケストレーター要求
+        # 5.0 オーケストレーター要求
         orchestrator_request = {
             "task_name": flow_data["task_name"],
             "priority": flow_data["priority"],
@@ -248,7 +248,7 @@ class TestClaudeElderDefaultSoul:
             "claude_elder_soul": flow_data["claude_elder_soul_active"]
         }
         
-        # 6. 結果生成
+        # 6.0 結果生成
         result = {
             "task_name": flow_data["task_name"],
             "status": "COMPLETED",

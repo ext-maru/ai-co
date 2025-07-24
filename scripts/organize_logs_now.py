@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 def organize_logs():
     """ログファイルを整理する"""
 
-    # 1. ログ専用ディレクトリを作成
+    # 1.0 ログ専用ディレクトリを作成
     log_dirs = {
         "slack": PROJECT_ROOT / "logs" / "slack",
         "archive": PROJECT_ROOT / "logs" / "archive" / "slack",
@@ -34,11 +34,11 @@ def organize_logs():
         dir_path.mkdir(parents=True, exist_ok=True)
         logger.info(f"Created directory: {dir_path}")
 
-    # 2. すべてのslack_project_status_*.logファイルを検索
+    # 2.0 すべてのslack_project_status_*.logファイルを検索
     log_files = list(PROJECT_ROOT.glob("slack_project_status_*.log"))
     logger.info(f"Found {len(log_files)} log files to organize")
 
-    # 3. ファイルを日付で分類
+    # 3.0 ファイルを日付で分類
     today = datetime.now().date()
     yesterday = today - timedelta(days=1)
 
@@ -83,7 +83,7 @@ def organize_logs():
             logger.error(f"Error processing {log_file}: {str(e)}")
             stats["errors"] += 1
 
-    # 4. 統計を表示
+    # 4.0 統計を表示
     logger.info("\n=== Log Organization Complete ===")
     logger.info(f"Today's logs moved: {stats['moved_today']}")
     logger.info(f"Yesterday's logs moved: {stats['moved_yesterday']}")
@@ -91,10 +91,10 @@ def organize_logs():
     logger.info(f"Errors: {stats['errors']}")
     logger.info(f"Total processed: {len(log_files)}")
 
-    # 5. 今後のログ出力設定を更新
+    # 5.0 今後のログ出力設定を更新
     update_log_configs()
 
-    # 6. Slack通知
+    # 6.0 Slack通知
     notify_slack(stats)
 
 
@@ -141,7 +141,7 @@ def notify_slack(stats):
         message = f"""
 🗂️ **ログファイル整理完了**
 
-📊 **処理結果:**
+"📊" **処理結果:**
 • 今日のログ: {stats['moved_today']}件
 • 昨日のログ: {stats['moved_yesterday']}件
 • アーカイブ: {stats['archived']}件

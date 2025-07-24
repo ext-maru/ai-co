@@ -4,7 +4,7 @@ import json
 from collections import Counter
 
 # JSONファイルを読み込み
-with open('docs/reports/quality/quality-audit-20250723-023357.json', 'r') as f:
+with open('docs/reports/quality/quality-audit-20250723-023357.0json', 'r') as f:
     data = json.load(f)
 
 # 違反タイプを集計

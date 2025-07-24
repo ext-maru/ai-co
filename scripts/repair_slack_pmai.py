@@ -22,7 +22,7 @@ def main():
 
     print("🔧 Slack PM-AI修復開始...")
 
-    # 1. 現在の状態を確認
+    # 1.0 現在の状態を確認
     print("\n1️⃣ システム状態確認")
     check_status_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -43,7 +43,7 @@ grep -E "(SLACK_BOT_TOKEN|SLACK_POLLING_ENABLED)" config/slack.conf | head -5
     helper.create_bash_command(check_status_cmd, "check_system_status")
     print("✅ システム状態確認コマンド作成")
 
-    # 2. Slack Polling Workerのテスト
+    # 2.0 Slack Polling Workerのテスト
     print("\n2️⃣ Slack Polling Workerテスト")
     test_slack_worker_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -55,7 +55,7 @@ python3 workers/slack_polling_worker.py --test
     helper.create_bash_command(test_slack_worker_cmd, "test_slack_polling")
     print("✅ Slack Polling Workerテストコマンド作成")
 
-    # 3. Slack Polling Worker起動
+    # 3.0 Slack Polling Worker起動
     print("\n3️⃣ Slack Polling Worker起動")
     start_slack_polling_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -77,7 +77,7 @@ tmux list-windows -t ai_company | grep slack_polling || echo "❌ 起動失敗"
     helper.create_bash_command(start_slack_polling_cmd, "start_slack_polling")
     print("✅ Slack Polling Worker起動コマンド作成")
 
-    # 4. テスト用のSlackメッセージ処理シミュレーション
+    # 4.0 テスト用のSlackメッセージ処理シミュレーション
     print("\n4️⃣ Slackメッセージ処理テスト")
     test_message_processing = """#!/usr/bin/env python3
 import sys
@@ -139,7 +139,7 @@ python3 test_slack_message.py
     )
     print("✅ Slackメッセージ処理テストコマンド作成")
 
-    # 5. 全体の動作確認
+    # 5.0 全体の動作確認
     print("\n5️⃣ 全体動作確認")
     verify_all_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -170,7 +170,7 @@ echo -e "\n✅ 全体動作確認完了"
     helper.create_bash_command(verify_all_cmd, "verify_all_system")
     print("✅ 全体動作確認コマンド作成")
 
-    # 6. 修復完了通知
+    # 6.0 修復完了通知
     print("\n6️⃣ 修復完了通知")
     notify_cmd = """#!/usr/bin/env python3
 import sys
@@ -189,11 +189,11 @@ try:
 ✅ テストメッセージ送信成功
 
 📡 動作確認方法:
-1. Slackで @pm-ai をメンションしてメッセージ送信
-2. タスクが自動的に処理される
-3. 結果がSlackに通知される
+1.0 Slackで @pm-ai をメンションしてメッセージ送信
+2.0 タスクが自動的に処理される
+3.0 結果がSlackに通知される
 
-🔍 ログ確認:
+"🔍" ログ確認:
 - tail -f logs/slack_polling_worker.log
 - tail -f logs/task_worker.log
 
@@ -220,12 +220,12 @@ python3 notify_repair_complete.py
     print("\n🎉 全てのコマンドを作成しました！")
     print("6秒後に自動実行されます...")
     print("\n実行順序:")
-    print("1. システム状態確認")
-    print("2. Slack Polling Workerテスト")
-    print("3. Slack Polling Worker起動")
-    print("4. テストメッセージ送信")
-    print("5. 全体動作確認")
-    print("6. 完了通知")
+    print("1.0 システム状態確認")
+    print("2.0 Slack Polling Workerテスト")
+    print("3.0 Slack Polling Worker起動")
+    print("4.0 テストメッセージ送信")
+    print("5.0 全体動作確認")
+    print("6.0 完了通知")
 
 
 if __name__ == "__main__":

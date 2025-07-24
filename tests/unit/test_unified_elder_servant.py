@@ -54,11 +54,10 @@ class TestUnifiedElderServant(UnifiedElderServant):
             capabilities=capabilities,
         )
 
-    async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
-        """テスト用タスク実行"""
-        task_id = task.get("task_id", "test_task")
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_id = task.get("task_id", "test_task")
+    """テスト用タスク実行"""
 
-        # 成功パターンのモック実装
+        # 成功パターンのモック実装:
         if task.get("task_type") == "success_test":
             return TaskResult(
                 task_id=task_id,
@@ -137,9 +136,8 @@ class TestUnifiedElderServant(UnifiedElderServant):
 class TestUnifiedElderServantBase(unittest.TestCase):
     """統合ElderServant基盤クラステスト"""
 
-    def setUp(self):
-        """テストセットアップ"""
-        self.servant = TestUnifiedElderServant()
+    def setUp(self)self.servant = TestUnifiedElderServant()
+    """テストセットアップ"""
 
     def test_unified_elder_servant_initialization(self):
         """統合ElderServant初期化テスト"""
@@ -209,9 +207,8 @@ class TestUnifiedElderServantBase(unittest.TestCase):
 class TestUnifiedElderServantAsync(unittest.IsolatedAsyncioTestCase):
     """統合ElderServant非同期機能テスト"""
 
-    async def asyncSetUp(self):
-        """非同期テストセットアップ"""
-        self.servant = TestUnifiedElderServant()
+    async def asyncSetUp(self)self.servant = TestUnifiedElderServant()
+    """非同期テストセットアップ"""
 
     async def test_process_request_success_unified(self):
         """正常リクエスト処理テスト（統合版）"""
@@ -384,9 +381,8 @@ class TestUnifiedElderServantAsync(unittest.IsolatedAsyncioTestCase):
 class TestSpecializedServants(unittest.IsolatedAsyncioTestCase):
     """特化サーバント基底クラステスト"""
 
-    async def asyncSetUp(self):
-        """特化サーバントテストセットアップ"""
-        self.dwarf_servant = TestDwarfWorkshopServant()
+    async def asyncSetUp(self)self.dwarf_servant = TestDwarfWorkshopServant()
+    """特化サーバントテストセットアップ"""
         self.wizard_servant = TestRAGWizardServant()
         self.elf_servant = TestElfForestServant()
         self.knight_servant = TestIncidentKnightServant()
@@ -444,17 +440,15 @@ class TestSpecializedServants(unittest.IsolatedAsyncioTestCase):
 class TestServantRegistry(unittest.IsolatedAsyncioTestCase):
     """統合ServantRegistryテスト"""
 
-    async def asyncSetUp(self):
-        """レジストリテストセットアップ"""
-        self.registry = ServantRegistry()
+    async def asyncSetUp(self)self.registry = ServantRegistry()
+    """レジストリテストセットアップ"""
         self.servant1 = TestUnifiedElderServant()
         self.servant2 = TestUnifiedElderServant()
-        self.servant2.servant_id = "test_unified_002"
-        self.servant2.servant_name = "TestUnifiedServant2"
+        self.servant2.0servant_id = "test_unified_002"
+        self.servant2.0servant_name = "TestUnifiedServant2"
 
-    async def test_servant_registration_unified(self):
-        """サーバント登録テスト（統合版）"""
-        self.registry.register_servant(self.servant1)
+    async def test_servant_registration_unified(self)self.registry.register_servant(self.servant1)
+    """サーバント登録テスト（統合版）"""
 
         # 登録確認
         retrieved = self.registry.get_servant("test_unified_001")
@@ -468,9 +462,8 @@ class TestServantRegistry(unittest.IsolatedAsyncioTestCase):
         workshop_servants = self.registry.get_servants_by_domain(ServantDomain.DWARF_WORKSHOP)
         self.assertIn(self.servant1, workshop_servants)
 
-    async def test_execute_with_best_servant_unified(self):
-        """最適サーバント実行テスト（統合版）"""
-        self.registry.register_servant(self.servant1)
+    async def test_execute_with_best_servant_unified(self)self.registry.register_servant(self.servant1)
+    """最適サーバント実行テスト（統合版）"""
         self.registry.register_servant(self.servant2)
 
         request = ServantRequest(
@@ -487,9 +480,8 @@ class TestServantRegistry(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status, TaskStatus.COMPLETED)
         self.assertTrue(response.iron_will_compliant)
 
-    async def test_health_check_all_servants_unified(self):
-        """全サーバントヘルスチェックテスト（統合版）"""
-        self.registry.register_servant(self.servant1)
+    async def test_health_check_all_servants_unified(self)self.registry.register_servant(self.servant1)
+    """全サーバントヘルスチェックテスト（統合版）"""
         self.registry.register_servant(self.servant2)
 
         health_results = await self.registry.health_check_all()
@@ -507,9 +499,8 @@ class TestServantRegistry(unittest.IsolatedAsyncioTestCase):
         self.assertIn("test_unified_001", health_results["servants"])
         self.assertIn("test_unified_002", health_results["servants"])
 
-    async def test_find_best_servant_for_request(self):
-        """最適サーバント選出テスト（強化版）"""
-        self.registry.register_servant(self.servant1)
+    async def test_find_best_servant_for_request(self)self.registry.register_servant(self.servant1)
+    """最適サーバント選出テスト（強化版）"""
         self.registry.register_servant(self.servant2)
 
         # クリティカル優先度リクエスト
@@ -528,9 +519,8 @@ class TestServantRegistry(unittest.IsolatedAsyncioTestCase):
 class TestIronWillDecorator(unittest.IsolatedAsyncioTestCase):
     """Iron Will品質ゲートデコレータテスト"""
 
-    async def asyncSetUp(self):
-        """デコレータテストセットアップ"""
-        self.servant = TestUnifiedElderServant()
+    async def asyncSetUp(self)self.servant = TestUnifiedElderServant()
+    """デコレータテストセットアップ"""
 
     async def test_iron_will_quality_gate_decorator(self):
         """Iron Will品質ゲートデコレータテスト"""

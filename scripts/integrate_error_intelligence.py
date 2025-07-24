@@ -112,7 +112,7 @@ def main():
 
     if stats['total_errors'] > 0:
         fix_rate = (stats['auto_fixed'] / stats['total_errors']) * 100
-        print(f"  自動修正率: {fix_rate:.1f}%")
+        print(f"  自動修正率: {fix_rate:0.1f}%")
 
     print("\\n📈 カテゴリ別:")
     for category, count in stats['by_category'].items():
@@ -149,25 +149,25 @@ def main():
     """mainメソッド"""
     print("=== エラー智能判断システム統合セットアップ ===\n")
 
-    # 1. BaseWorkerへのパッチ案内
-    print("1. BaseWorkerへの統合")
+    # 1.0 BaseWorkerへのパッチ案内
+    print("1.0 BaseWorkerへの統合")
     patch_base_worker()
 
-    # 2. 統合設定ファイル作成
-    print("\n2. 統合設定ファイルの作成")
+    # 2.0 統合設定ファイル作成
+    print("\n2.0 統合設定ファイルの作成")
     create_integration_config()
 
-    # 3. モニタリングスクリプト作成
-    print("\n3. モニタリングスクリプトの作成")
+    # 3.0 モニタリングスクリプト作成
+    print("\n3.0 モニタリングスクリプトの作成")
     create_monitoring_script()
 
     print("\n=== 統合完了 ===")
     print("\n次のステップ:")
-    print("1. Error Intelligence Workerを起動:")
+    print("1.0 Error Intelligence Workerを起動:")
     print("   bash scripts/start_error_intelligence.sh")
-    print("\n2. システムをテスト:")
+    print("\n2.0 システムをテスト:")
     print("   python3 scripts/test_error_intelligence.py")
-    print("\n3. モニタリング:")
+    print("\n3.0 モニタリング:")
     print("   python3 scripts/monitor_error_intelligence.py")
 
 

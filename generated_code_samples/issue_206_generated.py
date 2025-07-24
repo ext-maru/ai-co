@@ -83,7 +83,7 @@ class Issue206Implementation:
             processed_data = self._process_data(data, **kwargs)
             
             # Save results
-            output_file = kwargs.get('output_file', f'processed_issue_206.csv')
+            output_file = kwargs.get('output_file', f'processed_issue_206.0csv')
             save_result = self._save_data(processed_data, output_file, **kwargs)
             
             # Generate summary statistics

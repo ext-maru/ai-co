@@ -11,6 +11,7 @@ import os
 
 
 class SimpleElderFlow(ElderTreeAgent):
+    pass
 
 
 """Simple Elder Flow - 基本ワークフロー""" int = 50100):
@@ -22,11 +23,10 @@ class SimpleElderFlow(ElderTreeAgent):
         
         self.logger.info("Simple Elder Flow initialized")
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """メッセージハンドラー"""
-        message_type = data.get('type', 'unknown')
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
+    """メッセージハンドラー"""
         
-        # 基本メッセージタイプの処理
+        # 基本メッセージタイプの処理:
         if message_type in ["health_check", "get_metrics"]:
             return super().handle_message(data)
         
@@ -36,9 +36,8 @@ class SimpleElderFlow(ElderTreeAgent):
         else:
             return {"status": "error", "message": f"Unknown message type: {message_type}"}
     
-    def _handle_execute_flow(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Elder Flow実行処理"""
-        task_type = data.get("task_type", "unknown")
+    def _handle_execute_flow(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")
+    """Elder Flow実行処理"""
         requirements = data.get("requirements", [])
         priority = data.get("priority", "medium")
         
@@ -48,7 +47,7 @@ class SimpleElderFlow(ElderTreeAgent):
             requirements_count=len(requirements),
             priority=priority
         )
-        
+        :
         # 基本実装（TDD: テストが通る最小実装）
         flow_id = f"FLOW-{datetime.now().strftime('%Y%m%d%H%M%S')}"
         
@@ -77,6 +76,7 @@ class SimpleElderFlow(ElderTreeAgent):
 
 # 単体実行用
 def main():
+    pass
 
             """mainメソッド"""
     main()

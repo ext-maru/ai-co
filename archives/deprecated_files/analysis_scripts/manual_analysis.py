@@ -21,7 +21,7 @@ data = pd.read_csv("sample_data.csv")
 
 # Basic statistics
 print(f"Dataset shape: {data.shape}")
-print(f"Memory usage: {data.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB")
+print(f"Memory usage: {data.memory_usage(deep=True).sum() / 1024 / 1024:0.1f} MB")
 print(f"Missing values: {data.isnull().sum().sum()}")
 print(f"Duplicate rows: {data.duplicated().sum()}")
 
@@ -85,13 +85,13 @@ if correlations:
     print("Strong correlations (>0.7):")
     for corr in correlations:
         print(
-            f"  {corr['columns'][0]} ↔ {corr['columns'][1]}: {corr['correlation']:.3f}"
+            f"  {corr['columns'][0]} ↔ {corr['columns'][1]}: {corr['correlation']:0.3f}"
         )
 
 if outliers:
     print("Outliers detected:")
     for col, info in outliers.items():
-        print(f"  {col}: {info['count']} outliers ({info['percentage']:.1f}%)")
+        print(f"  {col}: {info['count']} outliers ({info['percentage']:0.1f}%)")
 
 # Generate insights
 insights = []
@@ -99,7 +99,7 @@ insights = []
 # Missing data insight
 missing_pct = (data.isnull().sum().sum() / (data.shape[0] * data.shape[1])) * 100
 if missing_pct > 0:
-    insights.append(f"Dataset has {missing_pct:.1f}% missing values")
+    insights.append(f"Dataset has {missing_pct:0.1f}% missing values")
 
 # Duplicate insight
 if data.duplicated().sum() > 0:
@@ -128,8 +128,8 @@ report = f"""# Data Analysis Report
 ## Dataset Overview
 - **File:** sample_data.csv
 - **Dimensions:** {data.shape[0]} rows × {data.shape[1]} columns
-- **Memory Usage:** {data.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB
-- **Missing Values:** {data.isnull().sum().sum()} ({missing_pct:.1f}%)
+- **Memory Usage:** {data.memory_usage(deep=True).sum() / 1024 / 1024:0.1f} MB
+- **Missing Values:** {data.isnull().sum().sum()} ({missing_pct:0.1f}%)
 - **Duplicate Rows:** {data.duplicated().sum()}
 
 ## Column Types
@@ -158,13 +158,13 @@ report += "\n## Patterns & Anomalies\n\n"
 if correlations:
     report += "### Strong Correlations (>0.7)\n"
     for corr in correlations:
-        report += f"- {corr['columns'][0]} ↔ {corr['columns'][1]}: {corr['correlation']:.3f}\n"
+        report += f"- {corr['columns'][0]} ↔ {corr['columns'][1]}: {corr['correlation']:0.3f}\n"
     report += "\n"
 
 if outliers:
     report += "### Outliers Detected\n"
     for col, info in outliers.items():
-        report += f"- **{col}:** {info['count']} outliers ({info['percentage']:.1f}%)\n"
+        report += f"- **{col}:** {info['count']} outliers ({info['percentage']:0.1f}%)\n"
     report += "\n"
 
 report += "## Actionable Insights\n\n"

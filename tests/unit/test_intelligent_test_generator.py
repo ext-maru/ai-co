@@ -33,7 +33,7 @@ from typing import Dict
 
 class S3Manager:
     def __init__(self, region='us-east-1'):
-        self.s3_client = boto3.client('s3', region_name=region)
+        self.s3_client = boto3client('s3', region_name=region)
     
     def create_bucket(self, bucket_name: str) -> Dict:
         try:
@@ -100,8 +100,8 @@ from typing import Dict, List, Optional
 class ComplexService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.s3 = boto3.client('s3')
-        self.dynamodb = boto3.resource('dynamodb')
+        self.s3 = boto3client('s3')
+        self.dynamodb = boto3resource('dynamodb')
     
     async def process_data(self, data: List[Dict]) -> Optional[Dict]:
         try:
@@ -317,7 +317,7 @@ from botocore.exceptions import ClientError
 
 class S3Service:
     def __init__(self, region='us-east-1'):
-        self.s3_client = boto3.client('s3', region_name=region)
+        self.s3_client = boto3client('s3', region_name=region)
     
     def create_bucket(self, bucket_name: str):
         try:
@@ -330,7 +330,7 @@ class S3Service:
         intelligence = {
             'primary_domain': 'aws',
             'tech_requirements': [{'name': 'aws_s3', 'category': 'aws'}],
-            'implementation_hints': ['boto3.client("s3")']
+            'implementation_hints': ['boto3client("s3")']
         }
         
         test_suite = self.generator.generate_comprehensive_tests(

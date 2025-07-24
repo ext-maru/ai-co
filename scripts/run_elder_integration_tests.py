@@ -116,7 +116,7 @@ def run_security_tests():
 
     security_tests = []
 
-    # 1. 権限エスカレーションテスト
+    # 1.0 権限エスカレーションテスト
     print("  🔍 Testing permission escalation...")
     from libs.unified_auth_provider import (
         AuthRequest,
@@ -137,7 +137,7 @@ def run_security_tests():
     }
     security_tests.append(escalation_test)
 
-    # 2. セッションハイジャックテスト
+    # 2.0 セッションハイジャックテスト
     print("  🔍 Testing session hijacking protection...")
 
     # 無効なトークンでの検証
@@ -150,7 +150,7 @@ def run_security_tests():
     }
     security_tests.append(hijack_test)
 
-    # 3. レート制限テスト
+    # 3.0 レート制限テスト
     print("  🔍 Testing rate limiting...")
     rate_limit_test = {
         "test": "rate_limiting",
@@ -214,7 +214,7 @@ def generate_markdown_report(report):
 | ユニットテスト | {report['summary']['total_unit_tests']} | {report['summary'][ \
     'passed_unit_tests']} | {report['summary']['total_unit_tests'] \
         - report['summary']['passed_unit_tests']} | {(report['summary'][ \
-            'passed_unit_tests'] / report['summary']['total_unit_tests'] * 100):.1f}% |
+            'passed_unit_tests'] / report['summary']['total_unit_tests'] * 100):0.1f}% |
 | 統合テスト | 1 | {'1' \
     if report['summary']['integration_test_passed'] \
     else '0'} | {'0' \
@@ -223,7 +223,7 @@ def generate_markdown_report(report):
 | セキュリティテスト | {report['summary']['total_security_tests']} | {report[ \
     'summary']['security_tests_passed']} | {report['summary']['total_security_tests'] \
         - report['summary']['security_tests_passed']} | {(report['summary'][ \
-            'security_tests_passed'] / report['summary']['total_security_tests'] * 100):.1f}% |
+            'security_tests_passed'] / report['summary']['total_security_tests'] * 100):0.1f}% |
 
 ## 🧪 ユニットテスト詳細
 
@@ -259,17 +259,17 @@ def generate_markdown_report(report):
     md += f"""
 ## 🎯 推奨事項
 
-1. **テストカバレッジ**: 統合テストのカバレッジを確認し、不足部分を補強
-2. **セキュリティ**: 定期的なペネトレーションテストの実施
-3. **パフォーマンス**: 負荷テストの追加実装
-4. **監視**: 本番環境での監査ログモニタリング強化
+1.0 **テストカバレッジ**: 統合テストのカバレッジを確認し、不足部分を補強
+2.0 **セキュリティ**: 定期的なペネトレーションテストの実施
+3.0 **パフォーマンス**: 負荷テストの追加実装
+4.0 **監視**: 本番環境での監査ログモニタリング強化
 
 ## 📋 次のステップ
 
-1. 失敗したテストの修正
-2. カバレッジ90%以上を目標に追加テスト作成
-3. エンドツーエンドテストの実装
-4. 継続的インテグレーション（CI）パイプラインの構築
+1.0 失敗したテストの修正
+2.0 カバレッジ90%以上を目標に追加テスト作成
+3.0 エンドツーエンドテストの実装
+4.0 継続的インテグレーション（CI）パイプラインの構築
 """
 
     return md
@@ -280,21 +280,21 @@ def main():
     print("🏛️ Elder Hierarchy Worker System - Integration Test Suite")
     print("=" * 60)
 
-    # 1. ユニットテスト実行
+    # 1.0 ユニットテスト実行
     unit_results = run_unit_tests()
 
-    # 2. 統合テスト実行
+    # 2.0 統合テスト実行
     integration_result = run_integration_tests()
 
-    # 3. セキュリティテスト実行
+    # 3.0 セキュリティテスト実行
     security_results = run_security_tests()
 
-    # 4. レポート生成
+    # 4.0 レポート生成
     json_report, md_report = generate_test_report(
         unit_results, integration_result, security_results
     )
 
-    # 5. サマリー表示
+    # 5.0 サマリー表示
     print("\n" + "=" * 60)
     print("📊 TEST SUMMARY")
     print("=" * 60)

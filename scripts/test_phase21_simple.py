@@ -15,9 +15,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from libs.four_sages.knowledge.tracking_data_integrator import TrackingDataIntegrator
 from libs.four_sages.knowledge.enhanced_knowledge_sage import EnhancedKnowledgeSage
 
-async def test_tracking_data_integrator():
-    """TrackingDataIntegratorの基本テスト"""
-    print("🔍 TrackingDataIntegrator動作確認開始")
+async def test_tracking_data_integrator()print("🔍 TrackingDataIntegrator動作確認開始")
+"""TrackingDataIntegratorの基本テスト"""
     
     try:
         # TrackingDataIntegratorのインスタンス化
@@ -37,7 +36,7 @@ async def test_tracking_data_integrator():
             
             for pattern in patterns[:3]:  # 最初の3パターンを表示
                 print(f"  - {pattern.pattern_type}: {pattern.pattern_name " \
-                    "if hasattr(pattern, 'pattern_name') else 'Pattern'} (信頼度: {pattern.confidence:.2f})")
+                    "if hasattr(pattern, 'pattern_name') else 'Pattern'} (信頼度: {pattern.confidence:0.2f})")
             
             # メトリクス抽出テスト
             print("\n📏 メトリクス抽出テスト")
@@ -48,7 +47,7 @@ async def test_tracking_data_integrator():
                 valid_scores = [m.quality_score for m in metrics if m.quality_score is not None]
                 if valid_scores:
                     avg_quality = sum(valid_scores) / len(valid_scores)
-                    print(f"  平均品質スコア: {avg_quality:.2f}")
+                    print(f"  平均品質スコア: {avg_quality:0.2f}")
                 else:
                     print("  平均品質スコア: データなし")
         
@@ -70,9 +69,8 @@ async def test_tracking_data_integrator():
         traceback.print_exc()
         return False
 
-async def test_enhanced_knowledge_sage():
-    """EnhancedKnowledgeSageの統合テスト"""
-    print("\n\n🧙 EnhancedKnowledgeSage統合テスト開始")
+async def test_enhanced_knowledge_sage()print("\n\n🧙 EnhancedKnowledgeSage統合テスト開始")
+"""EnhancedKnowledgeSageの統合テスト"""
     
     try:
         # EnhancedKnowledgeSageのインスタンス化
@@ -111,7 +109,7 @@ async def test_enhanced_knowledge_sage():
             print("  ✅ 予測成功")
             predictions = prediction_result.get("predictions", {})
             if "success_probability" in predictions:
-                print(f"  成功確率: {predictions['success_probability']:.1%}")
+                print(f"  成功確率: {predictions['success_probability']:0.1%}")
         else:
             print(f"  ❌ 予測失敗: {prediction_result.get('error')}")
         
@@ -124,9 +122,8 @@ async def test_enhanced_knowledge_sage():
         traceback.print_exc()
         return False
 
-async def main():
-    """メイン実行関数"""
-    print("🌊 Phase 21: Knowledge Sage統合システムテスト")
+async def main()print("🌊 Phase 21: Knowledge Sage統合システムテスト")
+"""メイン実行関数"""
     print("=" * 60)
     
     # TrackingDataIntegratorテスト

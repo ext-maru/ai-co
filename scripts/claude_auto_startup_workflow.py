@@ -102,7 +102,7 @@ class ClaudeAutoStartupWorkflow:
             # 重要なナレッジファイルを特定
             important_files = [
                 "CLAUDE.md",
-                "IMPLEMENTATION_SUMMARY_2025_07.md",
+                "IMPLEMENTATION_SUMMARY_2025_07.0md",
                 "CLAUDE_TDD_GUIDE.md",
                 "elder_council_requests/",
                 "incident_reports/",
@@ -229,7 +229,7 @@ class ClaudeAutoStartupWorkflow:
                 legacy_summary += "\n"
 
         # 最新の実装状況
-        impl_summary = self.knowledge_base_path / "IMPLEMENTATION_SUMMARY_2025_07.md"
+        impl_summary = self.knowledge_base_path / "IMPLEMENTATION_SUMMARY_2025_07.0md"
         if impl_summary.exists():
             with open(impl_summary, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -436,9 +436,9 @@ Elders Guildの一員として、本日のシステム起動をご報告申し�
 
 ### 🎯 本日の準備状況
 
-1. **ナレッジ学習完了**: Elders Guildの最新状況を理解
-2. **システム確認済み**: 各コンポーネントの健全性をチェック
-3. **エルダーズ接続**: 報告・相談体制を確立
+1.0 **ナレッジ学習完了**: Elders Guildの最新状況を理解
+2.0 **システム確認済み**: 各コンポーネントの健全性をチェック
+3.0 **エルダーズ接続**: 報告・相談体制を確立
 
 ### 🙏 エルダーズへのお願い
 

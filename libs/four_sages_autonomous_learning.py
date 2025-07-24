@@ -130,7 +130,7 @@ class FourSagesAutonomousLearning:
         """学習データベース初期化"""
         self.learning_db_path.parent.mkdir(exist_ok=True)
 
-        conn = sqlite3.connect(str(self.learning_db_path))
+        conn = sqlite3connect(str(self.learning_db_path))
         cursor = conn.cursor()
 
         # 学習パターンテーブル
@@ -663,7 +663,7 @@ class FourSagesAutonomousLearning:
 
     async def _store_learning_pattern(self, sage_type: str, pattern: LearningPattern):
         """学習パターン保存"""
-        conn = sqlite3.connect(str(self.learning_db_path))
+        conn = sqlite3connect(str(self.learning_db_path))
         cursor = conn.cursor()
 
         try:
@@ -695,7 +695,7 @@ class FourSagesAutonomousLearning:
         self, strategy: OptimizationStrategy, result: Dict[str, Any]
     ):
         """成功した最適化の記録"""
-        conn = sqlite3.connect(str(self.learning_db_path))
+        conn = sqlite3connect(str(self.learning_db_path))
         cursor = conn.cursor()
 
         try:
@@ -745,7 +745,7 @@ class FourSagesAutonomousLearning:
         self, incident: Dict[str, Any], measures: List[Dict[str, Any]]
     ):
         """インシデント予測記録"""
-        conn = sqlite3.connect(str(self.learning_db_path))
+        conn = sqlite3connect(str(self.learning_db_path))
         cursor = conn.cursor()
 
         try:
@@ -791,7 +791,7 @@ class FourSagesAutonomousLearning:
             json.dump(knowledge_content, f, indent=2)
 
         # データベースに記録
-        conn = sqlite3.connect(str(self.learning_db_path))
+        conn = sqlite3connect(str(self.learning_db_path))
         cursor = conn.cursor()
 
         try:
@@ -886,6 +886,7 @@ class FourSagesAutonomousLearning:
 
 # デモ実行
 if __name__ == "__main__":
+    pass
 
     async def demo():
         """demoメソッド"""

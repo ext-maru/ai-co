@@ -12,9 +12,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from scripts.migrate_a2a_to_pgvector import A2APgVectorMigration
 
 
-def main():
-    """メイン処理"""
-    print("🚀 A2A to pgvector Migration (No Embeddings)")
+def main()print("🚀 A2A to pgvector Migration (No Embeddings)")
+"""メイン処理"""
     print("=" * 60)
 
     try:

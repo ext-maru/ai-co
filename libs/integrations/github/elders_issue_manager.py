@@ -302,7 +302,7 @@ class EldersIssueManager:
             # 類似Issueをコメントで通知
             comment = "🔍 **類似Issue検出**\n\n以下の類似Issueが見つかりました：\n\n"
             for similar in similar_issues["results"]:
-                comment += f"- #{similar['issue_number']}: {similar['title']} (類似度: {similar['similarity']:.0%})\n"
+                comment += f"- #{similar['issue_number']}: {similar['title']} (類似度: {similar['similarity']:0.0%})\n"
 
             issue.create_comment(comment)
 

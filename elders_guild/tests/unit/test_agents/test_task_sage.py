@@ -35,17 +35,15 @@ class TestTaskSage:
     """Task Sage テストスイート"""
     
     @pytest.fixture
-    async def task_sage(self):
-        """Task Sageインスタンス"""
-        sage = TaskSage(db_url="sqlite:///:memory:")
+    async def task_sage(self)sage = TaskSage(db_url="sqlite:///:memory:")
+    """Task Sageインスタンス"""
         yield sage
         if hasattr(sage, '_client'):
             await sage.stop()
     
     @pytest.fixture
-    def faker(self):
-        """Faker インスタンス（日本語）"""
-        return Faker('ja_JP')
+    def faker(self)return Faker('ja_JP')
+    """Faker インスタンス（日本語）"""
     
     @pytest.fixture
     def sample_task_data(self, faker):
@@ -60,17 +58,15 @@ class TestTaskSage:
         }
     
     @pytest.fixture
-    def mock_message(self, sample_task_data):
-        """モックメッセージ"""
-        message = Mock(spec=Message)
+    def mock_message(self, sample_task_data)message = Mock(spec=Message)
+    """モックメッセージ"""
         message.data = sample_task_data
         return message
 
     # 基本的なCRUD操作のテスト
     @pytest.mark.asyncio
-    async def test_create_task_success(self, task_sage, sample_task_data):
-        """タスク作成成功テスト"""
-        message = Mock()
+    async def test_create_task_success(self, task_sage, sample_task_data)message = Mock()
+    """タスク作成成功テスト"""
         message.data = sample_task_data
         
         # ハンドラーを直接呼び出し
@@ -503,9 +499,8 @@ class TestTaskSage:
 
     # エラーハンドリングのテスト
     @pytest.mark.asyncio
-    async def test_update_nonexistent_task(self, task_sage):
-        """存在しないタスクの更新テスト"""
-        update_message = Mock()
+    async def test_update_nonexistent_task(self, task_sage)update_message = Mock()
+    """存在しないタスクの更新テスト"""
         update_message.data = {
             "task_id": "TASK-NONEXISTENT",
             "status": "completed"
@@ -581,9 +576,8 @@ class TestTaskSage:
             update_handler = h["handler"]
             break
         
-        async def update_status(status):
-            """update_statusを更新"""
-            message = Mock()
+        async def update_status(status)message = Mock()
+    """update_statusを更新"""
             message.data = {
                 "task_id": task_id,
                 "status": status
@@ -610,9 +604,8 @@ class TestTaskSageProperties:
     """Task Sageプロパティベーステスト"""
     
     @pytest.fixture
-    async def task_sage(self):
-        """Task Sageインスタンス"""
-        sage = TaskSage(db_url="sqlite:///:memory:")
+    async def task_sage(self)sage = TaskSage(db_url="sqlite:///:memory:")
+    """Task Sageインスタンス"""
         yield sage
         if hasattr(sage, '_client'):
             await sage.stop()
@@ -624,9 +617,8 @@ class TestTaskSageProperties:
         tags=st.lists(st.text(min_size=1, max_size=50), max_size=10)
     )
     @pytest.mark.asyncio
-    async def test_task_creation_properties(self, task_sage, title, description, priority, tags):
-        """タスク作成のプロパティテスト"""
-        message = Mock()
+    async def test_task_creation_properties(self, task_sage, title, description, priority, tags)message = Mock()
+    """タスク作成のプロパティテスト"""
         message.data = {
             "title": title,
             "description": description,

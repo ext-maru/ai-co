@@ -259,9 +259,8 @@ class MetricsCollector:
 
         logger.info("Metrics collector initialized")
 
-    async def collect_all_metrics(self):
-        """全メトリクスの収集"""
-        await self._collect_connection_metrics()
+    async def collect_all_metrics(self)await self._collect_connection_metrics()
+    """全メトリクスの収集"""
         await self._collect_performance_metrics()
         await self._collect_system_metrics()
         await self._collect_replication_metrics()
@@ -493,16 +492,14 @@ class MetricsCollector:
 class AlertManager:
     """アラートマネージャー"""
 
-    def __init__(self, config:
+    def __init__(self, config: NotificationConfig):
         """初期化メソッド"""
-    NotificationConfig):
         self.config = config
         self.alert_rules: List[AlertRule] = []
         self.active_alerts: Dict[str, AlertRule] = {}
 
-    def add_alert_rule(self, rule: AlertRule):
-        """アラートルールの追加"""
-        self.alert_rules.append(rule)
+    def add_alert_rule(self, rule: AlertRule)self.alert_rules.append(rule)
+    """アラートルールの追加"""
 
     def add_default_rules(self):
         """デフォルトアラートルールの追加"""
@@ -575,9 +572,8 @@ class AlertManager:
         for rule in default_rules:
             self.add_alert_rule(rule)
 
-    async def evaluate_alerts(self, metrics: Dict[str, Any]):
-        """アラートの評価"""
-        current_time = datetime.now()
+    async def evaluate_alerts(self, metrics: Dict[str, Any])current_time = datetime.now()
+    """アラートの評価"""
 
         for rule in self.alert_rules:
             if not rule.enabled:
@@ -755,13 +751,11 @@ class AlertManager:
 
         logger.log(log_level, message)
 
-    def get_active_alerts(self) -> List[AlertRule]:
-        """アクティブなアラートの取得"""
-        return list(self.active_alerts.values())
+    def get_active_alerts(self) -> List[AlertRule]return list(self.active_alerts.values())
+    """アクティブなアラートの取得"""
 
-    def get_alert_statistics(self) -> Dict[str, Any]:
-        """アラート統計の取得"""
-        total_rules = len(self.alert_rules)
+    def get_alert_statistics(self) -> Dict[str, Any]total_rules = len(self.alert_rules)
+    """アラート統計の取得"""
         active_alerts = len(self.active_alerts)
 
         level_counts = {}
@@ -801,9 +795,8 @@ class ElderGuildMonitoring:
         self.alert_task: Optional[asyncio.Task] = None
         self.is_running = False
 
-    async def initialize(self):
-        """監視システムの初期化"""
-        await self.metrics_collector.initialize()
+    async def initialize(self)await self.metrics_collector.initialize()
+    """監視システムの初期化"""
 
         # デフォルトアラートルールの追加
         self.alert_manager.add_default_rules()
@@ -966,7 +959,7 @@ async def main():
 
         # ダッシュボードデータの取得
         dashboard = await monitoring.get_monitoring_dashboard()
-        print(f"Monitoring dashboard: {json.dumps(dashboard, indent=2)}")
+        print(f"Monitoring dashboard: {json.dumps(dashboard, indent}")
 
     except Exception as e:
         logger.error(f"Error: {e}")

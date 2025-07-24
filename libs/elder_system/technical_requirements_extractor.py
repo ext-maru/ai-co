@@ -4,11 +4,11 @@ Technical Requirements Extractor
 Phase 4: 実装系Issueから技術要件を自動抽出
 
 主な機能:
-1. 技術スタック識別（言語、フレームワーク、ライブラリ）
-2. API/インターフェース要件抽出
-3. パフォーマンス要件識別
-4. セキュリティ要件抽出
-5. テスト要件生成
+1.0 技術スタック識別（言語、フレームワーク、ライブラリ）
+2.0 API/インターフェース要件抽出
+3.0 パフォーマンス要件識別
+4.0 セキュリティ要件抽出
+5.0 テスト要件生成
 """
 
 import re
@@ -45,14 +45,13 @@ class TechnicalRequirement:
     constraints: List[str]
     acceptance_criteria: List[str]
     
-    def to_dict(self) -> Dict:
-        """辞書形式に変換"""
-        result = asdict(self)
+    def to_dict(self) -> Dictresult = asdict(self)
+    """辞書形式に変換"""
         result['requirement_type'] = self.requirement_type.value
         return result
 
 
-@dataclass
+@dataclass:
 class TechnicalStack:
     """技術スタック"""
     languages: List[str]
@@ -435,7 +434,7 @@ class TechnicalRequirementsExtractor:
         """実装ステップを生成"""
         steps = []
         
-        # 1. 環境セットアップ
+        # 1.0 環境セットアップ
         if not tech_stack.is_empty():
             steps.append({
                 'order': 1,
@@ -448,7 +447,7 @@ class TechnicalRequirementsExtractor:
                 ]
             })
         
-        # 2. 基本実装
+        # 2.0 基本実装
         func_reqs = [r for r in requirements if r.requirement_type == RequirementType.FUNCTIONAL]
         if func_reqs:
             steps.append({
@@ -458,7 +457,7 @@ class TechnicalRequirementsExtractor:
                 'tasks': [req.description for req in func_reqs[:5]]  # 最初の5つ
             })
         
-        # 3. インターフェース実装
+        # 3.0 インターフェース実装
         interface_reqs = [r for r in requirements if r.requirement_type == RequirementType.INTERFACE]
         if interface_reqs:
             steps.append({
@@ -468,7 +467,7 @@ class TechnicalRequirementsExtractor:
                 'tasks': ['Create API endpoints', 'Define data models', 'Add validation']
             })
         
-        # 4. セキュリティ実装
+        # 4.0 セキュリティ実装
         sec_reqs = [r for r in requirements if r.requirement_type == RequirementType.SECURITY]
         if sec_reqs:
             steps.append({
@@ -478,7 +477,7 @@ class TechnicalRequirementsExtractor:
                 'tasks': ['Add authentication', 'Implement authorization', 'Enable encryption']
             })
         
-        # 5. パフォーマンス最適化
+        # 5.0 パフォーマンス最適化
         perf_reqs = [r for r in requirements if r.requirement_type == RequirementType.PERFORMANCE]
         if perf_reqs:
             steps.append({
@@ -488,7 +487,7 @@ class TechnicalRequirementsExtractor:
                 'tasks': ['Add caching', 'Optimize queries', 'Implement connection pooling']
             })
         
-        # 6. テスト実装
+        # 6.0 テスト実装
         test_reqs = [r for r in requirements if r.requirement_type == RequirementType.TESTING]
         if test_reqs or len(requirements) > 0:
             steps.append({
@@ -578,8 +577,8 @@ class TechnicalRequirementsExtractor:
         # package.json, requirements.txt などのパターン
         dep_patterns = [
             r'"([^"]+)"\s*:\s*"[^"]+"',  # package.json style
-            r'([a-zA-Z0-9_-]+)==[0-9.]+',  # requirements.txt style
-            r'([a-zA-Z0-9_-]+)>=?[0-9.]+',  # requirements.txt with >= 
+            r'([a-zA-Z0-9_-]+)==[0-9.0]+',  # requirements.txt style
+            r'([a-zA-Z0-9_-]+)>=?[0-9.0]+',  # requirements.txt with >= 
             r'gem\s+[\'"]([^\'"])+[\'"]',  # Ruby gems
             r'compile\s+[\'"]([^:]+):',  # Gradle/Maven
         ]

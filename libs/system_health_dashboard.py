@@ -28,9 +28,8 @@ class SystemAlert:
 class SystemHealthDashboard:
     """システムヘルス統合ダッシュボード"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger(__name__)
+    def __init__(self)self.logger = logging.getLogger(__name__)
+    """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
 
         # 各監視システムのインスタンス
@@ -91,9 +90,8 @@ class SystemHealthDashboard:
         except Exception as e:
             self.logger.error(f"監視システム初期化に失敗: {e}")
 
-    def start_health_monitoring(self):
-        """ヘルス監視開始"""
-        self.initialize_monitoring()
+    def start_health_monitoring(self)self.initialize_monitoring()
+    """ヘルス監視開始"""
 
         # 定期ヘルスチェックスレッド
         health_thread = threading.Thread(target=self._health_check_loop, daemon=True)
@@ -201,11 +199,11 @@ class SystemHealthDashboard:
                 self._create_alert(
                     "critical",
                     "disk",
-                    f"ディスク使用量が危険レベル: {usage_percent:.1f}%",
+                    f"ディスク使用量が危険レベル: {usage_percent:0.1f}%",
                 )
             elif usage_percent > 80:
                 self._create_alert(
-                    "warning", "disk", f"ディスク使用量が高い: {usage_percent:.1f}%"
+                    "warning", "disk", f"ディスク使用量が高い: {usage_percent:0.1f}%"
                 )
 
         except Exception as e:
@@ -255,9 +253,8 @@ class SystemHealthDashboard:
         except Exception as e:
             self.logger.error(f"ログクリーンアップでエラー: {e}")
 
-    def _create_alert(self, alert_type: str, component: str, message: str):
-        """アラート作成"""
-        alert_id = f"{component}_{int(time.time())}"
+    def _create_alert(self, alert_type: str, component: str, message: str)alert_id = f"{component}_{int(time.time())}"
+    """アラート作成"""
 
         # 同じアラートが既に存在するかチェック
         existing_alert = None
@@ -311,22 +308,15 @@ class SystemHealthDashboard:
                 # ワーカー再起動を試行
                 if self.worker_recovery:
                     restarted = self.worker_recovery.auto_restart_failed_workers()
-                    if not (restarted):
-                        continue  # Early return to reduce nesting
-                    # Reduced nesting - original condition satisfied
                     if restarted:
                         self.logger.info(f"🔧 ワーカー自動復旧完了: {restarted}")
 
             elif alert.component == "config":
                 # 設定の自動修正
-                if not (self.config_validator):
-                    continue  # Early return to reduce nesting
-                # Reduced nesting - original condition satisfied
+                if self.config_validator:
                 if self.config_validator:
                     result = self.config_validator.auto_fix_config()
-                    if not (result.fixed_issues):
-                        continue  # Early return to reduce nesting
-                    # Reduced nesting - original condition satisfied
+                    if result.fixed_issues:
                     if result.fixed_issues:
                         self.logger.info("🔧 設定自動修正完了")
                         self._resolve_alert(alert.id)
@@ -334,9 +324,8 @@ class SystemHealthDashboard:
         except Exception as e:
             self.logger.error(f"自動対応でエラー: {e}")
 
-    def _check_alert_resolution(self):
-        """アラートの自動解決チェック"""
-        for alert_id, alert in list(self.active_alerts.items()):
+    def _check_alert_resolution(self)for alert_id, alert in list(self.active_alerts.items()):
+    """アラートの自動解決チェック"""
             if alert.resolved:
                 continue
 
@@ -352,9 +341,7 @@ class SystemHealthDashboard:
             elif alert.component == "worker":
                 if self.worker_recovery:
                     status = self.worker_recovery.get_system_status()
-                    if not (status["health_summary"]["unhealthy"] == 0):
-                        continue  # Early return to reduce nesting
-                    # Reduced nesting - original condition satisfied
+                    if status["health_summary"]["unhealthy"] == 0:
                     if status["health_summary"]["unhealthy"] == 0:
                         should_resolve = True
 
@@ -488,7 +475,7 @@ if __name__ == "__main__":
             time.sleep(30)
             data = dashboard.get_dashboard_data()
             print(
-                f"🩺 ヘルススコア: {data['system_score']:.1f}, "
+                f"🩺 ヘルススコア: {data['system_score']:0.1f}, "
                 f"アクティブアラート: {data['alert_summary']['active']}"
             )
 

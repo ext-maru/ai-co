@@ -858,6 +858,7 @@ class ElderSystemIntegration(EldersFlowLegacy):
 
 # メイン実行部分
 if __name__ == "__main__":
+    pass
 
     async def test_elder_system_integration():
         """エルダーシステム統合テスト"""
@@ -927,7 +928,7 @@ if __name__ == "__main__":
         print(f"\n🎉 Elder System Integration Test Complete!")
         print(f"Integration ID: {integration.integration_id}")
         print(f"Components Integrated: {len(integration.elder_components)}")
-        print(f"System Health: {integration.system_metrics.system_health:.1f}%")
+        print(f"System Health: {integration.system_metrics.system_health:0.1f}%")
 
     # テスト実行
     asyncio.run(test_elder_system_integration())

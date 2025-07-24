@@ -4,15 +4,15 @@ Self-Evolution System - 自己進化システム
 Elders Guildが最新技術トレンドを自律的に調査・企画・実装する完全自律進化システム
 
 🌟 自己進化フロー:
-1. 📡 RAGエルダー: 日次技術情報収集 (WebFetch, 論文検索, トレンド分析)
-2. 💡 企画設計: 必要性分析 & 実装企画書作成
-3. 🏛️ エルダー評議会: 技術的feasibility & ROI評価
-4. 👑 グランドエルダー: 未来戦略適合性判断 & 最終承認
-5. 🚀 自動実装: AI commandsやライブラリの自動生成
+1.0 📡 RAGエルダー: 日次技術情報収集 (WebFetch, 論文検索, トレンド分析)
+2.0 💡 企画設計: 必要性分析 & 実装企画書作成
+3.0 🏛️ エルダー評議会: 技術的feasibility & ROI評価
+4.0 👑 グランドエルダー: 未来戦略適合性判断 & 最終承認
+5.0 🚀 自動実装: AI commandsやライブラリの自動生成
 
 4賢者統合:
 📚 ナレッジ賢者: 技術蓄積・パターン学習・実装履歴管理
-🔍 RAG賢者: 情報収集・類似技術調査・技術文書解析
+"🔍" RAG賢者: 情報収集・類似技術調査・技術文書解析
 📋 タスク賢者: 実装計画・リソース配分・優先順位決定
 🚨 インシデント賢者: 導入リスク評価・rollback計画・安全性確保
 """
@@ -526,11 +526,11 @@ class ElderCouncilReviewer:
         # 最終決定
         if overall_score >= self.approval_threshold and sages_consensus >= 0.7:
             status = "approved"
-            reason = f"総合評価: {overall_score:.2f}, 4賢者合意: {sages_consensus:.2f}"
+            reason = f"総合評価: {overall_score:0.2f}, 4賢者合意: {sages_consensus:0.2f}"
         else:
             status = "rejected"
-            reason = f"基準未達: 総合評価{overall_score:.2f}(要{self.approval_threshold}), " \
-                "4賢者合意{sages_consensus:.2f}(要0.7)"
+            reason = f"基準未達: 総合評価{overall_score:0.2f}(要{self.approval_threshold}), " \
+                "4賢者合意{sages_consensus:0.2f}(要0.7)"
 
         return {
             "status": status,
@@ -690,11 +690,11 @@ class GrandElderInterface:
 
 Elders Guildの未来について、以下の観点でビジョンをお示しください：
 
-1. 📈 **成長の方向性**: どの領域に注力すべきか
-2. 🎯 **戦略的優先順位**: 最も重要な進化は何か
-3. 🚀 **技術革新**: 採用すべき新技術の方向性
-4. 🌟 **競争優位**: 独自性を生み出す要素
-5. ⚖️ **バランス**: 安定性と革新性のバランス
+1.0 "📈" **成長の方向性**: どの領域に注力すべきか
+2.0 🎯 **戦略的優先順位**: 最も重要な進化は何か
+3.0 🚀 **技術革新**: 採用すべき新技術の方向性
+4.0 🌟 **競争優位**: 独自性を生み出す要素
+5.0 ⚖️ **バランス**: 安定性と革新性のバランス
 
 この未来ビジョンに基づいて、承認待ちの進化企画を評価いたします。
         """
@@ -772,11 +772,11 @@ Elders Guildの未来について、以下の観点でビジョンをお示し�
 
 ## 🤔 ご相談内容
 
-1. **優先順位**: どの企画から実装すべきでしょうか？
-2. **リソース配分**: 限られたリソースをどう配分すべきでしょうか？
-3. **戦略的方向性**: 未来ビジョンに最も適合する企画はどれでしょうか？
-4. **実装タイミング**: 段階的実装の最適なスケジュールは？
-5. **リスク管理**: 注意すべきリスクと対策は？
+1.0 **優先順位**: どの企画から実装すべきでしょうか？
+2.0 **リソース配分**: 限られたリソースをどう配分すべきでしょうか？
+3.0 **戦略的方向性**: 未来ビジョンに最も適合する企画はどれでしょうか？
+4.0 **実装タイミング**: 段階的実装の最適なスケジュールは？
+5.0 **リスク管理**: 注意すべきリスクと対策は？
 
 **決定をお待ちしております。** 🙏
         """
@@ -1004,7 +1004,7 @@ def main():
     result = asyncio.run(command.execute(args))
 
     print(f"✅ {proposal.title} completed")
-    print(f"📊 Success rate: {{result['success_rate']:.1%}}")
+    print(f"📊 Success rate: {{result['success_rate']:0.1%}}")
 
 if __name__ == "__main__":
     main()
@@ -1124,11 +1124,11 @@ if __name__ == "__main__":
 ## 実装詳細
 
 ### ビジネス価値
-- **価値スコア**: {proposal.business_value:.1%}
+- **価値スコア**: {proposal.business_value:0.1%}
 - **期待効果**: {", ".join(proposal.success_criteria)}
 
 ### 技術的複雑度
-- **複雑度**: {proposal.technical_complexity:.1%}
+- **複雑度**: {proposal.technical_complexity:0.1%}
 - **実装期間**: {proposal.timeline.get('development', 'TBD')}
 
 ### リソース要件
@@ -1305,7 +1305,7 @@ class SelfEvolutionSystem:
         summary_message = f"""
 🌟 **Elders Guild 自己進化システム - 日次レポート**
 
-📊 **本日の成果**:
+"📊" **本日の成果**:
 - 🔍 発見技術トレンド: {consultation_log['trends_count']}件
 - 💡 作成進化企画: {consultation_log['proposals_count']}件
 - ✅ 評議会承認: {consultation_log['council_approved']}件

@@ -17,18 +17,14 @@ from libs.mcp_wrapper import MCPServer
 
 class ExecutorMCPServer:
     """ExecutorMCPServerクラス"""
-    def __init__(self):
-        """初期化メソッド"""
-        self.server = MCPServer("executor")
-        self.helper = AICommandHelper()
+    def __init__(self)self.helper = AICommandHelper()
+    """初期化メソッド"""
         self.setup_tools()
 
-    def setup_tools(self):
-        """setup_toolsメソッド"""
-        @self.server.tool()
-        async def execute_command(command:
-            """execute_command実行メソッド"""
-        str, task_name: str = None):
+    def setup_tools(self)@self.server.tool()
+    """setup_toolsメソッド"""
+        async def execute_command(command: str, task_name: str = None):
+        """execute_command実行メソッド"""
             if not task_name:
                 task_name = f"mcp_cmd_{int(asyncio.get_event_loop().time())}"
 
@@ -43,15 +39,12 @@ class ExecutorMCPServer:
             }
 
         @self.server.tool()
-        async def check_result(task_name:
-            """check_resultチェックメソッド"""
-        str):
-            result = self.helper.check_results(task_name)
+        async def check_result(task_name: str)result = self.helper.check_results(task_name)
+    """check_resultチェックメソッド"""
             return result if result else {"status": "not_found"}
 
-    async def process_request(self, request_json):
-        """process_request処理メソッド"""
-        request = json.loads(request_json)
+    async def process_request(self, request_json)request = json.loads(request_json)
+    """process_request処理メソッド"""
         return await self.server.handle_request(request)
 
 

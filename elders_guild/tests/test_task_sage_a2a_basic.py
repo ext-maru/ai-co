@@ -176,7 +176,7 @@ class TestTaskSageA2ABasic:
         assert estimated_hours > 0
         assert 0 <= confidence <= 1
         
-        print(f"✅ Effort estimation skill test passed: {estimated_hours:.2f}h (confidence: {confidence:.2f})")
+        print(f"✅ Effort estimation skill test passed: {estimated_hours:0.2f}h (confidence: {confidence:0.2f})")
     
     @pytest.mark.asyncio
     async def test_get_statistics_skill(self, task_agent):

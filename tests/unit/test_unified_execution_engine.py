@@ -106,14 +106,12 @@ class TestUnifiedExecutionEngine:
     """
     
     @pytest.fixture
-    def engine(self):
-        """テスト用統合実行エンジンインスタンス"""
-        return UnifiedExecutionEngine()
+    def engine(self)return UnifiedExecutionEngine()
+    """テスト用統合実行エンジンインスタンス"""
     
     @pytest.fixture
-    def mock_unified_council(self):
-        """モック統合評議会"""
-        mock_council = Mock()
+    def mock_unified_council(self)mock_council = Mock()
+    """モック統合評議会"""
         mock_council.submit_matter = AsyncMock(return_value="matter_001")
         return mock_council
     

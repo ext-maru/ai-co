@@ -81,12 +81,12 @@ class AdvancedSearchAnalyticsCLI:
             # 結果表示
             if result.get("results"):
                 print(f"✅ 検索完了: {result['total_found']}件発見")
-                print(f"🕐 検索時間: {result.get('search_time', 0):.3f}秒")
+                print(f"🕐 検索時間: {result.get('search_time', 0):0.3f}秒")
 
                 for i, item in enumerate(result["results"][:10]):
                     print(f"\n{i+1}. {item.get('title', 'タイトルなし')}")
                     print(f"   ID: {item.get('id', 'N/A')}")
-                    print(f"   類似度: {item.get('similarity', 0):.3f}")
+                    print(f"   類似度: {item.get('similarity', 0):0.3f}")
                     print(f"   ソース: {item.get('source', 'N/A')}")
                     print(f"   内容: {item.get('content', '')[:100]}...")
 
@@ -124,7 +124,7 @@ class AdvancedSearchAnalyticsCLI:
             # 結果表示
             print(f"✅ 分析完了")
             print(f"📈 分析タイプ: {result.analytics_type.value}")
-            print(f"🎯 信頼度: {result.confidence:.2f}")
+            print(f"🎯 信頼度: {result.confidence:0.2f}")
             print(f"🕐 分析時刻: {result.timestamp}")
 
             # サマリー表示
@@ -190,10 +190,10 @@ class AdvancedSearchAnalyticsCLI:
                 # 結果表示
                 for i, item in enumerate(result["results"][:5]):
                     print(f"\n{i+1}. {item.get('title', 'タイトルなし')}")
-                    print(f"   類似度: {item.get('similarity', 0):.3f}")
+                    print(f"   類似度: {item.get('similarity', 0):0.3f}")
                     if "personalization_score" in item:
                         print(
-                            f"   パーソナライズスコア: {item['personalization_score']:.3f}"
+                            f"   パーソナライズスコア: {item['personalization_score']:0.3f}"
                         )
                     print(f"   内容: {item.get('content', '')[:100]}...")
 
@@ -224,7 +224,7 @@ class AdvancedSearchAnalyticsCLI:
                 trends = dashboard["search_trends"]
                 print(f"\n🔍 検索トレンド:")
                 print(f"   人気クエリ: {', '.join(trends.get('top_queries', []))}")
-                print(f"   検索増加率: {trends.get('query_growth', 0)*100:.1f}%")
+                print(f"   検索増加率: {trends.get('query_growth', 0)*100:0.1f}%")
                 print(
                     f"   人気カテゴリ: {', '.join(trends.get('popular_categories', []))}"
                 )
@@ -234,7 +234,7 @@ class AdvancedSearchAnalyticsCLI:
                 stats = dashboard["content_statistics"]
                 print(f"\n📚 コンテンツ統計:")
                 print(f"   総文書数: {stats.get('total_documents', 0):,}")
-                print(f"   平均品質: {stats.get('average_quality', 0):.2f}")
+                print(f"   平均品質: {stats.get('average_quality', 0):0.2f}")
                 print(f"   最近の追加: {stats.get('recent_additions', 0)}件")
 
                 if stats.get("content_types"):
@@ -248,20 +248,20 @@ class AdvancedSearchAnalyticsCLI:
                 print(f"\n👥 ユーザー行動:")
                 print(f"   アクティブユーザー: {behavior.get('active_users', 0)}")
                 print(
-                    f"   平均セッション時間: {behavior.get('average_session_duration', 0):.1f}分"
+                    f"   平均セッション時間: {behavior.get('average_session_duration', 0):0.1f}分"
                 )
-                print(f"   離脱率: {behavior.get('bounce_rate', 0)*100:.1f}%")
-                print(f"   エンゲージメント: {behavior.get('engagement_score', 0):.2f}")
+                print(f"   離脱率: {behavior.get('bounce_rate', 0)*100:0.1f}%")
+                print(f"   エンゲージメント: {behavior.get('engagement_score', 0):0.2f}")
 
             # パフォーマンス指標
             if dashboard.get("performance_metrics"):
                 perf = dashboard["performance_metrics"]
                 print(f"\n⚡ パフォーマンス指標:")
-                print(f"   平均応答時間: {perf.get('average_response_time', 0):.2f}秒")
-                print(f"   検索成功率: {perf.get('search_success_rate', 0)*100:.1f}%")
-                print(f"   システム稼働率: {perf.get('system_uptime', 0)*100:.3f}%")
+                print(f"   平均応答時間: {perf.get('average_response_time', 0):0.2f}秒")
+                print(f"   検索成功率: {perf.get('search_success_rate', 0)*100:0.1f}%")
+                print(f"   システム稼働率: {perf.get('system_uptime', 0)*100:0.3f}%")
                 print(
-                    f"   キャッシュヒット率: {perf.get('cache_hit_rate', 0)*100:.1f}%"
+                    f"   キャッシュヒット率: {perf.get('cache_hit_rate', 0)*100:0.1f}%"
                 )
 
             # 4賢者統合状況

@@ -197,8 +197,8 @@ def main():
         print("  - ログメッセージを日本語化")
         print("  - ai_resultsキューへ正しく転送")
         print("\n次の手順:")
-        print("  1. PMWorkerを再起動: ai-restart")
-        print("  2. 新しいタスクを実行してSlack通知を確認")
+        print("  1.0 PMWorkerを再起動: ai-restart")
+        print("  2.0 新しいタスクを実行してSlack通知を確認")
     else:
         print("\n❌ パッチ適用に失敗しました")
 

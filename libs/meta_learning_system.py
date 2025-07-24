@@ -68,8 +68,8 @@ class MetaLearningSystem:
             return {"predicted_time": "unknown", "predicted_success": "unknown"}
 
         return {
-            "predicted_time": f"{pattern['avg_time']:.2f}s",
-            "predicted_success": f"{pattern['avg_success']*100:.1f}%",
+            "predicted_time": f"{pattern['avg_time']:0.2f}s",
+            "predicted_success": f"{pattern['avg_success']*100:0.1f}%",
         }
 
 

@@ -53,7 +53,7 @@ def retry(
                     # 最後の試行の場合は待機しない
                     if attempt < max_attempts - 1:
                         wait_time = calculate_wait_time(attempt, backoff, delay)
-                        logger.info(f"Retrying after {wait_time:.1f} seconds...")
+                        logger.info(f"Retrying after {wait_time:0.1f} seconds...")
                         time.sleep(wait_time)
 
             # 全試行失敗
@@ -109,14 +109,13 @@ class RetryableWorker:
 
         return wrapped_operation()
 
-    def retry_with_config(self, **custom_config) -> Callable:
-        """カスタム設定でのリトライデコレータ"""
-        config = self.retry_config.copy()
+    def retry_with_config(self, **custom_config) -> Callableconfig = self.retry_config.copy()
+    """カスタム設定でのリトライデコレータ"""
         config.update(custom_config)
         return retry(**config)
 
 
-# よく使う設定のプリセット
+# よく使う設定のプリセット:
 class RetryPresets:
     """リトライ設定のプリセット"""
 

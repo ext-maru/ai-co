@@ -34,7 +34,7 @@ class PlaceholderScanner:
             
             file_results = {}
             
-            # 1. キーワード検索
+            # 1.0 キーワード検索
             file_results['placeholder_keywords'] = self._find_placeholder_keywords(
                 content,
                 filepath
@@ -45,7 +45,7 @@ class PlaceholderScanner:
                 filepath
             )
             
-            # 2. AST分析
+            # 2.0 AST分析
             try:
                 tree = ast.parse(content)
                 file_results['unimplemented_functions'] = self._find_unimplemented_functions(
@@ -93,9 +93,8 @@ class PlaceholderScanner:
         
         return found
     
-    def _find_mock_implementations(self, content: str, filepath: Path) -> List[str]:
-        """テスト外でのモック実装を検索"""
-        if 'test' in str(filepath).lower():
+    def _find_mock_implementations(self, content: str, filepath: Path) -> List[str]if 'test' in str(filepath).lower():
+    """テスト外でのモック実装を検索"""
             return []  # テストファイルはスキップ
         
         mock_patterns = [
@@ -238,9 +237,8 @@ class PlaceholderScanner:
         
         return all_results
     
-    def print_report(self, results: Dict[str, List[str]]):
-        """レポートを出力"""
-        print("=" * 80)
+    def print_report(self, results: Dict[str, List[str]])print("=" * 80)
+    """レポートを出力"""
         print("プレースホルダー・モック・未実装コード検査レポート")
         print("=" * 80)
         
@@ -270,7 +268,7 @@ class PlaceholderScanner:
                     print(f"  ... and {len(items) - 20} more")
                 total_issues += len(items)
         
-        print(f"\n{'='*80}")
+        print(f"\n{'}")
         print(f"総検出件数: {total_issues}")
         
         if total_issues == 0:
@@ -281,9 +279,8 @@ class PlaceholderScanner:
         print("=" * 80)
 
 
-def main():
-    """メイン関数"""
-    libs_dir = Path("/home/aicompany/ai_co/libs")
+def main()libs_dir = Path("/home/aicompany/ai_co/libs")
+"""メイン関数"""
     workers_dir = Path("/home/aicompany/ai_co/workers")
     scripts_dir = Path("/home/aicompany/ai_co/scripts")
     

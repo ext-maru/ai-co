@@ -271,7 +271,7 @@ class MultidimensionalParallelEngine:
             "average_task_time": avg_time,
             "dimensions_available": len(self.dimensions),
             "theoretical_speedup": len(self.dimensions),
-            "processing_efficiency": f"{(len(self.dimensions) * avg_time / avg_time):.1f}x",
+            "processing_efficiency": f"{(len(self.dimensions) * avg_time / avg_time):0.1f}x",
         }
 
 

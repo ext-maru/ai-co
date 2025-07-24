@@ -72,7 +72,7 @@ class AutomatedLearningCLI:
             print(f"   アクティブタスク: {status['active_tasks']}")
             print(f"   待機タスク: {status['queued_tasks']}")
             print(f"   完了タスク: {status['completed_tasks']}")
-            print(f"   成功率: {status['success_rate']:.2%}")
+            print(f"   成功率: {status['success_rate']:0.2%}")
 
             # パフォーマンス指標
             if status.get("performance_metrics"):
@@ -80,12 +80,12 @@ class AutomatedLearningCLI:
                 print(f"\n📈 パフォーマンス指標:")
                 print(f"   総学習タスク: {metrics['total_learning_tasks']}")
                 print(f"   成功学習タスク: {metrics['successful_learning_tasks']}")
-                print(f"   平均学習時間: {metrics['average_learning_time']:.2f}秒")
-                print(f"   モデル精度向上: {metrics['model_accuracy_improvement']:.2%}")
+                print(f"   平均学習時間: {metrics['average_learning_time']:0.2f}秒")
+                print(f"   モデル精度向上: {metrics['model_accuracy_improvement']:0.2%}")
                 print(
-                    f"   システム性能向上: {metrics['system_performance_improvement']:.2%}"
+                    f"   システム性能向上: {metrics['system_performance_improvement']:0.2%}"
                 )
-                print(f"   知識成長率: {metrics['knowledge_growth_rate']:.2%}")
+                print(f"   知識成長率: {metrics['knowledge_growth_rate']:0.2%}")
 
             # 学習エージェント
             if status.get("learning_agents"):
@@ -100,7 +100,7 @@ class AutomatedLearningCLI:
                     success_icon = "✅" if entry["success"] else "❌"
                     print(
                         f"   {success_icon} {entry['task_type']} | "
-                        f"改善: {entry['performance_improvement']:.2%} | "
+                        f"改善: {entry['performance_improvement']:0.2%} | "
                         f"{entry['timestamp']}"
                     )
 
@@ -243,7 +243,7 @@ class AutomatedLearningCLI:
                 success_icon = "✅" if entry["success"] else "❌"
                 print(f"{i}. {success_icon} {entry['task_type'].upper()}")
                 print(f"   タスクID: {entry['task_id']}")
-                print(f"   性能改善: {entry['performance_improvement']:.2%}")
+                print(f"   性能改善: {entry['performance_improvement']:0.2%}")
                 print(f"   実行時刻: {entry['timestamp']}")
                 print()
 

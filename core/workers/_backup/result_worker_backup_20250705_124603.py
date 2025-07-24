@@ -54,9 +54,8 @@ class ResultWorker:
             logger.error(f"結果処理エラー: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
-    def start(self):
-        """startメソッド"""
-        if not self.connect():
+    def start(self)if not self.connect():
+    """startメソッド"""
             return
 
         self.channel.basic_consume(

@@ -45,16 +45,15 @@ async def evaluate_issue(processor, issue):
             'state': issue.state
         }
         
-        safe_print(f"✅ Issue #{issue.number}: 複雑度 {complexity.score:.3f}")
+        safe_print(f"✅ Issue #{issue.number}: 複雑度 {complexity.score:0.3f}")
         return result
         
     except Exception as e:
         safe_print(f"❌ Issue #{issue.number}: エラー {e}")
         return None
 
-async def batch_process_issues(issues, max_concurrent=5):
-    """複数のIssueを並列処理"""
-    processor = AutoIssueProcessor()
+async def batch_process_issues(issues, max_concurrent=5)processor = AutoIssueProcessor()
+"""複数のIssueを並列処理"""
     semaphore = asyncio.Semaphore(max_concurrent)
     
     async def process_with_limit(issue):
@@ -66,9 +65,8 @@ async def batch_process_issues(issues, max_concurrent=5):
     
     return [r for r in results if r is not None]
 
-def analyze_batch_results(results):
-    """バッチ処理結果の分析"""
-    total = len(results)
+def analyze_batch_results(results)total = len(results)
+"""バッチ処理結果の分析"""
     processable = sum(1 for r in results if r['is_processable'])
     
     # 複雑度の統計
@@ -97,9 +95,8 @@ def analyze_batch_results(results):
         'processable_issues': processable_issues
     }
 
-async def main():
-    """メイン処理"""
-    print("="*80)
+async def main()print("="*80)
+"""メイン処理"""
     print("🚀 イシューローダーバッチ処理テスト")
     print("="*80)
     
@@ -128,8 +125,8 @@ async def main():
     
     print(f"\n📊 取得結果:")
     print(f"  - 総Issue数: {len(issues)}")
-    print(f"  - オープン: {sum(1 for i in issues if i.state == 'open')}")
-    print(f"  - クローズ: {sum(1 for i in issues if i.state == 'closed')}")
+    print(f"  - オープン: {sum(1 for i in issues if i.state }")
+    print(f"  - クローズ: {sum(1 for i in issues if i.state }")
     
     # バッチ処理実行
     print(f"\n⚡ バッチ処理開始（並列度: 5）...")
@@ -138,8 +135,8 @@ async def main():
     results = await batch_process_issues(issues, max_concurrent=5)
     
     batch_time = time.time() - batch_start
-    print(f"\n✅ バッチ処理完了: {batch_time:.2f}秒")
-    print(f"  - 処理速度: {len(results)/batch_time:.1f} issues/秒")
+    print(f"\n✅ バッチ処理完了: {batch_time:0.2f}秒")
+    print(f"  - 処理速度: {len(results)/batch_time:0.1f} issues/秒")
     
     # 結果分析
     print("\n📊 処理結果分析...")
@@ -147,9 +144,9 @@ async def main():
     
     print(f"\n📈 統計情報:")
     print(f"  - 処理成功: {len(results)}/{len(issues)} Issues")
-    print(f"  - 処理可能: {analysis['processable_count']} ({analysis['processable_rate']:.1f}%)")
-    print(f"  - 平均複雑度: {analysis['average_complexity']:.3f}")
-    print(f"  - 複雑度範囲: {analysis['complexity_range']['min']:.3f} - {analysis['complexity_range']['max']:.3f}")
+    print(f"  - 処理可能: {analysis['processable_count']} ({analysis['processable_rate']:0.1f}%)")
+    print(f"  - 平均複雑度: {analysis['average_complexity']:0.3f}")
+    print(f"  - 複雑度範囲: {analysis['complexity_range']['min']:0.3f} - {analysis['complexity_range']['max']:0.3f}")
     
     print(f"\n🏷️ ラベル分布:")
     for label, count in sorted(analysis['label_distribution'].items(), key=lambda x: x[1], reverse=True)[:10]:
@@ -157,11 +154,11 @@ async def main():
     
     print(f"\n✅ 処理可能なIssue Top 10:")
     for issue in sorted(analysis['processable_issues'], key=lambda x: x['complexity_score'])[:10]:
-        print(f"  - Issue #{issue['issue_number']}: {issue['title'][:50]}... (複雑度: {issue['complexity_score']:.3f})")
+        print(f"  - Issue #{issue['issue_number']}: {issue['title'][:50]}... (複雑度: {issue['complexity_score']:0.3f})")
     
     # 総処理時間
     total_time = time.time() - start_time
-    print(f"\n⏱️ 総処理時間: {total_time:.2f}秒")
+    print(f"\n⏱️ 総処理時間: {total_time:0.2f}秒")
     
     # 結果をJSONに保存
     output_dir = Path("batch_processing_results")
@@ -186,8 +183,8 @@ async def main():
     # パフォーマンス推定
     print(f"\n🚀 パフォーマンス推定:")
     issues_per_hour = (len(results) / batch_time) * 3600
-    print(f"  - 推定処理能力: {issues_per_hour:.0f} issues/hour")
-    print(f"  - リポジトリ全Issue処理時間: {len(all_issues) / (len(results) / batch_time) / 60:.1f}分")
+    print(f"  - 推定処理能力: {issues_per_hour:0.0f} issues/hour")
+    print(f"  - リポジトリ全Issue処理時間: {len(all_issues) / (len(results) / batch_time) / 60:0.1f}分")
 
 if __name__ == "__main__":
     asyncio.run(main())

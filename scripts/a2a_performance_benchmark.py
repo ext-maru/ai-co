@@ -41,9 +41,8 @@ class A2APerformanceBenchmark:
             "memory_available_mb": psutil.virtual_memory().available / 1024 / 1024,
         }
 
-    def single_communication_test(self, test_id: str) -> Dict:
-        """単一通信テスト"""
-        start_time = time.time()
+    def single_communication_test(self, test_id: str) -> Dictstart_time = time.time()
+    """単一通信テスト"""
         start_resources = self.measure_system_resources()
 
         # A2A通信をシミュレート
@@ -53,7 +52,7 @@ class A2APerformanceBenchmark:
             target_agent="test_target",
             message_type="performance_test",
             status="success",
-            response_time=0.001,
+            response_time=0.001,:
             metadata={"test_id": test_id, "benchmark_id": self.benchmark_id},
         )
         communication_end = time.time()
@@ -70,9 +69,8 @@ class A2APerformanceBenchmark:
             "success": True,
         }
 
-    def concurrent_communication_test(self, num_concurrent: int) -> Dict:
-        """並行通信テスト"""
-        print(f"🔄 並行通信テスト開始: {num_concurrent}件同時実行")
+    def concurrent_communication_test(self, num_concurrent: int) -> Dictprint(f"🔄 並行通信テスト開始: {num_concurrent}件同時実行")
+    """並行通信テスト"""
 
         start_time = time.time()
         start_resources = self.measure_system_resources()
@@ -123,9 +121,8 @@ class A2APerformanceBenchmark:
             "end_resources": end_resources,
         }
 
-    def four_sages_collaboration_benchmark(self) -> Dict:
-        """4賢者協調ベンチマーク"""
-        print("🧙‍♂️ 4賢者協調パフォーマンステスト開始")
+    def four_sages_collaboration_benchmark(self) -> Dictprint("🧙‍♂️ 4賢者協調パフォーマンステスト開始")
+    """4賢者協調ベンチマーク"""
 
         start_time = time.time()
         start_resources = self.measure_system_resources()
@@ -142,7 +139,7 @@ class A2APerformanceBenchmark:
             ("task_sage", "all_sages", "session_complete"),
         ]
 
-        communication_times = []
+        communication_times = []:
         for source, target, msg_type in sage_communications:
             comm_start = time.time()
             self.monitor.record_communication(
@@ -171,9 +168,8 @@ class A2APerformanceBenchmark:
             "end_resources": end_resources,
         }
 
-    def stress_test(self, duration_seconds: int = 30) -> Dict:
-        """ストレステスト"""
-        print(f"⚡ ストレステスト開始: {duration_seconds}秒間")
+    def stress_test(self, duration_seconds: int = 30) -> Dictprint(f"⚡ ストレステスト開始: {duration_seconds}秒間")
+    """ストレステスト"""
 
         start_time = time.time()
         start_resources = self.measure_system_resources()
@@ -252,32 +248,31 @@ class A2APerformanceBenchmark:
             "end_resources": end_resources,
         }
 
-    def run_comprehensive_benchmark(self) -> Dict:
-        """包括的ベンチマーク実行"""
-        print("🚀 A2A通信パフォーマンス包括ベンチマーク開始")
+    def run_comprehensive_benchmark(self) -> Dictprint("🚀 A2A通信パフォーマンス包括ベンチマーク開始")
+    """包括的ベンチマーク実行"""
         print("=" * 60)
 
         benchmark_start = time.time()
 
-        # 1. 単一通信テスト
-        print("📡 1. 単一通信パフォーマンステスト")
-        single_tests = []
+        # 1.0 単一通信テスト
+        print("📡 1.0 単一通信パフォーマンステスト")
+        single_tests = []:
         for i in range(10):
             result = self.single_communication_test(f"single_{i}")
             single_tests.append(result)
 
-        # 2. 並行通信テスト
+        # 2.0 並行通信テスト
         concurrent_results = []
         for concurrent_count in [5, 10, 20, 50]:
             result = self.concurrent_communication_test(concurrent_count)
             concurrent_results.append(result)
 
-        # 3. 4賢者協調テスト
-        print("🧙‍♂️ 3. 4賢者協調パフォーマンステスト")
+        # 3.0 4賢者協調テスト
+        print("🧙‍♂️ 3.0 4賢者協調パフォーマンステスト")
         four_sages_result = self.four_sages_collaboration_benchmark()
 
-        # 4. ストレステスト
-        print("⚡ 4. ストレステスト")
+        # 4.0 ストレステスト
+        print("⚡ 4.0 ストレステスト")
         stress_result = self.stress_test(15)  # 15秒
 
         benchmark_end = time.time()
@@ -318,56 +313,54 @@ class A2APerformanceBenchmark:
 
         return benchmark_report
 
-    def print_results(self, report: Dict):
-        """結果表示"""
-        print("\n" + "=" * 60)
+    def print_results(self, report: Dict)print("\n" + "=" * 60)
+    """結果表示"""
         print("📊 A2A通信パフォーマンステスト結果")
         print("=" * 60)
 
         print(f"🆔 ベンチマークID: {report['benchmark_id']}")
-        print(f"⏱️ 実行時間: {report['total_duration']:.2f}秒")
+        print(f"⏱️ 実行時間: {report['total_duration']:0.2f}秒")
 
         print("\n📡 単一通信:")
         print(
-            f"  平均応答時間: {report['single_communication']['avg_time']*1000:.2f}ms"
+            f"  平均応答時間: {report['single_communication']['avg_time']*1000:0.2f}ms"
         )
-        print(f"  最速応答: {report['single_communication']['min_time']*1000:.2f}ms")
-        print(f"  最遅応答: {report['single_communication']['max_time']*1000:.2f}ms")
+        print(f"  最速応答: {report['single_communication']['min_time']*1000:0.2f}ms")
+        print(f"  最遅応答: {report['single_communication']['max_time']*1000:0.2f}ms")
 
         print("\n🔄 並行通信:")
         for result in report["concurrent_communication"]:
             print(
                 (
-                    f"f"  {result['num_concurrent']}件同時: {result['throughput_per_second']:.1f} req/sec (成功率: "
-                    f"{result['success_rate']:.1f}%)""
+                    f"f"  {result['num_concurrent']}件同時: {result['throughput_per_second']:0.1f} req/sec (成功率: "
+                    f"{result['success_rate']:0.1f}%)""
                 )
             )
 
         print("\n🧙‍♂️ 4賢者協調:")
         collab = report["four_sages_collaboration"]
-        print(f"  総時間: {collab['total_time']*1000:.2f}ms")
+        print(f"  総時間: {collab['total_time']*1000:0.2f}ms")
         print(f"  通信数: {collab['total_communications']}件")
-        print(f"  平均通信時間: {collab['avg_communication_time']*1000:.2f}ms")
+        print(f"  平均通信時間: {collab['avg_communication_time']*1000:0.2f}ms")
 
         print("\n⚡ ストレステスト:")
         stress = report["stress_test"]
-        print(f"  実行時間: {stress['duration_seconds']:.1f}秒")
+        print(f"  実行時間: {stress['duration_seconds']:0.1f}秒")
         print(f"  総リクエスト: {stress['total_requests']}件")
-        print(f"  成功率: {stress['success_rate']:.1f}%")
-        print(f"  スループット: {stress['successful_per_second']:.1f} req/sec")
-        print(f"  P95応答時間: {stress['response_times']['p95']*1000:.2f}ms")
+        print(f"  成功率: {stress['success_rate']:0.1f}%")
+        print(f"  スループット: {stress['successful_per_second']:0.1f} req/sec")
+        print(f"  P95応答時間: {stress['response_times']['p95']*1000:0.2f}ms")
 
         print("\n🏆 総合評価:")
         summary = report["summary"]
-        print(f"  最大スループット: {summary['peak_throughput']:.1f} req/sec")
-        print(f"  最高応答時間: {summary['best_response_time']*1000:.2f}ms")
-        print(f"  協調効率: {summary['collaboration_efficiency']*1000:.2f}ms")
-        print(f"  ストレス耐性: {summary['stress_performance']:.1f} req/sec")
+        print(f"  最大スループット: {summary['peak_throughput']:0.1f} req/sec")
+        print(f"  最高応答時間: {summary['best_response_time']*1000:0.2f}ms")
+        print(f"  協調効率: {summary['collaboration_efficiency']*1000:0.2f}ms")
+        print(f"  ストレス耐性: {summary['stress_performance']:0.1f} req/sec")
 
 
-def main():
-    """メイン処理"""
-    benchmark = A2APerformanceBenchmark()
+def main()benchmark = A2APerformanceBenchmark()
+"""メイン処理"""
 
     print("🤖 A2A通信システム実戦パフォーマンステスト")
     print("リアルタイム監視システムと連携して計測を実行します...")

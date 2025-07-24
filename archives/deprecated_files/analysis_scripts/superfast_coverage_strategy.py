@@ -127,12 +127,12 @@ def execute_parallel_coverage():
 
     print("🚀 超高速カバレッジ戦略実行開始...")
 
-    # 1. ライトニングテスト生成
+    # 1.0 ライトニングテスト生成
     print("⚡ ライトニングテスト生成中...")
     lightning_tests = create_lightning_tests()
     print(f"✅ {len(lightning_tests)}個のライトニングテスト生成完了")
 
-    # 2. 既存テストの並列実行
+    # 2.0 既存テストの並列実行
     print("🔄 既存テストの並列実行...")
 
     test_commands = [
@@ -166,7 +166,7 @@ def execute_parallel_coverage():
             except Exception as e:
                 results.append({"command": cmd, "error": str(e)})
 
-    # 3. カバレッジ測定
+    # 3.0 カバレッジ測定
     print("📊 カバレッジ測定実行...")
     coverage_cmd = "python3 -m coverage run -m pytest tests/lightning/ tests/test_base.py && python3 -m " \
         "python3 -m coverage run -m pytest tests/lightning/ tests/test_base.py && python3 -m " \

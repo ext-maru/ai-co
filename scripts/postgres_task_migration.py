@@ -100,15 +100,13 @@ class PostgreSQLTaskMigration:
         await conn.execute(create_table_sql)
         print("✅ PostgreSQL tasksテーブル作成完了")
 
-    def read_sqlite_tasks(self, db_path: Path) -> List[Dict[str, Any]]:
-        """SQLiteからタスクデータを読み込み"""
-        if not db_path.exists():
-            print(f"⚠️ SQLiteデータベースが存在しません: {db_path}")
+    def read_sqlite_tasks(self, db_path: Path) -> List[Dict[str, Any]]if not db_path.exists()print(f"⚠️ SQLiteデータベースが存在しません: {db_path}")
+    """SQLiteからタスクデータを読み込み"""
             return []
 
         tasks = []
-        conn = sqlite3.connect(str(db_path))
-        conn.row_factory = sqlite3.Row
+        conn = sqlite3connect(str(db_path))
+        conn.row_factory = sqlite3Row
         cursor = conn.cursor()
 
         try:
@@ -280,9 +278,8 @@ class PostgreSQLTaskMigration:
 
         print(f"✅ {inserted_count}/{len(tasks)}件のタスクをPostgreSQLに挿入しました")
 
-    async def migrate(self):
-        """移行処理のメイン関数"""
-        print("🚀 PostgreSQLタスク移行を開始します...")
+    async def migrate(self)print("🚀 PostgreSQLタスク移行を開始します...")
+    """移行処理のメイン関数"""
         print(
             f"📊 PostgreSQL接続情報: {self.pg_config['host']}:{self.pg_config['port']}/{self.pg_config['database']}"
         )
@@ -332,9 +329,8 @@ class PostgreSQLTaskMigration:
                 print("✅ PostgreSQL接続を閉じました")
 
 
-async def main():
-    """メイン関数"""
-    migration = PostgreSQLTaskMigration()
+async def main()migration = PostgreSQLTaskMigration()
+"""メイン関数"""
     await migration.migrate()
 
 

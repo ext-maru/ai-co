@@ -53,9 +53,8 @@ class AnalyticsResult:
 class DataCollector:
     """データ収集エンジン"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = Path(project_root)
         self.logs_dir = self.project_root / "logs"
         self.db_path = self.project_root / "elder_dashboard.db"
@@ -63,7 +62,7 @@ class DataCollector:
     async def collect_commit_data(self) -> pd.DataFrame:
         """コミットデータ収集"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
 
             # プロトコル履歴を取得
             query = """
@@ -97,7 +96,7 @@ class DataCollector:
     async def collect_sage_consultation_data(self) -> pd.DataFrame:
         """4賢者相談データ収集"""
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
 
             query = """
                 SELECT
@@ -346,7 +345,7 @@ class AnalyticsEngine:
         peak_hour = hourly_commits.idxmax()
 
         insights.append(f"📊 ピークコミット時間: {peak_hour}時台")
-        insights.append(f"⚡ 平均実行時間: {metrics['avg_execution_time']:.1f}秒")
+        insights.append(f"⚡ 平均実行時間: {metrics['avg_execution_time']:0.1f}秒")
 
         # 予測
         if len(df) > 10:
@@ -447,7 +446,7 @@ class AnalyticsEngine:
         for sage, stats in sage_stats.iterrows():
             approval_rate = stats[("approval", "mean")] * 100
             if approval_rate < 80:
-                recommendations.append(f"⚠️ {sage}の承認率が{approval_rate:.1f}%と低い")
+                recommendations.append(f"⚠️ {sage}の承認率が{approval_rate:0.1f}%と低い")
 
         return AnalyticsResult(
             type=AnalyticsType.SAGE_PERFORMANCE,
@@ -485,7 +484,7 @@ class AnalyticsEngine:
             approval_rate = commit_df["approved"].mean() * 100
             if approval_rate < 80:
                 health_score -= 15
-                insights.append(f"📉 コミット承認率が{approval_rate:.1f}%と低下")
+                insights.append(f"📉 コミット承認率が{approval_rate:0.1f}%と低下")
 
         metrics["current_health_score"] = health_score
         metrics["error_rate"] = system_metrics["error_logs"] / max(
@@ -669,7 +668,7 @@ class AnalyticsEngine:
 
         if error_probability > 0.3:
             insights.append(
-                f"🚨 24時間以内のエラー発生確率: {error_probability*100:.0f}%"
+                f"🚨 24時間以内のエラー発生確率: {error_probability*100:0.0f}%"
             )
 
         # 推奨事項
@@ -839,9 +838,8 @@ class PredictiveAnalytics:
 class AnalyticsReporter:
     """分析レポート生成器"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = Path(project_root)
         self.reports_dir = self.project_root / "analytics_reports"
         self.reports_dir.mkdir(exist_ok=True)
@@ -1084,7 +1082,7 @@ class AnalyticsReporter:
                 <div>推奨アクション</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">{np.mean([r.confidence for r in results]):.1%}</div>
+                <div class="metric-value">{np.mean([r.confidence for r in results]):0.1%}</div>
                 <div>平均信頼度</div>
             </div>
         </div>
@@ -1099,7 +1097,7 @@ class AnalyticsReporter:
             <div class="confidence-bar">
                 <div class="confidence-fill" style="width: {confidence_width}%"></div>
             </div>
-            <p>信頼度: {result.confidence:.1%}</p>
+            <p>信頼度: {result.confidence:0.1%}</p>
 
             <h3>主要な洞察</h3>
             <ul class="insights-list">
@@ -1199,9 +1197,8 @@ class AnalyticsReporter:
 class DataAnalyticsPlatform:
     """高度データアナリティクスプラットフォーム メインクラス"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = Path(project_root)
         self.collector = DataCollector(self.project_root)
         self.analytics = AnalyticsEngine()

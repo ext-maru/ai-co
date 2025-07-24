@@ -82,9 +82,8 @@ class OptimizationResult:
 class ResourceMonitor:
     """リソース監視システム"""
     
-    def __init__(self, monitoring_interval:
+    def __init__(self, monitoring_interval: float = 1.0):
         """初期化メソッド"""
-    float = 1.0):
         self.monitoring_interval = monitoring_interval
         self.metrics_history: Deque[ResourceMetrics] = deque(maxlen=1000)
         self.is_monitoring = False
@@ -185,9 +184,8 @@ class ResourceMonitor:
 class ClaudeCLIExecutionPool:
     """Claude CLI実行プール"""
     
-    def __init__(self, max_workers:
+    def __init__(self, max_workers: int = None):
         """初期化メソッド"""
-    int = None):
         self.max_workers = max_workers or min(8, multiprocessing.cpu_count())
         self.current_workers = 2  # 初期値
         
@@ -394,9 +392,8 @@ class ClaudeCLIExecutionPool:
 class DynamicScaler:
     """動的スケーリングシステム"""
     
-    def __init__(self, resource_monitor:
+    def __init__(self, resource_monitor: ResourceMonitor, execution_pool: ClaudeCLIExecutionPool):
         """初期化メソッド"""
-    ResourceMonitor, execution_pool: ClaudeCLIExecutionPool):
         self.resource_monitor = resource_monitor
         self.execution_pool = execution_pool
         self.performance_target = PerformanceTarget()
@@ -643,7 +640,7 @@ class PerformanceOptimizer:
                     self._update_performance_stats(optimization)
                     
                     logger.info(f"Optimization applied: {optimization.strategy.value} "
-                              f"({optimization.improvement_percent:.1f}% improvement)")
+                              f"({optimization.improvement_percent:0.1f}% improvement)")
                 
                 await asyncio.sleep(self.optimization_interval)
                 

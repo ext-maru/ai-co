@@ -17,9 +17,8 @@ from commands.base_command import BaseCommand, CommandResult
 class AIWorkerCommCommand(BaseCommand):
     """ワーカー間通信管理コマンド"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        super().__init__(
+    def __init__(self)super().__init__(
+    """初期化メソッド"""
             name="ai-worker-comm", description="ワーカー間通信管理", version="1.0.0"
         )
 
@@ -50,10 +49,9 @@ class AIWorkerCommCommand(BaseCommand):
             # Handle specific exception case
             return CommandResult(success=False, message=f"ワーカー通信エラー: {str(e)}")
 
-    def _show_status(self, args) -> CommandResult:
-        """通信状態表示"""
-        print(f"📡 ワーカー間通信状態")
-        print(f"{'='*60}")
+    def _show_status(self, args) -> CommandResultprint(f"📡 ワーカー間通信状態")
+    """通信状態表示"""
+        print(f"{'}")
 
         # 利用可能なワーカー一覧（デモ用）
         workers = [
@@ -96,10 +94,9 @@ class AIWorkerCommCommand(BaseCommand):
 
         return CommandResult(success=True)
 
-    def _show_logs(self, args) -> CommandResult:
-        """通信ログ表示"""
-        print(f"📜 ワーカー間通信ログ")
-        print(f"{'='*60}")
+    def _show_logs(self, args) -> CommandResultprint(f"📜 ワーカー間通信ログ")
+    """通信ログ表示"""
+        print(f"{'}")
 
         # デモ用のログエントリ
         logs = [
@@ -133,10 +130,9 @@ class AIWorkerCommCommand(BaseCommand):
 
         return CommandResult(success=True)
 
-    def _monitor_communication(self, args) -> CommandResult:
-        """通信監視"""
-        print(f"👁️  ワーカー間通信モニター")
-        print(f"{'='*60}")
+    def _monitor_communication(self, args) -> CommandResultprint(f"👁️  ワーカー間通信モニター")
+    """通信監視"""
+        print(f"{'}")
         print(f"")
         print(f"⚠️  リアルタイム監視機能は開発中です")
         print(f"")

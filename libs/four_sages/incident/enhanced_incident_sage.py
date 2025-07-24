@@ -275,7 +275,7 @@ class EnhancedIncidentSage(IncidentSage):
                 {
                     "type": "create_incident",
                     "title": f"Predicted {prediction.risk_level} risk incident",
-                    "description": f"Risk score: {prediction.risk_score:.2f}, "
+                    "description": f"Risk score: {prediction.risk_score:0.2f}, "
                     f"Top factors: {prediction.contributing_factors[:3]}",
                     "category": "system_failure",  # 予測から最も可能性の高いカテゴリ
                     "severity": (

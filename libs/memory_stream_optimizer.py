@@ -7,7 +7,7 @@ import gc
 import sys
 import zlib
 try:
-    import lz4.frame
+    import lz4frame
     HAS_LZ4 = True
 except ImportError:
     HAS_LZ4 = False
@@ -42,7 +42,7 @@ class StreamMetrics:
     """Metrics for stream processing"""
     total_processed: int = 0
     total_bytes: int = 0
-    compression_ratio: float = 1.0
+    compression_ratio: float = 1
     zero_copy_transfers: int = 0
     gc_optimizations: int = 0
     memory_limit_hits: int = 0
@@ -61,9 +61,8 @@ class CompressedData:
 class ChunkBuffer:
     """Adaptive buffer for chunk management"""
     
-    def __init__(self, initial_size:
+    def __init__(self, initial_size: int = 4096):
         """初期化メソッド"""
-    int = 4096):
         self._buffer = bytearray(initial_size)
         self._position = 0
         self._size = initial_size
@@ -102,9 +101,8 @@ class ChunkBuffer:
 class MemoryPool:
     """Memory pool for efficient allocation"""
     
-    def __init__(self, block_size:
+    def __init__(self, block_size: int = 4096, max_blocks: int = 100):
         """初期化メソッド"""
-    int = 4096, max_blocks: int = 100):
         self.block_size = block_size
         self.max_blocks = max_blocks
         self._pool = deque()
@@ -166,10 +164,9 @@ class StreamProcessor:
 class MemoryStreamOptimizer:
     """Memory-efficient stream processing optimizer"""
     
-    def __init__(self, chunk_size:
-        """初期化メソッド"""
-    int = 4096, buffer_size: int = 16384,
+    def __init__(self, chunk_size: int = 4096, buffer_size: int = 16384,
                  enable_compression: bool = True, memory_limit_mb: int = 500):
+        """初期化メソッド"""
         self.chunk_size = chunk_size
         self.buffer_size = buffer_size
         self.enable_compression = enable_compression
@@ -249,7 +246,7 @@ class MemoryStreamOptimizer:
         if compression_type == CompressionType.GZIP:
             compressed = zlib.compress(data, level=6)
         elif compression_type == CompressionType.LZ4 and HAS_LZ4:
-            compressed = lz4.frame.compress(data)
+            compressed = lz4frame.compress(data)
         elif compression_type == CompressionType.ZSTD and HAS_ZSTD:
             compressed = self._zstd_compressor.compress(data)
         else:
@@ -264,7 +261,7 @@ class MemoryStreamOptimizer:
         if compression_type == CompressionType.GZIP:
             decompressed = zlib.decompress(data)
         elif compression_type == CompressionType.LZ4 and HAS_LZ4:
-            decompressed = lz4.frame.decompress(data)
+            decompressed = lz4frame.decompress(data)
         elif compression_type == CompressionType.ZSTD and HAS_ZSTD:
             decompressed = self._zstd_decompressor.decompress(data)
         else:
@@ -428,9 +425,8 @@ class MemoryStreamOptimizer:
 class StreamPipeline:
     """Stream processing pipeline"""
     
-    def __init__(self, optimizer:
+    def __init__(self, optimizer: MemoryStreamOptimizer, stages: List[str]):
         """初期化メソッド"""
-    MemoryStreamOptimizer, stages: List[str]):
         self.optimizer = optimizer
         self.stages = stages
     

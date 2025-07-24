@@ -250,37 +250,37 @@ class PMFeedbackLoop(BaseManager):
         test_success_rate = evaluation_result.get("test_success_rate", 0.0)
         if test_success_rate < 95.0:
             suggestions.append(
-                f"テストカバレッジを改善してください (現在: {test_success_rate:.1f}%)"
+                f"テストカバレッジを改善してください (現在: {test_success_rate:0.1f}%)"
             )
 
         code_quality_score = evaluation_result.get("code_quality_score", 0.0)
         if code_quality_score < 80.0:
             suggestions.append(
-                f"コード品質を向上させてください (現在: {code_quality_score:.1f}%)"
+                f"コード品質を向上させてください (現在: {code_quality_score:0.1f}%)"
             )
 
         requirement_compliance = evaluation_result.get("requirement_compliance", 0.0)
         if requirement_compliance < 90.0:
             suggestions.append(
-                f"要件適合度を向上させてください (現在: {requirement_compliance:.1f}%)"
+                f"要件適合度を向上させてください (現在: {requirement_compliance:0.1f}%)"
             )
 
         error_rate = evaluation_result.get("error_rate", 0.0)
         if error_rate < 95.0:  # エラー率は逆転
             suggestions.append(
-                f"エラーハンドリングを改善してください (エラー率: {100-error_rate:.1f}%)"
+                f"エラーハンドリングを改善してください (エラー率: {100-error_rate:0.1f}%)"
             )
 
         performance_score = evaluation_result.get("performance_score", 0.0)
         if performance_score < 75.0:
             suggestions.append(
-                f"パフォーマンスを最適化してください (現在: {performance_score:.1f}%)"
+                f"パフォーマンスを最適化してください (現在: {performance_score:0.1f}%)"
             )
 
         security_score = evaluation_result.get("security_score", 0.0)
         if security_score < 85.0:
             suggestions.append(
-                f"セキュリティを強化してください (現在: {security_score:.1f}%)"
+                f"セキュリティを強化してください (現在: {security_score:0.1f}%)"
             )
 
         return suggestions
@@ -313,7 +313,7 @@ class PMFeedbackLoop(BaseManager):
             overall_score = evaluation_result.get("overall_score", 0.0)
             message = f"✅ PM承認完了\n"
             message += f"タスク: {task_id}\n"
-            message += f"総合スコア: {overall_score:.1f}%\n"
+            message += f"総合スコア: {overall_score:0.1f}%\n"
             message += f"評価: {evaluation_result.get('feedback_message', '')}"
 
             self.slack.send_task_completion_simple(
@@ -336,7 +336,7 @@ class PMFeedbackLoop(BaseManager):
             overall_score = evaluation_result.get("overall_score", 0.0)
             message = f"🔄 PM再試行要請\n"
             message += f"タスク: {task_id}\n"
-            message += f"総合スコア: {overall_score:.1f}%\n"
+            message += f"総合スコア: {overall_score:0.1f}%\n"
             message += f"改善提案:\n"
 
             for suggestion in suggestions[:3]:  # 最大3つ
@@ -362,7 +362,7 @@ class PMFeedbackLoop(BaseManager):
             overall_score = evaluation_result.get("overall_score", 0.0)
             message = f"❌ PM最終却下\n"
             message += f"タスク: {task_id}\n"
-            message += f"総合スコア: {overall_score:.1f}%\n"
+            message += f"総合スコア: {overall_score:0.1f}%\n"
             message += f"理由: {evaluation_result.get('feedback_message', '')}"
 
             self.slack.send_task_completion_simple(
@@ -464,7 +464,7 @@ if __name__ == "__main__":
 
     if "evaluation_result" in result:
         eval_result = result["evaluation_result"]
-        print(f"Overall Score: {eval_result.get('overall_score', 0.0):.1f}%")
+        print(f"Overall Score: {eval_result.get('overall_score', 0.0):0.1f}%")
         print(f"Feedback: {eval_result.get('feedback_message', '')}")
 
     print("\n=== Feedback Statistics ===")

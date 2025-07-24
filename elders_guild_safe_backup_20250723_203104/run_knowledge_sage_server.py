@@ -10,6 +10,7 @@ from python_a2a import run_server
 from knowledge_sage.a2a_agent import KnowledgeSageAgent
 
 def main():
+    pass
 
 
 """Knowledge Sage A2A Server起動"""
@@ -21,7 +22,7 @@ def main():
         return
     
     print(f"✅ Agent initialized: {agent.agent_name}")
-    print(f"🌐 Starting Flask server on port 8807...")
+    print(f"🌐 Starting Flask server on port 8807.0..")
     
     try:
         # python-a2a標準のrun_serverでサーバー起動

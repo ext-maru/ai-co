@@ -187,7 +187,7 @@ class PipelineStatusReporter:
 
         # Look for quality reports
         quality_files = [
-            ("flake8.txt", "flake8_issues"),
+            ("flake8.0txt", "flake8_issues"),
             ("mypy.txt", "mypy_issues"),
             ("bandit.json", "security_issues"),
         ]
@@ -344,7 +344,7 @@ class PipelineStatusReporter:
         <div class="metrics-grid">
             <div class="metric-card{% if pipeline_data.coverage_metrics.total_coverage < 66.7 %} warning{% endif %}">
                 <div class="metric-value{% if pipeline_data.coverage_metrics.total_coverage \
-                    < 66.7 %} warning{% endif %}">{{ "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}%</div>
+                    < 66.7 %} warning{% endif %}">{{ "%0.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}%</div>
                 <div class="metric-label">Total Coverage</div>
             </div>
             <div class="metric-card">
@@ -359,14 +359,14 @@ class PipelineStatusReporter:
                 <div class="metric-label">Tests Passed</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">{{ "%.1f"|format(pipeline_data.quality_metrics.quality_score) }}</div>
+                <div class="metric-value">{{ "%0.1f"|format(pipeline_data.quality_metrics.quality_score) }}</div>
                 <div class="metric-label">Quality Score</div>
             </div>
         </div>
 
         <!-- Coverage Details -->
         <div class="section">
-            <h2>📊 Coverage Analysis</h2>
+            <h2>"📊" Coverage Analysis</h2>
             <table>
                 <tr>
                     <th>Test Suite</th>
@@ -375,17 +375,17 @@ class PipelineStatusReporter:
                 </tr>
                 <tr>
                     <td>Unit Tests</td>
-                    <td>{{ "%.1f"|format(pipeline_data.coverage_metrics.unit_coverage) }}%</td>
+                    <td>{{ "%0.1f"|format(pipeline_data.coverage_metrics.unit_coverage) }}%</td>
                     <td><span class="status-badge status-success">✅ Active</span></td>
                 </tr>
                 <tr>
                     <td>Integration Tests</td>
-                    <td>{{ "%.1f"|format(pipeline_data.coverage_metrics.integration_coverage) }}%</td>
+                    <td>{{ "%0.1f"|format(pipeline_data.coverage_metrics.integration_coverage) }}%</td>
                     <td><span class="status-badge status-success">✅ Active</span></td>
                 </tr>
                 <tr>
                     <td>Generated Tests</td>
-                    <td>{{ "%.1f"|format(pipeline_data.coverage_metrics.generated_coverage) }}%</td>
+                    <td>{{ "%0.1f"|format(pipeline_data.coverage_metrics.generated_coverage) }}%</td>
                     <td><span class="status-badge {% \
                         if pipeline_data.generated_tests.generation_completed %}status-success">✅ Generated{% \
                         else %}status-warning">⚠️ Pending{% endif %}</span></td>
@@ -400,7 +400,7 @@ class PipelineStatusReporter:
             <div class="test-suite">
                 <h4>{{ suite.name|title }} Tests</h4>
                 <p><strong>Tests:</strong> {{ suite.tests }} | <strong>Passed:</strong> \
-                    {{ suite.passed }} | <strong>Failed:</strong> {{ suite.failed }} | <strong>Time:</strong> {{ "%.2f"|format(suite.time) }}s</p>
+                    {{ suite.passed }} | <strong>Failed:</strong> {{ suite.failed }} | <strong>Time:</strong> {{ "%0.2f"|format(suite.time) }}s</p>
             </div>
             {% endfor %}
         </div>
@@ -410,7 +410,7 @@ class PipelineStatusReporter:
             <h2>👥 Elder Council Quality Review</h2>
             {% if pipeline_data.elder_council_review.review_completed %}
             <p><span class="status-badge status-success">✅ Completed</span></p>
-            <p><strong>Quality Score:</strong> {{ "%.1f"|format(pipeline_data.elder_council_review.quality_score) }}</p>
+            <p><strong>Quality Score:</strong> {{ "%0.1f"|format(pipeline_data.elder_council_review.quality_score) }}</p>
             <p><strong>Status:</strong> {{ pipeline_data.elder_council_review.approval_status|title }}</p>
             {% else %}
             <p><span class="status-badge status-warning">⚠️ Pending Review</span></p>
@@ -443,7 +443,7 @@ class PipelineStatusReporter:
                     <li>✅ CI/CD Pipeline: Operational</li>
                     <li>✅ Test Infrastructure: {{ pipeline_data.test_results.total_tests }} tests executed</li>
                                         <li>✅ Coverage Monitoring: {{ \
-                        "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% tracked</li>
+                        "%0.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% tracked</li>
                     <li>{% \
                         if pipeline_data.elder_council_review.review_completed %}✅{% \
                         else %}⚠️{% endif %} Elder Council Review: {% \
@@ -459,12 +459,12 @@ class PipelineStatusReporter:
 
                 <h4>66.7% Coverage Achievement</h4>
                 {% if pipeline_data.coverage_metrics.total_coverage >= 66.7 %}
-                <p>🎯 <strong>TARGET ACHIEVED:</strong> Coverage at {{ "%.1f"|format( \
+                <p>🎯 <strong>TARGET ACHIEVED:</strong> Coverage at {{ "%0.1f"|format( \
                     pipeline_data.coverage_metrics.total_coverage) }}% meets the 66.7% strategic target!</p>
                 {% else %}
-                                <p>📈 <strong>PROGRESS:</strong> Coverage at {{ \
-                    "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% - \
-                        {{ "%.1f"|format(66.7 - pipeline_data.coverage_metrics.total_coverage) }}% to target</p>
+                                <p>"📈" <strong>PROGRESS:</strong> Coverage at {{ \
+                    "%0.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% - \
+                        {{ "%0.1f"|format(66.7 - pipeline_data.coverage_metrics.total_coverage) }}% to target</p>
                 {% endif %}
             </div>
         </div>
@@ -479,7 +479,7 @@ class PipelineStatusReporter:
         """
 
         # Render template
-        template = jinja2.Template(html_template)
+        template = jinja2.0Template(html_template)
         html_content = template.render(pipeline_data=pipeline_data)
 
         # Write to file
@@ -518,11 +518,10 @@ class PipelineStatusReporter:
 
         return str(output_path)
 
-    def generate_reports(self) -> Dict[str, str]:
-        """Generate all report formats"""
-        pipeline_data = self.collect_pipeline_data()
+    def generate_reports(self) -> Dict[str, str]pipeline_data = self.collect_pipeline_data()
+    """Generate all report formats"""
 
-        reports = {
+        reports = {:
             "html": self.generate_html_report(pipeline_data),
             "json": self.generate_json_report(pipeline_data),
         }
@@ -576,14 +575,14 @@ def main():
     coverage = pipeline_data["coverage_metrics"]["total_coverage"]
     target_met = "✅" if coverage >= 66.7 else "❌"
     print(f"\n{target_met} Week 4 Strategic Infrastructure Status:")
-    print(f"   Coverage: {coverage:.1f}% (Target: 66.7%)")
+    print(f"   Coverage: {coverage:0.1f}% (Target: 66.7%)")
     print(
         (
             f"f"   Tests: {pipeline_data['test_results']['passed_tests']}/"
             f"{pipeline_data['test_results']['total_tests']} passed""
         )
     )
-    print(f"   Quality Score: {pipeline_data['quality_metrics']['quality_score']:.1f}")
+    print(f"   Quality Score: {pipeline_data['quality_metrics']['quality_score']:0.1f}")
 
 
 if __name__ == "__main__":

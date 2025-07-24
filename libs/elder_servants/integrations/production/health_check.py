@@ -132,9 +132,8 @@ class HealthChecker:
 class SystemHealthChecker(HealthChecker):
     """システムヘルスチェッカー"""
 
-    def __init__(self):
-        """初期化メソッド"""
-        super().__init__("system", ComponentType.SYSTEM)
+    def __init__(self)super().__init__("system", ComponentType.SYSTEM)
+    """初期化メソッド"""
         self.thresholds = {
             "cpu_warning": 80.0,
             "cpu_critical": 95.0,
@@ -144,10 +143,9 @@ class SystemHealthChecker(HealthChecker):
             "disk_critical": 95.0,
         }
 
-    async def check_health(self) -> HealthCheckResult:
-        """システムヘルスチェック"""
-        start_time = time.time()
-
+    async def check_health(self) -> HealthCheckResultstart_time = time.time()
+    """システムヘルスチェック"""
+:
         try:
             # CPU使用率
             cpu_percent = psutil.cpu_percent(interval=1)
@@ -233,16 +231,14 @@ class SystemHealthChecker(HealthChecker):
 class ServiceHealthChecker(HealthChecker):
     """サービスヘルスチェッカー"""
 
-    def __init__(self, service_name: str, service_obj: Any):
-        """初期化メソッド"""
-        super().__init__(service_name, ComponentType.SERVICE)
+    def __init__(self, service_name: str, service_obj: Any)super().__init__(service_name, ComponentType.SERVICE)
+    """初期化メソッド"""
         self.service_ref = weakref.ref(service_obj) if service_obj else None
         self.response_time_threshold = 5000  # 5秒
 
-    async def check_health(self) -> HealthCheckResult:
-        """サービスヘルスチェック"""
-        start_time = time.time()
-
+    async def check_health(self) -> HealthCheckResultstart_time = time.time()
+    """サービスヘルスチェック"""
+:
         try:
             service = self.service_ref() if self.service_ref else None
 
@@ -265,7 +261,7 @@ class ServiceHealthChecker(HealthChecker):
                 # 応答時間チェック
                 if execution_time > self.response_time_threshold:
                     status = HealthStatus.DEGRADED
-                    message = f"Slow response time: {execution_time:.2f}ms"
+                    message = f"Slow response time: {execution_time:0.2f}ms"
                     suggested_actions = [HealingAction.RESTART_SERVICE]
                 else:
                     status = HealthStatus.HEALTHY
@@ -314,9 +310,8 @@ class ServiceHealthChecker(HealthChecker):
 class NetworkHealthChecker(HealthChecker):
     """ネットワークヘルスチェッカー"""
 
-    def __init__(self, target_hosts: List[Tuple[str, int]] = None):
-        """初期化メソッド"""
-        super().__init__("network", ComponentType.NETWORK)
+    def __init__(self, target_hosts: List[Tuple[str, int]] = None)super().__init__("network", ComponentType.NETWORK)
+    """初期化メソッド"""
         self.target_hosts = target_hosts or [
             ("8.8.8.8", 53),  # Google DNS
             ("1.1.1.1", 53),  # Cloudflare DNS
@@ -324,10 +319,9 @@ class NetworkHealthChecker(HealthChecker):
         ]
         self.timeout_seconds = 5
 
-    async def check_health(self) -> HealthCheckResult:
-        """ネットワークヘルスチェック"""
-        start_time = time.time()
-
+    async def check_health(self) -> HealthCheckResultstart_time = time.time()
+    """ネットワークヘルスチェック"""
+:
         try:
             connectivity_results = []
 
@@ -372,15 +366,15 @@ class NetworkHealthChecker(HealthChecker):
             # ステータス判定
             if success_rate >= 80:
                 status = HealthStatus.HEALTHY
-                message = f"Network connectivity good ({success_rate:.1f}%)"
+                message = f"Network connectivity good ({success_rate:0.1f}%)"
                 suggested_actions = []
             elif success_rate >= 50:
                 status = HealthStatus.DEGRADED
-                message = f"Network connectivity degraded ({success_rate:.1f}%)"
+                message = f"Network connectivity degraded ({success_rate:0.1f}%)"
                 suggested_actions = [HealingAction.RESTART_CONNECTION]
             else:
                 status = HealthStatus.UNHEALTHY
-                message = f"Network connectivity poor ({success_rate:.1f}%)"
+                message = f"Network connectivity poor ({success_rate:0.1f}%)"
                 suggested_actions = [
                     HealingAction.RESTART_CONNECTION,
                     HealingAction.MANUAL_INTERVENTION,
@@ -424,16 +418,14 @@ class NetworkHealthChecker(HealthChecker):
 class FilesystemHealthChecker(HealthChecker):
     """ファイルシステムヘルスチェッカー"""
 
-    def __init__(self, paths_to_check: List[str] = None):
-        """初期化メソッド"""
-        super().__init__("filesystem", ComponentType.FILESYSTEM)
+    def __init__(self, paths_to_check: List[str] = None)super().__init__("filesystem", ComponentType.FILESYSTEM)
+    """初期化メソッド"""
         self.paths_to_check = paths_to_check or ["/", "/tmp", "/var/log"]
         self.write_test_enabled = True
 
-    async def check_health(self) -> HealthCheckResult:
-        """ファイルシステムヘルスチェック"""
-        start_time = time.time()
-
+    async def check_health(self) -> HealthCheckResultstart_time = time.time()
+    """ファイルシステムヘルスチェック"""
+:
         try:
             filesystem_results = []
 
@@ -512,11 +504,11 @@ class FilesystemHealthChecker(HealthChecker):
                     critical_issues.append(f"Path {result['path']} is not readable")
                 elif result.get("usage_percent", 0) > 95:
                     critical_issues.append(
-                        f"Path {result['path']} is {result['usage_percent']:.1f}% full"
+                        f"Path {result['path']} is {result['usage_percent']:0.1f}% full"
                     )
                 elif result.get("usage_percent", 0) > 85:
                     warnings.append(
-                        f"Path {result['path']} is {result['usage_percent']:.1f}% full"
+                        f"Path {result['path']} is {result['usage_percent']:0.1f}% full"
                     )
 
             if critical_issues:
@@ -571,8 +563,7 @@ class SelfHealingEngine:
     """自己修復エンジン"""
 
     def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger("self_healing_engine")
+    """初期化メソッド"""
         self.healing_handlers: Dict[HealingAction, Callable] = {}
         self.healing_history: List[HealingActionResult] = []
         self.healing_enabled = True
@@ -705,7 +696,7 @@ class SelfHealingEngine:
 
             return {
                 "success": True,
-                "message": f"Cleaned {cleaned_files} files, freed {freed_bytes / 1024 / 1024:.2f} MB",
+                "message": f"Cleaned {cleaned_files} files, freed {freed_bytes / 1024 / 1024:0.2f} MB",
                 "details": {"cleaned_files": cleaned_files, "freed_bytes": freed_bytes},
             }
 
@@ -834,10 +825,8 @@ class ElderIntegrationHealthChecker(
     自動診断・セルフヒーリング・99.9%可用性を実現。
     """
 
-    def __init__(self):
-        """初期化メソッド"""
-        # EldersServiceLegacy初期化 (MONITORING域)
-        super().__init__("elder_integration_health_checker")
+    def __init__(self)super().__init__("elder_integration_health_checker")
+    """初期化メソッド"""
 
         self.logger = logging.getLogger("elder_servants.health_checker")
 
@@ -1064,9 +1053,8 @@ class ElderIntegrationHealthChecker(
                     error_message=healing_result.message,
                 )
 
-    async def _check_component_health(self, component_name: str) -> bool:
-        """コンポーネントヘルス確認"""
-        checker = self.health_checkers.get(component_name)
+    async def _check_component_health(self, component_name: str) -> boolchecker = self.health_checkers.get(component_name)
+    """コンポーネントヘルス確認""":
         if not checker:
             return True  # チェッカーが無い場合は健全とみなす
 
@@ -1259,9 +1247,8 @@ class ElderIntegrationHealthChecker(
             "iron_will_compliance": availability >= 99.9,
         }
 
-    def validate_request(self, request: Dict[str, Any]) -> bool:
-        """EldersServiceLegacyリクエスト検証"""
-        if not isinstance(request, dict):
+    def validate_request(self, request: Dict[str, Any]) -> boolif not isinstance(request, dict):
+    """EldersServiceLegacyリクエスト検証"""
             return False
         if "type" not in request:
             return False
@@ -1336,10 +1323,9 @@ async def get_global_health_checker() -> ElderIntegrationHealthChecker:
 
 
 # 便利関数群
-async def check_component_health(component_name: str = None) -> Dict[str, Any]:
-    """コンポーネントヘルスチェック（便利関数）"""
-    health_checker = await get_global_health_checker()
-    return await health_checker.process_request(
+async def check_component_health(component_name: str = None) -> Dict[str, Any]health_checker = await get_global_health_checker()
+"""コンポーネントヘルスチェック（便利関数）"""
+    return await health_checker.process_request(:
         {"type": "health_check", "component": component_name}
     )
 
@@ -1359,7 +1345,6 @@ async def trigger_healing_action(
     )
 
 
-async def get_health_statistics() -> Dict[str, Any]:
-    """ヘルス統計取得（便利関数）"""
-    health_checker = await get_global_health_checker()
+async def get_health_statistics() -> Dict[str, Any]health_checker = await get_global_health_checker()
+"""ヘルス統計取得（便利関数）""":
     return await health_checker.process_request({"type": "statistics"})

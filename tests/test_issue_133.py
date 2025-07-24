@@ -26,7 +26,7 @@ class TestTest133(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures"""
         # Mock boto3 session
-        self.mock_session_patcher = patch('boto3.Session')
+        self.mock_session_patcher = patch('boto3Session')
         self.mock_session = self.mock_session_patcher.start()
         
         # Create mock clients
@@ -143,7 +143,7 @@ class TestTest133(unittest.TestCase):
         """Test S3 bucket listing"""
         # Mock S3 client
         mock_s3 = self.instance.s3_client
-        mock_s3.list_buckets.return_value = {
+        mock_s3list_buckets.return_value = {
             'Buckets': [
                 {'Name': 'bucket1', 'CreationDate': datetime.now()},
                 {'Name': 'bucket2', 'CreationDate': datetime.now()}
@@ -163,8 +163,8 @@ class TestTest133(unittest.TestCase):
         """Test S3 bucket information retrieval"""
         # Mock S3 client
         mock_s3 = self.instance.s3_client
-        mock_s3.get_bucket_location.return_value = {'LocationConstraint': 'eu-west-1'}
-        mock_s3.get_bucket_versioning.return_value = {'Status': 'Enabled'}
+        mock_s3get_bucket_location.return_value = {'LocationConstraint': 'eu-west-1'}
+        mock_s3get_bucket_versioning.return_value = {'Status': 'Enabled'}
         
         # Execute S3 operation
         result = self.instance._handle_s3_operations(bucket_name='test-bucket')
@@ -178,12 +178,12 @@ class TestTest133(unittest.TestCase):
         """Test EC2 instance listing"""
         # Mock EC2 client
         mock_ec2 = self.instance.ec2_client
-        mock_ec2.describe_instances.return_value = {
+        mock_ec2describe_instances.return_value = {
             'Reservations': [{
                 'Instances': [{
                     'InstanceId': 'i-1234567890abcdef0',
                     'State': {'Name': 'running'},
-                    'InstanceType': 't2.micro',
+                    'InstanceType': 't2micro',
                     'LaunchTime': datetime.now()
                 }]
             }]

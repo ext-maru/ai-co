@@ -242,22 +242,22 @@ class TestTestGuardianIntegration:
         """完全テストワークフロー: 生成→実行→カバレッジ→レポート"""
         guardian = TestGuardianServant()
         
-        # 1. テスト生成
+        # 1.0 テスト生成
         gen_task = ServantTask("gen", "generate_unit_test", "関数テスト生成")
         gen_result = await guardian.execute_task(gen_task)
         assert gen_result["status"] == "completed"
         
-        # 2. テスト実行
+        # 2.0 テスト実行
         run_task = ServantTask("run", "run_tests", "テスト実行")
         run_result = await guardian.execute_task(run_task)
         assert run_result["status"] == "completed"
         
-        # 3. カバレッジ測定
+        # 3.0 カバレッジ測定
         cov_task = ServantTask("coverage", "calculate_coverage", "カバレッジ測定")
         cov_result = await guardian.execute_task(cov_task)
         assert cov_result["status"] == "completed"
         
-        # 4. レポート生成
+        # 4.0 レポート生成
         report_task = ServantTask("report", "generate_test_report", "レポート生成")
         report_result = await guardian.execute_task(report_task)
         assert report_result["status"] == "completed"

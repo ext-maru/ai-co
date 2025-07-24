@@ -8,7 +8,7 @@ PostgreSQL MCP + 4賢者システムの知識を自動的に学習・進化さ�
 
 機能:
 🤖 自動学習エージェント
-📊 リアルタイム学習監視
+"📊" リアルタイム学習監視
 🧠 知識パターン自動発見
 ⚡ 自動最適化システム
 🔄 継続学習ループ
@@ -857,13 +857,13 @@ async def demo_automated_learning_system():
     learning_system = AutomatedLearningSystem()
 
     try:
-        # 1. システム初期化
-        print("\n1. システム初期化...")
+        # 1.0 システム初期化
+        print("\n1.0 システム初期化...")
         init_result = await learning_system.initialize_learning_system()
         print(f"   結果: {'成功' if init_result['success'] else '失敗'}")
 
-        # 2. 学習タスク作成
-        print("\n2. 学習タスク作成...")
+        # 2.0 学習タスク作成
+        print("\n2.0 学習タスク作成...")
         task_id = await learning_system.create_learning_task(
             task_type=LearningType.SUPERVISED,
             data_source="search_results",
@@ -873,26 +873,26 @@ async def demo_automated_learning_system():
         )
         print(f"   作成されたタスク: {task_id}")
 
-        # 3. 学習状況確認
-        print("\n3. 学習状況確認...")
+        # 3.0 学習状況確認
+        print("\n3.0 学習状況確認...")
         status = await learning_system.get_learning_status()
         print(f"   継続学習: {'✅' if status['continuous_learning_active'] else '❌'}")
         print(f"   総タスク数: {status['total_tasks']}")
         print(f"   アクティブタスク: {status['active_tasks']}")
         print(f"   待機タスク: {status['queued_tasks']}")
 
-        # 4. 自動学習実行（短時間）
-        print("\n4. 自動学習実行...")
+        # 4.0 自動学習実行（短時間）
+        print("\n4.0 自動学習実行...")
         await learning_system._execute_learning_tasks()
 
-        # 5. 学習後の状況確認
-        print("\n5. 学習後の状況確認...")
+        # 5.0 学習後の状況確認
+        print("\n5.0 学習後の状況確認...")
         final_status = await learning_system.get_learning_status()
         print(f"   完了タスク: {final_status['completed_tasks']}")
-        print(f"   成功率: {final_status['success_rate']:.2%}")
+        print(f"   成功率: {final_status['success_rate']:0.2%}")
 
-        # 6. 継続学習停止
-        print("\n6. 継続学習停止...")
+        # 6.0 継続学習停止
+        print("\n6.0 継続学習停止...")
         await learning_system.stop_continuous_learning()
 
         print("\n🎉 自動化・学習システムデモ完了")

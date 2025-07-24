@@ -664,7 +664,7 @@ class DocumentationGenerator:
             quality_score=quality_score,
         )
 
-        self.logger.info(f"資料生成完了: {metadata.name} (品質: {quality_score:.2f})")
+        self.logger.info(f"資料生成完了: {metadata.name} (品質: {quality_score:0.2f})")
         return documentation
 
     async def _generate_overview(self, metadata: ProjectMetadata) -> str:
@@ -688,7 +688,7 @@ class DocumentationGenerator:
             overview += f"- **ファイル数**: {cs.total_files}\n"
             overview += f"- **クラス数**: {len(cs.classes)}\n"
             overview += f"- **関数数**: {len(cs.functions)}\n"
-            overview += f"- **複雑度スコア**: {cs.complexity_score:.2f}\n\n"
+            overview += f"- **複雑度スコア**: {cs.complexity_score:0.2f}\n\n"
 
         # Git統計
         if metadata.git_metrics:
@@ -770,8 +770,8 @@ class DocumentationGenerator:
         # 設定
         guide += "## 設定\n\n"
         if TechStack.POSTGRESQL in metadata.tech_stack:
-            guide += "1. PostgreSQLデータベースを作成\n"
-            guide += "2. 環境変数を設定\n"
+            guide += "1.0 PostgreSQLデータベースを作成\n"
+            guide += "2.0 環境変数を設定\n"
             guide += "```bash\n"
             guide += "export DATABASE_URL=postgresql://user:pass@localhost/dbname\n"
             guide += "```\n\n"
@@ -944,7 +944,7 @@ class ProjectWebPortal:
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS projects (
@@ -1030,7 +1030,7 @@ class ProjectWebPortal:
 
     async def get_project_list(self) -> List[Dict[str, Any]]:
         """プロジェクト一覧取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
                 SELECT project_id, name, project_type, status, tech_stack,
@@ -1058,7 +1058,7 @@ class ProjectWebPortal:
 
     async def get_project_details(self, project_id: str) -> Optional[Dict[str, Any]]:
         """プロジェクト詳細取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # プロジェクトメタデータ
             cursor = conn.execute(
                 "SELECT metadata_json FROM projects WHERE project_id = ?", (project_id,)
@@ -1142,7 +1142,7 @@ class ProjectWebPortal:
 
     async def _save_projects(self, projects: List[ProjectMetadata]):
         """プロジェクト保存"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             for project in projects:
                 conn.execute(
                     """
@@ -1167,7 +1167,7 @@ class ProjectWebPortal:
 
     async def _save_documentation(self, documentation: ProjectDocumentation):
         """資料保存"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.execute(
                 """
                 INSERT OR REPLACE INTO project_documentation
@@ -1190,7 +1190,7 @@ class ProjectWebPortal:
 
     async def _get_project_metadata(self, project_id: str) -> Optional[ProjectMetadata]:
         """プロジェクトメタデータ取得"""
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT metadata_json FROM projects WHERE project_id = ?", (project_id,)
             )
@@ -1255,7 +1255,7 @@ async def main():
         )
 
         if documentation:
-            print(f"✅ 資料生成完了 (品質スコア: {documentation.quality_score:.2f})")
+            print(f"✅ 資料生成完了 (品質スコア: {documentation.quality_score:0.2f})")
             print(f"📄 概要: {len(documentation.overview)}文字")
             print(f"🏗️ アーキテクチャ: {len(documentation.architecture)}文字")
             print(f"📋 セットアップ: {len(documentation.setup_guide)}文字")

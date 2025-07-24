@@ -95,14 +95,14 @@ async def test_auto_elder_flow_mock():
     print("📊 テスト結果サマリー")
     print(f"✅ 成功: {success_count}/{total_tests}")
     print(f"❌ 失敗: {total_tests - success_count}/{total_tests}")
-    print(f"📈 成功率: {(success_count/total_tests)*100:.1f}%")
+    print(f"📈 成功率: {(success_count/total_tests)*100:0.1f}%")
     
     # 統計確認
     stats = processor.get_processing_stats()
     print("\n📈 処理統計")
     print(f"📥 総リクエスト: {stats['total_requests']}")
-    print(f"🌊 Elder Flow適用: {stats['elder_flow_applied']} ({stats['elder_flow_success_rate']:.1f}%)")
-    print(f"⏭️  バイパス: {stats['bypass_count']} ({stats['bypass_rate']:.1f}%)")
+    print(f"🌊 Elder Flow適用: {stats['elder_flow_applied']} ({stats['elder_flow_success_rate']:0.1f}%)")
+    print(f"⏭️  バイパス: {stats['bypass_count']} ({stats['bypass_rate']:0.1f}%)")
     
     if success_count == total_tests:
         print("\n🎉 すべてのテストが成功しました！")

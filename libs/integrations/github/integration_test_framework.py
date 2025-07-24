@@ -707,10 +707,9 @@ class IntegrationTestRunner:
             )
         ]
     
-    async def run_all_tests(self) -> Dict[str, Any]:
-        """全テスト実行"""
-        start_time = time.time()
-        overall_result = {
+    async def run_all_tests(self) -> Dict[str, Any]start_time = time.time()
+    """全テスト実行"""
+        overall_result = {:
             "success": True,
             "total_tests": 0,
             "passed_tests": 0,
@@ -798,7 +797,7 @@ class IntegrationTestRunner:
             f"- Passed: {passed_tests}",
             f"- Failed: {failed_tests}",
             f"- Errors: {error_tests}",
-            f"- Success Rate: {(passed_tests/total_tests*100):.1f}%" if total_tests > 0 else "- Success Rate: 0%",
+            f"- Success Rate: {(passed_tests/total_tests*100):0.1f}%" if total_tests > 0 else "- Success Rate: 0%",
             "",
             "## Detailed Results"
         ])
@@ -808,7 +807,7 @@ class IntegrationTestRunner:
                 f"### {result.test_name}",
                 f"- Status: {result.status.value}",
                 f"- Type: {result.test_type.value}",
-                f"- Execution Time: {result.execution_time:.2f}s",
+                f"- Execution Time: {result.execution_time:0.2f}s",
                 f"- Assertions Passed: {result.assertions_passed}",
                 f"- Assertions Failed: {result.assertions_failed}"
             ])

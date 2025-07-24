@@ -102,7 +102,7 @@ class NextGenAIIntegration:
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             conn.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS sage_evolution (
@@ -163,7 +163,7 @@ class NextGenAIIntegration:
         for sage_name, sage in self.sages.items():
             sage.status = "active"
             sage.last_activity = datetime.now()
-            print(f"   ✅ {sage.name} - 効率: {sage.efficiency:.1f}%")
+            print(f"   ✅ {sage.name} - 効率: {sage.efficiency:0.1f}%")
 
         # 並行処理開始
         threads = [
@@ -349,8 +349,8 @@ class NextGenAIIntegration:
             coordination_bonus = self._calculate_coordination_bonus(available_sages)
 
             print(
-                f"   📋 {stage.capitalize()}: {task.progress:.0f}% (協調ボーナス: " \
-                    "+{coordination_bonus:.1f}%)"
+                f"   📋 {stage.capitalize()}: {task.progress:0.0f}% (協調ボーナス: " \
+                    "+{coordination_bonus:0.1f}%)"
             )
             time.sleep(0.5)  # 実行シミュレーション
 
@@ -375,7 +375,7 @@ class NextGenAIIntegration:
         self._record_collaboration(task, success_rate, innovation_score)
 
         print(
-            f"   ✅ タスク完了 - 成功率: {success_rate*100:.1f}%, 革新度: {innovation_score:.2f}"
+            f"   ✅ タスク完了 - 成功率: {success_rate*100:0.1f}%, 革新度: {innovation_score:0.2f}"
         )
         return True
 
@@ -475,7 +475,7 @@ class NextGenAIIntegration:
         progress_rate = self.evolution.adaptation_rate * 0.1  # 1時間あたりの進捗
         if progress_rate > 0:
             hours_remaining = (target_level - current_level) / progress_rate
-            return f"{hours_remaining:.1f}時間"
+            return f"{hours_remaining:0.1f}時間"
         else:
             return "推定不可"
 
@@ -893,21 +893,21 @@ def main():
         status = integration_system.get_system_status()
 
         print(f"🌟 進化レベル: {status['evolution']['evolution_level']}")
-        print(f"🧠 集合知: {status['evolution']['collective_intelligence']:.1f}%")
-        print(f"⚡ 適応率: {status['evolution']['adaptation_rate']:.2f}")
-        print(f"💡 革新指数: {status['evolution']['innovation_index']:.2f}")
-        print(f"🛡️ 安定性: {status['evolution']['stability_metric']:.2f}")
-        print(f"❤️ システム健全性: {status['system_health']:.1f}%")
+        print(f"🧠 集合知: {status['evolution']['collective_intelligence']:0.1f}%")
+        print(f"⚡ 適応率: {status['evolution']['adaptation_rate']:0.2f}")
+        print(f"💡 革新指数: {status['evolution']['innovation_index']:0.2f}")
+        print(f"🛡️ 安定性: {status['evolution']['stability_metric']:0.2f}")
+        print(f"❤️ システム健全性: {status['system_health']:0.1f}%")
 
         print(f"\n🧙‍♂️ 4賢者状況:")
         for name, sage in status["sages"].items():
-            print(f"   {sage['name']}: {sage['efficiency']:.1f}% ({sage['status']})")
+            print(f"   {sage['name']}: {sage['efficiency']:0.1f}% ({sage['status']})")
 
         print(f"\n📈 パフォーマンス:")
         metrics = status["performance_metrics"]
-        print(f"   成功率: {metrics['average_success_rate']*100:.1f}%")
-        print(f"   革新度: {metrics['average_innovation_score']:.2f}")
-        print(f"   協調効率: {metrics['collaboration_efficiency']:.2f}")
+        print(f"   成功率: {metrics['average_success_rate']*100:0.1f}%")
+        print(f"   革新度: {metrics['average_innovation_score']:0.2f}")
+        print(f"   協調効率: {metrics['collaboration_efficiency']:0.2f}")
 
         print(f"\n⏰ 次の進化まで: {status['next_evolution_eta']}")
 

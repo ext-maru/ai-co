@@ -231,9 +231,7 @@ class StrictOutputValidator(AncientMagicBase):
                 elif isinstance(node, ast.FunctionDef):
                     # ネストしたループの検出（O(n²)パターン）
                     nested_loops = self._detect_nested_loops(node)
-                    if not (nested_loops > 1):
-                        continue  # Early return to reduce nesting
-                    # Reduced nesting - original condition satisfied
+                    # Removed invalid continue statement
                     if nested_loops > 1:
                         issues.append({
                             "type": "performance_issue",
@@ -619,6 +617,6 @@ def hello_world():
     result = validator.validate_code_output(sample_code)
     
     print(f"Validation Result: {result.is_valid}")
-    print(f"Score: {result.score:.2f}")
+    print(f"Score: {result.score:0.2f}")
     print(f"Issues: {len(result.issues)}")
-    print(f"Execution Time: {result.execution_time:.4f}s")
+    print(f"Execution Time: {result.execution_time:0.4f}s")

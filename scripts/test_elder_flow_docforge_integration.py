@@ -47,7 +47,7 @@ async def test_docforge_integration():
         status = get_elder_flow_status(task_id)
         if status:
             print(f"\n📊 Task Status: {status['status']}")
-            print(f"⏱️  Duration: {status['total_duration']:.2f}s")
+            print(f"⏱️  Duration: {status['total_duration']:0.2f}s")
             
             # 実行結果の詳細
             if status.get("execution_result"):
@@ -55,7 +55,7 @@ async def test_docforge_integration():
                 
                 if exec_result.get("doc_forge_enhanced"):
                     print("\n🏗️ DocForge Enhanced Results:")
-                    print(f"   Quality Score: {exec_result.get('quality_score', 0):.1f}/100")
+                    print(f"   Quality Score: {exec_result.get('quality_score', 0):0.1f}/100")
                     print(f"   Word Count: {exec_result.get('word_count', 0)}")
                     
                     analysis = exec_result.get("analysis_results", {})
@@ -96,7 +96,7 @@ async def test_docforge_integration():
                 quality = status["quality_result"]
                 print(f"\n🔍 Quality Assessment:")
                 print(f"   Status: {quality.get('overall_status', 'unknown')}")
-                print(f"   Score: {quality.get('overall_score', 0):.1f}/10")
+                print(f"   Score: {quality.get('overall_score', 0):0.1f}/10")
                 
                 if quality.get("quality_summary", {}).get("analyzer_enhanced"):
                     print("   ✅ Enhanced Requirement Analyzer used")
@@ -172,7 +172,7 @@ async def main():
         print("❌ Standard Flow Task: FAILED")
     
     success_count = sum([1 for task_id in [design_task_id, standard_task_id] if task_id])
-    print(f"\n📈 Success Rate: {success_count}/2 ({success_count/2*100:.0f}%)")
+    print(f"\n📈 Success Rate: {success_count}/2 ({success_count/2*100:0.0f}%)")
     
     if success_count == 2:
         print("🎉 All tests passed! Elder Flow + DocForge Enhanced integration is working!")

@@ -140,9 +140,8 @@ class HybridWorkerOptimizer:
 class AdaptivePipeline:
     """適応的パイプライン（Celery + Ray）"""
 
-    def __init__(self, optimizer:
+    def __init__(self, optimizer: HybridWorkerOptimizer):
         """初期化メソッド"""
-    HybridWorkerOptimizer):
         self.optimizer = optimizer
         self.stages = []
 
@@ -205,9 +204,8 @@ def orchestrate_hybrid_job(job_config: Dict[str, Any]) -> Dict[str, Any]:
 class RayWorkerPool:
     """Rayワーカープール"""
 
-    def __init__(self, size:
+    def __init__(self, size: int = 4):
         """初期化メソッド"""
-    int = 4):
         self.size = size
         self.tasks_processed = 0
 
@@ -282,8 +280,8 @@ class PerformanceComparator:
 
         for result in self.results:
             print(f"\nMethod: {result['method']}")
-            print(f"  Average Time: {result['avg_time']:.3f}s")
-            print(f"  Throughput: {result['throughput']:.1f} items/s")
+            print(f"  Average Time: {result['avg_time']:0.3f}s")
+            print(f"  Throughput: {result['throughput']:0.1f} items/s")
 
 
 # デモ用関数
@@ -301,13 +299,13 @@ async def demo_hybrid_optimization():
     print("\n📦 Small batch optimization...")
     small_result = await optimizer.hybrid_optimization(small_batch, threshold=100)
     print(f"Method: {small_result.method}")
-    print(f"Time: {small_result.processing_time:.3f}s")
+    print(f"Time: {small_result.processing_time:0.3f}s")
 
     # 大規模バッチ（Ray使用）
     print("\n📦 Large batch optimization...")
     large_result = await optimizer.hybrid_optimization(large_batch, threshold=100)
     print(f"Method: {large_result.method}")
-    print(f"Time: {large_result.processing_time:.3f}s")
+    print(f"Time: {large_result.processing_time:0.3f}s")
 
     # パフォーマンス比較
     print("\n📊 Performance comparison...")

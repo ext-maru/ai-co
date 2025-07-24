@@ -69,7 +69,7 @@ class TestIncidentSageA2ABasic:
                 
                 if result:
                     passed_tests += 1
-                    print(f"   ✅ {test_name} 成功 ({self.test_results[test_name]['duration']:.3f}s)")
+                    print(f"   ✅ {test_name} 成功 ({self.test_results[test_name]['duration']:0.3f}s)")
                 else:
                     print(f"   ❌ {test_name} 失敗")
                     
@@ -87,8 +87,8 @@ class TestIncidentSageA2ABasic:
         
         print(f"\\n📊 基本テスト結果サマリー")
         print("=" * 70)
-        print(f"合格テスト: {passed_tests}/{total_tests} ({success_rate:.1f}%)")
-        print(f"総実行時間: {total_duration:.3f}秒")
+        print(f"合格テスト: {passed_tests}/{total_tests} ({success_rate:0.1f}%)")
+        print(f"総実行時間: {total_duration:0.3f}秒")
         
         return {
             "total_tests": total_tests,
@@ -255,7 +255,7 @@ class TestIncidentSageA2ABasic:
                 return False
             
             await agent.shutdown()
-            print(f"     ✅ 品質評価スキル成功: {assessment_info['overall_score']:.1f}%")
+            print(f"     ✅ 品質評価スキル成功: {assessment_info['overall_score']:0.1f}%")
             return True
             
         except Exception as e:
@@ -603,13 +603,13 @@ async def main():
     
     if results["success_rate"] >= 80.0:
         print(f"\\n🎉 Incident Sage基本テスト成功！")
-        print(f"   成功率: {results['success_rate']:.1f}%")
-        print(f"   実行時間: {results['total_duration']:.3f}秒")
+        print(f"   成功率: {results['success_rate']:0.1f}%")
+        print(f"   実行時間: {results['total_duration']:0.3f}秒")
         print(f"   🚨 Elder Loop Phase 3完了準備")
         return True
     else:
         print(f"\\n🔧 Incident Sage基本テストで調整が必要")
-        print(f"   成功率: {results['success_rate']:.1f}% (80%未満)")
+        print(f"   成功率: {results['success_rate']:0.1f}% (80%未満)")
         return False
 
 

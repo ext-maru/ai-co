@@ -483,5 +483,5 @@ class ElderCouncilReviewSystem:
 
         # TODO: 実際のストレージ実装
         self.logger.info(
-            f"Review result recorded: {json.dumps(record, ensure_ascii=False, indent=2)}"
+            f"Review result recorded: {json.dumps(record, ensure_ascii=2)}"
         )

@@ -141,9 +141,8 @@ class EnhancedQualityGateConfig(QualityGateConfig):
 # Quality Enhancer System
 class ElderFlowQualityEnhancer:
     """ElderFlowQualityEnhancer - エルダーズギルド関連クラス"""
-    def __init__(self, config:
+    def __init__(self, config: QualityEnhancementConfig = None):
         """初期化メソッド"""
-    QualityEnhancementConfig = None):
         self.config = config or QualityEnhancementConfig()
         self.logger = logging.getLogger(__name__)
 
@@ -433,7 +432,7 @@ class ElderFlowQualityEnhancer:
 
         self.enhancement_history.append(enhancement_record)
 
-        self.logger.info(f"Quality enhancement completed: {predicted_score:.2f}/100")
+        self.logger.info(f"Quality enhancement completed: {predicted_score:0.2f}/100")
 
         return {
             "quality_analysis": quality_analysis,
@@ -461,6 +460,7 @@ async def analyze_quality_gaps(context: Dict) -> Dict:
 
 # Example usage
 if __name__ == "__main__":
+    pass
 
     async def main():
         """mainメソッド"""
@@ -477,9 +477,9 @@ if __name__ == "__main__":
         result = await enhance_quality(context)
 
         print(
-            f"📊 Original Score: {result['quality_analysis']['standard_quality']['summary']['overall_score']:.2f}"
+            f"📊 Original Score: {result['quality_analysis']['standard_quality']['summary']['overall_score']:0.2f}"
         )
-        print(f"🎯 Predicted Score: {result['predicted_score']:.2f}")
+        print(f"🎯 Predicted Score: {result['predicted_score']:0.2f}")
         print(f"✅ Target Achieved: {result['target_achieved']}")
         print(
             f"🔧 Improvements Applied: {result['improvement_result']['total_improvements']}"

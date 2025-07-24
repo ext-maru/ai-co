@@ -376,7 +376,7 @@ class HealingElf:
         db_path = "elf_healing_database.db"
 
         try:
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3connect(db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -623,7 +623,7 @@ class WisdomElf:
         db_path = "elf_wisdom_database.db"
 
         try:
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3connect(db_path)
             cursor = conn.cursor()
 
             cursor.execute(
@@ -721,7 +721,7 @@ class WisdomElf:
             strategy_analysis["learning_insights"] = [
                 f"総タスク完了数: {total_tasks}",
                 f"総エラー修正数: {total_errors_fixed}",
-                f"平均パフォーマンス: {strategy_analysis['overall_performance']:.1f}%",
+                f"平均パフォーマンス: {strategy_analysis['overall_performance']:0.1f}%",
             ]
 
             self.status.tasks_completed += 1
@@ -1017,7 +1017,7 @@ class ElfForestCoordinator:
             "timestamp": datetime.now().isoformat(),
             "mission_status": coordination_results["mission_status"],
             "overall_progress": coordination_results["overall_progress"],
-            "coverage_progress": f"{coordination_results['coverage_current']:.1f}%/{coordination_results['coverage_target']}%",
+            "coverage_progress": f"{coordination_results['coverage_current']:0.1f}%/{coordination_results['coverage_target']}%",
             "elves_status": {},
             "critical_issues": [],
             "recommendations": [],
@@ -1066,8 +1066,8 @@ async def execute_elf_forest_mission():
             json.dump(results, f, indent=2, default=str)
 
         logging.info("🎉 エルフの森: ミッション実行完了")
-        logging.info(f"📊 全体進捗: {results['overall_progress']:.1f}%")
-        logging.info(f"📈 カバレッジ: {results['coverage_current']:.1f}%")
+        logging.info(f"📊 全体進捗: {results['overall_progress']:0.1f}%")
+        logging.info(f"📈 カバレッジ: {results['coverage_current']:0.1f}%")
         logging.info(f"🎯 ミッション状態: {results['mission_status']}")
 
         return results

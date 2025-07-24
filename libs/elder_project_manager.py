@@ -488,7 +488,7 @@ class ElderProjectCLI:
                 output.append(
                     f"   📁 {project.file_count} files | 💾 {project.size_mb} MB"
                 )
-                output.append(f"   📊 進捗: {project.progress*100:.1f}%")
+                output.append(f"   📊 進捗: {project.progress*100:0.1f}%")
                 if project.tags:
                     output.append(f"   🏷️ {', '.join(project.tags)}")
                 output.append(f"   📂 {project.path}")
@@ -538,7 +538,7 @@ class ElderProjectCLI:
         progress_bar = "█" * int(project.progress * 20) + "░" * (
             20 - int(project.progress * 20)
         )
-        output.append(f"   進捗: [{progress_bar}] {project.progress*100:.1f}%")
+        output.append(f"   進捗: [{progress_bar}] {project.progress*100:0.1f}%")
         output.append("")
 
         # タグと依存関係

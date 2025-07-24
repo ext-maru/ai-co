@@ -58,7 +58,7 @@ class WorkerStatusMonitor:
         """ワーカーステータス用データベース初期化"""
         try:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             # ワーカーステータステーブル
@@ -137,7 +137,7 @@ class WorkerStatusMonitor:
         """ワーカー情報をデータベースに保存"""
         try:
             worker = self.workers_status[worker_id]
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(
@@ -224,7 +224,7 @@ class WorkerStatusMonitor:
 
         # データベースに保存
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = sqlite3connect(str(self.db_path))
             cursor = conn.cursor()
 
             cursor.execute(

@@ -38,7 +38,7 @@ class SecurityAudit:
         """トークン露出テスト"""
         vulnerabilities = []
         
-        # 1. 設定ファイルにトークンがハードコードされていないか
+        # 1.0 設定ファイルにトークンがハードコードされていないか
         config_files = [
             "configs/auto_issue_processor.yaml",
             "configs/elder_scheduler_config.yaml"
@@ -51,7 +51,7 @@ class SecurityAudit:
                     if "ghp_" in content or "github_pat_" in content:
                         vulnerabilities.append(f"❌ トークンがハードコード: {config_file}")
         
-        # 2. ログにトークンが出力されないか
+        # 2.0 ログにトークンが出力されないか
         test_config = ProcessorConfig()
         test_config.github.token = "ghp_test_secret_token_12345"
         
@@ -74,7 +74,7 @@ class SecurityAudit:
         finally:
             logger.removeHandler(handler)
         
-        # 3. エラーメッセージにトークンが含まれないか
+        # 3.0 エラーメッセージにトークンが含まれないか
         try:
             test_config.github.token = "ghp_secret_123"
             processor = AutoIssueProcessor(test_config)
@@ -92,7 +92,7 @@ class SecurityAudit:
         """インジェクション脆弱性テスト"""
         vulnerabilities = []
         
-        # 1. ファイルパスインジェクション
+        # 1.0 ファイルパスインジェクション
         dangerous_paths = [
             "../../../etc/passwd",
             "/etc/shadow",
@@ -109,7 +109,7 @@ class SecurityAudit:
             if path != safe_path and ("/" in path or ".." in path):
                 vulnerabilities.append(f"⚠️ 危険なパス文字を検証すべき: {path}")
         
-        # 2. コマンドインジェクション
+        # 2.0 コマンドインジェクション
         config = ProcessorConfig()
         dangerous_inputs = [
             "test; echo hacked",
@@ -134,7 +134,7 @@ class SecurityAudit:
         """権限昇格テスト"""
         vulnerabilities = []
         
-        # 1. ファイル権限チェック
+        # 1.0 ファイル権限チェック
         sensitive_files = [
             ".issue_locks",
             "configs/auto_issue_processor.yaml",
@@ -149,7 +149,7 @@ class SecurityAudit:
                 if mode != "600" and mode != "644" and mode != "755":
                     vulnerabilities.append(f"⚠️ 不適切な権限: {file_path} ({mode})")
         
-        # 2. 一時ファイルの安全性（同期的にチェック）
+        # 2.0 一時ファイルの安全性（同期的にチェック）
         # ProcessLockが作成するファイルはasyncなので、ここではディレクトリの権限のみチェック
         test_dir = Path("./test_security_locks")
         test_dir.mkdir(exist_ok=True)
@@ -190,16 +190,16 @@ class PerformanceAudit:
                 current_memory = process.memory_info().rss / 1024 / 1024
                 memory_increase = current_memory - initial_memory
                 if memory_increase > 50:  # 50MB以上の増加
-                    issues.append(f"❌ メモリリーク検出: {memory_increase:.1f}MB増加 (iteration {i})")
+                    issues.append(f"❌ メモリリーク検出: {memory_increase:0.1f}MB増加 (iteration {i})")
         
         # 最終メモリ使用量
         final_memory = process.memory_info().rss / 1024 / 1024
         total_increase = final_memory - initial_memory
         
         if total_increase > 100:  # 100MB以上の増加
-            issues.append(f"❌ 深刻なメモリリーク: {total_increase:.1f}MB増加")
+            issues.append(f"❌ 深刻なメモリリーク: {total_increase:0.1f}MB増加")
         elif total_increase > 50:
-            issues.append(f"⚠️ メモリ使用量増加: {total_increase:.1f}MB")
+            issues.append(f"⚠️ メモリ使用量増加: {total_increase:0.1f}MB")
         
         return issues
     
@@ -239,9 +239,9 @@ class PerformanceAudit:
         
         # パフォーマンス基準
         if elapsed > 30:  # 30秒以上
-            issues.append(f"❌ 並列処理が遅い: {elapsed:.1f}秒 (10 issues)")
+            issues.append(f"❌ 並列処理が遅い: {elapsed:0.1f}秒 (10 issues)")
         elif elapsed > 15:
-            issues.append(f"⚠️ 並列処理のパフォーマンス改善余地: {elapsed:.1f}秒")
+            issues.append(f"⚠️ 並列処理のパフォーマンス改善余地: {elapsed:0.1f}秒")
         
         # CPU使用率チェック
         cpu_percent = psutil.cpu_percent(interval=0.1)
@@ -255,7 +255,7 @@ class PerformanceAudit:
         """リソース制限テスト"""
         issues = []
         
-        # 1. ファイルディスクリプタリーク
+        # 1.0 ファイルディスクリプタリーク
         initial_fds = len(psutil.Process().open_files())
         
         config = ProcessorConfig()
@@ -274,7 +274,7 @@ class PerformanceAudit:
         if fd_increase > 10:
             issues.append(f"❌ ファイルディスクリプタリーク: {fd_increase}個増加")
         
-        # 2. スレッド/プロセス数
+        # 2.0 スレッド/プロセス数
         thread_count = psutil.Process().num_threads()
         if thread_count > 50:
             issues.append(f"⚠️ 過剰なスレッド数: {thread_count}")
@@ -293,14 +293,14 @@ class QualityAudit:
         config = ProcessorConfig()
         config.features.error_recovery = True
         
-        # 1. 設定エラー
+        # 1.0 設定エラー
         invalid_config = ProcessorConfig()
         invalid_config.processing.max_issues_per_run = 0  # 無効な値
         
         if invalid_config.validate():
             issues.append("❌ 無効な設定を検出できない")
         
-        # 2. GitHub APIエラーの処理
+        # 2.0 GitHub APIエラーの処理
         processor = AutoIssueProcessor(config)
         
         # GitHubトークンなしでの実行
@@ -315,7 +315,7 @@ class QualityAudit:
         except Exception as e:
             issues.append(f"⚠️ 予期しないエラータイプ: {type(e)}")
         
-        # 3. ロックエラーの処理
+        # 3.0 ロックエラーの処理
         lock = ProcessLock("file")
         
         # 存在しないキーの解放は別の非同期テストで実施
@@ -328,7 +328,7 @@ class QualityAudit:
         """データ整合性監査"""
         issues = []
         
-        # 1. 設定の永続化
+        # 1.0 設定の永続化
         config1 = ProcessorConfig()
         config1.processing.max_issues_per_run = 5
         config_dict = config1.to_dict()
@@ -337,7 +337,7 @@ class QualityAudit:
         config2 = ProcessorConfig()
         # 本来は from_dict メソッドが必要
         
-        # 2. ロック情報の整合性は非同期テストで実施
+        # 2.0 ロック情報の整合性は非同期テストで実施
         # ここではディレクトリの存在確認のみ
         test_lock_dir = Path("./test_integrity_locks")
         test_lock_dir.mkdir(exist_ok=True)
@@ -349,7 +349,7 @@ class QualityAudit:
         if test_lock_dir.exists():
             shutil.rmtree(test_lock_dir)
         
-        # 3. 統計情報の正確性
+        # 3.0 統計情報の正確性
         config = ProcessorConfig()
         config.dry_run = True
         processor = AutoIssueProcessor(config)
@@ -368,25 +368,25 @@ class QualityAudit:
         config = ProcessorConfig()
         config.dry_run = True
         
-        # 1. 空のIssueリスト
+        # 1.0 空のIssueリスト
         processor = AutoIssueProcessor(config)
         result = await processor.process_issues([])
         
         if not result["success"]:
             issues.append("❌ 空のIssueリストで失敗")
         
-        # 2. 超大量のIssue
+        # 2.0 超大量のIssue
         huge_list = list(range(10000))
         with patch.object(processor, '_get_issues_to_process', return_value=[]):
             # 実際には処理しないが、メモリエラーなどが発生しないか
             result = await processor.process_issues(huge_list)
         
-        # 3. 同じIssueの重複処理
+        # 3.0 同じIssueの重複処理
         duplicate_issues = [123, 123, 123]
         with patch.object(processor, '_get_issues_to_process', return_value=[]):
             result = await processor.process_issues(duplicate_issues)
         
-        # 4. 無効なIssue番号
+        # 4.0 無効なIssue番号
         invalid_issues = [-1, 0, None, "abc", float('inf')]
         for invalid in invalid_issues:
             try:
@@ -458,7 +458,7 @@ async def run_all_audits():
     
     all_issues = []
     
-    # 1. セキュリティ監査
+    # 1.0 セキュリティ監査
     print("🔒 セキュリティ監査")
     print("-" * 40)
     
@@ -475,7 +475,7 @@ async def run_all_audits():
         print("  ✅ セキュリティ問題なし")
     print()
     
-    # 2. パフォーマンス監査
+    # 2.0 パフォーマンス監査
     print("⚡ パフォーマンス監査")
     print("-" * 40)
     
@@ -492,7 +492,7 @@ async def run_all_audits():
         print("  ✅ パフォーマンス問題なし")
     print()
     
-    # 3. 品質監査
+    # 3.0 品質監査
     print("📊 品質監査")
     print("-" * 40)
     
@@ -509,7 +509,7 @@ async def run_all_audits():
         print("  ✅ 品質問題なし")
     print()
     
-    # 4. 統合監査
+    # 4.0 統合監査
     print("🔗 統合監査")
     print("-" * 40)
     

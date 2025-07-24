@@ -23,6 +23,7 @@ from ..base import DwarfServant, ServantCapability
 
 
 class LoggingCrafterServant(DwarfServant):
+    pass
 
 
 """
@@ -199,9 +200,8 @@ class LoggingCrafterServant(DwarfServant):
                 "error": f"Failed to implement handler: {str(e)}"
             }
             
-    def _implement_file_handler(self, config: Dict[str, Any]) -> str:
-        """ファイルハンドラーの実装コードを生成"""
-        filename = config.get("filename", "app.log")
+    def _implement_file_handler(self, config: Dict[str, Any]) -> strfilename = config.get("filename", "app.log")
+    """ファイルハンドラーの実装コードを生成"""
         mode = config.get("mode", "a")
         encoding = config.get("encoding", "utf-8")
         
@@ -225,10 +225,9 @@ file_handler.setFormatter(formatter)
 logger = logging.getLogger()
 logger.addHandler(file_handler)
 """
-        
-    def _implement_rotating_handler(self, config: Dict[str, Any]) -> str:
-        """ローテーティングハンドラーの実装コードを生成"""
-        filename = config.get("filename", "app.log")
+        :
+    def _implement_rotating_handler(self, config: Dict[str, Any]) -> strfilename = config.get("filename", "app.log")
+    """ローテーティングハンドラーの実装コードを生成"""
         max_bytes = config.get("max_bytes", 10485760)
         backup_count = config.get("backup_count", 5)
         
@@ -254,13 +253,12 @@ rotating_handler.setFormatter(formatter)
 logger = logging.getLogger()
 logger.addHandler(rotating_handler)
 """
-        
-    def _implement_custom_handler(self, config: Dict[str, Any]) -> str:
-        """カスタムハンドラーの実装コードを生成"""
-        class_name = config.get("class", "CustomHandler")
+        :
+    def _implement_custom_handler(self, config: Dict[str, Any]) -> strclass_name = config.get("class", "CustomHandler")
+    """カスタムハンドラーの実装コードを生成"""
         params = config.get("params", {})
         
-        # ElasticSearchハンドラーの例
+        # ElasticSearchハンドラーの例:
         if class_name == "ElasticSearchHandler":
             hosts = params.get("hosts", ["localhost:9200"])
             index = params.get("index", "application-logs")
@@ -372,11 +370,10 @@ class {class_name}(logging.Handler):
                 "error": f"Failed to create formatter: {str(e)}"
             }
             
-    def _create_basic_formatter(self, config: Dict[str, Any]) -> Dict[str, Any]:
-        """基本フォーマッターを作成"""
-        pattern = config.get("pattern", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    def _create_basic_formatter(self, config: Dict[str, Any]) -> Dict[str, Any]pattern = config.get("pattern", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    """基本フォーマッターを作成"""
         
-        return {
+        return {:
             "type": "basic",
             "pattern": pattern,
             "implementation": f"""
@@ -623,7 +620,7 @@ class LoggingMiddleware:
             extra={
                 "request_id": request_id,
                 "status_code": response.status_code,
-                "process_time": f"{process_time:.3f}s"
+                "process_time": f"{process_time:0.3f}s"
             }
         )
         
@@ -1111,11 +1108,10 @@ logging.config.dictConfig(logging_config)
                 
         return code_parts
         
-    async def perform_craft(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
-        """ログシステム構築の具体的な作業を実行"""
-        action = task_data.get("action")
+    async def perform_craft(self, task_data: Dict[str, Any]) -> Dict[str, Any]action = task_data.get("action")
+    """ログシステム構築の具体的な作業を実行"""
         data = task_data.get("data", {})
-        
+        :
         if action == "generate_config":
             return await self.generate_config(data)
         elif action == "implement_handler":

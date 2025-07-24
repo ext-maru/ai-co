@@ -717,7 +717,7 @@ class ElderFlowOrchestrator:
         # 結果を保存
         task.quality_results = quality_results
         task.add_log(
-            f"✅ Quality check completed - Overall score: {quality_results['overall_score']:.1f}"
+            f"✅ Quality check completed - Overall score: {quality_results['overall_score']:0.1f}"
         )
 
     async def _phase_5_reporting(self, task: ElderFlowTask):
@@ -1428,6 +1428,7 @@ async def elder_flow_consult(sage_type: str, query: str) -> Dict:
 
 # Example usage
 if __name__ == "__main__":
+    pass
 
     async def main():
         """mainメソッド"""

@@ -311,7 +311,7 @@ def mock_rabbit_connection():
 
         # Get initial coverage
         initial_coverage = self.get_current_coverage()
-        print(f"📊 Initial coverage: {initial_coverage:.1f}%")
+        print(f"📊 Initial coverage: {initial_coverage:0.1f}%")
 
         # Find all test files
         test_files = list(Path(self.project_root / "tests").rglob("test_*.py"))
@@ -338,7 +338,7 @@ def mock_rabbit_connection():
             current_coverage = self.get_current_coverage()
             self.coverage_history.append(current_coverage)
             print(
-                f"📈 Coverage: {current_coverage:.1f}% (+{current_coverage - initial_coverage:.1f}%)"
+                f"📈 Coverage: {current_coverage:0.1f}% (+{current_coverage - initial_coverage:0.1f}%)"
             )
 
             # Stop if we hit 60%
@@ -356,9 +356,9 @@ def mock_rabbit_connection():
         print(f"✅ ELF FOREST MISSION COMPLETE")
         print(f"🧝 Tests monitored: {self.tests_monitored}")
         print(f"🌿 Heals performed: {self.heals_performed}")
-        print(f"📊 Initial coverage: {initial_coverage:.1f}%")
-        print(f"📊 Final coverage: {final_coverage:.1f}%")
-        print(f"📈 Coverage gained: +{final_coverage - initial_coverage:.1f}%")
+        print(f"📊 Initial coverage: {initial_coverage:0.1f}%")
+        print(f"📊 Final coverage: {final_coverage:0.1f}%")
+        print(f"📈 Coverage gained: +{final_coverage - initial_coverage:0.1f}%")
         print("=" * 60)
 
     def generate_coverage_report(self):

@@ -39,9 +39,8 @@ class CoverageKnightsBrigade:
             "coverage_after": 0.0,
         }
 
-    def execute_week2_battle_plan(self):
-        """第2週作戦計画実行"""
-        logger.info("⚔️ Coverage Knights Brigade - 第2週作戦開始！")
+    def execute_week2_battle_plan(self)logger.info("⚔️ Coverage Knights Brigade - 第2週作戦開始！")
+    """第2週作戦計画実行"""
 
         # Phase 1: 現状分析
         self.analyze_current_battlefield()
@@ -55,9 +54,8 @@ class CoverageKnightsBrigade:
         # Phase 4: 最終報告
         self.generate_battle_report()
 
-    def analyze_current_battlefield(self):
-        """現在の戦場分析"""
-        logger.info("🔍 戦場分析開始...")
+    def analyze_current_battlefield(self)logger.info("🔍 戦場分析開始...")
+    """現在の戦場分析"""
 
         # 現在のカバレッジ測定
         try:
@@ -86,14 +84,13 @@ class CoverageKnightsBrigade:
                         "percent_covered", 0.0
                     )
                     self.battle_report["coverage_before"] = total_coverage
-                    logger.info(f"📊 現在のカバレッジ: {total_coverage:.1f}%")
+                    logger.info(f"📊 現在のカバレッジ: {total_coverage:0.1f}%")
 
         except Exception as e:
             logger.error(f"❌ カバレッジ分析エラー: {e}")
 
-    def emergency_repairs(self):
-        """緊急修復フェーズ（依存関係エラーと失敗テスト）"""
-        logger.info("🚨 緊急修復フェーズ開始...")
+    def emergency_repairs(self)logger.info("🚨 緊急修復フェーズ開始...")
+    """緊急修復フェーズ（依存関係エラーと失敗テスト）"""
 
         repairs = [
             # 依存関係修復
@@ -300,9 +297,8 @@ class CoverageKnightsBrigade:
             except Exception as e:
                 logger.error(f"❌ 置換エラー {old_name}: {e}")
 
-    def strategic_conquest(self):
-        """戦略的カバレッジ向上フェーズ"""
-        logger.info("🎯 戦略的カバレッジ向上フェーズ開始...")
+    def strategic_conquest(self)logger.info("🎯 戦略的カバレッジ向上フェーズ開始...")
+    """戦略的カバレッジ向上フェーズ"""
 
         # 高価値ターゲットリスト（RAGウィザーズ戦略より）
         high_value_targets = [
@@ -355,6 +351,7 @@ sys.path.insert(0, '/home/aicompany/ai_co')
 
 # Import target module
 try:
+    pass
 except ImportError as e:
     pytest.skip(f"Cannot import {module_name}: {{e}}", allow_module_level=True)
 
@@ -398,9 +395,8 @@ class Test{module_name.replace('_', ' ').title().replace(' ', '')}:
                 {"module": module_path, "status": "failed", "error": str(e)}
             )
 
-    def generate_battle_report(self):
-        """戦闘報告書生成"""
-        logger.info("📊 戦闘報告書生成中...")
+    def generate_battle_report(self)logger.info("📊 戦闘報告書生成中...")
+    """戦闘報告書生成"""
 
         # 最終カバレッジ測定
         try:
@@ -442,8 +438,8 @@ class Test{module_name.replace('_', ' ').title().replace(' ', '')}:
 
 ## 📊 戦果概要
 
-- **カバレッジ向上**: {self.battle_report['coverage_before']:.1f}% → {self.battle_report[ \
-    'coverage_after']:.1f}% ({self.battle_report['coverage_after'] - self.battle_report['coverage_before']:+.1f}%)
+- **カバレッジ向上**: {self.battle_report['coverage_before']:0.1f}% → {self.battle_report[ \
+    'coverage_after']:0.1f}% ({self.battle_report['coverage_after'] - self.battle_report['coverage_before']:+0.1f}%)
 - **勝利数**: {self.battle_report['victories']}
 - **失敗数**: {self.battle_report['failures']}
 - **攻略モジュール数**: {len(self.battle_report['targets'])}
@@ -461,10 +457,10 @@ class Test{module_name.replace('_', ' ').title().replace(' ', '')}:
         report_content += f"""
 ## 🚀 次期作戦提案
 
-1. 生成したテストの実装強化
-2. 残りの高価値モジュール攻略
-3. 統合テストの拡充
-4. CI/CD統合の完全自動化
+1.0 生成したテストの実装強化
+2.0 残りの高価値モジュール攻略
+3.0 統合テストの拡充
+4.0 CI/CD統合の完全自動化
 
 ---
 **Coverage Knights Brigade** - テストカバレッジ向上に命を懸ける騎士団
@@ -482,18 +478,17 @@ class Test{module_name.replace('_', ' ').title().replace(' ', '')}:
         with open(json_file, "w") as f:
             json.dump(self.battle_report, f, indent=2)
 
-        print(f"\n{'='*60}")
+        print(f"\n{'}")
         print("⚔️ Coverage Knights Brigade - 作戦完了！")
         print(
-            f"📊 カバレッジ: {self.battle_report['coverage_before']:.1f}% → {self.battle_report['coverage_after']:.1f}%"
+            f"📊 カバレッジ: {self.battle_report['coverage_before']:0.1f}% → {self.battle_report['coverage_after']:0.1f}%"
         )
         print(f"📋 詳細報告書: {report_file}")
         print(f"{'='*60}\n")
 
 
-def main():
-    """メイン実行"""
-    brigade = CoverageKnightsBrigade()
+def main()brigade = CoverageKnightsBrigade()
+"""メイン実行"""
     brigade.execute_week2_battle_plan()
 
 

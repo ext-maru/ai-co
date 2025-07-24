@@ -56,6 +56,7 @@ def fix_file_with_regex(file_path: str) -> bool:
         return False
 
 def find_problem_files():
+    pass
 
         """問題のあるファイルを検出"""
         for file in files:
@@ -74,6 +75,7 @@ def find_problem_files():
     return problem_files
 
 def main():
+    pass
 
                     """メイン実行"""50]:  # 最初の50件を処理
         if fix_file_with_regex(file_path):

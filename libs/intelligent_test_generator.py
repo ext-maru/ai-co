@@ -49,8 +49,7 @@ class CodeAnalyzer:
     """コード分析・テスト対象抽出"""
     
     def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger(self.__class__.__name__)
+    """初期化メソッド"""
     
     def analyze_implementation(self, code: str) -> Dict[str, Any]:
         """実装コードを分析してテスト対象を特定"""
@@ -138,10 +137,9 @@ class CodeAnalyzer:
         
         return imports
     
-    def _extract_external_deps(self, tree: ast.AST) -> List[str]:
-        """外部依存関係を抽出"""
-        external_deps = set()
-        
+    def _extract_external_deps(self, tree: ast.AST) -> List[str]external_deps = set()
+    """外部依存関係を抽出"""
+        :
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
                 # boto3クライアント作成
@@ -207,10 +205,8 @@ class CodeAnalyzer:
         
         return testable
     
-    def _has_return_statement(self, func_node: ast.FunctionDef) -> bool:
-        """return文があるかチェック"""
-        for node in ast.walk(func_node):
-            if isinstance(node, ast.Return) and node.value is not None:
+    def _has_return_statement(self, func_node: ast.FunctionDef) -> boolfor node in ast.walk(func_node)if isinstance(node, ast.Return) and node.value is not None:
+    """return文があるかチェック"""
                 return True
         return False
     
@@ -227,29 +223,23 @@ class CodeAnalyzer:
         
         return exceptions
     
-    def _calls_external_apis(self, func_node: ast.FunctionDef) -> bool:
-        """外部API呼び出しがあるかチェック"""
-        for node in ast.walk(func_node):
-            if isinstance(node, ast.Call):
-                if isinstance(node.func, ast.Attribute):
+    def _calls_external_apis(self, func_node: ast.FunctionDef) -> boolfor node in ast.walk(func_node)if isinstance(node, ast.Call)if isinstance(node.func, ast.Attribute):
+    """外部API呼び出しがあるかチェック"""
                     # boto3, requests等の呼び出し
                     if hasattr(node.func.value, 'id'):
                         if node.func.value.id in ['boto3', 'requests', 'httpx']:
                             return True
         return False
     
-    def _get_base_name(self, base: ast.expr) -> str:
-        """基底クラス名を取得"""
-        if isinstance(base, ast.Name):
+    def _get_base_name(self, base: ast.expr) -> strif isinstance(base, ast.Name):
+    """基底クラス名を取得"""
             return base.id
         elif isinstance(base, ast.Attribute):
             return f"{base.value.id}.{base.attr}" if hasattr(base.value, 'id') else base.attr
         return str(base)
     
-    def _is_class_method(self, func_node: ast.FunctionDef, tree: ast.AST) -> bool:
-        """クラスメソッドかどうか判定"""
-        for node in ast.walk(tree):
-            if isinstance(node, ast.ClassDef):
+    def _is_class_method(self, func_node: ast.FunctionDef, tree: ast.AST) -> boolfor node in ast.walk(tree)if isinstance(node, ast.ClassDef):
+    """クラスメソッドかどうか判定"""
                 if func_node in node.body:
                     return True
         return False
@@ -344,8 +334,7 @@ class UnitTestGenerator:
     """ユニットテスト生成器"""
     
     def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger(self.__class__.__name__)
+    """初期化メソッド"""
     
     def generate_unit_tests(self, analysis: Dict[str, Any], intelligence=None) -> List[TestCase]:
         """ユニットテストを生成"""
@@ -532,11 +521,11 @@ def test_{func_name}():
     def _generate_mock_setup(self, intelligence) -> str:
         """モック設定を生成"""
         if not intelligence:
-            return "@patch('requests.get')\n    @patch('boto3.client')"
+            return "@patch('requests.get')\n    @patch('boto3client')"
         
         domain = intelligence.get('primary_domain', 'general')
         if domain == 'aws':
-            return "@patch('boto3.client')"
+            return "@patch('boto3client')"
         elif domain == 'web':
             return "@patch('requests.post')\n    @patch('requests.get')"
         else:
@@ -564,8 +553,7 @@ class PropertyTestGenerator:
     """プロパティベーステスト生成器"""
     
     def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger(self.__class__.__name__)
+    """初期化メソッド"""
     
     def generate_property_tests(
         self,
@@ -642,8 +630,7 @@ class IntegrationTestGenerator:
     """統合テスト生成器"""
     
     def __init__(self):
-        """初期化メソッド"""
-        self.logger = logging.getLogger(self.__class__.__name__)
+    """初期化メソッド"""
     
     def generate_integration_tests(
         self,
@@ -758,10 +745,8 @@ def test_database_integration():
 class IntelligentTestGenerator:
     """インテリジェントテスト生成メインクラス (Phase 4)"""
     
-    def __init__(self):
-        """初期化メソッド"""
-        self.code_analyzer = CodeAnalyzer()
-        self.unit_generator = UnitTestGenerator()
+    def __init__(self)self.unit_generator = UnitTestGenerator()
+    """初期化メソッド"""
         self.property_generator = PropertyTestGenerator()
         self.integration_generator = IntegrationTestGenerator()
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -776,27 +761,27 @@ class IntelligentTestGenerator:
         
         self.logger.info("Starting intelligent test generation...")
         
-        # 1. コード分析
+        # 1.0 コード分析
         analysis = self.code_analyzer.analyze_implementation(implementation_code)
         self.logger.info(f"Code analysis complete: {len(analysis." \
             "get('classes', []))} classes, {len(analysis.get('functions', []))} functions")
         
-        # 2. ユニットテスト生成
+        # 2.0 ユニットテスト生成
         unit_tests = self.unit_generator.generate_unit_tests(analysis, intelligence)
         self.logger.info(f"Generated {len(unit_tests)} unit tests")
         
-        # 3. プロパティベーステスト生成
+        # 3.0 プロパティベーステスト生成
         property_tests = self.property_generator.generate_property_tests(analysis, intelligence)
         self.logger.info(f"Generated {len(property_tests)} property tests")
         
-        # 4. 統合テスト生成
+        # 4.0 統合テスト生成
         integration_tests = self.integration_generator.generate_integration_tests(
             analysis,
             intelligence
         )
         self.logger.info(f"Generated {len(integration_tests)} integration tests")
         
-        # 5. モック設定・フィクスチャ生成
+        # 5.0 モック設定・フィクスチャ生成
         mock_configs = self._generate_mock_configurations(analysis, intelligence)
         fixtures = self._generate_fixtures(analysis, intelligence, codebase_intelligence)
         

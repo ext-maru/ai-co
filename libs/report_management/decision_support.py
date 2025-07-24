@@ -273,7 +273,7 @@ class DecisionSupportSystem:
                 {
                     "type": "incomplete_implementation",
                     "severity": "high",
-                    "description": f'Only {situation["completion_level"]:.0f}% complete',
+                    "description": f'Only {situation["completion_level"]:0.0f}% complete',
                 }
             )
 
@@ -492,7 +492,7 @@ class DecisionSupportSystem:
             根拠文字列
         """
         if action_type == ActionType.DEPLOY:
-            return f"Task completed with {situation['completion_level']:.0f}% completion and \
+            return f"Task completed with {situation['completion_level']:0.0f}% completion and \
                 {situation['quality_level']} quality"
 
         elif action_type == ActionType.TEST:
@@ -503,7 +503,7 @@ class DecisionSupportSystem:
                 risk level requires immediate rollback"
 
         elif action_type == ActionType.ESCALATE:
-            return f"High risk situation ({risk_assessment['risk_score']:.2f}) requires senior decision"
+            return f"High risk situation ({risk_assessment['risk_score']:0.2f}) requires senior decision"
 
         else:
             return f"Recommended based on {situation['overall_status']} status and \
@@ -625,7 +625,7 @@ class DecisionSupportSystem:
 
         # 状況に基づく根拠
         rationale.append(
-            f"Task {situation['overall_status']} with {situation['completion_level']:.0f}% completion"
+            f"Task {situation['overall_status']} with {situation['completion_level']:0.0f}% completion"
         )
 
         # 品質に基づく根拠

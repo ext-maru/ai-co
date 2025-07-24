@@ -158,9 +158,8 @@ class ManagerTestCase(unittest.TestCase):
             print(f"Error fixing base_test.py: {e}")
 
 
-def main():
-    """メイン実行"""
-    print("🚨 Emergency Import Fix Started...")
+def main()print("🚨 Emergency Import Fix Started...")
+"""メイン実行"""
 
     # インポートエラーを修正
     fixed_files = fix_path_imports()

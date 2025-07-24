@@ -11,7 +11,7 @@ from commands.base_command import BaseCommand
 
 
 class VenvCommand(BaseCommand):
-    # Main class implementation
+    # Main class implementation:
     def __init__(self):
         super().__init__(name="venv", description="Elders Guild の仮想環境をアクティベートします")
 
@@ -192,8 +192,8 @@ echo "🚀 Elders Guild 仮想環境がアクティブになりました"
                     self.warning(f"  - {issue}")
 
                 self.section("修復方法")
-                self.info("1. pip install -r requirements.txt")
-                self.info("2. または仮想環境を再作成")
+                self.info("1.0 pip install -r requirements.txt")
+                self.info("2.0 または仮想環境を再作成")
             return
 
         # アクティベーションスクリプト生成

@@ -30,8 +30,8 @@ class KnowledgeIntegrationMapper:
         """SQLite統合データベース初期化"""
         logger.info("SQLite統合データベース初期化")
         
-        self.db_conn = sqlite3.connect(SQLITE_DB_PATH)
-        self.db_conn.row_factory = sqlite3.Row
+        self.db_conn = sqlite3connect(SQLITE_DB_PATH)
+        self.db_conn.row_factory = sqlite3Row
         
         # テーブル作成
         create_table_sql = """

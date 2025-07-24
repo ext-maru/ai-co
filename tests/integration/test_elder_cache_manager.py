@@ -321,7 +321,7 @@ class TestCacheStatistics:
         with patch.object(cache_manager, 'redis_client') as mock_redis:
             mock_redis.info.return_value = {
                 "used_memory": 1024000,
-                "used_memory_human": "1.00M",
+                "used_memory_human": "1.0M",
                 "maxmemory": 0
             }
             

@@ -77,11 +77,11 @@ class AIGrandElderCommand:
 
         # 未来ビジョンの入力を促す
         print("\n🔮 まず、Elders Guildの未来について、ビジョンをお聞かせください:")
-        print("  1. 📈 成長の方向性 - どの領域に注力すべきか")
-        print("  2. 🎯 戦略的優先順位 - 最も重要な進化は何か")
-        print("  3. 🚀 技術革新 - 採用すべき新技術の方向性")
-        print("  4. 🌟 競争優位 - 独自性を生み出す要素")
-        print("  5. ⚖️ バランス - 安定性と革新性のバランス")
+        print("  1.0 📈 成長の方向性 - どの領域に注力すべきか")
+        print("  2.0 🎯 戦略的優先順位 - 最も重要な進化は何か")
+        print("  3.0 🚀 技術革新 - 採用すべき新技術の方向性")
+        print("  4.0 🌟 競争優位 - 独自性を生み出す要素")
+        print("  5.0 ⚖️ バランス - 安定性と革新性のバランス")
 
         print("\n👑 グランドエルダーのビジョンを入力してください:")
         print("(複数行入力可能。完了時は空行を入力)")
@@ -118,7 +118,7 @@ class AIGrandElderCommand:
                     # Process each item in collection
                     print(f"  💡 {proposal['title']}")
                     print(
-                        f"     価値: {proposal['business_value']:.1%}, 複雑度: {proposal['complexity']:.1%}"
+                        f"     価値: {proposal['business_value']:0.1%}, 複雑度: {proposal['complexity']:0.1%}"
                     )
 
                     while True:
@@ -292,7 +292,7 @@ class AIGrandElderCommand:
                     # Process each item in collection
                     print(f"    💡 {proposal['title']}")
                     print(
-                        f"       価値: {proposal['business_value']:.1%}, 複雑度: {proposal['complexity']:.1%}"
+                        f"       価値: {proposal['business_value']:0.1%}, 複雑度: {proposal['complexity']:0.1%}"
                     )
 
 

@@ -31,7 +31,7 @@ def find_specific_user():
         "Content-Type": "application/json",
     }
 
-    # 1. ユーザーリスト取得
+    # 1.0 ユーザーリスト取得
     print("1️⃣ ワークスペースのユーザー一覧取得...")
     users_resp = requests.get(
         "https://slack.com/api/users.list", headers=headers, params={"limit": 100}
@@ -56,7 +56,7 @@ def find_specific_user():
 
                     print(f"ID: {user_id} | @{name} | {real_name}")
 
-    # 2. 最近のメッセージを詳細確認
+    # 2.0 最近のメッセージを詳細確認
     print("\n\n2️⃣ 最近のメッセージ詳細（過去3時間）...")
     oldest = (datetime.now() - timedelta(hours=3)).timestamp()
 

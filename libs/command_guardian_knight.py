@@ -86,10 +86,9 @@ class CommandGuardianKnight(IncidentKnight):
         self.last_git_check = datetime.now()
         self.monitored_files = set()
 
-    def _load_prevention_patterns(self) -> Dict[str, Dict]:
-        """エラー予防パターンを読み込み"""
-        patterns_file = Path("knowledge_base/error_prevention_patterns.json")
-
+    def _load_prevention_patterns(self) -> Dict[str, Dict]patterns_file = Path("knowledge_base/error_prevention_patterns.json")
+    """エラー予防パターンを読み込み"""
+:
         if patterns_file.exists():
             with open(patterns_file) as f:
                 return json.load(f)
@@ -124,19 +123,19 @@ class CommandGuardianKnight(IncidentKnight):
         """継続的巡回 - エラーを予防"""
         issues = []
 
-        # 1. 全コマンドの健全性チェック
+        # 1.0 全コマンドの健全性チェック
         command_issues = await self._check_all_commands()
         issues.extend(command_issues)
 
-        # 2. コード変更監視（予測的修復）
+        # 2.0 コード変更監視（予測的修復）
         code_issues = await self._monitor_code_changes()
         issues.extend(code_issues)
 
-        # 3. 依存関係チェック
+        # 3.0 依存関係チェック
         dependency_issues = await self._check_dependencies()
         issues.extend(dependency_issues)
 
-        # 4. 環境整合性チェック
+        # 4.0 環境整合性チェック
         env_issues = await self._check_environment()
         issues.extend(env_issues)
 
@@ -479,10 +478,9 @@ class CommandGuardianKnight(IncidentKnight):
         else:
             return await self._diagnose_generic_issue(issue)
 
-    async def _diagnose_command_issue(self, issue: Issue) -> Diagnosis:
-        """コマンド問題の診断"""
-        cmd_name = issue.metadata.get("command")
-
+    async def _diagnose_command_issue(self, issue: Issue) -> Diagnosiscmd_name = issue.metadata.get("command")
+    """コマンド問題の診断"""
+:
         if cmd_name in self.protected_commands:
             cmd_info = self.protected_commands[cmd_name]
 
@@ -513,12 +511,11 @@ class CommandGuardianKnight(IncidentKnight):
             confidence_score=0.9,
         )
 
-    async def _diagnose_dependency_issue(self, issue: Issue) -> Diagnosis:
-        """依存関係問題の診断"""
-        module_name = issue.metadata.get("module") or issue.metadata.get("package")
+    async def _diagnose_dependency_issue(self, issue: Issue) -> Diagnosismodule_name = issue.metadata.get("module") or issue.metadata.get("package")
+    """依存関係問題の診断"""
 
         return Diagnosis(
-            issue_id=issue.id,
+            issue_id=issue.id,:
             root_cause=f"Missing dependency: {module_name}",
             impact_assessment="Import errors will occur",
             recommended_actions=[
@@ -531,12 +528,11 @@ class CommandGuardianKnight(IncidentKnight):
             confidence_score=0.95,
         )
 
-    async def _diagnose_config_issue(self, issue: Issue) -> Diagnosis:
-        """設定問題の診断"""
-        var_name = issue.metadata.get("variable")
+    async def _diagnose_config_issue(self, issue: Issue) -> Diagnosisvar_name = issue.metadata.get("variable")
+    """設定問題の診断"""
 
         return Diagnosis(
-            issue_id=issue.id,
+            issue_id=issue.id,:
             root_cause=f"Missing configuration: {var_name}",
             impact_assessment="Configuration errors will occur",
             recommended_actions=[
@@ -627,6 +623,7 @@ class CommandGuardianKnight(IncidentKnight):
 
 
 if __name__ == "__main__":
+    pass
 
     async def main():
         # テスト実行

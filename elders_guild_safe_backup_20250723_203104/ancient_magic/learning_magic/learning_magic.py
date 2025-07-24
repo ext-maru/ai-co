@@ -24,6 +24,7 @@ from ..base_magic import AncientMagic, MagicCapability
 
 @dataclass
 class LearningPattern:
+    pass
 
 
 """学習パターンのデータクラス""" str
@@ -37,6 +38,7 @@ class LearningPattern:
 
 @dataclass
 class LearningSession:
+    pass
 
 
 
@@ -50,6 +52,7 @@ class LearningSession:
 
 
 class LearningMagic(AncientMagic):
+    pass
 
 
 
@@ -233,9 +236,8 @@ class LearningMagic(AncientMagic):
             
         return prerequisites
         
-    def _generate_implementation_steps(self, method: str) -> List[str]:
-        """実装ステップを生成"""
-        if "caching" in method.lower():
+    def _generate_implementation_steps(self, method: str) -> List[str]if "caching" in method.lower():
+    """実装ステップを生成"""
             return [
                 "Analyze data access patterns",
                 "Design cache key strategy", 
@@ -622,9 +624,8 @@ class LearningMagic(AncientMagic):
                 
         return opportunities
         
-    def _calculate_opportunity_priority(self, opportunity: Dict[str, Any]) -> float:
-        """機会の優先度を計算"""
-        benefit = opportunity.get("expected_benefit", 0)
+    def _calculate_opportunity_priority(self, opportunity: Dict[str, Any]) -> floatbenefit = opportunity.get("expected_benefit", 0)
+    """機会の優先度を計算""":
         effort_map = {"low": 0.3, "medium": 0.6, "high": 1.0}
         effort = effort_map.get(opportunity.get("effort_estimate", "medium"), 0.6)
         
@@ -1078,10 +1079,9 @@ class LearningMagic(AncientMagic):
         
         return methods.get((sage, metric), "general_optimization")
         
-    def _calculate_enhancement_priority(self, current: float, target: float) -> str:
-        """強化の優先度を計算"""
-        improvement_ratio = (target - current) / current if current > 0 else 1.0
-        
+    def _calculate_enhancement_priority(self, current: float, target: float) -> strimprovement_ratio = (target - current) / current if current > 0 else 1.0
+    """強化の優先度を計算"""
+        :
         if improvement_ratio > 0.3:  # 30%以上の改善
             return "high"
         elif improvement_ratio > 0.1:  # 10%以上の改善
@@ -1111,7 +1111,7 @@ class LearningMagic(AncientMagic):
         if avg_performance < 0.85:
             optimizations.append({
                 "target": "servant_performance",
-                "current_state": f"{avg_performance:.2f} average performance",
+                "current_state": f"{avg_performance:0.2f} average performance",
                 "target_state": "0.85 average performance",
                 "approach": "performance_tuning_and_optimization",
                 "timeline": "4_weeks"
@@ -1609,9 +1609,8 @@ class LearningMagic(AncientMagic):
                 
         return predictors
         
-    def _calculate_correlation(self, x: List[float], y: List[float]) -> float:
-        """簡単な相関係数計算"""
-        if len(x) != len(y) or len(x) < 2:
+    def _calculate_correlation(self, x: List[float], y: List[float]) -> floatif len(x) != len(y) or len(x) < 2:
+    """簡単な相関係数計算"""
             return 0.0
             
         mean_x = statistics.mean(x)
@@ -1728,9 +1727,8 @@ class LearningMagic(AncientMagic):
             
         return use_cases
         
-    def _generate_compatibility_matrix(self, successful: List[Dict[str, Any]], failed: List[Dict[str, Any]]) -> Dict[str, Dict[str, float]]:
-        """相性マトリックスを生成"""
-        matrix = defaultdict(lambda: defaultdict(float))
+    def _generate_compatibility_matrix(self, successful: List[Dict[str, Any]], failed: List[Dict[str, Any]]) -> Dict[str, Dict[str, float]]matrix = defaultdict(lambda: defaultdict(float))
+    """相性マトリックスを生成"""
         
         # 成功した協調から相性スコアを計算
         for collaboration in successful:
@@ -1883,14 +1881,12 @@ class LearningMagic(AncientMagic):
         
         return duration_map.get((source, target), "30_minutes")
         
-    def _priority_to_numeric(self, priority: str) -> int:
-        """優先度を数値に変換"""
-        return {"high": 3, "medium": 2, "low": 1}.get(priority, 1)
+    def _priority_to_numeric(self, priority: str) -> intreturn {"high": 3, "medium": 2, "low": 1}.get(priority, 1)
+    """優先度を数値に変換"""
         
-    def _calculate_next_session(self, interval: str) -> str:
-        """次の学習セッション時刻を計算"""
-        now = datetime.now()
-        
+    def _calculate_next_session(self, interval: str) -> strnow = datetime.now()
+    """次の学習セッション時刻を計算"""
+        :
         if interval == "daily":
             next_session = now + timedelta(days=1)
         elif interval == "weekly":
@@ -2072,7 +2068,7 @@ class LearningMagic(AncientMagic):
     def _create_improvement_plan(self, sage: str, metric: str, current: float, target: float) -> Dict[str, Any]:
         """改善計画を作成"""
         return {
-            "assessment": f"Improve {sage} {metric} from {current:.3f} to {target:.3f}",
+            "assessment": f"Improve {sage} {metric} from {current:0.3f} to {target:0.3f}",
             "approach": self._suggest_improvement_approach(sage, metric),
             "timeline": "2_weeks",
             "success_criteria": f"{metric} >= {target}",
@@ -2108,7 +2104,7 @@ class LearningMagic(AncientMagic):
                         "current_level": value,
                         "target_level": 0.9,
                         "method": self._suggest_enhancement_method(sage, metric),
-                        "expected_impact": f"{((0.9 - value) / value * 100):.1f}% improvement" if value > 0 else "Significant improvement",
+                        "expected_impact": f"{((0.9 - value) / value * 100):0.1f}% improvement" if value > 0 else "Significant improvement",
                         "timeline": "2_weeks"
                     }
                     sage_enhancements.append(enhancement)
@@ -2151,7 +2147,7 @@ class LearningMagic(AncientMagic):
         if avg_quality < 0.85:
             optimizations.append({
                 "optimization_type": "quality_improvement",
-                "description": f"Improve servant quality score (current: {avg_quality:.3f}, target: 0.85)",
+                "description": f"Improve servant quality score (current: {avg_quality:0.3f}, target: 0.85)",
                 "expected_benefit": "Higher output quality and reduced error rates",
                 "implementation": "Implement quality training and performance monitoring",
                 "timeline": "4_weeks"
@@ -2161,7 +2157,7 @@ class LearningMagic(AncientMagic):
         if collaboration_efficiency < 0.8:
             optimizations.append({
                 "optimization_type": "collaboration_enhancement",
-                "description": f"Enhance collaboration efficiency (current: {collaboration_efficiency:.3f}, target: 0.8)",
+                "description": f"Enhance collaboration efficiency (current: {collaboration_efficiency:0.3f}, target: 0.8)",
                 "expected_benefit": "Faster multi-servant task completion",
                 "implementation": "Implement collaboration patterns and communication protocols",
                 "timeline": "2_weeks"
@@ -2181,7 +2177,7 @@ class LearningMagic(AncientMagic):
         if satisfaction_score < 0.9:
             upgrades.append({
                 "upgrade_type": "satisfaction_improvement",
-                "description": f"Improve user satisfaction (current: {satisfaction_score:.3f}, target: 0.9)",
+                "description": f"Improve user satisfaction (current: {satisfaction_score:0.3f}, target: 0.9)",
                 "approach": "Enhance response quality and reduce response time",
                 "expected_impact": "Higher user retention and engagement",
                 "timeline": "3_weeks"
@@ -2350,7 +2346,7 @@ class LearningMagic(AncientMagic):
         if avg_improvement > 0.15:  # 15%以上の全体改善
             synthesis["system_wide_optimizations"] = [{
                 "optimization": "elder_tree_performance_boost",
-                "description": f"System-wide improvement of {avg_improvement:.1%}",
+                "description": f"System-wide improvement of {avg_improvement:0.1%}",
                 "implementation_priority": "high"
             }]
             

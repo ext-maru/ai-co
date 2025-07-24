@@ -18,7 +18,7 @@ def verify_imports():
     print(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
 
-    # 1. pytestでテストを収集
+    # 1.0 pytestでテストを収集
     print("📊 Collecting tests with pytest...")
     result = subprocess.run(
         [sys.executable, "-m", "pytest", "--collect-only", "-q"],
@@ -36,7 +36,7 @@ def verify_imports():
     print(f"  - ImportError count: {import_errors}")
     print(f"  - ModuleNotFoundError count: {module_errors}")
 
-    # 2. 収集されたテスト数をカウント
+    # 2.0 収集されたテスト数をカウント
     collected_tests = 0
     for line in result.stdout.split("\n"):
         if " test" in line and "selected" not in line:
@@ -45,7 +45,7 @@ def verify_imports():
     print(f"\n📈 Test Collection Stats:")
     print(f"  - Successfully collected: {collected_tests} tests")
 
-    # 3. 残りのエラーを詳細表示
+    # 3.0 残りのエラーを詳細表示
     if total_errors > 0:
         print(f"\n⚠️  Remaining Errors:")
         error_lines = []
@@ -67,7 +67,7 @@ def verify_imports():
     else:
         print("\n✨ All import errors have been resolved!")
 
-    # 4. 修正済みファイルのリスト
+    # 4.0 修正済みファイルのリスト
     print("\n📝 Fixed Components:")
     fixed_items = [
         ("BaseTestCase alias", "tests/base_test.py"),
@@ -82,7 +82,7 @@ def verify_imports():
     for item, location in fixed_items:
         print(f"  ✓ {item} - {location}")
 
-    # 5. 成功率の計算
+    # 5.0 成功率の計算
     print("\n🎯 Success Metrics:")
     initial_errors = 41
     remaining_errors = total_errors
@@ -91,20 +91,20 @@ def verify_imports():
 
     print(f"  - Initial errors: {initial_errors}")
     print(f"  - Fixed errors: {fixed_errors}")
-    print(f"  - Success rate: {success_rate:.1f}%")
+    print(f"  - Success rate: {success_rate:0.1f}%")
 
-    # 6. 次のステップの提案
+    # 6.0 次のステップの提案
     print("\n🚀 Next Steps:")
     if remaining_errors == 0:
-        print("  1. Run full test suite: python -m pytest")
-        print("  2. Check test coverage: python -m pytest --cov")
-        print("  3. Proceed to Core Quality Attack phase")
+        print("  1.0 Run full test suite: python -m pytest")
+        print("  2.0 Check test coverage: python -m pytest --cov")
+        print("  3.0 Proceed to Core Quality Attack phase")
     else:
         print(
-            "  1. Analyze remaining errors: python -m pytest --collect-only 2>&1 | grep ERROR"
+            "  1.0 Analyze remaining errors: python -m pytest --collect-only 2>&1 | grep ERROR"
         )
-        print("  2. Fix specific import issues")
-        print("  3. Re-run verification")
+        print("  2.0 Fix specific import issues")
+        print("  3.0 Re-run verification")
 
     print("\n" + "=" * 60)
 

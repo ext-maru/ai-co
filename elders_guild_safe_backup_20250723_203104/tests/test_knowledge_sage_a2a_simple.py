@@ -20,6 +20,7 @@ from knowledge_sage.business_logic import KnowledgeProcessor
 
 
 class TestKnowledgeSageBasic:
+    pass
 
 
 """基本的なKnowledge Sage A2A Agent テスト"""
@@ -43,6 +44,7 @@ class TestKnowledgeSageBasic:
     
     @pytest.mark.asyncio
     async def test_agent_initialization(self, agent):
+        pass
 
             """エージェント初期化テスト"""
         """知識検索スキル - 簡単なテキスト"""
@@ -72,6 +74,7 @@ class TestKnowledgeSageBasic:
     
     @pytest.mark.asyncio
     async def test_search_knowledge_skill_json_input(self, agent):
+        pass
 
         """知識検索スキル - JSON入力""" "machine learning", "limit": 5}
         message = Message(
@@ -95,6 +98,7 @@ class TestKnowledgeSageBasic:
     
     @pytest.mark.asyncio 
     async def test_search_knowledge_skill_error(self, agent):
+        pass
 
         """知識検索スキル - エラーハンドリング"""
         """エージェント作成可能確認"""

@@ -264,7 +264,7 @@ class AdaptiveScalingStrategy(ScalingStrategy):
                 int(current_concurrency * self.config["scale_down_factor"])
             )
             direction = ScalingDirection.DOWN
-            reason = f"High resource pressure ({resource_pressure:.2f})"
+            reason = f"High resource pressure ({resource_pressure:0.2f})"
             confidence = resource_pressure
             
         elif resource_pressure < 0.4 and performance_score > 0.7:
@@ -274,16 +274,16 @@ class AdaptiveScalingStrategy(ScalingStrategy):
                 int(current_concurrency * self.config["scale_factor"])
             )
             direction = ScalingDirection.UP
-            reason = f"Low resource pressure ({resource_pressure:.2f}) and good performance " \
-                "({performance_score:.2f})"
+            reason = f"Low resource pressure ({resource_pressure:0.2f}) and good performance " \
+                "({performance_score:0.2f})"
             confidence = (1.0 - resource_pressure) * performance_score
             
         else:
             # 現状維持
             target = current_concurrency
             direction = ScalingDirection.STABLE
-            reason = f"Balanced state (pressure: {resource_pressure:.2f}, performance: " \
-                "{performance_score:.2f})"
+            reason = f"Balanced state (pressure: {resource_pressure:0.2f}, performance: " \
+                "{performance_score:0.2f})"
             confidence = 0.5
         
         return ScalingDecision(
@@ -508,7 +508,7 @@ class DynamicParallelProcessor:
         
         logger.info(
             f"Scaling {decision.direction.value}: {old_concurrency} -> {new_concurrency} "
-            f"(reason: {decision.reason}, confidence: {decision.confidence:.2f})"
+            f"(reason: {decision.reason}, confidence: {decision.confidence:0.2f})"
         )
         
         # セマフォを更新
@@ -587,7 +587,7 @@ async def main():
         
         def progress_callback(completed, total):
             """progress_callbackメソッド"""
-            print(f"Progress: {completed}/{total} ({completed/total*100:.1f}%)")
+            print(f"Progress: {completed}/{total} ({completed/total*100:0.1f}%)")
         
         print("Starting parallel processing with dynamic scaling...")
         start_time = time.time()
@@ -600,7 +600,7 @@ async def main():
         
         end_time = time.time()
         
-        print(f"\nProcessing completed in {end_time - start_time:.2f} seconds")
+        print(f"\nProcessing completed in {end_time - start_time:0.2f} seconds")
         print(f"Results: {len([r for r in results if not isinstance(r, Exception)])} successful, "
               f"{len([r for r in results if isinstance(r, Exception)])} errors")
         
@@ -610,7 +610,7 @@ async def main():
         print(f"- Concurrency: {status['current_concurrency']}")
         print(f"- Processed: {status['processed_count']}")
         print(f"- Errors: {status['error_count']}")
-        print(f"- Throughput: {status['performance_metrics'].get('throughput', 0):.2f} items/sec")
+        print(f"- Throughput: {status['performance_metrics'].get('throughput', 0):0.2f} items/sec")
         
         # 履歴保存
         processor.save_scaling_history("performance_results/scaling_history_test.json")

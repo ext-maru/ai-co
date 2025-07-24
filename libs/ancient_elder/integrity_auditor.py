@@ -303,9 +303,8 @@ class ASTPatternsDetector:
 class GitIntegrityAnalyzer:
     """Git履歴整合性分析"""
     
-    def __init__(self, repo_path:
+    def __init__(self, repo_path: Path):
         """初期化メソッド"""
-    Path):
         self.repo_path = repo_path
         
     async def analyze_tdd_compliance(self) -> List[ViolationReport]:
@@ -810,7 +809,7 @@ async def main():
     print(f"Score: {result.score}/100")
     print(f"Verdict: {result.verdict}")
     print(f"Violations: {len(result.violations)}")
-    print(f"Processing Time: {result.processing_time_ms:.2f}ms")
+    print(f"Processing Time: {result.processing_time_ms:0.2f}ms")
     
     if result.violations:
         print("\n📋 Violations Found:")

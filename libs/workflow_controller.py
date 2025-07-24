@@ -142,7 +142,7 @@ class WorkflowController(BaseManager):
         """データベース初期化"""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3.connect(self.db_path) as conn:
+        with sqlite3connect(self.db_path) as conn:
             # フェーズ状態管理テーブル
             conn.execute(
                 """
@@ -268,7 +268,7 @@ class WorkflowController(BaseManager):
         try:
             phases = custom_phases or self.phases
 
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # 既存の状態をクリア
                 conn.execute(
                     "DELETE FROM phase_states WHERE project_id = ?", (project_id,)
@@ -323,7 +323,7 @@ class WorkflowController(BaseManager):
     ) -> Tuple[bool, List[str]]:
         """フェーズ実行前提条件チェック"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # 依存フェーズを取得
                 cursor = conn.execute(
                     """
@@ -377,7 +377,7 @@ class WorkflowController(BaseManager):
                     return False
 
             # フェーズ状態を更新
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     UPDATE phase_states
@@ -409,7 +409,7 @@ class WorkflowController(BaseManager):
     def complete_phase(self, project_id: str, phase: str) -> bool:
         """フェーズ完了"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # フェーズ状態を更新
                 conn.execute(
                     """
@@ -550,7 +550,7 @@ class WorkflowController(BaseManager):
     def _check_auto_advance(self, project_id: str, completed_phase: str):
         """自動進行チェック"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # 自動進行設定を取得
                 cursor = conn.execute(
                     """
@@ -664,7 +664,7 @@ class WorkflowController(BaseManager):
             passed = quality_score >= 80.0
 
             logger.info(
-                f"📊 品質ゲート結果: {quality_score:.1f}% - {'✅ 通過' if passed else '❌ 不合格'}"
+                f"📊 品質ゲート結果: {quality_score:0.1f}% - {'✅ 通過' if passed else '❌ 不合格'}"
             )
 
             return passed
@@ -676,7 +676,7 @@ class WorkflowController(BaseManager):
     def _set_phase_blocked(self, project_id: str, phase: str, reason: str):
         """フェーズをブロック状態に設定"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     UPDATE phase_states
@@ -752,7 +752,7 @@ class WorkflowController(BaseManager):
     ):
         """ワークフローイベント記録"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 conn.execute(
                     """
                     INSERT INTO workflow_events
@@ -774,7 +774,7 @@ class WorkflowController(BaseManager):
     def get_project_workflow_status(self, project_id: str) -> Dict[str, Any]:
         """プロジェクトワークフロー状態取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 # フェーズ状態
                 cursor = conn.execute(
                     """
@@ -854,7 +854,7 @@ class WorkflowController(BaseManager):
     def get_workflow_statistics(self) -> Dict[str, Any]:
         """ワークフロー統計情報取得"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with sqlite3connect(self.db_path) as conn:
                 stats = {}
 
                 # プロジェクト数
@@ -945,15 +945,15 @@ if __name__ == "__main__":
     status = controller.get_project_workflow_status(test_project_id)
     for phase in status.get("phases", []):
         print(
-            f"  {phase['phase']}: {phase['status']} ({phase['progress_percentage']:.1f}%)"
+            f"  {phase['phase']}: {phase['status']} ({phase['progress_percentage']:0.1f}%)"
         )
 
     print(f"現在のフェーズ: {status.get('current_phase', 'なし')}")
-    print(f"全体進捗: {status.get('overall_progress', 0):.1f}%")
+    print(f"全体進捗: {status.get('overall_progress', 0):0.1f}%")
 
     # 統計情報
     print(f"\n📈 統計情報:")
     stats = controller.get_workflow_statistics()
     print(f"総プロジェクト数: {stats.get('total_projects', 0)}")
     print(f"自動進行回数: {stats.get('auto_advances', 0)}")
-    print(f"平均フェーズ完了時間: {stats.get('avg_phase_completion_hours', 0):.1f}時間")
+    print(f"平均フェーズ完了時間: {stats.get('avg_phase_completion_hours', 0):0.1f}時間")

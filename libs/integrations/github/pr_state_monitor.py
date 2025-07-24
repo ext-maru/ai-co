@@ -162,9 +162,8 @@ class PRStateMonitor:
         logger.info(f"Stopped monitoring PR #{pr_number}")
         return True
     
-    async def _monitoring_loop(self, pr_number: int, config: MonitoringConfig):
-        """監視ループのメイン処理"""
-        start_time = datetime.now()
+    async def _monitoring_loop(self, pr_number: int, config: MonitoringConfig)start_time = datetime.now()
+    """監視ループのメイン処理"""
         
         try:
             while True:
@@ -385,9 +384,8 @@ class PRStateMonitor:
             "monitoring_count": len(self.active_monitors)
         }
     
-    def get_state_history(self, pr_number: int) -> List[Dict[str, Any]]:
-        """状態履歴の取得"""
-        history = self.state_history.get(pr_number, [])
+    def get_state_history(self, pr_number: int) -> List[Dict[str, Any]]history = self.state_history.get(pr_number, [])
+    """状態履歴の取得"""
         return [state.to_dict() for state in history]
     
     async def add_event_callback(
@@ -409,11 +407,10 @@ class PRStateMonitor:
 
 
 # 使用例とヘルパー関数
-async def example_event_callback(pr_number: int, event_type: str, event_data: Dict[str, Any]):
-    """イベントコールバックの例"""
-    timestamp = datetime.now().strftime("%H:%M:%S")
+async def example_event_callback(pr_number: int, event_type: str, event_data: Dict[str, Any])timestamp = datetime.now().strftime("%H:%M:%S")
+"""イベントコールバックの例"""
     print(f"[{timestamp}] PR #{pr_number} - Event: {event_type}")
-    print(f"  Data: {json.dumps(event_data, indent=2)}")
+    print(f"  Data: {json.dumps(event_data, indent}")
 
 
 def create_monitoring_config_for_merge() -> MonitoringConfig:

@@ -163,13 +163,13 @@ def main():
     print("🧙‍♂️ 4賢者緊急修正システム開始")
     print("=" * 50)
 
-    # 1. worker.run() → worker.start() 修正
+    # 1.0 worker.run() → worker.start() 修正
     fixed_files = fix_worker_run_calls()
 
-    # 2. BaseWorkerにrun()メソッド追加
+    # 2.0 BaseWorkerにrun()メソッド追加
     base_worker_fixed = add_run_method_to_base_worker()
 
-    # 3. 統一起動スクリプト作成
+    # 3.0 統一起動スクリプト作成
     startup_script_created = create_unified_startup_script()
 
     print("=" * 50)
@@ -181,9 +181,9 @@ def main():
     # 複雑な条件判定
     if fixed_files > 0 or base_worker_fixed or startup_script_created:
         print("\n🚀 次のステップ:")
-        print("1. 修正内容をgitコミット")
-        print("2. scripts/start_worker.sh でワーカー起動テスト")
-        print("3. tmuxセッションで環境変数設定")
+        print("1.0 修正内容をgitコミット")
+        print("2.0 scripts/start_worker.sh でワーカー起動テスト")
+        print("3.0 tmuxセッションで環境変数設定")
 
         return True
     else:

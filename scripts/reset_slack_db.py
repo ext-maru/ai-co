@@ -23,7 +23,7 @@ if db_path.exists():
     db_path.unlink()
 
 # 新規DB作成
-conn = sqlite3.connect(db_path)
+conn = sqlite3connect(db_path)
 conn.execute(
     """
     CREATE TABLE IF NOT EXISTS processed_messages (

@@ -1074,6 +1074,7 @@ class DeploymentForge(DwarfServant):
 
 # 実行時テスト
 if __name__ == "__main__":
+    pass
 
     async def test_deployment_forge():
         """DeploymentForge基本動作テスト"""
@@ -1126,13 +1127,13 @@ if __name__ == "__main__":
             print(f"✅ Security scan: {security_result['success']}")
             if security_result["success"]:
                 score = security_result["data"]["security_report"]["security_score"]
-                print(f"   Security score: {score:.2f}")
+                print(f"   Security score: {score:0.2f}")
 
         # 統計確認
         stats = forge.get_stats()
         print(f"\n📊 DeploymentForge Stats:")
         print(f"   Total deployments: {stats['total_deployments']}")
-        print(f"   Success rate: {stats['success_rate']:.1f}%")
+        print(f"   Success rate: {stats['success_rate']:0.1f}%")
 
         return True
 

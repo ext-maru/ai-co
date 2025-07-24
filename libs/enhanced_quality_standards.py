@@ -74,7 +74,7 @@ class StrictIronWillValidator:
                 r'#.*(TODO|TEMPORARY|TEMP|QUICK|DIRTY)',
             ],
             'workaround_code_patterns': [
-                r'time\.sleep\s*\(\s*[0-9.]+\s*\)',  # Sleep hacks
+                r'time\.sleep\s*\(\s*[0-9.0]+\s*\)',  # Sleep hacks
                 r'pass\s*#.*[temporary|temp|todo]',  # Temporary pass statements
                 r'raise\s+NotImplementedError.*[temporary|temp]',  # Temp not implemented
             ]
@@ -89,7 +89,7 @@ class StrictIronWillValidator:
                 content = f.read()
                 lines = content.splitlines()
             
-            # 1. Pattern-based detection with context
+            # 1.0 Pattern-based detection with context
             for category, patterns in self.workaround_patterns.items():
                 for pattern in patterns:
                     matches = self._find_pattern_with_context(content, lines, pattern)
@@ -105,7 +105,7 @@ class StrictIronWillValidator:
                             elder_guild_standard="Iron Will: No workarounds permitted"
                         ))
             
-            # 2. AST-based structural analysis
+            # 2.0 AST-based structural analysis
             try:
                 tree = ast.parse(content)
                 ast_violations = self._analyze_ast_for_workarounds(tree, file_path)
@@ -122,7 +122,7 @@ class StrictIronWillValidator:
                     elder_guild_standard="Elder Guild: All code must be syntactically correct"
                 ))
             
-            # 3. Comment intent analysis
+            # 3.0 Comment intent analysis
             comment_violations = self._analyze_comment_intent(lines, file_path)
             violations.extend(comment_violations)
             
@@ -201,7 +201,7 @@ class StrictIronWillValidator:
         violations = []
         
         for node in ast.walk(tree):
-            # Temporary function/class names
+            # Temporary function/class names:
             if isinstance(node, ast.FunctionDef):
                 if self._is_temporary_identifier(node.name):
                     violations.append(QualityViolation(
@@ -400,20 +400,20 @@ class EnhancedQualityEvaluator:
         
         all_violations = []
         
-        # 1. Iron Will compliance (mandatory)
+        # 1.0 Iron Will compliance (mandatory)
         iron_will_result = self.iron_will_validator.validate_iron_will_compliance(file_path)
         if not iron_will_result['compliant']:
             all_violations.extend(iron_will_result['violations'])
         
-        # 2. Security validation (mandatory)
+        # 2.0 Security validation (mandatory)
         security_result = self.security_validator.validate_security(file_path)
         if not security_result['compliant']:
             all_violations.extend(security_result['violations'])
         
-        # 3. Code quality metrics
+        # 3.0 Code quality metrics
         quality_metrics = self._evaluate_code_quality(content, file_path)
         
-        # 4. Calculate overall score
+        # 4.0 Calculate overall score
         base_score = quality_metrics['base_score']
         
         # Apply Elder Guild penalties
@@ -599,7 +599,7 @@ def main():
     
     print(f"\n📊 Summary:")
     print(f"   Files analyzed: {result['files_analyzed']}")
-    print(f"   Average score: {result['average_quality_score']:.1f}/100")
+    print(f"   Average score: {result['average_quality_score']:0.1f}/100")
     print(f"   Files failed: {result['files_failed']}")
     print(f"   Total violations: {result['total_violations']}")
     print(f"   Critical violations: {result['critical_violations']}")
@@ -613,7 +613,7 @@ def main():
         print(f"\n❌ Failed files:")
         for file_result in result['results']:
             if not file_result['result']['elder_guild_compliant']:
-                print(f"   {file_result['file_path']}: {file_result['result']['quality_score']:.1f}/100")
+                print(f"   {file_result['file_path']}: {file_result['result']['quality_score']:0.1f}/100")
         
         sys.exit(1)
 

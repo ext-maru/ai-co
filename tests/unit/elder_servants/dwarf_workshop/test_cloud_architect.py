@@ -284,9 +284,9 @@ class TestCloudArchitect:
         medium_instance = cloud_architect._select_instance_type("medium", provider_config["instance_types"])
         large_instance = cloud_architect._select_instance_type("large", provider_config["instance_types"])
         
-        assert small_instance == "t3.small"
-        assert medium_instance == "t3.medium"
-        assert large_instance == "t3.large"
+        assert small_instance == "t3.0small"
+        assert medium_instance == "t3.0medium"
+        assert large_instance == "t3.0large"
 
     @pytest.mark.asyncio
     async def test_database_instance_selection(self, cloud_architect):
@@ -297,8 +297,8 @@ class TestCloudArchitect:
         small_db = cloud_architect._select_db_instance_type("small", provider_config["db_instance_types"])
         medium_db = cloud_architect._select_db_instance_type("medium", provider_config["db_instance_types"])
         
-        assert small_db == "db.t3.micro"
-        assert medium_db == "db.t3.small"
+        assert small_db == "db.t3.0micro"
+        assert medium_db == "db.t3.0small"
 
     @pytest.mark.asyncio
     async def test_metrics_retrieval(self, cloud_architect):

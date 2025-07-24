@@ -186,7 +186,7 @@ class WorkerRecoveryManager:
             # 復旧前の通知
             self.notification_handler.send_notification(
                 f"Worker Recovery Started: {worker_name}",
-                f"健康スコア: {health_data.get('health_score', 0):.1f}%",
+                f"健康スコア: {health_data.get('health_score', 0):0.1f}%",
                 severity="warning",
             )
 
@@ -256,7 +256,7 @@ class WorkerRecoveryManager:
                     # 劣化傾向の場合は警告
                     self.notification_handler.send_notification(
                         f"Worker Health Degrading: {worker_name}",
-                        f"現在のスコア: {trend.get('current_score', 0):.1f}%",
+                        f"現在のスコア: {trend.get('current_score', 0):0.1f}%",
                         severity="warning",
                     )
 

@@ -118,23 +118,23 @@ class WorkerStabilizationKnight(IncidentKnight):
 
         issues = []
 
-        # 1. ワーカープロセス状態確認
+        # 1.0 ワーカープロセス状態確認
         process_issues = await self._check_worker_processes()
         issues.extend(process_issues)
 
-        # 2. ワーカー設定ファイル確認
+        # 2.0 ワーカー設定ファイル確認
         config_issues = await self._check_worker_configurations()
         issues.extend(config_issues)
 
-        # 3. ワーカー依存関係確認
+        # 3.0 ワーカー依存関係確認
         dependency_issues = await self._check_worker_dependencies()
         issues.extend(dependency_issues)
 
-        # 4. ワーカーエラーログ分析
+        # 4.0 ワーカーエラーログ分析
         log_issues = await self._analyze_worker_logs()
         issues.extend(log_issues)
 
-        # 5. リソース使用量確認
+        # 5.0 リソース使用量確認
         resource_issues = await self._check_resource_usage()
         issues.extend(resource_issues)
 

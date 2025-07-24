@@ -403,6 +403,7 @@ def bad_function(x, y, z):
                              side_effect=Exception("Servant crashed")):
                 # Incident Sageへの報告をモック
                 with patch.object(elder_flow, '_report_failure_to_incident_sage') as mock_report:
+                    pass
                     
                     result = await elder_flow.execute(
                         task_type="failing_task",

@@ -4,9 +4,9 @@ Four Sages Collaboration Enhancement - 4賢者連携強化テスト
 賢者間の高度な連携機能をTDDで実装
 
 Elder Flow TDD:
-1. 🔴 Red: 失敗するテストを作成
-2. 🟢 Green: 最小限のコードで成功
-3. 🔵 Refactor: コード改善
+1.0 🔴 Red: 失敗するテストを作成
+2.0 🟢 Green: 最小限のコードで成功
+3.0 🔵 Refactor: コード改善
 """
 
 import pytest

@@ -11,10 +11,10 @@ Elder Council Proactive Guidance System - エルダー評議会事前指摘・�
 - 4賢者連携による包括的洞察
 
 🎯 予防アプローチ:
-1. 📊 メトリクス傾向分析 → 問題予測
-2. 🧠 パターン学習 → 改善機会発見
-3. 💡 戦略的提案 → 先制的アクション
-4. 🔄 フィードバック学習 → 精度向上
+1.0 "📊" メトリクス傾向分析 → 問題予測
+2.0 🧠 パターン学習 → 改善機会発見
+3.0 💡 戦略的提案 → 先制的アクション
+4.0 🔄 フィードバック学習 → 精度向上
 """
 
 import sys
@@ -330,8 +330,7 @@ class ProactiveOpportunityDetector:
                         {
                             "type": "performance_optimization",
                             "title": "Response Time Optimization Opportunity",
-                            "description": f"{trend.metric_name}が増加傾向。最適化により{(trend.predicted_value " \
-                                "- trend.current_value):.1f}ms改善可能",
+                            "description": f"{trend.metric_name}が増加傾向。最適化により{(trend.predicted_value - trend.current_value):0.1f}ms改善可能",
                             "predicted_impact": 0.8,
                             "confidence": trend.confidence,
                             "recommended_actions": [
@@ -376,7 +375,7 @@ class ProactiveOpportunityDetector:
                 {
                     "type": "error_reduction",
                     "title": "Error Rate Reduction Opportunity",
-                    "description": f"エラー率{error_rate*100:.1f}%。品質向上により大幅改善可能",
+                    "description": f"エラー率{error_rate*100:0.1f}%。品質向上により大幅改善可能",
                     "predicted_impact": 0.9,
                     "confidence": 0.8,
                     "recommended_actions": [
@@ -508,7 +507,7 @@ class ProactiveGuidanceEngine:
                 # 提案内容
                 recommended_actions=opportunity["recommended_actions"],
                 expected_benefits=[
-                    f"パフォーマンス向上: {opportunity['predicted_impact']*100:.0f}%",
+                    f"パフォーマンス向上: {opportunity['predicted_impact']*100:0.0f}%",
                     "システム安定性向上",
                     "運用効率改善",
                 ],
@@ -546,18 +545,18 @@ class ProactiveGuidanceEngine:
     def _generate_implementation_steps(self, opportunity: Dict[str, Any]) -> List[str]:
         """実装ステップ生成"""
         base_steps = [
-            "1. 現状分析と詳細調査",
-            "2. 実装計画策定",
-            "3. テスト環境での検証",
-            "4. 段階的本番環境適用",
-            "5. 効果測定と最適化",
+            "1.0 現状分析と詳細調査",
+            "2.0 実装計画策定",
+            "3.0 テスト環境での検証",
+            "4.0 段階的本番環境適用",
+            "5.0 効果測定と最適化",
         ]
 
         # 機会タイプ別のカスタマイズ
         if opportunity["type"] == "performance_optimization":
-            base_steps.insert(1, "1.5. パフォーマンスベンチマーク取得")
+            base_steps.insert(1, "1.5.0 パフォーマンスベンチマーク取得")
         elif opportunity["type"] == "test_coverage_improvement":
-            base_steps.insert(2, "2.5. テストケース設計と実装")
+            base_steps.insert(2, "2.5.0 テストケース設計と実装")
 
         return base_steps
 
@@ -579,7 +578,7 @@ class ProactiveGuidanceEngine:
                     ),
                     title=f"Preventive Action Required: {prediction.metric_name}",
                     description=f"{prediction.metric_name}で異常パターン検出。予防的対応が必要",
-                    detected_patterns=[f"anomaly_score_{prediction.anomaly_score:.2f}"],
+                    detected_patterns=[f"anomaly_score_{prediction.anomaly_score:0.2f}"],
                     predicted_impact=0.7,
                     confidence_score=prediction.confidence,
                     time_to_action=timedelta(hours=24),
@@ -591,10 +590,10 @@ class ProactiveGuidanceEngine:
                     expected_benefits=["システム障害の予防", "安定性向上"],
                     resource_requirements={"time": "半日", "complexity": "低"},
                     implementation_steps=[
-                        "1. メトリクス詳細分析",
-                        "2. 根本原因特定",
-                        "3. 予防策実装",
-                        "4. 監視強化",
+                        "1.0 メトリクス詳細分析",
+                        "2.0 根本原因特定",
+                        "3.0 予防策実装",
+                        "4.0 監視強化",
                     ],
                     detected_at=datetime.now(),
                     source_metrics=[prediction.metric_name],
@@ -636,10 +635,10 @@ class ProactiveGuidanceEngine:
                 ],
                 resource_requirements={"time": "継続的", "complexity": "中"},
                 implementation_steps=[
-                    "1. 週次目標設定",
-                    "2. タスク優先順位付け",
-                    "3. 日次進捗確認",
-                    "4. 週末振り返り",
+                    "1.0 週次目標設定",
+                    "2.0 タスク優先順位付け",
+                    "3.0 日次進捗確認",
+                    "4.0 週末振り返り",
                 ],
                 detected_at=datetime.now(),
                 source_metrics=["weekly_cycle"],
@@ -784,8 +783,8 @@ class ElderCouncilProactiveSystem:
 - **ガイダンスタイプ**: {insight.guidance_type.value}
 - **緊急度**: {insight.urgency.value}
 - **検出日時**: {insight.detected_at}
-- **予測影響度**: {insight.predicted_impact:.2f}
-- **信頼度**: {insight.confidence_score:.2f}
+- **予測影響度**: {insight.predicted_impact:0.2f}
+- **信頼度**: {insight.confidence_score:0.2f}
 
 ## 📊 分析結果
 {insight.description}

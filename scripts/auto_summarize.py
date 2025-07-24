@@ -29,7 +29,7 @@ def main():
     # 統計表示
     import sqlite3
 
-    conn = sqlite3.connect(summarizer.db_path)
+    conn = sqlite3connect(summarizer.db_path)
     cursor = conn.cursor()
 
     cursor.execute(

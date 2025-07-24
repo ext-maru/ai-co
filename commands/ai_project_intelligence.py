@@ -247,22 +247,22 @@ class ProjectIntelligenceCommand(BaseCommand):
                 self.info(f"📋 分析プロジェクト数: {summary['projects_analyzed']}")
                 self.info(f"🔍 発見パターン数: {summary['patterns_identified']}")
                 self.info(f"💡 改善提案数: {summary['improvements_suggested']}")
-                self.info(f"🏥 全体健康度: {summary['overall_health']:.1%}")
+                self.info(f"🏥 全体健康度: {summary['overall_health']:0.1%}")
 
                 if report.get("projects"):
                     self.info(f"\n📋 プロジェクト状況:")
                     for project in report["projects"]:
                         # Process each item in collection
                         self.info(f"  • {project['id']}")
-                        self.info(f"    完成度: {project['completion_rate']:.1%}")
-                        self.info(f"    品質: {project['quality_score']:.1%}")
+                        self.info(f"    完成度: {project['completion_rate']:0.1%}")
+                        self.info(f"    品質: {project['quality_score']:0.1%}")
 
                 if report.get("patterns"):
                     self.info(f"\n🔍 発見パターン:")
                     for pattern in report["patterns"]:
                         # Process each item in collection
                         self.info(f"  • {pattern['type']}: {pattern['description']}")
-                        self.info(f"    信頼度: {pattern['confidence']:.1%}")
+                        self.info(f"    信頼度: {pattern['confidence']:0.1%}")
 
                 if report.get("improvements"):
                     self.info(f"\n💡 改善提案:")
@@ -273,7 +273,7 @@ class ProjectIntelligenceCommand(BaseCommand):
                             "⚪"
                         )
                         self.info(f"  {priority_icon} {improvement['description']}")
-                        self.info(f"    信頼度: {improvement['confidence']:.1%}")
+                        self.info(f"    信頼度: {improvement['confidence']:0.1%}")
 
         except Exception as e:
             # Handle specific exception case
