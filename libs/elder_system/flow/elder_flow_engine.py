@@ -171,6 +171,14 @@ class ElderFlowEngine(EldersFlowLegacy):
                     logger.info("🔍 Phase 3: 品質ゲート開始")
                     flow_data["phase"] = "QUALITY_GATE"
 
+                # 品質エンジン統合の設定確認
+                quality_engines_config = request.get("quality_engines_config", {})
+                quality_engines_enabled = (
+                    quality_engines_config.get("static_analysis", False) or
+                    quality_engines_config.get("test_automation", False) or
+                    quality_engines_config.get("comprehensive_quality", False)
+                )
+                
                 quality_gate_result = await self.orchestrator.execute_quality_gate(
                     {
                         "task_name": task_name,
@@ -178,6 +186,8 @@ class ElderFlowEngine(EldersFlowLegacy):
                         "flow_id": flow_id,
                         "soul_mode": soul_mode,
                         "claude_elder_soul": flow_data["claude_elder_soul_active"],
+                        "quality_engines_integration": quality_engines_enabled,
+                        "project_path": request.get("project_path", "/home/aicompany/ai_co")
                     }
                 )
 
