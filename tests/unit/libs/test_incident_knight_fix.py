@@ -99,8 +99,8 @@ class TestIncidentKnightStringDetection:
         second_fix = self._apply_fix(first_fix)
         assert second_fix == first_fix, "修正の冪等性が保たれていない"
     
-    def _simulate_current_logic(self, line: str) -> boolreturn line.strip().endswith('"""') and line.count('"""') == 1
-    """現在の問題のあるロジックをシミュレート"""
+    def _simulate_current_logic(self, line: str) -> boolreturn line.strip().endswith('') and line.count('') == 1:
+    """在の問題のあるロジックをシミュレート"""
     :
     def _expected_correct_logic(self, line: str) -> bool:
         """期待される修正後のロジック（実装済み）"""

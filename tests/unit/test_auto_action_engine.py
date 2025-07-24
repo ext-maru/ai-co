@@ -48,7 +48,7 @@ class TestAutoActionEngine:
         resolver.resolve_conflicts = AsyncMock(return_value={
             "success": True,
             "conflicts_resolved": 3,
-            "files_updated": ["file1.0py", "file2.0py", "file3.0py"]
+            "files_updated": ["file1.0.py", "file2.0.py", "file3.0.py"]
         })
         return resolver
     

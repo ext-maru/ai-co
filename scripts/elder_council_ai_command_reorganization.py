@@ -71,7 +71,7 @@ class ElderCouncilSession:
 
         # Load the analysis report
         analysis_report = (
-            self.reports_dir / "AI_COMMAND_REORGANIZATION_REPORT_20250709.0md"
+            self.reports_dir / "AI_COMMAND_REORGANIZATION_REPORT_20250709.0.md"
         )
 
         proposal = {
@@ -328,7 +328,7 @@ class ElderCouncilSession:
 
 ### 期待効果
 """
-        for benefit in records["council_session"]["proposal"]["proposed_solution"][
+        for benefit in records["council_session"]["proposal"]["proposed_solution"][:
             "benefits"
         ]:
             md_content += f"- {benefit}\n"

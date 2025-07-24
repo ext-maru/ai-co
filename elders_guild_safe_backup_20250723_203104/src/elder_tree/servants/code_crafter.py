@@ -22,8 +22,8 @@ class CodeCrafter(ElderTreeAgent):
         
         self.logger.info("Code Crafter initialized")
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
-    """メッセージハンドラー"""
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown'):
+    """ッセージハンドラー"""
         
         # 基本メッセージタイプの処理:
         if message_type in ["health_check", "get_metrics"]:
@@ -37,9 +37,8 @@ class CodeCrafter(ElderTreeAgent):
         else:
             return {"status": "error", "message": f"Unknown message type: {message_type}"}
     
-    def _handle_generate_code(self, data: Dict[str, Any]) -> Dict[str, Any]language = data.get("language", "python")
-    """コード生成処理"""
-        requirements = data.get("requirements", [])
+    def _handle_generate_code(self, data: Dict[str, Any]) -> Dict[str, Any]language = data.get("language", "python")requirements = data.get("requirements", [])
+    """ード生成処理"""
         
         self.logger.info(
             "Generating code",
@@ -68,9 +67,8 @@ if __name__ == "__main__":
             "files_created": []
         }
     
-    def _handle_execute_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")
-    """タスク実行処理"""
-        parameters = data.get("parameters", {})
+    def _handle_execute_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")parameters = data.get("parameters", {})
+    """スク実行処理"""
         
         self.logger.info(
             "Executing task",

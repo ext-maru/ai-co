@@ -1323,9 +1323,8 @@ if __name__ == "__main__":
         # 最終統合レポート
         return await self.generate_quantum_evolution_report(results)
 
-    async def generate_quantum_evolution_report(self, results: Dict[str, Any]) -> Dict[str, Any]print("\n🌌 Elder Flow Quantum Evolution - 最終統合レポート")
-    """量子進化最終レポート"""
-        print("=" * 80)
+    async def generate_quantum_evolution_report(self, results: Dict[str, Any]) -> Dict[str, Any]print("\n🌌 Elder Flow Quantum Evolution - 最終統合レポート")print("=" * 80)
+    """子進化最終レポート"""
 
         total_files = sum(len(phase.get("files_created", [])) for phase in results.values())
         total_features = sum(len(phase.get("features", [])) for phase in results.values())

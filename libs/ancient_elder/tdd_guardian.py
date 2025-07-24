@@ -104,8 +104,8 @@ class TDDCycleTracker:
                 "cycle_compliance_rate": 0.0
             }
             
-    def _get_git_commits(self, file_path: str, time_window: timedelta) -> List[Dict[str, Any]]since_date = (datetime.now() - time_window).strftime('%Y-%m-%d')
-    """指定ファイルのGitコミット履歴を取得"""
+    def _get_git_commits(self, file_path: str, time_window: timedelta) -> List[Dict[str, Any]]since_date = (datetime.now() - time_window).strftime('%Y-%m-%d'):
+    """定ファイルのGitコミット履歴を取得"""
         :
         try:
             cmd = [
@@ -411,8 +411,8 @@ class TestQualityAnalyzer:
                 
         return violations
         
-    def _count_empty_tests(self, test_functions: List[Dict[str, Any]]) -> intreturn sum(1 for func in test_functions if func["body_length"] <= 1)
-    """空のテスト数をカウント"""
+    def _count_empty_tests(self, test_functions: List[Dict[str, Any]]) -> intreturn sum(1 for func in test_functions if func["body_length"] <= 1):
+    """のテスト数をカウント"""
         :
     def _count_assertions(self, content: str) -> int:
         """アサーションの数をカウント"""
@@ -520,9 +520,8 @@ class CoverageManipulationDetector:
         # カバレッジファイルが見つからない場合はpytestで生成を試行
         return self._generate_coverage_report()
         
-    def _parse_coverage_xml(self, xml_file: str) -> Dict[str, Any]tree = ET.parse(xml_file)
-    """XML形式のカバレッジレポートを解析"""
-        root = tree.getroot()
+    def _parse_coverage_xml(self, xml_file: str) -> Dict[str, Any]tree = ET.parse(xml_file)root = tree.getroot()
+    """ML形式のカバレッジレポートを解析"""
         
         coverage_data = {:
             "overall_coverage": 0.0,
@@ -733,8 +732,8 @@ class TDDGuardian(AncientElderBase):
             "minimum_assertion_per_test": 1.0
         }
         
-    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now()
-    """TDD守護監査を実行"""
+    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now():
+    """DD守護監査を実行"""
         violations = []
         metrics = {}
         :
@@ -1115,8 +1114,8 @@ class TDDGuardian(AncientElderBase):
         path_str = str(file_path)
         return any(pattern in path_str for pattern in skip_patterns)
         
-    def _suggest_cycle_fix(self, violation: Dict[str, Any]) -> strviolation_type = violation.get("type", "")
-    """TDDサイクル違反の修正提案"""
+    def _suggest_cycle_fix(self, violation: Dict[str, Any]) -> strviolation_type = violation.get("type", ""):
+    """DDサイクル違反の修正提案"""
         
         fixes = {:
             TDDViolationType.NO_RED_PHASE: "Write a failing test first before implementing functionality",
@@ -1127,8 +1126,8 @@ class TDDGuardian(AncientElderBase):
         
         return fixes.get(violation_type, "Follow proper TDD Red→Green→Refactor cycle")
         
-    def _suggest_test_quality_fix(self, violation: Dict[str, Any]) -> strviolation_type = violation.get("type", "")
-    """テスト品質違反の修正提案"""
+    def _suggest_test_quality_fix(self, violation: Dict[str, Any]) -> strviolation_type = violation.get("type", ""):
+    """スト品質違反の修正提案"""
         
         fixes = {:
             TDDViolationType.POOR_TEST_QUALITY: "Add meaningful assertions and test logic",

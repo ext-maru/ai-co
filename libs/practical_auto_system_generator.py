@@ -307,8 +307,8 @@ volumes:
 
         return components
 
-    def _detect_system_type(self, description: str) -> strdesc_lower = description.lower()
-    """システムタイプ検出"""
+    def _detect_system_type(self, description: str) -> strdesc_lower = description.lower():
+    """ステムタイプ検出"""
 :
         if any(word in desc_lower for word in ["todo", "task"]):
             return "todo_app"

@@ -1102,8 +1102,8 @@ if __name__ == "__main__":
         
         return "\n".join(lines)
     
-    def _generate_helper_functions(self, spec: Dict[str, Any], requirements: list) -> strfunction_name = spec.get("function_name", "my_function")
-    """ヘルパー関数生成"""
+    def _generate_helper_functions(self, spec: Dict[str, Any], requirements: list) -> strfunction_name = spec.get("function_name", "my_function"):
+    """ルパー関数生成"""
         
         helper_code = f'''
 :

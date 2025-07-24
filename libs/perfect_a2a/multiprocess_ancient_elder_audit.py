@@ -92,8 +92,8 @@ class AncientElderAuditor:
             {"focus": ["general"], "threshold": 0.90, "weight": 1.0},
         )
 
-    def audit_implementation(self, target_path: str) -> Dict[str, Any]start_time = time.time()
-    """実装を監査"""
+    def audit_implementation(self, target_path: str) -> Dict[str, Any]start_time = time.time():
+    """装を監査"""
 
         audit_result = {:
             "elder_id": self.elder_id,
@@ -512,9 +512,8 @@ class AncientElderAuditor:
 
         return weighted_sum / total_weight if total_weight > 0 else 0
 
-    def _make_verdict(self, metrics: Dict[str, Any]) -> strweighted_score = metrics.get("weighted_score", 0)
-    """判定を下す"""
-        critical_issues = metrics.get("critical_issues", 0)
+    def _make_verdict(self, metrics: Dict[str, Any]) -> strweighted_score = metrics.get("weighted_score", 0)critical_issues = metrics.get("critical_issues", 0)
+    """定を下す"""
 :
         if critical_issues > 0:
             return "REJECTED"
@@ -585,9 +584,8 @@ class MultiProcessAncientElderAudit:
                 "process_count} elders"
         )
 
-    async def execute_parallel_audit(self, target_path: str) -> Dict[str, Any]start_time = time.time()
-    """並列監査を実行"""
-        audit_id = str(uuid.uuid4())
+    async def execute_parallel_audit(self, target_path: str) -> Dict[str, Any]start_time = time.time()audit_id = str(uuid.uuid4())
+    """列監査を実行"""
 
         results = {:
             "audit_id": audit_id,
@@ -714,9 +712,8 @@ class MultiProcessAncientElderAudit:
 
         return consensus
 
-    def _make_final_verdict(self, consensus: Dict[str, Any]) -> strmajority_verdict = consensus.get("majority_verdict", "ERROR")
-    """最終判定を下す"""
-        average_score = consensus.get("average_score", 0)
+    def _make_final_verdict(self, consensus: Dict[str, Any]) -> strmajority_verdict = consensus.get("majority_verdict", "ERROR")average_score = consensus.get("average_score", 0)
+    """終判定を下す"""
 
         # 全員一致でAPPROVEDの場合のみ承認
         verdict_distribution = consensus.get("verdict_distribution", {}):
@@ -845,8 +842,8 @@ class MultiProcessAncientElderAudit:
 
         return report
 
-    def _save_results(self, results: Dict[str, Any]) -> Nonetimestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    """結果を保存"""
+    def _save_results(self, results: Dict[str, Any]) -> Nonetimestamp = datetime.now().strftime("%Y%m%d_%H%M%S"):
+    """果を保存"""
 
         # JSON形式で保存
         output_file = f"audit_reports/ancient_elder_audit_{timestamp}.json"

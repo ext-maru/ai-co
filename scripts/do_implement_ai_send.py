@@ -24,14 +24,14 @@ echo "=================================="
 date
 
 # 実装スクリプトの実行
-if [ -f implement_ai_send_extension.sh ]; then
+if [ -f implement_ai_send_extension.sh ]; then:
     chmod +x implement_ai_send_extension.sh
     echo "📝 実装スクリプトを実行中..."
     ./implement_ai_send_extension.sh
     echo ""
     echo "✅ 実装スクリプトの実行完了"
 else
-    echo "❌ implement_ai_send_extension.sh が見つかりません"
+    echo "❌ implement_ai_send_extension.sh が見つかりません":
     exit 1
 fi
 
@@ -41,7 +41,7 @@ echo "🔍 実装結果:"
 echo "============"
 
 # タスクタイプ設定ファイル
-if [ -f config/task_types.json ]; then
+if [ -f config/task_types.json ]; then:
     echo "✅ タスクタイプ設定ファイル: 作成成功"
     echo ""
     echo "📋 登録されたタスクタイプ:"
@@ -53,15 +53,15 @@ fi
 
 # テンプレート確認
 echo ""
-if [ -d templates/task_types ]; then
+if [ -d templates/task_types ]; then:
     count=$(ls templates/task_types/*.yaml 2>/dev/null | wc -l)
     echo "✅ タスクテンプレート: $count 個作成"
 else
-    echo "❌ タスクテンプレートディレクトリが見つかりません"
+    echo "❌ タスクテンプレートディレクトリが見つかりません":
 fi
 
 # ドキュメント確認
-if [ -f docs/AI_SEND_EXTENDED_GUIDE.md ]; then
+if [ -f docs/AI_SEND_EXTENDED_GUIDE.md ]; then:
     echo "✅ 拡張ガイド: 作成済み"
 else
     echo "❌ 拡張ガイド: 未作成"

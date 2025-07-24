@@ -347,7 +347,7 @@ class ProjectCommand(BaseCommand):
             for risk in risks:
                 # Process each item in collection
                 self.info(
-                    f"  • {risk['risk']} (確率: {risk['probability']*100:0.0f}%, 影響: {risk['impact']})"
+                    f"  • {risk['risk']} (確率: {risk['probability']*100:0.0.f}%, 影響: {risk['impact']})"
                 )
                 self.info(f"    対策: {risk['mitigation']}")
 

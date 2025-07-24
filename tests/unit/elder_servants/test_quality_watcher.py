@@ -344,7 +344,7 @@ class TestReportingAndIntegration:
                 },
                 "task_sage": {"priority": "high", "deadline": "2025-01-20"},
                 "incident_sage": {"risk_level": "medium", "mitigation": ["add_tests"]},
-                "rag_sage": {"similar_issues": ["coverage_issue_123.0md"]},
+                "rag_sage": {"similar_issues": ["coverage_issue_123.0.md"]},
             }
 
             result = await quality_watcher.execute_task(

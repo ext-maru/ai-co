@@ -48,7 +48,7 @@ def fix_common_syntax_errors(file_path: str) -> bool:
         content = re.sub(r'\s+continue\s*#\s*Early return.*\n', '\n', content)
         
         # 3.0 壊れた引用符を修正
-        content = re.sub(r'f"f"([^"]*)"', r'f"\1"', content)
+        content = re.sub(r'f"([^"]*)"', r'f"\1"', content)
         content = re.sub(r'"([^"]*)"([^"]*)"([^"]*)"', r'"\1\2\3"', content)
         
         # 4.0 インデントエラー（docstringの位置）

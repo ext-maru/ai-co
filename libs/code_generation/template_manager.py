@@ -395,9 +395,8 @@ class CodeGenerationTemplateManager:
         
         return stack_imports.get(tech_stack, stack_imports["base"])
 
-    def analyze_issue(self, issue_data: Dict[str, Any]) -> Dict[str, Any]title = issue_data.get('title', '')
-    """Issue分析とメタデータ生成"""
-        body = issue_data.get('body', '')
+    def analyze_issue(self, issue_data: Dict[str, Any]) -> Dict[str, Any]title = issue_data.get('title', '')body = issue_data.get('body', '')
+    """ssue分析とメタデータ生成"""
         labels = issue_data.get('labels', [])
         issue_text = f"{title} {body}"
         
@@ -520,8 +519,8 @@ The implementation follows TDD principles with tests generated first.
 Generated at: {datetime.now().isoformat()}
 """
 
-    def _estimate_complexity(self, issue_text: str) -> strtext_lower = issue_text.lower()
-    """複雑度推定"""
+    def _estimate_complexity(self, issue_text: str) -> strtext_lower = issue_text.lower():
+    """雑度推定"""
         
         high_complexity_keywords = ['integration', 'complex', 'architecture', 'system', 'multiple']
         medium_complexity_keywords = ['feature', 'implement', 'add', 'create']

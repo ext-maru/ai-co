@@ -434,8 +434,8 @@ class ProjectBoardManager:
 
         return summary
 
-    async def auto_sync_all_boards(self) -> Dictprint("🔄 全ボード自動同期開始")
-    """すべてのボードを自動同期"""
+    async def auto_sync_all_boards(self) -> Dictprint("🔄 全ボード自動同期開始"):
+    """べてのボードを自動同期"""
 
         sync_results = {:
             "timestamp": datetime.now().isoformat(),

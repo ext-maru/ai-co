@@ -115,7 +115,7 @@ def consult_with_elders():
         print(f"  • {method}")
 
     print("\n🏗️ 実装パターン:")
-    for pattern in consultation_result["findings"]["rag_sage"][
+    for pattern in consultation_result["findings"]["rag_sage"][:
         "implementation_patterns"
     ]:
         print(f"  • {pattern}")

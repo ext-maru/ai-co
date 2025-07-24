@@ -182,7 +182,7 @@ def consult_elders_about_challenges():
     for challenge, data in integrated_solution["elder_consensus"].items():
         print(f"\n{challenge.upper()} 問題:")
         print(f"  判定: {data['verdict']}")
-        print(f"  信頼度: {data['confidence']*100:0.0f}%")
+        print(f"  信頼度: {data['confidence']*100:0.0.f}%")
         print(f"  実装期間: {data['implementation_time']}")
         print(f"  難易度: {data['difficulty']}")
         print("  主要解決策:")

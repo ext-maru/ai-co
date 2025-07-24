@@ -118,9 +118,8 @@ class KnowledgeSage(ElderTreeAgent):
         else:
             return {"status": "error", "message": f"Unknown message type: {message_type}"}
     
-    def _handle_analyze_technology(self, data: Dict[str, Any]) -> Dict[str, Any]tech_name = data.get("technology")
-    """技術分析処理"""
-        context = data.get("context", {})
+    def _handle_analyze_technology(self, data: Dict[str, Any]) -> Dict[str, Any]tech_name = data.get("technology")context = data.get("context", {})
+    """術分析処理"""
         
         self.logger.info(
             "Analyzing technology",
@@ -182,9 +181,8 @@ class KnowledgeSage(ElderTreeAgent):
         
         return {"analysis": analysis, "status": "completed"}
     
-    def _handle_store_knowledge(self, data: Dict[str, Any]) -> Dict[str, Any]knowledge_item = data.get("knowledge")
-    """知識保存処理"""
-        category = data.get("category", "general")
+    def _handle_store_knowledge(self, data: Dict[str, Any]) -> Dict[str, Any]knowledge_item = data.get("knowledge")category = data.get("category", "general")
+    """識保存処理"""
         title = data.get("title", "Untitled Knowledge")
         metadata = data.get("metadata", {})
         
@@ -231,9 +229,8 @@ class KnowledgeSage(ElderTreeAgent):
                 "message": f"Storage failed: {str(e)}"
             }
     
-    def _handle_search_knowledge(self, data: Dict[str, Any]) -> Dict[str, Any]query = data.get("query", "")
-    """知識検索処理"""
-        category = data.get("category")
+    def _handle_search_knowledge(self, data: Dict[str, Any]) -> Dict[str, Any]query = data.get("query", "")category = data.get("category")
+    """識検索処理"""
         limit = data.get("limit", 10)
         :
         try:
@@ -295,9 +292,8 @@ class KnowledgeSage(ElderTreeAgent):
                 "message": f"Search failed: {str(e)}"
             }
     
-    def _handle_learn_from_feedback(self, data: Dict[str, Any]) -> Dict[str, Any]feedback_type = data.get("type", "general")
-    """フィードバックからの学習処理"""
-        content = data.get("content", "")
+    def _handle_learn_from_feedback(self, data: Dict[str, Any]) -> Dict[str, Any]feedback_type = data.get("type", "general")content = data.get("content", "")
+    """ィードバックからの学習処理"""
         source = data.get("source", "user")
         confidence = data.get("confidence", 0.8)
         :
@@ -343,8 +339,8 @@ class KnowledgeSage(ElderTreeAgent):
                 "message": f"Learning failed: {str(e)}"
             }
     
-    def _handle_get_statistics(self, data: Dict[str, Any]) -> Dict[str, Any]stats = self.get_knowledge_statistics()
-    """統計情報取得"""
+    def _handle_get_statistics(self, data: Dict[str, Any]) -> Dict[str, Any]stats = self.get_knowledge_statistics():
+    """計情報取得"""
         return {:
             "status": "success",
             "statistics": stats

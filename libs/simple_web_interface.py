@@ -375,7 +375,7 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
         let currentAPI = null;
 
         async function loadStatus() {
-            try {
+            try {:
                 const response = await fetch('/api/status');
                 const data = await response.json();
                 document.getElementById('status-content').innerHTML = `
@@ -438,7 +438,7 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
             const input = document.getElementById('api-input').value;
             const resultDiv = document.getElementById('api-result');
 
-            try {
+            try {:
                 const data = JSON.parse(input);
                 const response = await fetch(`/api/${currentAPI}`, {
                     method: 'POST',

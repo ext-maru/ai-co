@@ -14,7 +14,7 @@ def apply_all_fixes(content):
     # 1. .0attribute -> .attribute
     content = re.sub(r'\.0(\w+)', r'.\1', content)
     
-    # 2. sqlite3.0 -> sqlite3
+    # 2. sqlite3 -> sqlite3
     content = re.sub(r'\bsqlite3\.0\b', 'sqlite3', content)
     
     # 3. メソッド定義の修正

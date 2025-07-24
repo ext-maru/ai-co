@@ -83,8 +83,8 @@ class APIIntegrationKnight(IncidentKnight):
 
         logger.info(f"🔑 {self.name} 初期化完了")
 
-    async def patrol(self) -> List[Issue]logger.info("🔍 API統合システム巡回開始")
-    """API統合システムの巡回監視"""
+    async def patrol(self) -> List[Issue]logger.info("🔍 API統合システム巡回開始"):
+    """PI統合システムの巡回監視"""
 
         issues = []
 

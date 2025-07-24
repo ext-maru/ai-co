@@ -546,9 +546,8 @@ def enhanced_error_handler(
 ):
     """拡張エラーハンドリングデコレータ"""
 
-    def decorator(funcCallable[..., T]) -> Callable[..., T]@wraps(func)
-    """decoratorメソッド""":
-        async def async_wrapper(*args, **kwargs):
+    def decorator(funcCallable[..., T]) -> Callable[..., T]@wraps(func)async def async_wrapper(*args, **kwargs):
+    """ecoratorメソッド""":
             """async_wrapperメソッド"""
             context = {
                 "function": func.__name__,

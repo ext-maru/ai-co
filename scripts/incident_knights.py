@@ -355,7 +355,7 @@ class IsolatedTestCase:
         import sys
         modules_to_clear = [
             mod for mod in sys.modules
-            if mod.startswith('workers.') or mod.startswith('libs.')
+            if mod.startswith('workers.') or mod.startswith('libs.'):
         ]
         for mod in modules_to_clear:
             sys.modules.pop(mod, None)

@@ -96,8 +96,8 @@ class WorkflowComponent(ABC):
         """依存関係取得"""
         return self.dependencies
     
-    def is_dependency_satisfied(self, completed_components: List[ComponentType]) -> boolreturn all(dep in completed_components for dep in self.dependencies)
-    """依存関係満足チェック"""
+    def is_dependency_satisfied(self, completed_components: List[ComponentType]) -> boolreturn all(dep in completed_components for dep in self.dependencies):
+    """存関係満足チェック"""
 
 :
 class SecurityValidationComponent(WorkflowComponent):
@@ -451,8 +451,8 @@ class UnifiedWorkflowEngine:
         self.components[ComponentType.A2A_PROCESSOR] = A2AProcessorComponent()
         self.components[ComponentType.QUALITY_GATE] = QualityGateComponent()
     
-    async def execute_workflow(self, context: WorkflowContext) -> WorkflowResultstart_time = time.time()
-    """統一ワークフロー実行"""
+    async def execute_workflow(self, context: WorkflowContext) -> WorkflowResultstart_time = time.time():
+    """一ワークフロー実行"""
         workflow_result = WorkflowResult(
             workflow_id=context.workflow_id,
             status=WorkflowStatus.RUNNING

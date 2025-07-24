@@ -23,8 +23,8 @@ class SimpleElderFlow(ElderTreeAgent):
         
         self.logger.info("Simple Elder Flow initialized")
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
-    """メッセージハンドラー"""
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown'):
+    """ッセージハンドラー"""
         
         # 基本メッセージタイプの処理:
         if message_type in ["health_check", "get_metrics"]:
@@ -36,9 +36,8 @@ class SimpleElderFlow(ElderTreeAgent):
         else:
             return {"status": "error", "message": f"Unknown message type: {message_type}"}
     
-    def _handle_execute_flow(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")
-    """Elder Flow実行処理"""
-        requirements = data.get("requirements", [])
+    def _handle_execute_flow(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")requirements = data.get("requirements", [])
+    """lder Flow実行処理"""
         priority = data.get("priority", "medium")
         
         self.logger.info(

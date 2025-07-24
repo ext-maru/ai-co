@@ -214,8 +214,8 @@ class ElderFlowAutoIntegration:
 
         self.logger.info("Elder Flow Auto Integration System initialized")
 
-    async def should_apply_elder_flow(self, description: str) -> Tuple[bool, Dict]analysis = self.analyzer.analyze_task(description)
-    """Elder Flow適用判定"""
+    async def should_apply_elder_flow(self, description: str) -> Tuple[bool, Dict]analysis = self.analyzer.analyze_task(description):
+    """lder Flow適用判定"""
 
         # 自動適用条件チェック
         should_apply = (
@@ -304,8 +304,8 @@ class ElderFlowAutoIntegration:
             self.logger.error(f"Elder Flow auto-execution failed: {str(e)}")
             return {"applied": False, "error": str(e), "decision": decision}
 
-    def get_execution_statistics(self) -> Dicttotal_executions = len(self.execution_history)
-    """実行統計取得"""
+    def get_execution_statistics(self) -> Dicttotal_executions = len(self.execution_history):
+    """行統計取得"""
         successful_executions = sum(
             1 for record in self.execution_history if record["success"]
         )
@@ -343,11 +343,11 @@ async def auto_elder_flow(
 
 
 async def should_use_elder_flow(description: str) -> Tuple[bool, Dict]return await auto_integration.should_apply_elder_flow(description)
-"""Elder Flow使用判定"""
+Elder Flow使用判定
 
 
-def get_auto_integration_stats() -> Dictreturn auto_integration.get_execution_statistics()
-"""自動統合統計取得"""
+def get_auto_integration_stats() -> Dictreturn auto_integration.get_execution_statistics():
+    """動統合統計取得"""
 
 
 # Claude Integration Function:

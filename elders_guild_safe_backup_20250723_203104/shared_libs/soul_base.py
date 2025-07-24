@@ -40,8 +40,8 @@ class SoulContext:
         """コンテキストデータの追加"""
         self.context_data[key] = value
         
-    def get_context(self, key: str, default: Any = None) -> Anyreturn self.context_data.get(key, default)
-    """コンテキストデータの取得"""
+    def get_context(self, key: str, default: Any = None) -> Anyreturn self.context_data.get(key, default):
+    """ンテキストデータの取得"""
         :
     def register_task(self, task_id: str)self.active_tasks.add(task_id)
     """アクティブタスクの登録"""

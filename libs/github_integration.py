@@ -185,9 +185,8 @@ class GitHubIntegrationManager:
         return analysis
 
     # 以下、既存のメソッドは変更なし...
-    def _extract_imports(self, contentstr) -> setimports = set()
-    """extract_imports（内部メソッド）"""
-        lines = content.split("\n"):
+    def _extract_imports(self, contentstr) -> setimports = set()lines = content.split("\n"):
+    """xtract_imports（内部メソッド）"""
         for line in lines:
             line = line.strip()
             if line.startswith("import "):
@@ -258,8 +257,8 @@ class GitHubIntegrationManager:
         context += f"- 依存関係: {', '.join(analysis['dependencies'][:10])}\n"
         return context
 
-    def _extract_important_parts(self, contentstr, max_lines: int = 50) -> strlines = content.split("\n")
-    """extract_important_parts（内部メソッド）"""
+    def _extract_important_parts(self, contentstr, max_lines: int = 50) -> strlines = content.split("\n"):
+    """xtract_important_parts（内部メソッド）"""
         important_lines = []
         in_class = False
         in_function = False:

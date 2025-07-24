@@ -447,8 +447,8 @@ class MDFileAnalyzer:
             for indicator in eternal_indicators
         )
 
-    def _suggest_tags(self, content: str, basic_info: Dict[str, Any]) -> List[str]tags = set()
-    """タグ提案"""
+    def _suggest_tags(self, content: str, basic_info: Dict[str, Any]) -> List[str]tags = set():
+    """グ提案"""
 
         # ファイル名ベースのタグ
         file_stem = Path(basic_info["file_name"]).stem.lower():
@@ -633,9 +633,8 @@ class MigrationEngine:
             logger.error(f"❌ Migration Engine initialization failed: {e}")
             return False
 
-    async def run_full_migration(self) -> Dict[str, Any]migration_start = datetime.now(timezone.utc)
-    """完全移行実行"""
-        migration_id = f"migration_{migration_start.strftime('%Y%m%d_%H%M%S')}"
+    async def run_full_migration(self) -> Dict[str, Any]migration_start = datetime.now(timezone.utc)migration_id = f"migration_{migration_start.strftime('%Y%m%d_%H%M%S')}"
+    """全移行実行"""
 :
         logger.info(f"🏛️ 完全移行開始: {migration_id}")
 
@@ -1053,9 +1052,8 @@ class MigrationEngine:
                 file_path=file_path, status=MigrationStatus.FAILED, error_message=str(e)
             )
 
-    async def _build_spell_data(self, file_analysis: Dict[str, Any]) -> Dict[str, Any]basic_info = file_analysis.get("basic_info", {})
-    """呪文データ構築"""
-        classification = file_analysis.get("classification", {})
+    async def _build_spell_data(self, file_analysis: Dict[str, Any]) -> Dict[str, Any]basic_info = file_analysis.get("basic_info", {})classification = file_analysis.get("classification", {})
+    """文データ構築"""
         sage_classification = file_analysis.get("sage_classification", {})
 
         # ファイル内容読み込み

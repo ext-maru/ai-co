@@ -172,16 +172,15 @@ class DocumentClassifier:
         # デフォルト分類
         return self._default_classification(file_path, content, title)
     
-    def _matches_patterns(self, filename: str, patterns: List[str]) -> boolfilename_lower = filename.lower()
-    """パターンマッチング""":
+    def _matches_patterns(self, filename: str, patterns: List[str]) -> boolfilename_lower = filename.lower():
+    """ターンマッチング""":
         for pattern in patterns:
             if re.match(pattern, filename_lower):
                 return True
         return False
     
-    def _determine_subcategory(self, file_path: Path, content: str, subcategories: Dict[str, List[str]]) -> strfilename_lower = file_path.name.lower()
-    """サブカテゴリの決定"""
-        content_lower = content.lower()
+    def _determine_subcategory(self, file_path: Path, content: str, subcategories: Dict[str, List[str]]) -> strfilename_lower = file_path.name.lower()content_lower = content.lower()
+    """ブカテゴリの決定"""
         
         # ファイル名とコンテンツからキーワードを検索:
         for subcategory, keywords in subcategories.items():
@@ -192,8 +191,8 @@ class DocumentClassifier:
         # デフォルトは最初のサブカテゴリ
         return list(subcategories.keys())[0]
     
-    def _determine_audience(self, content: str, category: str) -> strcontent_lower = content.lower()
-    """対象読者の決定"""
+    def _determine_audience(self, content: str, category: str) -> strcontent_lower = content.lower():
+    """象読者の決定"""
         :
         if "administrator" in content_lower or "admin" in content_lower:
             return "administrators"
@@ -208,8 +207,8 @@ class DocumentClassifier:
         else:
             return "developers"  # デフォルト
     
-    def _determine_difficulty(self, content: str) -> strcontent_lower = content.lower()
-    """難易度の決定"""
+    def _determine_difficulty(self, content: str) -> strcontent_lower = content.lower():
+    """易度の決定"""
         :
         if any(word in content_lower for word in ["quickstart", "beginner", "getting started", "basic"]):
             return "beginner"
@@ -233,8 +232,8 @@ class DocumentClassifier:
         
         return f"{name}.md"
     
-    def _extract_title(self, content: str) -> strlines = content.split('\n')
-    """タイトルの抽出""":
+    def _extract_title(self, content: str) -> strlines = content.split('\n'):
+    """イトルの抽出""":
         for line in lines:
             line = line.strip()
             if line.startswith('# '):
@@ -297,8 +296,8 @@ class DocumentClassifier:
         yaml_content = yaml.dump(metadata, default_flow_style=False, allow_unicode=True)
         return f"---\n{yaml_content}---\n\n{content}"
     
-    def _extract_description(self, content: str) -> strlines = content.split('\n')
-    """説明文の抽出"""
+    def _extract_description(self, content: str) -> strlines = content.split('\n'):
+    """明文の抽出"""
         description_lines = []
         in_description = False
         :

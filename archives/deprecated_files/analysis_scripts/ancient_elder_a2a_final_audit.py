@@ -709,8 +709,8 @@ class AncientElderA2AAudit:
 
         return "\n".join(report)
 
-    async def execute_final_audit(self) -> Dict[str, Any]self.print_ancient_header()
-    """最終監査実行"""
+    async def execute_final_audit(self) -> Dict[str, Any]self.print_ancient_header():
+    """終監査実行"""
 
         # 5-Ancient Elder 並列実行:
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:

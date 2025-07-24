@@ -83,7 +83,7 @@ class FourSagesOrchestrator:
                         "title": "A2A Communication Protocol",
                         "content": "A2A protocol enables secure agent-to-agent communication",
                         "relevance": 0.95,
-                        "source": "docs/a2a_protocol_specification_v1.0md",
+                        "source": "docs/a2a_protocol_specification_v1.0.md",
                     },
                     {
                         "title": "Message Types",

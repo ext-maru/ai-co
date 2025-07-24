@@ -314,7 +314,7 @@ echo Starting Elders Guild WSL Recovery System...
 
 REM WSLが起動していることを確認
 wsl --list --running | findstr "Ubuntu" >nul
-if %errorlevel% neq 0 (
+if %errorlevel% neq 0 (:
     echo WSL not running, starting WSL...
     wsl --distribution Ubuntu --exec echo "WSL started"
 )

@@ -987,9 +987,8 @@ class AutoAdaptationEngine:
     def _analyze_detailed_metrics(self, metrics: Dict[str, Any]) -> Dict[str, Any]return {"metric_count": len(metrics), "timestamp": datetime.now()}
     """詳細メトリクスを分析"""
 
-    def _execute_rollback(self, rollback_point: Dict[str, Any]) -> Dict[str, Any]original_params = rollback_point.get("original_parameters", {})
-    """ロールバックを実行"""
-        return self._apply_parameters(original_params)
+    def _execute_rollback(self, rollback_point: Dict[str, Any]) -> Dict[str, Any]original_params = rollback_point.get("original_parameters", {})return self._apply_parameters(original_params)
+    """ールバックを実行"""
 :
     def _extract_adaptation_patterns(self, adaptation: Dict[str, Any]) -> List[str]:
         """適応からパターンを抽出"""
@@ -1008,9 +1007,8 @@ class AutoAdaptationEngine:
 
         return patterns
 
-    def _extract_success_strategy(self, result: Dict[str, Any]) -> Dict[str, Any]param_changes = result.get("parameter_changes", {})
-    """成功戦略を抽出"""
-        param_name = list(param_changes.keys())[0] if param_changes else "unknown"
+    def _extract_success_strategy(self, result: Dict[str, Any]) -> Dict[str, Any]param_changes = result.get("parameter_changes", {})param_name = list(param_changes.keys())[0] if param_changes else "unknown"
+    """功戦略を抽出"""
 
         return {:
             "parameter": param_name,
@@ -1019,9 +1017,8 @@ class AutoAdaptationEngine:
             "conditions": result.get("conditions", {}),
         }
 
-    def _extract_failure_pattern(self, result: Dict[str, Any]) -> Dict[str, Any]param_changes = result.get("parameter_changes", {})
-    """失敗パターンを抽出"""
-        param_name = list(param_changes.keys())[0] if param_changes else "unknown"
+    def _extract_failure_pattern(self, result: Dict[str, Any]) -> Dict[str, Any]param_changes = result.get("parameter_changes", {})param_name = list(param_changes.keys())[0] if param_changes else "unknown"
+    """敗パターンを抽出"""
 
         return {:
             "parameter": param_name,
@@ -1030,8 +1027,8 @@ class AutoAdaptationEngine:
             "failure_reason": "parameter_too_aggressive",
         }
 
-    def _calculate_change_ratio_from_result(self, result: Dict[str, Any]) -> floatchanges = result.get("parameter_changes", {})
-    """結果から変更率を計算""":
+    def _calculate_change_ratio_from_result(self, result: Dict[str, Any]) -> floatchanges = result.get("parameter_changes", {}):
+    """果から変更率を計算""":
         if not changes:
             return 0.0
 

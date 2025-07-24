@@ -172,7 +172,7 @@ async def main():
         print("❌ Standard Flow Task: FAILED")
     
     success_count = sum([1 for task_id in [design_task_id, standard_task_id] if task_id])
-    print(f"\n📈 Success Rate: {success_count}/2 ({success_count/2*100:0.0f}%)")
+    print(f"\n📈 Success Rate: {success_count}/2 ({success_count/2*100:0.0.f}%)")
     
     if success_count == 2:
         print("🎉 All tests passed! Elder Flow + DocForge Enhanced integration is working!")

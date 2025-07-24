@@ -37,9 +37,8 @@ class SimpleCodeCrafter(SimpleBaseServant):
         
         self.logger.info("Simple Code Crafter initialized")
     
-    def _handle_execute_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")
-    """タスク実行"""
-        parameters = data.get("parameters", {})
+    def _handle_execute_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")parameters = data.get("parameters", {})
+    """スク実行"""
         :
         if task_type == "generate_code":
             return self._generate_code(parameters)
@@ -51,9 +50,8 @@ class SimpleCodeCrafter(SimpleBaseServant):
                 "message": f"Unknown task type: {task_type}"
             }
     
-    def _generate_code(self, params: Dict[str, Any]) -> Dict[str, Any]template_type = params.get("template", "python_class")
-    """コード生成"""
-        template_params = params.get("params", {})
+    def _generate_code(self, params: Dict[str, Any]) -> Dict[str, Any]template_type = params.get("template", "python_class")template_params = params.get("params", {})
+    """ード生成"""
         :
         if template_type not in self.templates:
             return {
@@ -84,9 +82,8 @@ class SimpleCodeCrafter(SimpleBaseServant):
             }
         }
     
-    def _create_test(self, params: Dict[str, Any]) -> Dict[str, Any]function_name = params.get("function_name", "test_function")
-    """テスト作成"""
-        test_cases = params.get("test_cases", [])
+    def _create_test(self, params: Dict[str, Any]) -> Dict[str, Any]function_name = params.get("function_name", "test_function")test_cases = params.get("test_cases", [])
+    """スト作成"""
         
         test_code = f"""import pytest
 :

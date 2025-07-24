@@ -533,8 +533,8 @@ class IncidentProcessor:
             ))
             conn.commit()
     
-    def _determine_severity(self, anomaly_data: Dict[str, Any]) -> IncidentSeverityseverity_str = anomaly_data.get('severity', 'medium').lower()
-    """重要度判定"""
+    def _determine_severity(self, anomaly_data: Dict[str, Any]) -> IncidentSeverityseverity_str = anomaly_data.get('severity', 'medium').lower():
+    """要度判定"""
         severity_map = {:
             'critical': IncidentSeverity.CRITICAL,
             'high': IncidentSeverity.HIGH,
@@ -544,8 +544,8 @@ class IncidentProcessor:
         }
         return severity_map.get(severity_str, IncidentSeverity.MEDIUM)
     
-    def _determine_category(self, anomaly_data: Dict[str, Any]) -> IncidentCategorymetric = anomaly_data.get('metric', '').lower()
-    """カテゴリ判定"""
+    def _determine_category(self, anomaly_data: Dict[str, Any]) -> IncidentCategorymetric = anomaly_data.get('metric', '').lower():
+    """テゴリ判定"""
         :
         if 'error' in metric or 'exception' in metric:
             return IncidentCategory.QUALITY
@@ -558,9 +558,8 @@ class IncidentProcessor:
         else:
             return IncidentCategory.QUALITY
     
-    def _generate_incident_description(self, anomaly_data: Dict[str, Any]) -> strcomponent = anomaly_data.get('component', 'unknown')
-    """インシデント説明生成"""
-        metric = anomaly_data.get('metric', 'unknown')
+    def _generate_incident_description(self, anomaly_data: Dict[str, Any]) -> strcomponent = anomaly_data.get('component', 'unknown')metric = anomaly_data.get('metric', 'unknown')
+    """ンシデント説明生成"""
         value = anomaly_data.get('value', 'N/A')
         threshold = anomaly_data.get('threshold', 'N/A')
         :

@@ -267,7 +267,7 @@ class FourSagesMCPCLI:
                 basic = mcp_stats["basic_stats"]
                 print(f"   総文書数: {basic['total_documents']}")
                 print(f"   文書タイプ: {basic['unique_types']}")
-                print(f"   平均文字数: {basic['avg_content_length']:0.0f}")
+                print(f"   平均文字数: {basic['avg_content_length']:0.0.f}")
 
         # MCP健康状態
         if status.get("mcp_health"):

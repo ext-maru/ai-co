@@ -25,7 +25,8 @@ from core import BaseManager
 class AutoFixExecutor(BaseManager):
     """エラーの自動修正を実行するクラス"""
 
-    def __init__(self)super().__init__("AutoFixExecutor")
+    def __init__(self):
+        """super().__init__("AutoFixExecutor")
     """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.stats = {
@@ -637,8 +638,8 @@ class AutoFixExecutor(BaseManager):
             self.logger.error(f"コマンドロールバックエラー: {e}")
             return False
 
-    def get_statistics(self) -> Dictstats = self.stats.copy()
-    """統計情報を取得"""
+    def get_statistics(self) -> Dictstats = self.stats.copy():
+    """計情報を取得"""
 
         if stats["execution_times"]:
             stats["avg_execution_time"] = sum(stats["execution_times"]) / len(

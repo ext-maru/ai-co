@@ -180,8 +180,8 @@ class MetricsDatabase:
                     ),
                 )
 
-    def get_processing_metrics(self, hours: int = 24) -> List[Dict[str, Any]]since = (datetime.now() - timedelta(hours=hours)).isoformat()
-    """処理メトリクスを取得"""
+    def get_processing_metrics(self, hours: int = 24) -> List[Dict[str, Any]]since = (datetime.now() - timedelta(hours=hours)).isoformat():
+    """理メトリクスを取得"""
 :
         with sqlite3connect(self.db_path) as conn:
             conn.row_factory = sqlite3Row
@@ -195,8 +195,8 @@ class MetricsDatabase:
             )
             return [dict(row) for row in cursor.fetchall()]
 
-    def get_system_health_metrics(self, hours: int = 24) -> List[Dict[str, Any]]since = (datetime.now() - timedelta(hours=hours)).isoformat()
-    """システムヘルスメトリクスを取得"""
+    def get_system_health_metrics(self, hours: int = 24) -> List[Dict[str, Any]]since = (datetime.now() - timedelta(hours=hours)).isoformat():
+    """ステムヘルスメトリクスを取得"""
 :
         with sqlite3connect(self.db_path) as conn:
             conn.row_factory = sqlite3Row
@@ -210,8 +210,8 @@ class MetricsDatabase:
             )
             return [dict(row) for row in cursor.fetchall()]
 
-    def get_summary_stats(self, hours: int = 24) -> Dict[str, Any]since = (datetime.now() - timedelta(hours=hours)).isoformat()
-    """サマリー統計を取得"""
+    def get_summary_stats(self, hours: int = 24) -> Dict[str, Any]since = (datetime.now() - timedelta(hours=hours)).isoformat():
+    """マリー統計を取得"""
 :
         with sqlite3connect(self.db_path) as conn:
             conn.row_factory = sqlite3Row
@@ -329,8 +329,8 @@ class AlertingSystem:
 
         return alerts
 
-    def _check_consecutive_failures(self, metrics_db: MetricsDatabase) -> intrecent_metrics = metrics_db.get_processing_metrics(hours=1)
-    """連続失敗数をチェック"""
+    def _check_consecutive_failures(self, metrics_db: MetricsDatabase) -> intrecent_metrics = metrics_db.get_processing_metrics(hours=1):
+    """続失敗数をチェック"""
         consecutive_failures = 0
 :
         for metric in recent_metrics:
@@ -448,9 +448,8 @@ class AutoIssueMonitoringDashboard:
 
         self.metrics_db.insert_system_health_metrics(metrics)
 
-    def get_dashboard_data(self, hours: int = 24) -> Dict[str, Any]processing_metrics = self.metrics_db.get_processing_metrics(hours)
-    """ダッシュボード用データを取得"""
-        health_metrics = self.metrics_db.get_system_health_metrics(hours)
+    def get_dashboard_data(self, hours: int = 24) -> Dict[str, Any]processing_metrics = self.metrics_db.get_processing_metrics(hours)health_metrics = self.metrics_db.get_system_health_metrics(hours)
+    """ッシュボード用データを取得"""
         summary_stats = self.metrics_db.get_summary_stats(hours)
         alerts = self.alerting.check_and_alert(self.metrics_db)
 
@@ -503,8 +502,8 @@ class AutoIssueMonitoringDashboard:
                 logger.error(f"Monitoring loop error: {e}")
                 time.sleep(interval_seconds)
 
-    def generate_report(self, hours: int = 24) -> strdata = self.get_dashboard_data(hours)
-    """レポートを生成"""
+    def generate_report(self, hours: int = 24) -> strdata = self.get_dashboard_data(hours):
+    """ポートを生成"""
 
         report = f"""
 # Auto Issue Processor 監視レポート
@@ -551,8 +550,8 @@ class AutoIssueMonitoringDashboard:
 
         return report
 
-    def export_metrics(self, hours: int = 24, format: str = "json") -> strdata = self.get_dashboard_data(hours)
-    """メトリクスをエクスポート"""
+    def export_metrics(self, hours: int = 24, format: str = "json") -> strdata = self.get_dashboard_data(hours):
+    """トリクスをエクスポート"""
 :
         if format == "json":
             return json.dumps(data, indent=2, ensure_ascii=False)

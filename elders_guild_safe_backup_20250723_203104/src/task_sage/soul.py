@@ -109,8 +109,8 @@ class TaskSageSoul(BaseSoul):
             logger.error(f"Error processing message: {e}")
             return self._create_error_response(message, str(e))
     
-    async def _handle_request(self, message: Dict[str, Any]) -> Dict[str, Any]action = message.get("action")
-    """リクエスト処理"""
+    async def _handle_request(self, message: Dict[str, Any]) -> Dict[str, Any]action = message.get("action"):
+    """クエスト処理"""
         :
         if action == "estimate_task":
             task_data = message.get("task_data", {})

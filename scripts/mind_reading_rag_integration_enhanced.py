@@ -79,9 +79,8 @@ class MindReadingRAGIntegrationEnhanced:
 
         self.logger.info("🌟 Mind Reading + RAG Integration Enhanced v2.0 initialized")
 
-    def _setup_logger(self) -> logging.Loggerlogger = logging.getLogger("mind_reading_rag_enhanced")
-    """ロガー設定"""
-        logger.setLevel(logging.INFO)
+    def _setup_logger(self) -> logging.Loggerlogger = logging.getLogger("mind_reading_rag_enhanced")logger.setLevel(logging.INFO)
+    """ガー設定"""
 :
         if not logger.handlers:
             handler = logging.StreamHandler()
@@ -457,8 +456,8 @@ class MindReadingRAGIntegrationEnhanced:
         # 最大1.0に制限
         return min(enhanced_confidence, 1.0)
 
-    async def _advanced_keyword_extraction(self, text: str, rag_context: Dict[str, Any]) -> List[str]keywords = set()
-    """高度なキーワード抽出"""
+    async def _advanced_keyword_extraction(self, text: str, rag_context: Dict[str, Any]) -> List[str]keywords = set():
+    """度なキーワード抽出"""
 :
         try:
             # 1.0 重要な技術キーワードの抽出

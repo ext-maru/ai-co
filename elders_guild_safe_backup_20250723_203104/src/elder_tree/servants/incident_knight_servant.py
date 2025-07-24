@@ -784,8 +784,8 @@ class IncidentKnightServant(ElderServantBase):
         
         return analysis
     
-    async def _execute_recovery_step(self, step: Dict[str, Any]) -> Dict[str, Any]step_type = step.get("type", "unknown")
-    """復旧ステップ実行"""
+    async def _execute_recovery_step(self, step: Dict[str, Any]) -> Dict[str, Any]step_type = step.get("type", "unknown"):
+    """旧ステップ実行"""
         :
         if step_type == "restart_service":
             # サービス再起動（シミュレーション）
@@ -844,8 +844,8 @@ class IncidentKnightServant(ElderServantBase):
         rollback_results["status"] = "completed"
         return rollback_results
     
-    async def _verify_recovery(self, verification: Dict[str, Any]) -> Dict[str, Any]verify_type = verification.get("type", "unknown")
-    """復旧検証"""
+    async def _verify_recovery(self, verification: Dict[str, Any]) -> Dict[str, Any]verify_type = verification.get("type", "unknown"):
+    """旧検証"""
         :
         if verify_type == "health_check":
             # ヘルスチェック（シミュレーション）

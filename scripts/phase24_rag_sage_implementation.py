@@ -178,9 +178,8 @@ class SearchQualityEnhancer(EldersServiceLegacy):
             logger.error(f"検索品質向上エラー: {e}")
             return {"error": str(e)}
 
-    async def _enhance_search_quality(self, request: Dict[str, Any]) -> Dict[str, Any]query = request.get("query", "")
-    """検索品質向上実行"""
-        search_results = request.get("search_results", [])
+    async def _enhance_search_quality(self, request: Dict[str, Any]) -> Dict[str, Any]query = request.get("query", "")search_results = request.get("search_results", [])
+    """索品質向上実行"""
         context = request.get("context", {})
 :
         if not query:
@@ -260,9 +259,8 @@ class SearchQualityEnhancer(EldersServiceLegacy):
         logger.info(f"🔍 クエリ拡張完了: スコア={expansion_score:0.2f}")
         return expansion
 
-    async def _rerank_results(self, request: Dict[str, Any]) -> List[Dict[str, Any]]query = request.get("query", "")
-    """結果リランキング"""
-        expanded_query = request.get("expanded_query")
+    async def _rerank_results(self, request: Dict[str, Any]) -> List[Dict[str, Any]]query = request.get("query", "")expanded_query = request.get("expanded_query")
+    """果リランキング"""
         results = request.get("results", [])
         context = request.get("context", {})
 :
@@ -483,9 +481,8 @@ class SearchQualityEnhancer(EldersServiceLegacy):
             }
         }
 
-    async def _learn_from_feedback(self, request: Dict[str, Any]) -> Dict[str, Any]query = request.get("query", "")
-    """フィードバック学習"""
-        doc_id = request.get("doc_id", "")
+    async def _learn_from_feedback(self, request: Dict[str, Any]) -> Dict[str, Any]query = request.get("query", "")doc_id = request.get("doc_id", "")
+    """ィードバック学習"""
         feedback_type = request.get("feedback_type", "positive")
 :
         feedback_key = f"{query}:{doc_id}"
@@ -501,8 +498,8 @@ class SearchQualityEnhancer(EldersServiceLegacy):
             "total_feedback": sum(self.feedback_cache[feedback_key].values())
         }
 
-    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "action" in request
-    """リクエスト検証"""
+    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "action" in request:
+    """クエスト検証"""
 :
     def get_capabilities(self) -> List[str]:
         """機能一覧"""
@@ -517,8 +514,8 @@ class SearchQualityEnhancer(EldersServiceLegacy):
 
 
 # エクスポート用のファクトリ関数
-def create_search_quality_enhancer() -> SearchQualityEnhancerreturn SearchQualityEnhancer()
-"""Search Quality Enhancer作成"""
+def create_search_quality_enhancer() -> SearchQualityEnhancerreturn SearchQualityEnhancer():
+    """earch Quality Enhancer作成"""
 
 :
 if __name__ == "__main__":
@@ -767,9 +764,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
             logger.error(f"キャッシュ最適化エラー: {e}")
             return {"error": str(e)}
 
-    async def _optimize_cache(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")
-    """キャッシュ最適化実行"""
-        usage_data = request.get("usage_data", {})
+    asdef _optimize_cache(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")usage_data = request.get("usage_data", {})
+    """"""キャッシュ最適化実行"""
 :
         logger.info(f"⚡ キャッシュ最適化開始: {cache_name}")
 
@@ -803,8 +799,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
             "estimated_improvement": usage_analysis.get("estimated_improvement", 0)
         }
 
-    async def _analyze_usage_patterns(self, cache_name: str, usage_data: Dict[str, Any]) -> Dict[str, Any]cache = self.cache_instances.get(cache_name, self.default_cache)
-    """使用パターン分析"""
+    asdef _analyze_usage_patterns(self, cache_name: str, usage_data: Dict[str, Any]) -> Dict[str, Any]cache = self.cache_instances.get(cache_name, self.default_cache):
+    """"""使用パターン分析"""
 
         # アクセスパターン分析
         access_frequency = defaultdict(int)
@@ -842,9 +838,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
         logger.info(f"📊 使用パターン分析完了: {len(hot_keys)}個のホットキー検出")
         return analysis
 
-    async def _determine_optimal_strategy(self, usage_analysis: Dict[str, Any]) -> OptimizationStrategytotal_entries = usage_analysis.get("total_entries", 0)
-    """最適化戦略決定"""
-        memory_usage = usage_analysis.get("memory_usage_bytes", 0)
+    asdef _determine_optimal_strategy(self, usage_analysis: Dict[str, Any]) -> OptimizationStrategytotal_entries = usage_analysis.get("total_entries", 0)memory_usage = usage_analysis.get("memory_usage_bytes", 0)
+    """"""最適化戦略決定"""
         hot_keys = usage_analysis.get("hot_keys", [])
 
         # 基本戦略決定:
@@ -894,8 +889,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
 
         return strategy
 
-    async def _apply_optimization_strategy(self, cache_name: str, strategy: OptimizationStrategy) -> Dict[str, Any]cache = self.cache_instances.get(cache_name, self.default_cache)
-    """最適化戦略適用"""
+    asdef _apply_optimization_strategy(self, cache_name: str, strategy: OptimizationStrategy) -> Dict[str, Any]cache = self.cache_instances.get(cache_name, self.default_cache):
+    """"""最適化戦略適用"""
 
         # キャッシュサイズ調整:
         if cache.max_size != strategy.max_size:
@@ -922,9 +917,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
         logger.info(f"⚡ 最適化戦略適用完了: {strategy.strategy_name}")
         return result
 
-    async def _execute_prefetch(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")
-    """プリフェッチ実行"""
-        strategy = request.get("strategy")
+    asdef _execute_prefetch(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")strategy = request.get("strategy")
+    """"""プリフェッチ実行"""
 :
         if not strategy or not strategy.prefetch_enabled:
             return {"prefetch_enabled": False}
@@ -958,9 +952,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
         logger.info(f"📥 プリフェッチ実行完了: {prefetch_count}個のキー")
         return result
 
-    async def _get_cache_metrics(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")
-    """キャッシュメトリクス取得"""
-        cache = self.cache_instances.get(cache_name, self.default_cache)
+    asdef _get_cache_metrics(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")cache = self.cache_instances.get(cache_name, self.default_cache)
+    """"""キャッシュメトリクス取得"""
 
         # メトリクス計算
         total_entries = len(cache.cache)
@@ -1049,8 +1042,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
         predicted_rate = min(current_hit_rate + improvements, 0.95)
         return predicted_rate
 
-    async def _analyze_cache_usage(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")
-    """キャッシュ使用状況分析"""
+    asdef _analyze_cache_usage(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default"):
+    """"""キャッシュ使用状況分析"""
 
         # 使用状況分析実行
         usage_analysis = await self._analyze_usage_patterns(cache_name, {})
@@ -1064,9 +1057,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
             "recommendations": recommendations
         }
 
-    async def _tune_cache_parameters(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")
-    """キャッシュパラメータチューニング"""
-        parameters = request.get("parameters", {})
+    asdef _tune_cache_parameters(self, request: Dict[str, Any]) -> Dict[str, Any]cache_name = request.get("cache_name", "default")parameters = request.get("parameters", {})
+    """"""キャッシュパラメータチューニング"""
 
         # パラメータ適用
         cache = self.cache_instances.get(cache_name, self.default_cache)
@@ -1109,8 +1101,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
 
         return recommendations
 
-    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "action" in request
-    """リクエスト検証"""
+def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "action" in request:
+    """"""リクエスト検証"""
 :
     def get_capabilities(self) -> List[str]:
         """機能一覧"""
@@ -1124,9 +1116,8 @@ class CacheOptimizationEngine(EldersServiceLegacy):
         ]
 
 
-# エクスポート用のファクトリ関数
-def create_cache_optimization_engine() -> CacheOptimizationEnginereturn CacheOptimizationEngine()
-"""Cache Optimization Engine作成"""
+# エクスポート用のファクトdef create_cache_optimization_engine() -> CacheOptimizationEnginereturn CacheOptimizationEngine():
+    """"""Cache Optimization Engine作成"""
 
 :
 if __name__ == "__main__":
@@ -1243,8 +1234,8 @@ class DocumentIndexOptimizer(EldersServiceLegacy):
             logger.error(f"インデックス最適化エラー: {e}")
             return {"error": str(e)}
 
-    async def _optimize_index(self, request: Dict[str, Any]) -> Dict[str, Any]logger.info("📊 文書インデックス最適化開始")
-    """インデックス最適化実行"""
+  def _optimize_index(self, request: Dict[str, Any]) -> Dict[str, Any]logger.info("📊 文書インデックス最適化開始"):
+    """    """インデックス最適化実行"""
 
         # 最適化実行
         result = OptimizationResult(
@@ -1289,10 +1280,8 @@ class DocumentIndexOptimizer(EldersServiceLegacy):
             "optimization_type": "document_index"
         }
 
-        await self.tracking_db.save_search_record(record)
-
-    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "action" in request
-    """リクエスト検証"""
+        await self.tracking_db.save_search_record(recordef validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "action" in request:
+    """    """リクエスト検証"""
 :
     def get_capabilities(self) -> List[str]:
         """機能一覧"""
@@ -1411,9 +1400,8 @@ class EnhancedRAGSage(EldersServiceLegacy):
             logger.error(f"Enhanced RAG処理エラー: {e}")
             return {"error": str(e)}
 
-    async def _enhanced_search(self, request: Dict[str, Any]) -> Dict[str, Any]query = request.get("query", "")
-    """強化検索実行"""
-        context = request.get("context", {})
+  def _enhanced_search(self, request: Dict[str, Any]) -> Dict[str, Any]query = request.get("query", "")context = request.get("context", {})
+"""    """強化検索実行"""
 :
         logger.info(f"🔍 Enhanced RAG検索開始: {query}")
 
@@ -1468,8 +1456,8 @@ class EnhancedRAGSage(EldersServiceLegacy):
 
         return integrated_result
 
-    async def _optimize_system(self, request: Dict[str, Any]) -> Dict[str, Any]logger.info("⚙️ システム最適化開始")
-    """システム最適化"""
+  def _optimize_system(self, request: Dict[str, Any]) -> Dict[str, Any]logger.info("⚙️ システム最適化開始"):
+    """    """システム最適化"""
 
         # 各コンポーネントの最適化
         optimization_results = {}
@@ -1493,8 +1481,8 @@ class EnhancedRAGSage(EldersServiceLegacy):
             "status": "COMPLETED"
         }
 
-    async def _analyze_performance(self, request: Dict[str, Any]) -> Dict[str, Any]logger.info("📊 パフォーマンス分析開始")
-    """パフォーマンス分析"""
+  def _analyze_performance(self, request: Dict[str, Any]) -> Dict[str, Any]logger.info("📊 パフォーマンス分析開始"):
+    """    """パフォーマンス分析"""
 
         # 各コンポーネントの分析
         analysis_results = {}
@@ -1526,11 +1514,8 @@ class EnhancedRAGSage(EldersServiceLegacy):
             "analysis_results": analysis_results,
             "integrated_analysis": integrated_analysis,
             "recommendations": self._generate_recommendations(analysis_results)
-        }
-
-    def _calculate_overall_score(self, cache_result: Dict, quality_result: Dict, index_result: Dict) -> floatcache_score = cache_result.get("estimated_improvement", 0)
-    """全体スコア計算"""
-        quality_score = quality_result.get("enhancement_score", 0)
+       def _calculate_overall_score(self, cache_result: Dict, quality_result: Dict, index_result: Dict) -> floatcache_score = cache_result.get("estimated_improvement", 0)quality_score = quality_result.get("enhancement_score", 0)
+    """    """全体スコア計算"""
         index_score = index_result.get("metrics", {}).get("performance_improvement", 0)
 
         # 重み付き平均:
@@ -1542,11 +1527,8 @@ class EnhancedRAGSage(EldersServiceLegacy):
             index_score * weights["index"]
         )
 
-        return overall_score
-
-    def _calculate_optimization_score(self, optimization_results: Dict) -> floatcache_score = optimization_results.get("cache", {}).get("estimated_improvement", 0)
-    """最適化スコア計算"""
-        index_score = optimization_results.get("index", {}).get("optimization_result", {}).get("improvement_score", 0)
+        return overall_scodef _calculate_optimization_score(self, optimization_results: Dict) -> floatcache_score = optimization_results.get("cache", {}).get("estimated_improvement", 0)index_score = optimization_results.get("index", {}).get("optimization_result", {}).get("improvement_score", 0)
+    """    """最適化スコア計算"""
 
         return (cache_score + index_score) / 2
 :
@@ -1591,10 +1573,8 @@ class EnhancedRAGSage(EldersServiceLegacy):
             "component_type": "enhanced_rag_sage"
         }
 
-        await self.tracking_db.save_search_record(record)
-
-    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "action" in request
-    """リクエスト検証"""
+        await self.tracking_db.save_search_record(recordef validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "action" in request:
+    """    """リクエスト検証"""
 :
     def get_capabilities(self) -> List[str]:
         """機能一覧"""
@@ -1650,8 +1630,8 @@ if __name__ == "__main__":
             "next_steps": ["本番環境デプロイ", "監視ダッシュボード", "運用マニュアル作成", "統合テスト実行"],
         }
 
-    async def execute_parallel_implementation(self) -> Dict[str, Any]logger.info("🚀 Phase 24 RAG Sage並列実装開始")
-    """並列実装の実行"""
+  def execute_parallel_implementation(self) -> Dict[str, Any]logger.info("🚀 Phase 24 RAG Sage並列実装開始"):
+    """    """並列実装の実行"""
 
         # 実装対象の定義
         implementation_targets = [

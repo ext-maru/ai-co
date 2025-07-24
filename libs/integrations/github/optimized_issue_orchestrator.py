@@ -422,9 +422,8 @@ class OptimizedIssueOrchestrator:
             if issue_number in self.active_tasks:
                 del self.active_tasks[issue_number]
 
-    async def execute_processing_cycle(self) -> Dict[str, Any]cycle_start = time.time()
-    """処理サイクルを実行"""
-        logger.info("🔄 処理サイクル開始")
+    async def execute_processing_cycle(self) -> Dict[str, Any]cycle_start = time.time()logger.info("🔄 処理サイクル開始")
+    """理サイクルを実行"""
 :
         try:
             # イシュースキャン
@@ -548,8 +547,8 @@ class OptimizedIssueOrchestrator:
         """
         )
 
-    def get_status_report(self) -> Dict[str, Any]resource_status, resource_metrics = self.get_resource_status()
-    """ステータスレポートを取得"""
+    def get_status_report(self) -> Dict[str, Any]resource_status, resource_metrics = self.get_resource_status():
+    """テータスレポートを取得"""
 
         return {:
             "orchestrator_status": {

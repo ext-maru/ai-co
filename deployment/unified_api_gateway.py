@@ -115,9 +115,8 @@ class UnifiedAPIAuth:
             },
         }
 
-    def authorize_sage(self, sage_type: str, resource: str, action: str) -> boolpermissions = self.sage_permissions.get(sage_type, {})
-    """4賢者システムの認可チェック"""
-        resource_perms = permissions.get(resource, [])
+    def authorize_sage(self, sage_type: str, resource: str, action: str) -> boolpermissions = self.sage_permissions.get(sage_type, {})resource_perms = permissions.get(resource, [])
+    """賢者システムの認可チェック"""
         return action in resource_perms
 :
     def get_sage_from_request(self, request) -> Optional[str]:

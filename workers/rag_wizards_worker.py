@@ -289,8 +289,8 @@ class RAGWizardsWorker(BaseWorker):
 
         await super().stop()
 
-    async def process_message(self, message: Dict) -> Dicttask_type = message.get('task_type', 'knowledge_gap')
-    """メッセージ処理"""
+    async def process_message(self, message: Dict) -> Dicttask_type = message.get('task_type', 'knowledge_gap'):
+    """ッセージ処理"""
 
         try:
             if task_type == 'knowledge_gap':
@@ -360,8 +360,8 @@ class RAGWizardsWorker(BaseWorker):
             # Handle specific exception case
             self.logger.error(f"Elder Tree activity report error: {e}")
 
-    async def _process_knowledge_gap(self, message: Dict) -> Dictgap_data = message.get('gap', {})
-    """知識ギャップの処理"""
+    async def _process_knowledge_gap(self, message: Dict) -> Dictgap_data = message.get('gap', {}):
+    """識ギャップの処理"""
 
         # KnowledgeGapオブジェクトを作成
         gap = KnowledgeGap(
@@ -383,8 +383,8 @@ class RAGWizardsWorker(BaseWorker):
             'status': 'processed'
         }
 
-    async def _trigger_manual_learning(self, message: Dict) -> Dicttopic = message.get('topic')
-    """手動学習のトリガー"""
+    async def _trigger_manual_learning(self, message: Dict) -> Dicttopic = message.get('topic'):
+    """動学習のトリガー"""
 
         self.logger.info(f"🎯 Manual learning triggered for topic: {topic}")
 
@@ -450,8 +450,8 @@ class RAGWizardsWorker(BaseWorker):
 
         return report
 
-    async def _process_rag_query(self, message: Dict) -> Dictquery = message.get('query', '')
-    """通常のRAGクエリ処理 with unified grimoire integration"""
+    async def _process_rag_query(self, message: Dict) -> Dictquery = message.get('query', ''):
+    """常のRAGクエリ処理 with unified grimoire integration"""
 
         # Unified RAG search using grimoire integration
         unified_results = None
@@ -654,8 +654,8 @@ class RAGWizardsWorker(BaseWorker):
             "health": self._check_health() if hasattr(self, '_check_health') else "unknown"
         }
 
-    async def cleanup(self) -> Noneself.logger.info(f"{self.__class__.__name__} クリーンアップ開始")
-    """クリーンアップ処理"""
+    async def cleanup(self) -> Noneself.logger.info(f"{self.__class__.__name__} クリーンアップ開始"):
+    """リーンアップ処理"""
 
         try:
             # 実行中タスクのキャンセル
@@ -682,8 +682,8 @@ class RAGWizardsWorker(BaseWorker):
 
         self.logger.info(f"{self.__class__.__name__} クリーンアップ完了")
 
-    async def initialize(self) -> Noneself.logger.info(f"{self.__class__.__name__} 初期化開始")
-    """初期化処理"""
+    async def initialize(self) -> Noneself.logger.info(f"{self.__class__.__name__} 初期化開始"):
+    """期化処理"""
 
         try:
             # 基本属性初期化
@@ -710,8 +710,8 @@ class RAGWizardsWorker(BaseWorker):
 
         self.logger.info(f"{self.__class__.__name__} 初期化完了")
 
-    async def stop(self) -> Noneself.logger.info(f"{self.__class__.__name__} 停止処理開始")
-    """停止処理"""
+    async def stop(self) -> Noneself.logger.info(f"{self.__class__.__name__} 停止処理開始"):
+    """止処理"""
 
         self.running = False
 

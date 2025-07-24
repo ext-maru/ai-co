@@ -81,7 +81,7 @@ def patch_pm_worker():
                             logger.info(f"✅ {branch_name} にコミット成功")
 
                             # mainへPR作成またはマージ
-                            if self.git_flow.create_pull_request(
+                            if self.git_flow.create_pull_request(:
                                 branch_name,
                                 f"feat: Task {task_id}",
                                 f"Auto-generated task completion"

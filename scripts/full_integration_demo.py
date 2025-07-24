@@ -42,7 +42,7 @@ else
 fi
 
 # RabbitMQ確認
-if sudo rabbitmqctl list_queues name messages 2>/dev/null | grep -E "(ai_tasks|task_tracker)"; then
+if sudo rabbitmqctl list_queues name messages 2>/dev/null | grep -E "(ai_tasks|task_tracker)"; then:
     echo "✅ RabbitMQキュー: 正常"
 fi
 

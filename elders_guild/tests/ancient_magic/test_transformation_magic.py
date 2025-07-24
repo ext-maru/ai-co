@@ -413,7 +413,7 @@ class TestTransformationMagic:
         
         # 新バージョンへのマイグレーション定義
         migration_rules = {
-            "version": "1.0_to_2.0",
+            "version": "1.0._to_2.0",
             "transformations": [
                 {"action": "rename", "from": "id", "to": "system_id"},
                 {"action": "add", "field": "created_at", "value": "2025-07-23T10:00:00"},

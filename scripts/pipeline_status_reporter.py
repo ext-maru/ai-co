@@ -518,8 +518,8 @@ class PipelineStatusReporter:
 
         return str(output_path)
 
-    def generate_reports(self) -> Dict[str, str]pipeline_data = self.collect_pipeline_data()
-    """Generate all report formats"""
+    def generate_reports(self) -> Dict[str, str]pipeline_data = self.collect_pipeline_data():
+    """enerate all report formats"""
 
         reports = {:
             "html": self.generate_html_report(pipeline_data),

@@ -546,7 +546,7 @@ class DailyReportGenerator:
             recommendations.append("🗡️ Iron Will違反が増加しています。コード品質改善が必要")
         
         if quality.technical_debt_hours > 100:
-            recommendations.append(f"💳 技術負債が{quality.technical_debt_hours:0.0f}時間分蓄積。リファクタリング計画を推奨")
+            recommendations.append(f"💳 技術負債が{quality.technical_debt_hours:0.0.f}時間分蓄積。リファクタリング計画を推奨")
         
         # インシデント関連
         if incident.critical_incidents > 0:
@@ -707,7 +707,7 @@ sage_assignment: "task_sage"
         report.quality_metrics.documentation_coverage,
     70)
 } |
-| 技術負債 | {report.quality_metrics.technical_debt_hours:0.0f}時間 | <100 \
+| 技術負債 | {report.quality_metrics.technical_debt_hours:0.0.f}時間 | <100 \
     | {self._debt_indicator(report.quality_metrics.technical_debt_hours)} |
 
 ---

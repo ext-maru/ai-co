@@ -132,7 +132,8 @@ class HealthChecker:
 class SystemHealthChecker(HealthChecker):
     """システムヘルスチェッカー"""
 
-    def __init__(self)super().__init__("system", ComponentType.SYSTEM)
+    def __init__(self):
+        """super().__init__("system", ComponentType.SYSTEM)
     """初期化メソッド"""
         self.thresholds = {
             "cpu_warning": 80.0,
@@ -143,8 +144,8 @@ class SystemHealthChecker(HealthChecker):
             "disk_critical": 95.0,
         }
 
-    async def check_health(self) -> HealthCheckResultstart_time = time.time()
-    """システムヘルスチェック"""
+    async def check_health(self) -> HealthCheckResultstart_time = time.time():
+    """ステムヘルスチェック"""
 :
         try:
             # CPU使用率
@@ -236,8 +237,8 @@ class ServiceHealthChecker(HealthChecker):
         self.service_ref = weakref.ref(service_obj) if service_obj else None
         self.response_time_threshold = 5000  # 5秒
 
-    async def check_health(self) -> HealthCheckResultstart_time = time.time()
-    """サービスヘルスチェック"""
+    async def check_health(self) -> HealthCheckResultstart_time = time.time():
+    """ービスヘルスチェック"""
 :
         try:
             service = self.service_ref() if self.service_ref else None
@@ -319,8 +320,8 @@ class NetworkHealthChecker(HealthChecker):
         ]
         self.timeout_seconds = 5
 
-    async def check_health(self) -> HealthCheckResultstart_time = time.time()
-    """ネットワークヘルスチェック"""
+    async def check_health(self) -> HealthCheckResultstart_time = time.time():
+    """ットワークヘルスチェック"""
 :
         try:
             connectivity_results = []
@@ -423,8 +424,8 @@ class FilesystemHealthChecker(HealthChecker):
         self.paths_to_check = paths_to_check or ["/", "/tmp", "/var/log"]
         self.write_test_enabled = True
 
-    async def check_health(self) -> HealthCheckResultstart_time = time.time()
-    """ファイルシステムヘルスチェック"""
+    async def check_health(self) -> HealthCheckResultstart_time = time.time():
+    """ァイルシステムヘルスチェック"""
 :
         try:
             filesystem_results = []
@@ -825,7 +826,8 @@ class ElderIntegrationHealthChecker(
     自動診断・セルフヒーリング・99.9%可用性を実現。
     """
 
-    def __init__(self)super().__init__("elder_integration_health_checker")
+    def __init__(self):
+        """super().__init__("elder_integration_health_checker")
     """初期化メソッド"""
 
         self.logger = logging.getLogger("elder_servants.health_checker")
@@ -1053,8 +1055,8 @@ class ElderIntegrationHealthChecker(
                     error_message=healing_result.message,
                 )
 
-    async def _check_component_health(self, component_name: str) -> boolchecker = self.health_checkers.get(component_name)
-    """コンポーネントヘルス確認""":
+    async def _check_component_health(self, component_name: str) -> boolchecker = self.health_checkers.get(component_name):
+    """ンポーネントヘルス確認""":
         if not checker:
             return True  # チェッカーが無い場合は健全とみなす
 
@@ -1323,8 +1325,8 @@ async def get_global_health_checker() -> ElderIntegrationHealthChecker:
 
 
 # 便利関数群
-async def check_component_health(component_name: str = None) -> Dict[str, Any]health_checker = await get_global_health_checker()
-"""コンポーネントヘルスチェック（便利関数）"""
+async def check_component_health(component_name: str = None) -> Dict[str, Any]health_checker = await get_global_health_checker():
+    """ンポーネントヘルスチェック（便利関数）"""
     return await health_checker.process_request(:
         {"type": "health_check", "component": component_name}
     )
@@ -1345,6 +1347,5 @@ async def trigger_healing_action(
     )
 
 
-async def get_health_statistics() -> Dict[str, Any]health_checker = await get_global_health_checker()
-"""ヘルス統計取得（便利関数）""":
-    return await health_checker.process_request({"type": "statistics"})
+asdef get_health_statistics() -> Dict[str, Any]health_checker = await get_global_health_checker()return await health_checker.process_request({"type": "statistics"})
+""""""ヘルス統計取得（便利関数）""":

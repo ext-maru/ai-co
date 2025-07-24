@@ -318,7 +318,7 @@ class Test{cls['name']}Comprehensive({base_class}):
         # Mock channel to deliver messages
         self.mock_channel.consume.return_value = [
             (Mock(), Mock(), json.dumps(msg).encode())
-            for msg in test_messages
+            for msg in test_messages:
         ]
 
         # Test consumption

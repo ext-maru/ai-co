@@ -280,10 +280,10 @@ class DataMapperRegistry:
         logger.info(f"Registered data mapping: {mapping.name}")
 
     def get_mapping(self, name: str) -> Optional[DataMapping]return self.mappings.get(name)
-    """マッピングの取得"""
+    マッピングの取得
 
-    def list_mappings(self) -> List[str]return list(self.mappings.keys())
-    """マッピング一覧の取得"""
+    def list_mappings(self) -> List[str]return list(self.mappings.keys()):
+    """ッピング一覧の取得"""
 
     def _register_default_mappings(self):
         """デフォルトマッピングの登録"""
@@ -514,8 +514,8 @@ class DataConversionEngine:
             logger.error(f"Mapping validation failed: {e}")
             return False
 
-    def get_conversion_statistics(self) -> Dict[str, Any]stats = self.conversion_stats.copy()
-    """変換統計の取得"""
+    def gedef get_conversion_statistics(self) -> Dict[str, Any]stats = self.conversion_stats.copy():
+    """"""
 
         # 平均処理時間の計算
         if stats["total_conversions"] > 0:
@@ -538,8 +538,8 @@ class DataConversionEngine:
     def register_custom_mapping(self, mapping: DataMapping)self.mapper_registry.register_mapping(mapping)
     """カスタムマッピングの登録"""
 
-    def list_available_mappings(self) -> List[str]return self.mapper_registry.list_mappings()
-    """利用可能なマッピング一覧"""
+    def lidef list_available_mappings(self) -> List[str]return self.mapper_registry.list_mappings():
+    """ピング一覧"""
 
 
 # ============================================================================
@@ -635,9 +635,8 @@ class DataMigrationTool:
         )
         return migrated_entities
 
-    def get_migration_report(self) -> Dict[str, Any]total_items = sum(item["total_items"] for item in self.migration_history)
-    """移行レポートの取得"""
-        migrated_items = sum(item["migrated_items"] for item in self.migration_history)
+    def gedef get_migration_report(self) -> Dict[str, Any]total_items = sum(item["total_items"] for item in self.migration_history)migrated_items = sum(item["migrated_items"] for item in self.migration_history)
+    """取得"""
 
         return {
             "total_migrations": len(self.migration_history),

@@ -109,8 +109,8 @@ class ElderFlowPylintChecker:
             config_path: カスタムpylintrc設定ファイルパス
         """
         self.logger = logging.getLogger(__name__)
-        self.config_path = config_path or self._get_default_config_path()
         self.project_root = Path('/home/aicompany/ai_co')
+        self.config_path = config_path or self._get_default_config_path()
         
         # エルダーズギルド品質基準
         self.quality_thresholds = {
@@ -216,7 +216,7 @@ class ElderFlowPylintChecker:
             
     async def _run_pylint(self, targets: List[str]) -> PylintResult:
         """Pylint実行"""
-        cmd = ['python', '-m', 'pylint']
+        cmd = ['python3', '-m', 'pylint']
         
         # 設定ファイル指定
         if self.config_path:
@@ -224,7 +224,7 @@ class ElderFlowPylintChecker:
             
         # 出力フォーマット
         cmd.extend([
-            '--output-format=json',
+            '--output-format=text',
             '--reports=yes',
             '--exit-zero'  # エラーでも終了コード0
         ])
@@ -253,53 +253,51 @@ class ElderFlowPylintChecker:
             return result
             
         try:
-            # JSON出力をパース
+            # テキスト出力をパース
             lines = output.strip().split('\n')
-            issues_json = []
-            score_info = {}
+            import re
             
             # 各行を処理
             for line in lines:
                 line = line.strip()
                 if not line:
                     continue
-                    
-                try:
-                    # JSON形式の問題情報
-                    if line.startswith('[') or line.startswith('{'):
-                        data = json.loads(line)
-                        if isinstance(data, list):
-                            issues_json.extend(data)
-                        elif isinstance(data, dict) and 'type' in data:
-                            issues_json.append(data)
-                except json.JSONDecodeError:
-                    # スコア情報を探す
-                    if 'Your code has been rated at' in line:
-                        # スコア抽出
-                        import re
-                        score_match = re.search(r'rated at ([\d.-]+)/10', line)
-                        if score_match:
-                            result.score = float(score_match.group(1))
-                            
-                        # 前回スコア
-                        prev_match = re.search(r'previous run: ([\d.-]+)/10', line)
-                        if prev_match:
-                            result.previous_score = float(prev_match.group(1))
-                            
-            # 問題をPylintIssueに変換
-            for issue_data in issues_json:
-                issue = PylintIssue(
-                    type=issue_data.get('type', ''),
-                    module=issue_data.get('module', ''),
-                    obj=issue_data.get('obj', ''),
-                    line=issue_data.get('line', 0),
-                    column=issue_data.get('column', 0),
-                    message_id=issue_data.get('message-id', ''),
-                    symbol=issue_data.get('symbol', ''),
-                    message=issue_data.get('message', ''),
-                    confidence=issue_data.get('confidence')
-                )
-                result.issues.append(issue)
+                
+                # スコア情報を探す
+                if 'Your code has been rated at' in line:
+                    # スコア抽出
+                    score_match = re.search(r'rated at ([\d.-]+)/10', line)
+                    if score_match:
+                        result.score = float(score_match.group(1))
+                        
+                    # 前回スコア
+                    prev_match = re.search(r'previous run: ([\d.-]+)/10', line)
+                    if prev_match:
+                        result.previous_score = float(prev_match.group(1))
+                
+                # 問題行を検出（簡易パース）
+                if ':' in line and ('error' in line.lower() or 'warning' in line.lower() or 'convention' in line.lower() or 'refactor' in line.lower()):
+                    # パターン例: "libs/knowledge_consolidator.py:123:4: C0103: Invalid name 'x' (invalid-name)"
+                    match = re.match(r'^([^:]+):(\d+):(\d+):\s*([CRWE]\d+):\s*(.+)', line)
+                    if match:
+                        file_path, line_no, col_no, msg_id, message = match.groups()
+                        
+                        # タイプを判定
+                        type_map = {'C': 'convention', 'R': 'refactor', 'W': 'warning', 'E': 'error'}
+                        issue_type = type_map.get(msg_id[0], 'unknown')
+                        
+                        issue = PylintIssue(
+                            type=issue_type,
+                            module=file_path.replace('/', '.').replace('.py', ''),
+                            obj='',
+                            line=int(line_no),
+                            column=int(col_no),
+                            message_id=msg_id,
+                            symbol='',
+                            message=message,
+                            confidence=None
+                        )
+                        result.issues.append(issue)
                 
             # ファイル数カウント
             modules = set(issue.module for issue in result.issues)

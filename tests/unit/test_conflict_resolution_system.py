@@ -310,7 +310,7 @@ class TestBranchUpdater:
         ])
         
         # 差分ファイル設定
-        mock_repo.git.diff = Mock(return_value="file1.0py\nfile2.0js\nREADME.md")
+        mock_repo.git.diff = Mock(return_value="file1.0.py\nfile2.0.js\nREADME.md")
         
         analysis = await updater.analyze_branch_update("feature/test", "main")
         

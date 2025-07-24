@@ -139,7 +139,7 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
 
         # 重要なナレッジファイルを読み込み
         claude_md = PROJECT_ROOT / "CLAUDE.md"
-        impl_summary = self.knowledge_base_path / "IMPLEMENTATION_SUMMARY_2025_07.0md"
+        impl_summary = self.knowledge_base_path / "IMPLEMENTATION_SUMMARY_2025_07.0.md"
 
         content = """📖 Elders Guild 重要ナレッジ
 

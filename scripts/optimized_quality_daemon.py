@@ -157,9 +157,8 @@ class OptimizedMetricsCollector:
             'average_quality': 0.0
         }
     
-    async def collect_optimized_metrics(self, differential: bool = True) -> Dict[str, Any]start_time = time.time()
-    """Collect metrics using optimized parallel analysis"""
-        logger.info("🚀 Starting optimized metrics collection")
+    async def collect_optimized_metrics(self, differential: bool = True) -> Dict[str, Any]start_time = time.time()logger.info("🚀 Starting optimized metrics collection")
+    """ollect metrics using optimized parallel analysis"""
         
         metrics = {:
             'collection_start': datetime.now().isoformat(),

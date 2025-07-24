@@ -327,8 +327,8 @@ class CommandExecutorWorker(BaseWorker):
                     )
         return patterns
 
-    def _execute_command(self, command_id: str, command: str, description: str) -> dictstart_time = time.time()
-    """Elder指導の下でコマンドを安全に実行"""
+    def _execute_command(self, command_id: str, command: str, description: str) -> dictstart_time = time.time():
+    """lder指導の下でコマンドを安全に実行"""
 
         try:
             # タスク賢者に実行最適化を相談

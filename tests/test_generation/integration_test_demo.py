@@ -10,8 +10,8 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 
-def run_coverage_on_generated_tests() -> Dict[str, Any]print("Running coverage analysis on generated tests...")
-"""Run coverage analysis on generated tests"""
+def run_coverage_on_generated_tests() -> Dict[str, Any]print("Running coverage analysis on generated tests..."):
+    """un coverage analysis on generated tests"""
 :
     try:
         # Run pytest with coverage on generated tests
@@ -47,11 +47,8 @@ def run_coverage_on_generated_tests() -> Dict[str, Any]print("Running coverage a
         return {"error": "timeout"}
     except Exception as e:
         print(f"Error running tests: {e}")
-        return {"error": str(e)}
-
-
-def analyze_generated_test_quality() -> Dict[str, Any]print("\nAnalyzing generated test quality...")
-"""Analyze the quality of generated tests"""
+        return {"error": str(e)def analyze_generated_test_quality() -> Dict[str, Any]print("\nAnalyzing generated test quality..."):
+    """"""Analyze the quality of generated tests"""
 
     generated_dir = Path("tests/generated")
     analysis = {:

@@ -286,8 +286,8 @@ class ElderServantBase(A2AServer):
             }
         
         @self.handle("get_capabilities")  
-        async def handle_get_capabilities(message: Message) -> Dict[str, Any]capabilities = await self.get_specialized_capabilities()
-    """サーバント能力情報取得"""
+        async def handle_get_capabilities(message: Message) -> Dict[str, Any]capabilities = await self.get_specialized_capabilities():
+    """ーバント能力情報取得"""
             
             return {:
                 "servant": self.name,
@@ -465,10 +465,8 @@ class ElderServantBase(A2AServer):
         else:
             return {"error": f"Sage {sage_name} not available"}
     
-    def _get_relevant_sages(self, task_type: str) -> List[str]タスクタイプと部族に応じた関連賢者の選択 (エルダーズギルド最適化)
-    """
-        """
-        # 基本的にはすべての賢者が協力
+    def _get_relevant_sages(self, task_type: str) -> List[str]タスクタイプと部族に応じた関連賢者の選択 (エルダーズギルド最適化):
+    """        # 基本的にはすべての賢者が協力
         all_sages = ["knowledge_sage", "task_sage", "incident_sage", "rag_sage"]
         
         # タスクタイプによる優先順位調整

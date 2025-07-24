@@ -342,8 +342,8 @@ api.add_resource({resource.capitalize()}Detail, '/<int:{resource}_id>')
 
         return {f"blueprints/{resource}.py": blueprint_content}
 
-    def generate(self, params: Dict[str, Any]) -> Dict[str, str]framework = params.get("framework", "fastapi")
-    """テンプレートからコードを生成"""
+    def generate(self, params: Dict[str, Any]) -> Dict[str, str]framework = params.get("framework", "fastapi"):
+    """ンプレートからコードを生成"""
 :
         if framework == "fastapi":
             return self.generate_fastapi(params)

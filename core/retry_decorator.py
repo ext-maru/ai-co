@@ -109,9 +109,8 @@ class RetryableWorker:
 
         return wrapped_operation()
 
-    def retry_with_config(self, **custom_config) -> Callableconfig = self.retry_config.copy()
-    """カスタム設定でのリトライデコレータ"""
-        config.update(custom_config)
+    def retry_with_config(self, **custom_config) -> Callableconfig = self.retry_config.copy()config.update(custom_config)
+    """スタム設定でのリトライデコレータ"""
         return retry(**config)
 
 

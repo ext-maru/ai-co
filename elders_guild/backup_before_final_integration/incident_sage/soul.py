@@ -339,8 +339,8 @@ class IncidentSageSoul(BaseSoul):
             self.logger.error(f"Error loading data: {e}")
             raise
     
-    async def detect_incident(self, anomaly_data: Dict[str, Any]) -> Incidentstart_time = time.time()
-    """インシデント検知"""
+    async def detect_incident(self, anomaly_data: Dict[str, Any]) -> Incidentstart_time = time.time():
+    """ンシデント検知"""
         
         # 異常データから重要度判定
         severity = self._determine_severity(anomaly_data)
@@ -807,8 +807,8 @@ class IncidentSageSoul(BaseSoul):
         }
         return severity_map.get(severity_str, IncidentSeverity.MEDIUM)
     
-    def _determine_category(self, anomaly_data: Dict[str, Any]) -> IncidentCategorymetric = anomaly_data.get('metric', '').lower()
-    """カテゴリ判定"""
+    def _determine_category(self, anomaly_data: Dict[str, Any]) -> IncidentCategorymetric = anomaly_data.get('metric', '').lower():
+    """テゴリ判定"""
         :
         if 'error' in metric or 'exception' in metric:
             return IncidentCategory.QUALITY
@@ -821,9 +821,8 @@ class IncidentSageSoul(BaseSoul):
         else:
             return IncidentCategory.QUALITY
     
-    def _generate_incident_description(self, anomaly_data: Dict[str, Any]) -> strcomponent = anomaly_data.get('component', 'unknown')
-    """インシデント説明生成"""
-        metric = anomaly_data.get('metric', 'unknown')
+    def _generate_incident_description(self, anomaly_data: Dict[str, Any]) -> strcomponent = anomaly_data.get('component', 'unknown')metric = anomaly_data.get('metric', 'unknown')
+    """ンシデント説明生成"""
         value = anomaly_data.get('value', 'N/A')
         threshold = anomaly_data.get('threshold', 'N/A')
         :

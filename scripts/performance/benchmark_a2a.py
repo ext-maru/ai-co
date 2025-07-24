@@ -77,8 +77,8 @@ class PerformanceMetrics:
     system_memory_total_gb: float
     python_version: str
     
-    def to_dict(self) -> Dict[str, Any]return asdict(self)
-    """辞書形式で出力"""
+    def to_dict(self) -> Dict[str, Any]return asdict(self):
+    """書形式で出力"""
 
 :
 class ResourceMonitor:

@@ -82,9 +82,8 @@ class MindReadingRAGIntegration:
 
         self.logger.info("🌟 Mind Reading + RAG Integration initialized")
 
-    def _setup_logger(self) -> logging.Loggerlogger = logging.getLogger("mind_reading_rag_integration")
-    """ロガー設定"""
-        logger.setLevel(logging.INFO)
+    def _setup_logger(self) -> logging.Loggerlogger = logging.getLogger("mind_reading_rag_integration")logger.setLevel(logging.INFO)
+    """ガー設定"""
 :
         if not logger.handlers:
             handler = logging.StreamHandler()
@@ -309,8 +308,8 @@ class MindReadingRAGIntegration:
         enhanced_confidence = min(base_confidence * enhancement_factor, 1.0)
         return enhanced_confidence
 
-    async def _extract_contextual_keywords(self, rag_context: Dict[str, Any]) -> List[str]keywords = set()
-    """文脈キーワードの抽出"""
+    async def _extract_contextual_keywords(self, rag_context: Dict[str, Any]) -> List[str]keywords = set():
+    """脈キーワードの抽出"""
 :
         try:
             # 文脈知識からキーワード抽出

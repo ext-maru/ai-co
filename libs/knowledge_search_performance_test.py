@@ -26,8 +26,8 @@ class SearchPerformanceTester:
     """データベース接続"""
         self.db_conn.row_factory = sqlite3Row
         
-    def test_basic_queries(self) -> Dict[str, float]logger.info("基本クエリ性能テスト開始")
-    """基本クエリ性能テスト"""
+    def test_basic_queries(self) -> Dict[str, float]logger.info("基本クエリ性能テスト開始"):
+    """本クエリ性能テスト"""
         
         test_queries = {:
             'count_all': "SELECT COUNT(*) FROM knowledge_documents",
@@ -52,8 +52,8 @@ class SearchPerformanceTester:
             
         return results
         
-    def test_full_text_search(self) -> Dict[str, float]logger.info("全文検索性能テスト開始")
-    """全文検索性能テスト"""
+    def test_full_text_search(self) -> Dict[str, float]logger.info("全文検索性能テスト開始"):
+    """文検索性能テスト"""
         
         search_terms = [
             'elder',
@@ -99,8 +99,8 @@ class SearchPerformanceTester:
             
         return results
         
-    def test_complex_queries(self) -> Dict[str, float]logger.info("複合クエリ性能テスト開始")
-    """複合クエリ性能テスト"""
+    def test_complex_queries(self) -> Dict[str, float]logger.info("複合クエリ性能テスト開始"):
+    """合クエリ性能テスト"""
         
         complex_queries = {:
             'category_priority': """
@@ -150,8 +150,8 @@ class SearchPerformanceTester:
             
         return results
         
-    def analyze_database_structure(self) -> Dict[str, Any]logger.info("データベース構造分析開始")
-    """データベース構造分析"""
+    def analyze_database_structure(self) -> Dict[str, Any]logger.info("データベース構造分析開始"):
+    """ータベース構造分析"""
         
         # テーブル情報
         cursor = self.db_conn.execute("PRAGMA table_info(knowledge_documents)")
@@ -184,8 +184,8 @@ class SearchPerformanceTester:
             'docs_per_file': total_docs / unique_files if unique_files > 0 else 0
         }
         
-    def generate_performance_report(self) -> Dict[str, Any]logger.info("=== 検索性能総合テスト開始 ===")
-    """性能レポート生成"""
+    def generate_performance_report(self) -> Dict[str, Any]logger.info("=== 検索性能総合テスト開始 ==="):
+    """能レポート生成"""
         :
         try:
             self.connect_db()

@@ -175,7 +175,7 @@ Type: `template` | Duration: `2.15s` | Files: `1`
 **Quick Actions:**
 ```bash
 # View output
-cat /home/aicompany/ai_co/reports/daily_report_20250702.0md
+cat /home/aicompany/ai_co/reports/daily_report_20250702.0.md
 
 # Check logs
 ai-logs template_daily_report_20250702_150000

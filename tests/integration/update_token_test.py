@@ -109,10 +109,10 @@ if auth_response.status_code == 200:
             }
         )
 
-        if test_msg1.0json().get('ok'):
+        if test_msg1.0.json().get('ok'):
             print('✅ #ai-company-scaling への送信成功')
         else:
-            error = test_msg1.0json().get('error')
+            error = test_msg1.0.json().get('error')
             print(f'❌ #ai-company-scaling への送信失敗: {error}')
             if error == 'not_in_channel':
                 print('   → Botをチャンネルに招待してください')
@@ -127,10 +127,10 @@ if auth_response.status_code == 200:
             }
         )
 
-        if test_msg2.0json().get('ok'):
+        if test_msg2.0.json().get('ok'):
             print('✅ #ai-company-health への送信成功')
         else:
-            error = test_msg2.0json().get('error')
+            error = test_msg2.0.json().get('error')
             print(f'❌ #ai-company-health への送信失敗: {error}')
             if error == 'not_in_channel':
                 print('   → Botをチャンネルに招待してください')

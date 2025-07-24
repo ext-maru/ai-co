@@ -211,8 +211,8 @@ class IncidentSage(BaseSage):
                 "CREATE INDEX IF NOT EXISTS idx_security_events_type ON security_events(event_type)"
             )
 
-    async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]start_time = datetime.now()
-    """インシデント賢者のリクエスト処理"""
+    async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]start_time = datetime.now():
+    """ンシデント賢者のリクエスト処理"""
 :
         try:
             request_type = request.get("type", "unknown")
@@ -272,9 +272,8 @@ class IncidentSage(BaseSage):
             await self.log_error(e, {"request": request})
             return {"success": False, "error": str(e), "sage": self.sage_name}
 
-    async def _create_incident(self, request: Dict[str, Any]) -> Dict[str, Any]title = request.get("title", "")
-    """新規インシデント作成"""
-        description = request.get("description", "")
+    async def _create_incident(self, request: Dict[str, Any]) -> Dict[str, Any]title = request.get("title", "")description = request.get("description", "")
+    """規インシデント作成"""
         severity = request.get("severity", IncidentSeverity.MEDIUM.value)
         category = request.get("category", IncidentCategory.SOFTWARE.value)
         affected_systems = request.get("affected_systems", [])
@@ -340,9 +339,8 @@ class IncidentSage(BaseSage):
             in [IncidentSeverity.HIGH.value, IncidentSeverity.CRITICAL.value],
         }
 
-    async def _update_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")
-    """インシデント更新"""
-        updates = request.get("updates", {})
+    async def _update_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")updates = request.get("updates", {})
+    """ンシデント更新"""
         user_id = request.get("user_id", "system")
 :
         if not incident_id:
@@ -424,8 +422,8 @@ class IncidentSage(BaseSage):
             "updated_fields": list(updates.keys()),
         }
 
-    async def _get_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")
-    """インシデント詳細取得"""
+    async def _get_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id"):
+    """ンシデント詳細取得"""
 :
         if not incident_id:
             return {"success": False, "error": "Incident ID is required"}
@@ -500,9 +498,8 @@ class IncidentSage(BaseSage):
 
         return {"success": True, "incident": incident}
 
-    async def _list_incidents(self, request: Dict[str, Any]) -> Dict[str, Any]filters = request.get("filters", {})
-    """インシデント一覧取得"""
-        sort_by = request.get("sort_by", "created_at")
+    async def _list_incidents(self, request: Dict[str, Any]) -> Dict[str, Any]filters = request.get("filters", {})sort_by = request.get("sort_by", "created_at")
+    """ンシデント一覧取得"""
         sort_order = request.get("sort_order", "DESC")
         limit = request.get("limit", 50)
         offset = request.get("offset", 0)
@@ -574,9 +571,8 @@ class IncidentSage(BaseSage):
             "offset": offset,
         }
 
-    async def _resolve_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")
-    """インシデント解決"""
-        resolution = request.get("resolution", "")
+    async def _resolve_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")resolution = request.get("resolution", "")
+    """ンシデント解決"""
         root_cause = request.get("root_cause", "")
         user_id = request.get("user_id", "system")
 :
@@ -656,9 +652,8 @@ class IncidentSage(BaseSage):
             "resolution_time_minutes": resolution_time,
         }
 
-    async def _create_alert(self, request: Dict[str, Any]) -> Dict[str, Any]alert_type = request.get("alert_type", "")
-    """アラート作成"""
-        severity = request.get("severity", IncidentSeverity.MEDIUM.value)
+    async def _create_alert(self, request: Dict[str, Any]) -> Dict[str, Any]alert_type = request.get("alert_type", "")severity = request.get("severity", IncidentSeverity.MEDIUM.value)
+    """ラート作成"""
         title = request.get("title", "")
         message = request.get("message", "")
         source_system = request.get("source_system", "unknown")
@@ -725,9 +720,8 @@ class IncidentSage(BaseSage):
             "incident_id": incident_id,
         }
 
-    async def _acknowledge_alert(self, request: Dict[str, Any]) -> Dict[str, Any]alert_id = request.get("alert_id")
-    """アラート確認"""
-        user_id = request.get("user_id", "system")
+    async def _acknowledge_alert(self, request: Dict[str, Any]) -> Dict[str, Any]alert_id = request.get("alert_id")user_id = request.get("user_id", "system")
+    """ラート確認"""
 :
         if not alert_id:
             return {"success": False, "error": "Alert ID is required"}
@@ -754,9 +748,8 @@ class IncidentSage(BaseSage):
 
         return {"success": True, "message": "Alert acknowledged successfully"}
 
-    async def _record_metric(self, request: Dict[str, Any]) -> Dict[str, Any]metric_name = request.get("metric_name", "")
-    """システムメトリクス記録"""
-        metric_value = request.get("metric_value")
+    async def _record_metric(self, request: Dict[str, Any]) -> Dict[str, Any]metric_name = request.get("metric_name", "")metric_value = request.get("metric_value")
+    """ステムメトリクス記録"""
         unit = request.get("unit", "")
         source_system = request.get("source_system", "unknown")
         tags = request.get("tags", [])
@@ -877,9 +870,8 @@ class IncidentSage(BaseSage):
 
         return alert_id
 
-    async def _analyze_metrics(self, request: Dict[str, Any]) -> Dict[str, Any]metric_name = request.get("metric_name")
-    """メトリクス分析"""
-        period_hours = request.get("period_hours", 24)
+    async def _analyze_metrics(self, request: Dict[str, Any]) -> Dict[str, Any]metric_name = request.get("metric_name")period_hours = request.get("period_hours", 24)
+    """トリクス分析"""
         source_system = request.get("source_system")
 
         start_time = (datetime.now() - timedelta(hours=period_hours)).isoformat()
@@ -950,9 +942,8 @@ class IncidentSage(BaseSage):
 
         return {"success": True, "analysis": analysis}
 
-    async def _security_scan(self, request: Dict[str, Any]) -> Dict[str, Any]scan_type = request.get("scan_type", "basic")
-    """セキュリティスキャン"""
-        target = request.get("target", "system")
+    async def _security_scan(self, request: Dict[str, Any]) -> Dict[str, Any]scan_type = request.get("scan_type", "basic")target = request.get("target", "system")
+    """キュリティスキャン"""
 
         # 簡易セキュリティスキャンのシミュレーション
         findings = []
@@ -1009,8 +1000,8 @@ class IncidentSage(BaseSage):
             "findings": findings,
         }
 
-    async def _get_dashboard(self, request: Dict[str, Any]) -> Dict[str, Any]period_hours = request.get("period_hours", 24)
-    """ダッシュボードデータ取得"""
+    async def _get_dashboard(self, request: Dict[str, Any]) -> Dict[str, Any]period_hours = request.get("period_hours", 24):
+    """ッシュボードデータ取得"""
 
         start_time = (datetime.now() - timedelta(hours=period_hours)).isoformat()
 :
@@ -1094,9 +1085,8 @@ class IncidentSage(BaseSage):
 
         return {"success": True, "dashboard": dashboard}
 
-    async def _escalate_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")
-    """インシデントエスカレーション"""
-        escalation_reason = request.get("reason", "manual_escalation")
+    async def _escalate_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")escalation_reason = request.get("reason", "manual_escalation")
+    """ンシデントエスカレーション"""
         user_id = request.get("user_id", "system")
 :
         if not incident_id:

@@ -1251,8 +1251,8 @@ class StorageMagic(AncientMagic):
             }
     
     # ヘルパーメソッド
-    def _calculate_checksum(self, file_path: str) -> strhash_sha256 = hashlib.sha256()
-    """ファイルのSHA256チェックサムを計算""":
+    def _calculate_checksum(self, file_path: str) -> strhash_sha256 = hashlib.sha256():
+    """ァイルのSHA256チェックサムを計算""":
         try:
             with open(file_path, "rb") as f:
                 for chunk in iter(lambda: f.read(4096), b""):

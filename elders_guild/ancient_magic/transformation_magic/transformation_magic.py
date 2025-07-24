@@ -705,7 +705,7 @@ class TransformationMagic(AncientMagic):
                             field_errors.append(f"{field_name}: Value '{value}' does not match pattern '{pattern}'")
                     
                     if "format" in prop_schema and prop_schema["format"] == "email":
-                        email_pattern = r'^[a-zA-Z0-9.0_%+-]+@[a-zA-Z0-9.0-]+\.[a-zA-Z]{2,}$'
+                        email_pattern = r'^[a-zA-Z0-9.0._%+-]+@[a-zA-Z0-9.0-]+\.[a-zA-Z]{2,}$'
                         if not re.match(email_pattern, value):
                             field_errors.append(f"{field_name}: Invalid email format '{value}'")
                 

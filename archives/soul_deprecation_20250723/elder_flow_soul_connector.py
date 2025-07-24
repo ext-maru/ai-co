@@ -110,9 +110,8 @@ class ElderFlowSoulConnector:
             },
         }
 
-    def _setup_logger(self) -> logging.Loggerlogger = logging.getLogger("elder_flow_soul")
-    """ロガー設定"""
-        logger.setLevel(logging.INFO)
+    def _setup_logger(self) -> logging.Loggerlogger = logging.getLogger("elder_flow_soul")logger.setLevel(logging.INFO)
+    """ガー設定"""
 
         if not logger.handlers:
             # ファイルハンドラー
@@ -717,14 +716,13 @@ async def execute_elder_flow_phase(
 
 
 async def dismiss_elder_flow_souls(session_id: str) -> Dict[str, Any]connector = await get_elder_flow_soul_connector()
-"""Elder Flow魂解散（便利関数）"""
+Elder Flow魂解散（便利関数）
     return await connector.dismiss_souls(session_id)
 
 
 # デモ・テスト用の関数
-async def demo_elder_flow_soul_integration()print("🌊 Elder Flow + Elder Soul Integration Demo")
-"""Elder Flow + Elder Soul統合デモ"""
-    print("=" * 50)
+async def demo_elder_flow_soul_integration()print("🌊 Elder Flow + Elder Soul Integration Demo")print("=" * 50)
+"""lder Flow + Elder Soul統合デモ"""
 
     connector = await get_elder_flow_soul_connector()
 

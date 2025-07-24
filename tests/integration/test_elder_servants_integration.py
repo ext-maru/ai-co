@@ -55,8 +55,8 @@ class MockElderFlowCore:
         self.processed_tasks = []
         self.success_rate = 100.0
 
-    async def execute(self, task_name: str, priority: str = "medium") -> Dict[str, Any]await asyncio.sleep(0.1)  # 非同期処理をシミュレート
-    """Elder Flow実行のモック"""
+    async def execute(self, task_name: str, priority: str = "medium") -> Dict[str, Any]await asyncio.sleep(0.1)  # 非同期処理をシミュレート:
+    """lder Flow実行のモック"""
 
         result = {:
             "task_id": f"elder_flow_{len(self.processed_tasks)}",
@@ -99,8 +99,8 @@ class TestDwarfServant(DwarfServant):
             ServantCapability.REFACTORING,
         ]
 
-    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)  # 処理時間をシミュレート
-    """テスト用処理実装"""
+    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)  # 処理時間をシミュレート:
+    """スト用処理実装"""
 
         return ServantResponse(
             task_id=request.task_id,
@@ -137,8 +137,8 @@ class TestWizardServant(WizardServant):
             ServantCapability.DOCUMENTATION,
         ]
 
-    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)
-    """テスト用処理実装"""
+    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1):
+    """スト用処理実装"""
 
         return ServantResponse(
             task_id=request.task_id,
@@ -176,8 +176,8 @@ class TestElfServant(ElfServant):
             ServantCapability.PERFORMANCE,
         ]
 
-    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)
-    """テスト用処理実装"""
+    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1):
+    """スト用処理実装"""
 
         return ServantResponse(
             task_id=request.task_id,
@@ -213,8 +213,8 @@ class TestKnightServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
         self.specialization = name.replace("knight_", "").replace("_", " ").title()
         self.capabilities = [ServantCapability.SECURITY, ServantCapability.TESTING]
 
-    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1)
-    """テスト用処理実装"""
+    async def process_request(self, request: ServantRequest) -> ServantResponseawait asyncio.sleep(0.1):
+    """スト用処理実装"""
 
         return ServantResponse(
             task_id=request.task_id,
@@ -672,8 +672,8 @@ class ElderServantsIntegrationTester:
 
         return results
 
-    async def run_full_integration_test(self) -> Dict[str, Any]test_start_time = time.time()
-    """完全統合テスト実行"""
+    async def run_full_integration_test(self) -> Dict[str, Any]test_start_time = time.time():
+    """全統合テスト実行"""
 
         # セットアップ
         await self.setup_servants()

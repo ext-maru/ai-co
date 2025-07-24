@@ -368,7 +368,7 @@ class TestFourSagesIntegrationSimple:
             
             # 成功率を計算
             success_rate = (steps_completed / 4) * 100
-            print(f"\n   📊 ワークフロー完了率: {success_rate:0.0f}%")
+            print(f"\n   📊 ワークフロー完了率: {success_rate:0.0.f}%")
             
             return success_rate >= 75  # 75%以上で成功
             
@@ -467,7 +467,7 @@ class TestFourSagesIntegrationSimple:
                     print(f"   ❌ {sage}: エラー処理が不適切")
             
             success_rate = (error_handling_success / len(test_cases)) * 100
-            print(f"\n   📊 エラー処理成功率: {success_rate:0.0f}%")
+            print(f"\n   📊 エラー処理成功率: {success_rate:0.0.f}%")
             
             return success_rate >= 75
             

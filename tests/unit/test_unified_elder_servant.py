@@ -54,8 +54,8 @@ class TestUnifiedElderServant(UnifiedElderServant):
             capabilities=capabilities,
         )
 
-    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_id = task.get("task_id", "test_task")
-    """テスト用タスク実行"""
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_id = task.get("task_id", "test_task"):
+    """スト用タスク実行"""
 
         # 成功パターンのモック実装:
         if task.get("task_type") == "success_test":

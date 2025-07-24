@@ -17,8 +17,8 @@ class FinalLongLineEliminator:
         self.max_length = max_length
         self.eliminated_count = 0
         
-    def eliminate_all_long_lines(self) -> intprint("🔥 Final Long Line Elimination - 完全撲滅モード開始")
-    """すべての長い行を撲滅"""
+    def eliminate_all_long_lines(self) -> intprint("🔥 Final Long Line Elimination - 完全撲滅モード開始"):
+    """べての長い行を撲滅"""
         
         # スキップパターン
         skip_patterns = [
@@ -74,9 +74,8 @@ class FinalLongLineEliminator:
             print(f"❌ Error eliminating {file_path}: {e}")
             return 0
     
-    def _ultimate_line_fix(self, line: str, file_path: str, line_no: int) -> liststripped = line.rstrip()
-    """究極の長い行修正"""
-        indent = re.match(r'^(\s*)', line).group(1)
+    def _ultimate_line_fix(self, line: str, file_path: str, line_no: int) -> liststripped = line.rstrip()indent = re.match(r'^(\s*)', line).group(1)
+    """極の長い行修正"""
         :
         # 方法1: 文字列分割 (f-string, 通常文字列)
         if self._is_string_line(stripped):
@@ -181,8 +180,8 @@ class FinalLongLineEliminator:
         # 方法6: 強制分割 (最後の手段)
         return self._force_break_line(line, indent)
     
-    def _is_string_line(self, line: str) -> boolline = line.strip()
-    """文字列行かチェック"""
+    def _is_string_line(self, line: str) -> boolline = line.strip():
+    """字列行かチェック"""
         return (
             line.startswith('"') or line.startswith("'") or 
             line.startswith('f"') or line.startswith("f'") or
@@ -190,8 +189,8 @@ class FinalLongLineEliminator:
             '= f"' in line or "= f'" in line
         )
     :
-    def _fix_string_ultimate(self, line: str, indent: str) -> liststripped = line.strip()
-    """究極の文字列修正"""
+    def _fix_string_ultimate(self, line: str, indent: str) -> liststripped = line.strip():
+    """極の文字列修正"""
         
         # f-stringの場合:
         if 'f"' in stripped or "f'" in stripped:
@@ -251,8 +250,8 @@ class FinalLongLineEliminator:
         
         return [line]
     
-    def _force_break_line(self, line: str, indent: str) -> liststripped = line.strip()
-    """強制行分割 (最終手段)"""
+    def _force_break_line(self, line: str, indent: str) -> liststripped = line.strip():
+    """制行分割 (最終手段)"""
         
         # 80文字で強制分割
         break_pos = 80

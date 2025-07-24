@@ -135,7 +135,7 @@ class EmergencyResponseSystem:
             result = self.run_git("branch -a")
             if result.returncode == 0:
                 branches = result.stdout
-                for protected_branch in self.config["git_settings"][
+                for protected_branch in self.config["git_settings"][:
                     "protected_branches"
                 ]:
                     if protected_branch not in branches:

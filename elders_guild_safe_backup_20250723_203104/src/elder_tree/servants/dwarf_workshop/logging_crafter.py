@@ -201,11 +201,11 @@ class LoggingCrafterServant(DwarfServant):
             }
             
     def _implement_file_handler(self, config: Dict[str, Any]) -> strfilename = config.get("filename", "app.log")
-    """ファイルハンドラーの実装コードを生成"""
+    ファイルハンドラーの実装コードを生成
         mode = config.get("mode", "a")
         encoding = config.get("encoding", "utf-8")
         
-        return f"""
+        return f
 import logging
 
 # ファイルハンドラーの設定
@@ -223,15 +223,14 @@ file_handler.setFormatter(formatter)
 
 # ロガーに追加
 logger = logging.getLogger()
-logger.addHandler(file_handler)
-"""
-        :
-    def _implement_rotating_handler(self, config: Dict[str, Any]) -> strfilename = config.get("filename", "app.log")
-    """ローテーティングハンドラーの実装コードを生成"""
+logger.addHandler(file_handler):
+    """        :
+    def _def _implement_rotating_handler(self, config: Dict[str, Any]) -> strfilename = config.get("filename", "app.log")
+    ローテーティングハンドラーの実装コードを生成
         max_bytes = config.get("max_bytes", 10485760)
         backup_count = config.get("backup_count", 5)
         
-        return f"""
+        return f
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -251,12 +250,10 @@ rotating_handler.setFormatter(formatter)
 
 # ロガーに追加
 logger = logging.getLogger()
-logger.addHandler(rotating_handler)
-"""
-        :
-    def _implement_custom_handler(self, config: Dict[str, Any]) -> strclass_name = config.get("class", "CustomHandler")
-    """カスタムハンドラーの実装コードを生成"""
-        params = config.get("params", {})
+logger.addHandler(rotating_handler):
+    """   :
+    def _impledef _implement_custom_handler(self, config: Dict[str, Any]) -> strclass_name = config.get("class", "CustomHandler")params = config.get("params", {})
+    """装コードを生成"""
         
         # ElasticSearchハンドラーの例:
         if class_name == "ElasticSearchHandler":
@@ -370,8 +367,8 @@ class {class_name}(logging.Handler):
                 "error": f"Failed to create formatter: {str(e)}"
             }
             
-    def _create_basic_formatter(self, config: Dict[str, Any]) -> Dict[str, Any]pattern = config.get("pattern", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    """基本フォーマッターを作成"""
+    def _creatdef _create_basic_formatter(self, config: Dict[str, Any]) -> Dict[str, Any]pattern = config.get("pattern", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"):
+    """成"""
         
         return {:
             "type": "basic",
@@ -1108,9 +1105,8 @@ logging.config.dictConfig(logging_config)
                 
         return code_parts
         
-    async def perform_craft(self, task_data: Dict[str, Any]) -> Dict[str, Any]action = task_data.get("action")
-    """ログシステム構築の具体的な作業を実行"""
-        data = task_data.get("data", {})
+    async def perfordef perform_craft(self, task_data: Dict[str, Any]) -> Dict[str, Any]action = task_data.get("action")data = task_data.get("data", {})
+    """的な作業を実行"""
         :
         if action == "generate_config":
             return await self.generate_config(data)

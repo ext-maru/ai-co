@@ -1196,8 +1196,8 @@ class OptimizationMagic(AncientMagic):
         
         return arr
     
-    def _binary_search(self, arr: List, target: Any) -> intleft, right = 0, len(arr) - 1
-    """二分探索実装"""
+    def _binary_search(self, arr: List, target: Any) -> intleft, right = 0, len(arr) - 1:
+    """分探索実装"""
         :
         while left <= right:
             mid = (left + right) // 2

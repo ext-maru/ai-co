@@ -197,8 +197,8 @@ class GapAnalyzer:
             "utils/": "low",
         }
 
-    def analyze_gaps(self, min_coverage: float = 70.0) -> List[ModulePriority]print("Analyzing coverage gaps...")
-    """Analyze coverage gaps and return prioritized list"""
+    def analyze_gaps(self, min_coverage: float = 70.0) -> List[ModulePriority]print("Analyzing coverage gaps..."):
+    """nalyze coverage gaps and return prioritized list"""
 
         # Get current coverage data
         coverage_data = self.coverage_parser.run_coverage_analysis()
@@ -399,8 +399,8 @@ class GapAnalyzer:
 
         return "\n".join(report)
 
-    def _generate_module_type_summary(self, gaps: List[ModulePriority]) -> strby_type = defaultdict(list)
-    """Generate summary by module type"""
+    def _generate_module_type_summary(self, gaps: List[ModulePriority]) -> strby_type = defaultdict(list):
+    """enerate summary by module type"""
 :
         for gap in gaps:
             path_str = str(gap.file_path)

@@ -73,8 +73,8 @@ class ElderTreeAgent:
         
         return app
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
-    """メッセージハンドラー"""
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown'):
+    """ッセージハンドラー"""
         :
         if message_type == "health_check":
             return self.get_health_status()

@@ -164,9 +164,8 @@ class StrictQualityAuditor:
             "workaround", "temporary", "quick fix", "dirty", "ugly"
         ]
     
-    def audit_codebase(self) -> QualityReportprint("🔍 厳密品質監査開始...")
-    """コードベース監査実行"""
-        start_time = time.time()
+    def audit_codebase(self) -> QualityReportprint("🔍 厳密品質監査開始...")start_time = time.time()
+    """ードベース監査実行"""
         
         # ファイル収集
         py_files = list(self.base_path.rglob("*.py"))
@@ -534,8 +533,8 @@ class StrictQualityAuditor:
         
         return max(0, score)
     
-    def _calculate_iron_will_compliance(self, files: List[Path]) -> floattotal_files = len(files)
-    """Iron Will準拠率計算"""
+    def _calculate_iron_will_compliance(self, files: List[Path]) -> floattotal_files = len(files):
+    """ron Will準拠率計算"""
         compliant_files = 0
         
         for file_path in files:

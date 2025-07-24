@@ -38,8 +38,8 @@ class PgVectorUnifiedManager:
             'docker_command_prefix': ['sg', 'docker', '-c']
         }
         
-    async def health_check(self) -> Dict[str, Any]logger.info("🔍 pgvectorシステムヘルスチェック開始")
-    """システムヘルスチェック"""
+    async def health_check(self) -> Dict[str, Any]logger.info("🔍 pgvectorシステムヘルスチェック開始"):
+    """ステムヘルスチェック"""
         
         health = {:
             'timestamp': datetime.now().isoformat(),
@@ -156,8 +156,8 @@ class PgVectorUnifiedManager:
         logger.info(f"✅ ヘルスチェック完了: {health['overall_status']}")
         return health
         
-    async def setup_tables(self) -> boollogger.info("🔧 PostgreSQLテーブル初期化開始")
-    """PostgreSQLテーブル初期化"""
+    async def setup_tables(self) -> boollogger.info("🔧 PostgreSQLテーブル初期化開始"):
+    """ostgreSQLテーブル初期化"""
         :
         try:
             # テーブル作成SQL
@@ -207,8 +207,8 @@ class PgVectorUnifiedManager:
             logger.error(f"❌ テーブル初期化エラー: {e}")
             return False
             
-    async def migrate_from_sqlite(self) -> Dict[str, Any]logger.info("🔄 SQLite→PostgreSQLデータマイグレーション開始")
-    """SQLiteからPostgreSQLへのデータマイグレーション"""
+    async def migrate_from_sqlite(self) -> Dict[str, Any]logger.info("🔄 SQLite→PostgreSQLデータマイグレーション開始"):
+    """QLiteからPostgreSQLへのデータマイグレーション"""
         
         migration_stats = {:
             'start_time': datetime.now().isoformat(),
@@ -424,8 +424,8 @@ class PgVectorUnifiedManager:
             logger.error(f"❌ SQLite検索も失敗: {e}")
             return []
             
-    async def get_status(self) -> Dict[str, Any]logger.info("📊 システム状況取得")
-    """システム状況取得"""
+    async def get_status(self) -> Dict[str, Any]logger.info("📊 システム状況取得"):
+    """ステム状況取得"""
         
         health = await self.health_check()
         

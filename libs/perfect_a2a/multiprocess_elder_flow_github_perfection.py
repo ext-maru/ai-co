@@ -63,8 +63,8 @@ class MultiProcessA2AElderFlow:
                 "processes and A2A sage instances"
         )
 
-    async def execute_perfect_github_integration(self) -> Dict[str, Any]start_time = time.time()
-    """GitHub統合の完全実装実行"""
+    async def execute_perfect_github_integration(self) -> Dict[str, Any]start_time = time.time():
+    """itHub統合の完全実装実行"""
         results = {
             "start_time": datetime.now().isoformat(),
             "processes": self.process_count,
@@ -615,11 +615,11 @@ class MultiProcessA2AElderFlow:
         # エラーハンドリングの実装率を計算
         return 80.0  # 実装後に詳細計算
 
-    def _calculate_iron_will_score(self, quality_results: Dict[str, Any]) -> floatreturn quality_results.get("overall_score", 0.0)
-    """Iron Willスコアの計算"""
+    def _calculate_iron_will_score(self, quality_results: Dict[str, Any]) -> floatreturn quality_results.get("overall_score", 0.0):
+    """ron Willスコアの計算"""
 
-    def _save_results(self, results: Dict[str, Any]) -> Nonetimestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    """結果の保存"""
+    def _save_results(self, results: Dict[str, Any]) -> Nonetimestamp = datetime.now().strftime("%Y%m%d_%H%M%S"):
+    """果の保存"""
         output_file = f"reports/multiprocess_a2a_elder_flow_{timestamp}.json"
 
         os.makedirs("reports", exist_ok=True)

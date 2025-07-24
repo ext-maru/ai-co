@@ -290,8 +290,8 @@ class PlanProjectsSync:
             logger.error(f"スナップショット作成エラー: {plan_file} - {e}")
             return None
 
-    async def detect_changes(self, plan_file: str) -> List[ChangeType]current_snapshot = await self.create_plan_snapshot(plan_file)
-    """計画書の変更を検出""":
+    async def detect_changes(self, plan_file: str) -> List[ChangeType]current_snapshot = await self.create_plan_snapshot(plan_file):
+    """画書の変更を検出""":
         if not current_snapshot:
             return []
 
@@ -422,8 +422,8 @@ class PlanProjectsSync:
 
         return sync_event
 
-    async def scan_all_plans(self) -> Dict[str, List[ChangeType]]print("🔍 全計画書スキャン開始")
-    """すべての計画書をスキャンして変更を検出"""
+    async def scan_all_plans(self) -> Dict[str, List[ChangeType]]print("🔍 全計画書スキャン開始"):
+    """べての計画書をスキャンして変更を検出"""
 :
         if not self.plans_path.exists():
             logger.warning("計画書ディレクトリが見つかりません")
@@ -443,8 +443,8 @@ class PlanProjectsSync:
         print(f"✅ スキャン完了: {len(plan_changes)}件の変更")
         return plan_changes
 
-    async def auto_sync_all_changes(self) -> Dictprint("🤖 自動同期開始")
-    """すべての変更を自動同期"""
+    async def auto_sync_all_changes(self) -> Dictprint("🤖 自動同期開始"):
+    """べての変更を自動同期"""
 
         # 変更を検出
         plan_changes = await self.scan_all_plans()
@@ -519,8 +519,8 @@ class PlanProjectsSync:
         logger.info(f"同期スケジュール作成: {plan_file} -> {project_id}")
         return True
 
-    async def run_scheduled_syncs(self) -> Dictprint("⏰ スケジュール同期実行")
-    """スケジュールされた同期を実行"""
+    async def run_scheduled_syncs(self) -> Dictprint("⏰ スケジュール同期実行"):
+    """ケジュールされた同期を実行"""
 
         current_time = datetime.now()
         executed_schedules = []

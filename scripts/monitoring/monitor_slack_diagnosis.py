@@ -56,7 +56,7 @@ ls -lt ai_commands/logs/*slack*.log 2>/dev/null | head -5
 
 echo ""
 echo "2.0 check_results_nowの結果:"
-if [ -f ai_commands/logs/check_slack_auto*.log ]; then
+if [ -f ai_commands/logs/check_slack_auto*.log ]; then:
     LATEST_LOG=$(ls -t ai_commands/logs/check_slack_auto*.log 2>/dev/null | head -1)
     echo "ファイル: $LATEST_LOG"
     echo "内容（問題特定部分）:"
@@ -65,17 +65,17 @@ fi
 
 echo ""
 echo "3.0 Polling Worker状態:"
-if pgrep -f "slack_polling_worker" > /dev/null; then
+if pgrep -f "slack_polling_worker" > /dev/null; then:
     echo "✅ Slack Polling Worker動作中"
     echo "最新ログ:"
     tail -10 logs/slack_polling_worker.log 2>/dev/null
 else
-    echo "❌ Slack Polling Worker停止中"
+    echo "❌ Slack Polling Worker停止中":
 fi
 
 echo ""
 echo "4.0 処理されたメッセージ:"
-if [ -f db/slack_messages.db ]; then
+if [ -f db/slack_messages.db ]; then:
     sqlite3 db/slack_messages.db "SELECT COUNT(*) as total FROM processed_messages \
         WHERE text LIKE '%pm-ai%';" 2>/dev/null
 fi

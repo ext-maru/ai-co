@@ -170,8 +170,8 @@ class RAGSageSoul(BaseSoul):
             logger.error(f"Error processing message: {e}")
             return self._create_error_response(message, str(e))
     
-    async def _handle_query(self, message: Dict[str, Any]) -> Dict[str, Any]action = message.get("action")
-    """クエリ処理"""
+    async def _handle_query(self, message: Dict[str, Any]) -> Dict[str, Any]action = message.get("action"):
+    """エリ処理"""
         :
         if action == "search_knowledge":
             query_text = message.get("query", "")
@@ -265,8 +265,8 @@ class RAGSageSoul(BaseSoul):
         
         return search_results
     
-    async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path))
-    """全文検索を実行""":
+    async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path)):
+    """文検索を実行""":
         try:
             # SQLクエリ構築
             where_conditions = ["content LIKE ? OR title LIKE ?"]
@@ -350,8 +350,8 @@ class RAGSageSoul(BaseSoul):
         
         return merged_results[:query.limit]
     
-    async def _exact_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path))
-    """完全一致検索を実行""":
+    async def _exact_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path)):
+    """全一致検索を実行""":
         try:
             sql = """
                 SELECT id, content, source, title, category, tags, author,
@@ -562,8 +562,8 @@ class RAGSageSoul(BaseSoul):
                 del self.cache[cache_key]
         return None
     
-    def _cache_result(self, cache_key: str, results: SearchResults) -> Noneexpires_at = datetime.now() + timedelta(seconds=self.cache_ttl_seconds)
-    """結果をキャッシュ"""
+    def _cache_result(self, cache_key: str, results: SearchResults) -> Noneexpires_at = datetime.now() + timedelta(seconds=self.cache_ttl_seconds):
+    """果をキャッシュ"""
         self.cache[cache_key] = CacheEntry(
             key=cache_key,
             value=results,
@@ -656,8 +656,8 @@ class RAGSageSoul(BaseSoul):
             relevance_boost=row[11] or 1.0
         )
     
-    async def _increment_access_count(self, document_id: str) -> Noneconn = sqlite3connect(str(self.db_path))
-    """ドキュメントのアクセス数を増加""":
+    async def _increment_access_count(self, document_id: str) -> Noneconn = sqlite3connect(str(self.db_path)):
+    """キュメントのアクセス数を増加""":
         try:
             conn.execute(
                 "UPDATE documents SET access_count = access_count + 1 WHERE id = ?",
@@ -667,8 +667,8 @@ class RAGSageSoul(BaseSoul):
         finally:
             conn.close()
     
-    async def _save_search_history(self, query: SearchQuery, results: SearchResults) -> Noneconn = sqlite3connect(str(self.db_path))
-    """検索履歴を保存""":
+    async def _save_search_history(self, query: SearchQuery, results: SearchResults) -> Noneconn = sqlite3connect(str(self.db_path)):
+    """索履歴を保存""":
         try:
             conn.execute("""
                 INSERT INTO search_history 

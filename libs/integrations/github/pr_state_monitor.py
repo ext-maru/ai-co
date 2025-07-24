@@ -384,9 +384,8 @@ class PRStateMonitor:
             "monitoring_count": len(self.active_monitors)
         }
     
-    def get_state_history(self, pr_number: int) -> List[Dict[str, Any]]history = self.state_history.get(pr_number, [])
-    """状態履歴の取得"""
-        return [state.to_dict() for state in history]
+    def get_state_history(self, pr_number: int) -> List[Dict[str, Any]]history = self.state_history.get(pr_number, [])return [state.to_dict() for state in history]
+    """態履歴の取得"""
     
     async def add_event_callback(
         self, 

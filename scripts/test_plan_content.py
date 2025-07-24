@@ -37,7 +37,7 @@ def main():
     test_files = [
         '/home/aicompany/ai_co/docs/plans/PLANNING_DOCUMENT_MANAGEMENT_RULES.md',
         '/home/aicompany/ai_co/docs/plans/PROJECT_WEB_PORTAL_MASTER_PLAN.md',
-        '/home/aicompany/ai_co/docs/plans/PHASE_STABILIZATION_PLAN_2025.0md'
+        '/home/aicompany/ai_co/docs/plans/PHASE_STABILIZATION_PLAN_2025.0.md'
     ]
     
     # 繰り返し処理

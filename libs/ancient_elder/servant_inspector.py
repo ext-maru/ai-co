@@ -178,8 +178,8 @@ class ServantImplementationAnalyzer:
                 "overall_quality_score": 0.0
             }
             
-    def _detect_servant_type(self, file_path: str) -> strfile_name = Path(file_path).name.lower()
-    """ファイルパスからサーバントタイプを検出"""
+    def _detect_servant_type(self, file_path: str) -> strfile_name = Path(file_path).name.lower():
+    """ァイルパスからサーバントタイプを検出"""
         :
         for servant_type, role_info in self.servant_roles.items():
             # ファイル名パターンマッチング
@@ -596,8 +596,8 @@ class ServantInspector(AncientElderBase):
         self.implementation_analyzer = ServantImplementationAnalyzer(project_root)
         self.collaboration_analyzer = ServantCollaborationAnalyzer(project_root)
         
-    async def audit(self, target_path: str, **kwargs) -> AuditResultreturn await self.execute_audit(target_path, **kwargs)
-    """AncientElderBaseの抽象メソッド実装"""
+    async def audit(self, target_path: str, **kwargs) -> AuditResultreturn await self.execute_audit(target_path, **kwargs):
+    """ncientElderBaseの抽象メソッド実装"""
         :
     def get_audit_scope(self) -> List[str]:
         """監査対象スコープを返す"""
@@ -608,8 +608,8 @@ class ServantInspector(AncientElderBase):
             "servant_expertise_evaluation"
         ]
         
-    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now()
-    """サーバント査察監査を実行"""
+    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now():
+    """ーバント査察監査を実行"""
         violations = []
         metrics = {}
         :

@@ -784,8 +784,8 @@ class PredictionMagic:
             self.logger.error(f"Prediction magic failed: {str(e)}")
             raise PredictionError(f"Failed to cast prediction magic: {str(e)}")
     
-    def _identify_intent(self, query: str) -> PredictionIntentreturn PredictionIntent.from_string(query)
-    """Identify the prediction intent from the query"""
+    def _identify_intent(self, query: str) -> PredictionIntentreturn PredictionIntent.from_string(query):
+    """dentify the prediction intent from the query"""
     :
     def _handle_future_forecast(self, query: str, context: Dict[str, Any]) -> PredictionResult:
         """Handle future forecasting requests"""
@@ -913,9 +913,8 @@ class PredictionMagic:
             metadata={'query': query}
         )
     
-    def validate_predictions(self, predictions: np.ndarray, actuals: np.ndarray) -> Dict[str, float]rmse = float(np.sqrt(mean_squared_error(actuals, predictions)))
-    """Validate predictions against actual values"""
-        mae = float(mean_absolute_error(actuals, predictions))
+    def validate_predictions(self, predictions: np.ndarray, actuals: np.ndarray) -> Dict[str, float]rmse = float(np.sqrt(mean_squared_error(actuals, predictions)))mae = float(mean_absolute_error(actuals, predictions))
+    """alidate predictions against actual values"""
         mape = float(np.mean(np.abs((actuals - predictions) / actuals)) * 100)
         
         return {:

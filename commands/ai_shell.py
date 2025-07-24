@@ -28,7 +28,8 @@ logger = logging.getLogger(__name__)
 class AIShellCommand(BaseCommand):
     """AI対話シェル（REPL）コマンド"""
 
-    def __init__(self)super().__init__(name="ai-shell", description="AI対話シェル（REPL）", version="2.0.0")
+    def __init__(self):
+        super().__init__(name="ai-shell", description="AI対話シェル（REPL）", version="2.0.0")
     """初期化メソッド"""
         self.session_history = []
         self.variables = {}

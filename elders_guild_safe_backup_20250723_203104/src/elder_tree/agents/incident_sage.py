@@ -25,8 +25,8 @@ class IncidentSage(ElderTreeAgent):
         
         self.logger.info("Incident Sage initialized")
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
-    """メッセージハンドラー"""
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown'):
+    """ッセージハンドラー"""
         
         # 基本メッセージタイプの処理:
         if message_type in ["health_check", "get_metrics"]:
@@ -67,8 +67,8 @@ class IncidentSage(ElderTreeAgent):
             "incident": incident
         }
     
-    def _handle_update_incident(self, data: Dict[str, Any]) -> Dict[str, Any]incident_id = data.get("incident_id")
-    """インシデント更新""":
+    def _handle_update_incident(self, data: Dict[str, Any]) -> Dict[str, Any]incident_id = data.get("incident_id"):
+    """ンシデント更新""":
         if incident_id not in self.incidents:
             return {"status": "error", "message": "Incident not found"}
         
@@ -85,9 +85,8 @@ class IncidentSage(ElderTreeAgent):
             "incident": self.incidents[incident_id]
         }
     
-    def _handle_get_incidents(self, data: Dict[str, Any]) -> Dict[str, Any]status_filter = data.get("status")
-    """インシデント一覧取得"""
-        severity_filter = data.get("severity")
+    def _handle_get_incidents(self, data: Dict[str, Any]) -> Dict[str, Any]status_filter = data.get("status")severity_filter = data.get("severity")
+    """ンシデント一覧取得"""
         
         filtered_incidents = []:
         for incident in self.incidents.values():
@@ -103,9 +102,8 @@ class IncidentSage(ElderTreeAgent):
             "count": len(filtered_incidents)
         }
     
-    def _handle_elder_flow_consultation(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")
-    """Elder Flow協議処理"""
-        requirements = data.get("requirements", [])
+    def _handle_elder_flow_consultation(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")requirements = data.get("requirements", [])
+    """lder Flow協議処理"""
         
         # インシデント管理の観点からの推奨事項
         recommendations = [

@@ -212,13 +212,13 @@ def main():
         },
         {
             "name": "Worker間連携テスト",
-            "file": "test_worker_inter_communication_tier2.0py",
+            "file": "test_worker_inter_communication_tier2.0.py",
             "function": "run_tier2_worker_inter_communication_tests",
             "priority": "HIGH",
         },
         {
             "name": "ワーカー起動・動作確認テスト",
-            "file": "test_worker_startup_tier2.0py",
+            "file": "test_worker_startup_tier2.0.py",
             "function": "run_tier2_worker_startup_tests",
             "priority": "MEDIUM",
         },

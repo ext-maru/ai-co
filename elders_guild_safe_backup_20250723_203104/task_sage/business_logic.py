@@ -165,8 +165,8 @@ class TaskProcessor:
             logger.error(f"Failed to create task: {e}")
             raise
     
-    async def _get_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
-    """タスク取得""":
+    async def _get_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id"):
+    """スク取得""":
         if not task_id:
             raise ValueError("task_id is required")
         
@@ -197,8 +197,8 @@ class TaskProcessor:
             }
         }
     
-    async def _update_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
-    """タスク更新""":
+    async def _update_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id"):
+    """スク更新""":
         if not task_id:
             raise ValueError("task_id is required")
         
@@ -261,8 +261,8 @@ class TaskProcessor:
             "message": f"タスク '{task.title}' を更新しました"
         }
     
-    async def _delete_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
-    """タスク削除""":
+    async def _delete_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id"):
+    """スク削除""":
         if not task_id:
             raise ValueError("task_id is required")
         
@@ -351,8 +351,8 @@ class TaskProcessor:
             }
         }
     
-    async def _search_tasks(self, data: Dict[str, Any]) -> Dict[str, Any]query = data.get("query", "").lower().strip()
-    """タスク検索""":
+    async def _search_tasks(self, data: Dict[str, Any]) -> Dict[str, Any]query = data.get("query", "").lower().strip():
+    """スク検索""":
         if not query:
             raise ValueError("Search query is required")
         
@@ -392,9 +392,8 @@ class TaskProcessor:
     
     # === 工数見積もり・分析機能 ===
     
-    async def _estimate_effort(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
-    """工数見積もり"""
-        complexity_factors = data.get("complexity_factors", {})
+    async def _estimate_effort(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")complexity_factors = data.get("complexity_factors", {})
+    """数見積もり"""
         :
         if task_id:
             task = self.tasks.get(task_id)
@@ -454,8 +453,8 @@ class TaskProcessor:
             }
         }
     
-    async def _resolve_dependencies(self, data: Dict[str, Any]) -> Dict[str, Any]task_ids = data.get("task_ids", [])
-    """タスク依存関係解決（トポロジカルソート）"""
+    async def _resolve_dependencies(self, data: Dict[str, Any]) -> Dict[str, Any]task_ids = data.get("task_ids", []):
+    """スク依存関係解決（トポロジカルソート）"""
         
         # 指定されたタスクIDがない場合は全タスクを対象:
         if not task_ids:
@@ -564,8 +563,8 @@ class TaskProcessor:
             logger.error(f"Failed to create project: {e}")
             raise
     
-    async def _get_project(self, data: Dict[str, Any]) -> Dict[str, Any]project_id = data.get("project_id")
-    """プロジェクト取得""":
+    async def _get_project(self, data: Dict[str, Any]) -> Dict[str, Any]project_id = data.get("project_id"):
+    """ロジェクト取得""":
         if not project_id:
             raise ValueError("project_id is required")
         
@@ -688,8 +687,8 @@ class TaskProcessor:
             }
         }
     
-    async def _get_task_progress(self, data: Dict[str, Any]) -> Dict[str, Any]project_id = data.get("project_id")
-    """タスク進捗レポート"""
+    async def _get_task_progress(self, data: Dict[str, Any]) -> Dict[str, Any]project_id = data.get("project_id"):
+    """スク進捗レポート"""
         
         # 対象タスク決定:
         if project_id:

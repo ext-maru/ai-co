@@ -132,7 +132,7 @@ if not monitor.check_pre_commit('.'):
     sys.exit(1)
 "
 
-if [ $? -ne 0 ]; then
+if [ $? -ne 0 ]; then:
     echo "❌ Elder Flow違反が検出されました。コミットを中止します。"
     echo "違反を修正してから再度コミットしてください。"
     exit 1
@@ -173,7 +173,7 @@ if not monitor.check_pre_push('.'):
     sys.exit(1)
 "
 
-if [ $? -ne 0 ]; then
+if [ $? -ne 0 ]; then:
     echo "❌ 未解決のElder Flow違反があります。プッシュを中止します。"
     exit 1
 fi

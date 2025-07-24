@@ -32,20 +32,20 @@ cd /home/aicompany/ai_co
 
 # Phase 1: セットアップ実行
 echo "📦 Phase 1: Running setup script..."
-if [ -f setup_commit_best_practices.sh ]; then
+if [ -f setup_commit_best_practices.sh ]; then:
     chmod +x setup_commit_best_practices.sh
     ./setup_commit_best_practices.sh
 else
-    echo "❌ Setup script not found!"
+    echo "❌ Setup script not found!":
     exit 1
 fi
 
 echo ""
 echo "📝 Phase 2: Patching PMWorker..."
-if [ -f patch_pm_worker_best_practices.py ]; then
+if [ -f patch_pm_worker_best_practices.py ]; then:
     python3 patch_pm_worker_best_practices.py
 else
-    echo "⚠️ PMWorker patch script not found (optional)"
+    echo "⚠️ PMWorker patch script not found (optional)":
 fi
 
 echo ""

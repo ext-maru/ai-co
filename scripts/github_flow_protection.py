@@ -302,7 +302,7 @@ class GitHubFlowProtectionSystem:
 protected_branch="{branch}"
 current_branch=$(git branch --show-current)
 
-if [ "$current_branch" = "$protected_branch" ]; then
+if [ "$current_branch" = "$protected_branch" ]; then:
     echo "🛡️  保護されたブランチ '$protected_branch' への直接プッシュは禁止されています"
     echo "📋 GitHub Flowに従い、feature/fix ブランチからPRを作成してください"
     exit 1
@@ -310,7 +310,7 @@ fi
 
 # 禁止ブランチチェック
 forbidden_branches=("master")
-for forbidden in "${{forbidden_branches[@]}}"; do
+for forbidden in "${{forbidden_branches[@]}}"; do:
     if [ "$current_branch" = "$forbidden" ]; then
         echo "❌ 禁止されたブランチ '$forbidden' からのプッシュは許可されていません"
         echo "📋 '{branch}' ブランチを使用してください"

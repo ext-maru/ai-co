@@ -780,8 +780,8 @@ class RAGProcessor:
     
     # === Core Search Functions ===
     
-    async def _search(self, query: SearchQuery) -> List[SearchResult]start_time = time.time()
-    """検索実行"""
+    async def _search(self, query: SearchQuery) -> List[SearchResult]start_time = time.time():
+    """索実行"""
         
         # キャッシュチェック
         cache_key = self._generate_cache_key(query)
@@ -809,8 +809,8 @@ class RAGProcessor:
         
         return results
     
-    async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path))
-    """全文検索""":
+    async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path)):
+    """文検索""":
         try:
             # SQLクエリ構築
             where_conditions = ["(content LIKE ? OR title LIKE ?)"]
@@ -900,8 +900,8 @@ class RAGProcessor:
         
         return merged_results[:query.limit]
     
-    async def _exact_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path))
-    """完全一致検索""":
+    async def _exact_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path)):
+    """全一致検索""":
         try:
             sql = """
                 SELECT id, content, source, title, category, tags, author,
@@ -931,8 +931,8 @@ class RAGProcessor:
     
     # === Document Management ===
     
-    async def _index_document(self, document: Document) -> IndexResultstart_time = time.time()
-    """ドキュメントインデックス"""
+    async def _index_document(self, document: Document) -> IndexResultstart_time = time.time():
+    """キュメントインデックス"""
         :
         try:
             conn = sqlite3connect(str(self.db_path))
@@ -1011,8 +1011,8 @@ class RAGProcessor:
                 del self.cache[cache_key]
         return None
     
-    def _cache_result(self, cache_key: str, results: List[SearchResult]) -> Noneexpires_at = datetime.now() + timedelta(seconds=self.cache_ttl_seconds)
-    """結果をキャッシュ"""
+    def _cache_result(self, cache_key: str, results: List[SearchResult]) -> Noneexpires_at = datetime.now() + timedelta(seconds=self.cache_ttl_seconds):
+    """果をキャッシュ"""
         self.cache[cache_key] = CacheEntry(
             key=cache_key,
             value=results,
@@ -1102,8 +1102,8 @@ class RAGProcessor:
             relevance_boost=row[11] or 1.0
         )
     
-    async def _increment_access_count(self, document_id: str) -> Noneconn = sqlite3connect(str(self.db_path))
-    """アクセス数増加""":
+    async def _increment_access_count(self, document_id: str) -> Noneconn = sqlite3connect(str(self.db_path)):
+    """クセス数増加""":
         try:
             conn.execute(
                 "UPDATE documents SET access_count = access_count + 1 WHERE id = ?",
@@ -1113,8 +1113,8 @@ class RAGProcessor:
         finally:
             conn.close()
     
-    async def _save_search_history(self, query: SearchQuery, result_count: int, search_time_ms: float) -> Noneconn = sqlite3connect(str(self.db_path))
-    """検索履歴保存""":
+    async def _save_search_history(self, query: SearchQuery, result_count: int, search_time_ms: float) -> Noneconn = sqlite3connect(str(self.db_path)):
+    """索履歴保存""":
         try:
             conn.execute("""
                 INSERT INTO search_history

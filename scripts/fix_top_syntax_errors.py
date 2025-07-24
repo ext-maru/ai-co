@@ -34,7 +34,7 @@ def fix_file(filepath):
             content
         )
         
-        # Fix 4: Invalid decimal literals (like error1.0lower())
+        # Fix 4: Invalid decimal literals (like error1.0.lower())
         content = re.sub(
             r'(\w+)\.0(\w+)',
             r'\1.\2',

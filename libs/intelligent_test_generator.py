@@ -137,8 +137,8 @@ class CodeAnalyzer:
         
         return imports
     
-    def _extract_external_deps(self, tree: ast.AST) -> List[str]external_deps = set()
-    """外部依存関係を抽出"""
+    def _extract_external_deps(self, tree: ast.AST) -> List[str]external_deps = set():
+    """部依存関係を抽出"""
         :
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):

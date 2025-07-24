@@ -189,8 +189,8 @@ def factorial(n):
                 self.logger.warning(f"⚠️  {name} クラスが利用不可 - モック作成")
                 self.servant_instances[name] = self._create_mock_servant(name)
 
-    def _get_servant_specific_payload(self, servant_name: str) -> Dict[str, Any]name_lower = servant_name.lower()
-    """サーバント固有のペイロードを取得""":
+    def _get_servant_specific_payload(self, servant_name: str) -> Dict[str, Any]name_lower = servant_name.lower():
+    """ーバント固有のペイロードを取得""":
         if "docforge" in name_lower:
             return self.test_data["doc_forge"]
         elif "codecrafter" in name_lower:
@@ -203,8 +203,8 @@ def factorial(n):
             # デフォルト用のシンプルなペイロード
             return {"test": True, "message": "basic test"}
 
-    def _get_servant_specific_task_type(self, servant_name: str) -> strname_lower = servant_name.lower()
-    """サーバント固有のタスクタイプを取得""":
+    def _get_servant_specific_task_type(self, servant_name: str) -> strname_lower = servant_name.lower():
+    """ーバント固有のタスクタイプを取得""":
         if "docforge" in name_lower:
             return "documentation_generation"
         elif "codecrafter" in name_lower:
@@ -245,8 +245,8 @@ def factorial(n):
         # 一時的なテストファイル作成（必要に応じて）
         pass
 
-    async def test_individual_servant_functionality(self) -> Dict[str, Any]self.logger.info("🧪 個別サーバント機能テスト開始")
-    """個別サーバント機能テスト"""
+    async def test_individual_servant_functionality(self) -> Dict[str, Any]self.logger.info("🧪 個別サーバント機能テスト開始"):
+    """別サーバント機能テスト"""
 
         results = {:
             "total_servants": len(self.servant_instances),
@@ -575,8 +575,8 @@ def factorial(n):
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def test_servant_collaboration(self) -> Dict[str, Any]self.logger.info("🤝 サーバント間協調テスト開始")
-    """サーバント間協調テスト"""
+    async def test_servant_collaboration(self) -> Dict[str, Any]self.logger.info("🤝 サーバント間協調テスト開始"):
+    """ーバント間協調テスト"""
 
         results = {:
             "collaboration_scenarios": [],
@@ -734,8 +734,8 @@ def factorial(n):
 
         return results
 
-    async def test_iron_will_compliance(self) -> Dict[str, Any]self.logger.info("🗡️ Iron Will品質基準準拠テスト開始")
-    """Iron Will品質基準準拠テスト"""
+    async def test_iron_will_compliance(self) -> Dict[str, Any]self.logger.info("🗡️ Iron Will品質基準準拠テスト開始"):
+    """ron Will品質基準準拠テスト"""
 
         results = {:
             "criteria_assessments": {},
@@ -1055,8 +1055,8 @@ def factorial(n):
         except Exception as e:
             return {"score": 0.0, "passed": False, "error": str(e)}
 
-    async def test_stress_and_concurrency(self) -> Dict[str, Any]self.logger.info("💪 ストレス・並行性テスト開始")
-    """ストレス・並行性テスト"""
+    async def test_stress_and_concurrency(self) -> Dict[str, Any]self.logger.info("💪 ストレス・並行性テスト開始"):
+    """トレス・並行性テスト"""
 
         results = {:
             "concurrent_requests": self.config.concurrent_test_count,
@@ -1170,9 +1170,8 @@ def factorial(n):
                 "error": str(e),
             }
 
-    async def run_comprehensive_test_suite(self) -> Dict[str, Any]self.logger.info("🚀 Elder Servants包括的統合テストスイート開始")
-    """包括的テストスイート実行"""
-        suite_start_time = time.time()
+    async def run_comprehensive_test_suite(self) -> Dict[str, Any]self.logger.info("🚀 Elder Servants包括的統合テストスイート開始")suite_start_time = time.time()
+    """括的テストスイート実行"""
 
         # テスト環境セットアップ
         await self.setup_test_environment()

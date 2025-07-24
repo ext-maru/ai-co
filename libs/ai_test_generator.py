@@ -311,8 +311,8 @@ BDD形式も考慮し、Given-When-Thenパターンを使用してください�
             self.logger.error(f"テストコード解析エラー: {e}")
             return {"code": test_code, "info": {"error": str(e)}}
 
-    def _save_test_file(self, test_info: Dict, task_data: Dict) -> Pathtask_id = task_data.get("task_id", datetime.now().strftime("%Y%m%d_%H%M%S"))
-    """テストファイルを保存"""
+    def _save_test_file(self, test_info: Dict, task_data: Dict) -> Pathtask_id = task_data.get("task_id", datetime.now().strftime("%Y%m%d_%H%M%S")):
+    """ストファイルを保存"""
         test_file = self.test_output_dir / f"test_{task_id}.py"
 
         test_code = test_info.get("code", ""):
@@ -339,11 +339,11 @@ BDD形式も考慮し、Given-When-Thenパターンを使用してください�
         return test_file
 
     def _generate_basic_test_template(self, task_data: Dict, test_info: Dict) -> strtask_id = task_data.get("task_id", "unknown")
-    """基本的なテストテンプレートを生成"""
+    基本的なテストテンプレートを生成
         task_type = task_data.get("type", "general")
 
-        return f'''#!/usr/bin/env python3
-""":
+        return f'''#!/usr/bin/env python3:
+    """
 自動生成されたテスト: {task_id}
 生成日時: {datetime.now().isoformat()}
 タスクタイプ: {task_type}

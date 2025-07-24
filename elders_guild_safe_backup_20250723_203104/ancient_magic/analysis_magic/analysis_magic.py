@@ -2548,8 +2548,8 @@ class AnalysisMagic(AncientMagic):
             }
     
     # ヘルパーメソッド
-    def _interpret_correlation_strength(self, correlation: float) -> strabs_corr = abs(correlation)
-    """相関の強度を解釈""":
+    def _interpret_correlation_strength(self, correlation: float) -> strabs_corr = abs(correlation):
+    """関の強度を解釈""":
         if abs_corr >= 0.7:
             return "strong"
         elif abs_corr >= 0.5:

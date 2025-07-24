@@ -277,7 +277,7 @@ class AICommandAnalyzer:
 ### 主要カテゴリー（上位10）
 """
         # Add top categories
-        for cat, count in report["reorganization_plan"]["current_state"][
+        for cat, count in report["reorganization_plan"]["current_state"][:
             "main_categories"
         ]:
             md_content += f"- `{cat}`: {count}個\n"

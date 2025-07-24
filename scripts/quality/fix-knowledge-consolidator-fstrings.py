@@ -25,7 +25,7 @@ if html_start != -1:
         method_content = method_content.replace(
             '''{"".join(
                 (
-                    f"f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
+                    f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
                     f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,"
                 )
                 info in data['implementations']['workers'].items()
@@ -33,7 +33,7 @@ if html_start != -1:
             '''{"".join(
                 f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
                 f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>"
-                for name, info in data['implementations']['workers'].items()
+                for name, info in data['implementations']['workers'].items():
             )}'''
         )
         
@@ -41,7 +41,7 @@ if html_start != -1:
         method_content = method_content.replace(
             '''{"".join(
                 (
-                    f"f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
+                    f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
                     f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,"
                 )
                 info in data['implementations']['managers'].items()
@@ -49,7 +49,7 @@ if html_start != -1:
             '''{"".join(
                 f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
                 f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>"
-                for name, info in data['implementations']['managers'].items()
+                for name, info in data['implementations']['managers'].items():
             )}'''
         )
         
@@ -60,7 +60,7 @@ if html_start != -1:
                     f"/td><td>{f['modified']}</td></tr>" for f in data['knowledge']['files'])}''',
             '''            {"".join(
                 f"<tr><td>{f['filename']}</td><td>{f['lines']}</td><td>{f['modified']}</td></tr>"
-                for f in data['knowledge']['files']
+                for f in data['knowledge']['files']:
             )}'''
         )
         

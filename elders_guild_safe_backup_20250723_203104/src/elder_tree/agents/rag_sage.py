@@ -25,8 +25,8 @@ class RAGSage(ElderTreeAgent):
         
         self.logger.info("RAG Sage initialized")
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
-    """メッセージハンドラー"""
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown'):
+    """ッセージハンドラー"""
         
         # 基本メッセージタイプの処理:
         if message_type in ["health_check", "get_metrics"]:
@@ -44,9 +44,8 @@ class RAGSage(ElderTreeAgent):
         else:
             return {"status": "error", "message": f"Unknown message type: {message_type}"}
     
-    def _handle_search_technical_docs(self, data: Dict[str, Any]) -> Dict[str, Any]query = data.get("query", "")
-    """技術文書検索"""
-        limit = data.get("limit", 5)
+    def _handle_search_technical_docs(self, data: Dict[str, Any]) -> Dict[str, Any]query = data.get("query", "")limit = data.get("limit", 5)
+    """術文書検索"""
         :
         # 基本実装（TDD: テストが通る最小実装）
         mock_documents = [
@@ -95,9 +94,8 @@ class RAGSage(ElderTreeAgent):
             "document": document
         }
     
-    def _handle_get_documents(self, data: Dict[str, Any]) -> Dict[str, Any]source_filter = data.get("source")
-    """文書一覧取得"""
-        limit = data.get("limit", 10)
+    def _handle_get_documents(self, data: Dict[str, Any]) -> Dict[str, Any]source_filter = data.get("source")limit = data.get("limit", 10)
+    """書一覧取得"""
         
         filtered_docs = []:
         for doc in self.documents.values():
@@ -113,9 +111,8 @@ class RAGSage(ElderTreeAgent):
             "count": len(filtered_docs)
         }
     
-    def _handle_elder_flow_consultation(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")
-    """Elder Flow協議処理"""
-        requirements = data.get("requirements", [])
+    def _handle_elder_flow_consultation(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")requirements = data.get("requirements", [])
+    """lder Flow協議処理"""
         
         # RAG・検索の観点からの推奨事項
         recommendations = [

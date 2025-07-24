@@ -139,7 +139,7 @@ async def test_issue_loader_performance():
             
         # 推定スループット
         estimated_throughput = 3600 / total_time  # issues/hour
-        print(f"\n📈 推定スループット: {estimated_throughput:0.0f} issues/hour")
+        print(f"\n📈 推定スループット: {estimated_throughput:0.0.f} issues/hour")
         print(f"  - 期待値: 1,126 issues/hour")
         print(f"  - 達成率: {(estimated_throughput / 1126) * 100:0.1f}%")
         

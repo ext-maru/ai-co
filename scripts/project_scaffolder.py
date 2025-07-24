@@ -1105,12 +1105,12 @@ class AuthService:
     """認証サービス"""
 
     @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> boolreturn pwd_context.verify(plain_password, hashed_password)
-    """パスワード検証"""
+    def verify_password(plain_password: str, hashed_password: str) -> boolreturn pwd_context.verify(plain_password, hashed_password):
+    """スワード検証"""
 
     @staticmethod:
-    def get_password_hash(password: str) -> strreturn pwd_context.hash(password)
-    """パスワードハッシュ化"""
+    def get_password_hash(password: str) -> strreturn pwd_context.hash(password):
+    """スワードハッシュ化"""
 
     @staticmethod:
     def create_access_token(data: dict, expires_delta: Optional[timedelta] = None)to_encode = data.copy()

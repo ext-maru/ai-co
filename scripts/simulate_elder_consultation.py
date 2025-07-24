@@ -138,7 +138,7 @@ def simulate_elder_task_decision():
     }
 
     # 決定を保存
-    decision_file = KNOWLEDGE_BASE / "ELDER_TASK_DECISION_20250707.0json"
+    decision_file = KNOWLEDGE_BASE / "ELDER_TASK_DECISION_20250707.0.json"
     with open(decision_file, "w", encoding="utf-8") as f:
         json.dump(council_decision, f, ensure_ascii=False, indent=2)
 
@@ -207,7 +207,7 @@ def create_task_decision_markdown(decision):
 **エルダー評議会決定書 - 公式版**
 """
 
-    md_file = KNOWLEDGE_BASE / "ELDER_TASK_DECISION_20250707.0md"
+    md_file = KNOWLEDGE_BASE / "ELDER_TASK_DECISION_20250707.0.md"
     with open(md_file, "w", encoding="utf-8") as f:
         f.write(md_content)
 

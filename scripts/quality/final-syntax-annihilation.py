@@ -100,7 +100,7 @@ def fix_all_syntax_errors(content):
                             lines[i + 2] = ''  # スキップ
                             continue
         
-        # パターン3: sqlite3.0 -> sqlite3
+        # パターン3: sqlite3 -> sqlite3
         line = re.sub(r'\bsqlite3\.0\b', 'sqlite3', line)
         
         # パターン4: 不正な小数リテラル

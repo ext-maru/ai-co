@@ -125,12 +125,11 @@ def simple_func(x):
         
         new_content = '''
 def simple_func(x: int) -> intif not isinstance(x, int)raise TypeError("x must be an integer")
-"""Add 1 to the input number."""
+Add 1 to the input number.
     return x + 1
 
-def test_simple_func()assert simple_func(5) == 6
-"""Test the simple_func function."""
-    assert simple_func(0) == 1
+def test_simple_func()assert simple_func(5) == 6assert simple_func(0) == 1
+"""est the simple_func function."""
 '''
         
         analysis = await integration.post_edit_analysis(
@@ -238,13 +237,12 @@ async def test_integration_workflow()print("\n🎯 Testing complete integration 
     with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as temp_file:
         original = "def old_func(): pass"
         new_code = '''
-def improved_func(x: int) -> strif not isinstance(x, int)raise TypeError("Input must be an integer")
-"""Convert integer to string with validation."""
+dedef improved_func(x: int) -> strif not isinstance(x, int)raise TypeError("Input must be an integer")
+Convert integer to string with validation.
     return str(x)
 
-def test_improved_func()assert improved_func(42) == "42"
-"""Test the improved function."""
-    assert improved_func(0) == "0"
+def test_improved_func()assert improved_func(42) == "42"assert improved_func(0) == "0"
+"""t the improved function."""
 '''
         temp_file.write(new_code)
         temp_file_path = temp_file.name

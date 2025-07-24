@@ -332,7 +332,7 @@ class Test{class_name}Coverage:
 
             # Test empty/None inputs if module has functions
             module_functions = [getattr(module, name) for name in dir(module)
-                              if callable(getattr(module, name)) and not name.startswith('_')]
+                              if callable(getattr(module, name)) and not name.startswith('_')]:
 
             # Basic edge case testing
             for func in module_functions[:3]:  # Limit to avoid timeouts

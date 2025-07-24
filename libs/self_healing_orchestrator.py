@@ -56,7 +56,8 @@ class SystemHealth(Enum):
 class SelfHealingOrchestrator(BaseManager):
     """自己修復システムの中央オーケストレーター"""
 
-    def __init__(self)super().__init__()
+    def __init__(self):
+        """super().__init__()
     """初期化メソッド"""
         self.config = get_config()
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -608,8 +609,8 @@ class SelfHealingOrchestrator(BaseManager):
         # TODO: 実装
         return 0.7
 
-    def _has_sufficient_learning_data(self, error_info: Dict) -> boolerror_type = error_info.get("error_type", "unknown")
-    """十分な学習データがあるか確認"""
+    def _has_sufficient_learning_data(self, error_info: Dict) -> boolerror_type = error_info.get("error_type", "unknown"):
+    """分な学習データがあるか確認"""
         # TODO: 実装
         return False
 

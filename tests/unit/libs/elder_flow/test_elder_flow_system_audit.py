@@ -51,8 +51,8 @@ class ElderFlowSystemAuditor:
             "recommendations": []
         }
         
-    async def audit_task_tracker(self) -> Dict[str, Any]logger.info("🔍 タスクトラッカーシステムの監査開始...")
-    """タスクトラッカー（PostgreSQL統合）の監査"""
+    async def audit_task_tracker(self) -> Dict[str, Any]logger.info("🔍 タスクトラッカーシステムの監査開始..."):
+    """スクトラッカー（PostgreSQL統合）の監査"""
         
         results = {:
             "status": "unknown",
@@ -104,8 +104,8 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def audit_elder_flow_auto_apply(self) -> Dict[str, Any]logger.info("🔍 Elder Flow自動適用メカニズムの監査開始...")
-    """Elder Flow自動適用メカニズムの監査"""
+    async def audit_elder_flow_auto_apply(self) -> Dict[str, Any]logger.info("🔍 Elder Flow自動適用メカニズムの監査開始..."):
+    """lder Flow自動適用メカニズムの監査"""
         
         results = {:
             "status": "unknown",
@@ -144,8 +144,8 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def audit_four_sages_integration(self) -> Dict[str, Any]logger.info("🔍 4賢者システム統合の監査開始...")
-    """4賢者システム統合の監査"""
+    async def audit_four_sages_integration(self) -> Dict[str, Any]logger.info("🔍 4賢者システム統合の監査開始..."):
+    """賢者システム統合の監査"""
         
         results = {:
             "status": "unknown",
@@ -186,8 +186,8 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def audit_git_automation(self) -> Dict[str, Any]logger.info("🔍 Git自動化システムの監査開始...")
-    """Git自動化（git-elder-commit）の監査"""
+    async def audit_git_automation(self) -> Dict[str, Any]logger.info("🔍 Git自動化システムの監査開始..."):
+    """it自動化（git-elder-commit）の監査"""
         
         results = {:
             "status": "unknown",
@@ -227,8 +227,8 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def audit_knowledge_base(self) -> Dict[str, Any]logger.info("🔍 知識ベース整合性の監査開始...")
-    """知識ベース整合性の監査"""
+    async def audit_knowledge_base(self) -> Dict[str, Any]logger.info("🔍 知識ベース整合性の監査開始..."):
+    """識ベース整合性の監査"""
         
         results = {:
             "status": "unknown",
@@ -278,8 +278,8 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def security_scan(self) -> Dict[str, Any]logger.info("🔍 セキュリティ脆弱性スキャン開始...")
-    """セキュリティ脆弱性スキャン"""
+    async def security_scan(self) -> Dict[str, Any]logger.info("🔍 セキュリティ脆弱性スキャン開始..."):
+    """キュリティ脆弱性スキャン"""
         
         results = {:
             "status": "unknown",
@@ -320,8 +320,8 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def performance_benchmark(self) -> Dict[str, Any]logger.info("🔍 パフォーマンスベンチマーク開始...")
-    """パフォーマンスベンチマーク"""
+    async def performance_benchmark(self) -> Dict[str, Any]logger.info("🔍 パフォーマンスベンチマーク開始..."):
+    """フォーマンスベンチマーク"""
         
         results = {:
             "status": "unknown",
@@ -367,9 +367,8 @@ class ElderFlowSystemAuditor:
             
         return results
     
-    async def run_comprehensive_audit(self) -> Dict[str, Any]logger.info("🏛️ Elder Flow システム包括監査開始")
-    """包括的なシステム監査を実行"""
-        logger.info("=" * 80)
+    async def run_comprehensive_audit(self) -> Dict[str, Any]logger.info("🏛️ Elder Flow システム包括監査開始")logger.info("=" * 80)
+    """括的なシステム監査を実行"""
         
         # 各コンポーネントの監査を実行
         audit_tasks = {:

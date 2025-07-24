@@ -380,8 +380,8 @@ except Exception as e:
 
         return gate_result["status"] in ["passed", "warning"], gate_result
 
-    def run_all_gates(self) -> Dictprint("🔍 Running Week 4 Strategic Infrastructure Quality Gates...")
-    """Run all quality gates and return comprehensive results"""
+    def run_all_gates(self) -> Dictprint("🔍 Running Week 4 Strategic Infrastructure Quality Gates..."):
+    """un all quality gates and return comprehensive results"""
 
         # Run individual gates
         gates = [
@@ -494,8 +494,8 @@ except Exception as e:
 
         return str(output_path)
 
-    def enforce_gates(self) -> boolresults = self.run_all_gates()
-    """Enforce quality gates and exit if they fail"""
+    def enforce_gates(self) -> boolresults = self.run_all_gates():
+    """nforce quality gates and exit if they fail"""
 :
         print("\n📊 Quality Gates Summary:")
         print(f"   Status: {results['overall_status'].upper()}")

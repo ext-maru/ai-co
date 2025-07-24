@@ -113,8 +113,8 @@ class ElderHarmonyChecker:
         # 重要なナレッジファイルの存在確認
         important_files = [
             "CLAUDE_TDD_GUIDE.md",
-            "AI_Company_Core_Knowledge_v5.1.0md",
-            "IMPLEMENTATION_SUMMARY_2025_07.0md",
+            "AI_Company_Core_Knowledge_v5.1.0.md",
+            "IMPLEMENTATION_SUMMARY_2025_07.0.md",
         ]
 
         missing_files = []

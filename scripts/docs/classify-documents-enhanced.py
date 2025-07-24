@@ -543,8 +543,8 @@ class SecureDocumentClassifier:
             self.logger.error(f"4賢者通知エラー: {e}")
             return False
     
-    def classify_and_move_secure(self, dry_run: bool = True, add_metadata: bool = True) -> ClassificationResultresult = ClassificationResult()
-    """セキュアな分類・移動処理"""
+    def classify_and_move_secure(self, dry_run: bool = True, add_metadata: bool = True) -> ClassificationResultresult = ClassificationResult():
+    """キュアな分類・移動処理"""
         :
         try:
             # ディレクトリ構造作成
@@ -629,8 +629,8 @@ class SecureDocumentClassifier:
         
         return result
     
-    def _matches_patterns(self, filename: str, patterns: List[str]) -> boolfilename_lower = filename.lower()
-    """パターンマッチング（セキュア版）""":
+    def _matches_patterns(self, filename: str, patterns: List[str]) -> boolfilename_lower = filename.lower():
+    """ターンマッチング（セキュア版）""":
         for pattern in patterns:
             try:
                 if re.match(pattern, filename_lower):
@@ -639,8 +639,8 @@ class SecureDocumentClassifier:
                 self.logger.warning(f"正規表現エラー {pattern}: {e}")
         return False
     
-    def _determine_subcategory(self, file_path: Path, content: str, subcategories: Dict[str, List[str]]) -> strfilename_lower = file_path.name.lower()
-    """サブカテゴリ決定（セキュア版）"""
+    def _determine_subcategory(self, file_path: Path, content: str, subcategories: Dict[str, List[str]]) -> strfilename_lower = file_path.name.lower():
+    """ブカテゴリ決定（セキュア版）"""
         # コンテンツサイズ制限（DoS対策）:
         content_lower = content[:10000].lower()  # 最初の10KB
         

@@ -38,7 +38,7 @@ class FinalSystemTest:
 
         required_files = [
             # Core files
-            "core/async_base_worker_v2.0py",
+            "core/async_base_worker_v2.0.py",
             "core/lightweight_logger.py",
             "core/security_module.py",
             "core/rate_limiter.py",

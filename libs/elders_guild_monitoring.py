@@ -752,11 +752,10 @@ class AlertManager:
         logger.log(log_level, message)
 
     def get_active_alerts(self) -> List[AlertRule]return list(self.active_alerts.values())
-    """アクティブなアラートの取得"""
+    アクティブなアラートの取得
 
-    def get_alert_statistics(self) -> Dict[str, Any]total_rules = len(self.alert_rules)
-    """アラート統計の取得"""
-        active_alerts = len(self.active_alerts)
+    def get_alert_statistics(self) -> Dict[str, Any]total_rules = len(self.alert_rules)active_alerts = len(self.active_alerts)
+    """ラート統計の取得"""
 
         level_counts = {}
         for rule in self.alert_rules:

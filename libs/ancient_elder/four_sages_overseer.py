@@ -310,8 +310,8 @@ class SageActivityAnalyzer:
             
         return activities
         
-    def _analyze_sage_collaboration(self, time_window: timedelta) -> Dict[str, Any]collaboration_patterns = self._detect_collaboration_patterns(time_window)
-    """賢者間連携を評価"""
+    def _analyze_sage_collaboration(self, time_window: timedelta) -> Dict[str, Any]collaboration_patterns = self._detect_collaboration_patterns(time_window):
+    """者間連携を評価"""
         
         return {:
             "collaboration_frequency": len(collaboration_patterns),
@@ -421,8 +421,8 @@ class FourSagesOverseer(AncientElderBase):
         self.consultation_tracker = SageConsultationTracker(project_root)
         self.activity_analyzer = SageActivityAnalyzer(project_root)
         
-    async def audit(self, target_path: str, **kwargs) -> AuditResultreturn await self.execute_audit(target_path, **kwargs)
-    """AncientElderBaseの抽象メソッド実装"""
+    async def audit(self, target_path: str, **kwargs) -> AuditResultreturn await self.execute_audit(target_path, **kwargs):
+    """ncientElderBaseの抽象メソッド実装"""
         :
     def get_audit_scope(self) -> List[str]:
         """監査対象スコープを返す"""
@@ -433,8 +433,8 @@ class FourSagesOverseer(AncientElderBase):
             "four_sages_compliance"
         ]
         
-    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now()
-    """4賢者監督監査を実行"""
+    async def execute_audit(self, target_path: str, **kwargs) -> AuditResultstart_time = datetime.now():
+    """賢者監督監査を実行"""
         violations = []
         metrics = {}
         :
@@ -490,9 +490,8 @@ class FourSagesOverseer(AncientElderBase):
                 execution_time=(datetime.now() - start_time).total_seconds()
             )
             
-    def _calculate_overall_sage_score(self, metrics: Dict[str, Any]) -> floatconsultation_score = metrics.get("consultation_score", 0)
-    """総合4賢者スコアを計算"""
-        activity_score = metrics.get("activity_score", 0)
+    def _calculate_overall_sage_score(self, metrics: Dict[str, Any]) -> floatconsultation_score = metrics.get("consultation_score", 0)activity_score = metrics.get("activity_score", 0)
+    """合4賢者スコアを計算"""
         
         # 相談義務 40% + 活動実質性 60%
         overall_score = (consultation_score * 0.4) + (activity_score * 0.6)

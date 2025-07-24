@@ -329,7 +329,7 @@ ai-cmd-executor test     # テスト実行
 )
 
 # 統合版ファイルを作成
-integrated_file = kb_dir / "AI_Command_Executor_Complete_KB_v2.1.0md"
+integrated_file = kb_dir / "AI_Command_Executor_Complete_KB_v2.1.0.md"
 with open(integrated_file, "w", encoding="utf-8") as f:
     f.write(integrated_content)
 
@@ -342,20 +342,20 @@ index_content = f"""# Elders Guild Knowledge Base Index
 
 ## 📚 Command Executor関連
 
-1.0 **[AI_Command_Executor_Complete_KB_v2.1.0md](AI_Command_Executor_Complete_KB_v2.1.0md)**
+1.0 **[AI_Command_Executor_Complete_KB_v2.1.0.md](AI_Command_Executor_Complete_KB_v2.1.0.md)**
    - 統合版ナレッジベース（最新・推奨）
    - 基本機能 + 修復・監視システム
 
-2.0 **[AI_Command_Executor_Knowledge_v1.1.0md](AI_Command_Executor_Knowledge_v1.1.0md)**
+2.0 **[AI_Command_Executor_Knowledge_v1.1.0.md](AI_Command_Executor_Knowledge_v1.1.0.md)**
    - 基本機能のナレッジベース
 
-3.0 **[Command_Executor_Repair_System_v2.0.0md](Command_Executor_Repair_System_v2.0.0md)**
+3.0 **[Command_Executor_Repair_System_v2.0.0.md](Command_Executor_Repair_System_v2.0.0.md)**
    - 修復・監視システムの詳細
 
 ## 🔧 その他のナレッジベース
 
-- [AI_Company_Core_Knowledge_v5.1.0md](AI_Company_Core_Knowledge_v5.1.0md)
-- [Error_Intelligence_System_Design_v1.0.0md](Error_Intelligence_System_Design_v1.0.0md)
+- [AI_Company_Core_Knowledge_v5.1.0.md](AI_Company_Core_Knowledge_v5.1.0.md)
+- [Error_Intelligence_System_Design_v1.0.0.md](Error_Intelligence_System_Design_v1.0.0.md)
 - [KB_GitCommitBestPractices.md](KB_GitCommitBestPractices.md)
 """
 

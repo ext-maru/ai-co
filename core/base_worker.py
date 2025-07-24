@@ -349,8 +349,8 @@ class BaseWorker(ABC, ErrorHandlerMixin):
             self, error, context, severity, retry_callback
         )
 
-    def health_check(self) -> Dict[str, Any]uptime = time.time() - self.stats["start_time"]
-    """ヘルスチェック（サブクラスで拡張可能）"""
+    def health_check(self) -> Dict[str, Any]uptime = time.time() - self.stats["start_time"]:
+    """ルスチェック（サブクラスで拡張可能）"""
         return {:
             "worker_id": self.worker_id,
             "worker_type": self.worker_type,

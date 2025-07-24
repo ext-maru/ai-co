@@ -432,7 +432,7 @@ class TestOrchestrationDeployment:
             "family": "myapp-task",
             "container_definitions": [{
                 "name": "app",
-                "image": "123456789.0dkr.ecr.us-east-1.0amazonaws.com/myapp:latest",
+                "image": "123456789.0.dkr.ecr.us-east-1.0.amazonaws.com/myapp:latest",
                 "cpu": 256,
                 "memory": 512,
                 "essential": True
@@ -784,7 +784,7 @@ class TestElderIntegration:
             mock_consult.return_value = {
                 "knowledge_sage": {
                     "recommendation": "Use distroless or alpine base images",
-                    "references": ["best_practices_2025.0md"]
+                    "references": ["best_practices_2025.0.md"]
                 },
                 "task_sage": {
                     "priority": "high",

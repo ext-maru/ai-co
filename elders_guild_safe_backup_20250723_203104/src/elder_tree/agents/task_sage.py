@@ -26,8 +26,8 @@ class TaskSage(ElderTreeAgent):
         
         self.logger.info("Task Sage initialized")
     
-    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown')
-    """メッセージハンドラー"""
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]message_type = data.get('type', 'unknown'):
+    """ッセージハンドラー"""
         
         # 基本メッセージタイプの処理:
         if message_type in ["health_check", "get_metrics"]:
@@ -67,8 +67,8 @@ class TaskSage(ElderTreeAgent):
             "task": task
         }
     
-    def _handle_update_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id")
-    """タスク更新""":
+    def _handle_update_task(self, data: Dict[str, Any]) -> Dict[str, Any]task_id = data.get("task_id"):
+    """スク更新""":
         if task_id not in self.tasks:
             return {"status": "error", "message": "Task not found"}
         
@@ -85,9 +85,8 @@ class TaskSage(ElderTreeAgent):
             "task": self.tasks[task_id]
         }
     
-    def _handle_get_tasks(self, data: Dict[str, Any]) -> Dict[str, Any]status_filter = data.get("status")
-    """タスク一覧取得"""
-        priority_filter = data.get("priority")
+    def _handle_get_tasks(self, data: Dict[str, Any]) -> Dict[str, Any]status_filter = data.get("status")priority_filter = data.get("priority")
+    """スク一覧取得"""
         
         filtered_tasks = []:
         for task in self.tasks.values():
@@ -103,9 +102,8 @@ class TaskSage(ElderTreeAgent):
             "count": len(filtered_tasks)
         }
     
-    def _handle_elder_flow_consultation(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")
-    """Elder Flow協議処理"""
-        requirements = data.get("requirements", [])
+    def _handle_elder_flow_consultation(self, data: Dict[str, Any]) -> Dict[str, Any]task_type = data.get("task_type", "unknown")requirements = data.get("requirements", [])
+    """lder Flow協議処理"""
         
         # タスク管理の観点からの推奨事項
         recommendations = [

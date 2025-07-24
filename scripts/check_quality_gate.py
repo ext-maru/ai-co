@@ -355,9 +355,8 @@ class QualityGateChecker:
 
         return None
 
-    def check_gate(self, gate_id: int) -> Dictself.metrics = self.collect_metrics()
-    """指定されたゲートをチェック"""
-        gate = self.get_gate_definition(gate_id)
+    def check_gate(self, gate_id: int) -> Dictself.metrics = self.collect_metrics()gate = self.get_gate_definition(gate_id)
+    """定されたゲートをチェック"""
 :
         if not gate:
             return {"error": f"Gate {gate_id} not found"}

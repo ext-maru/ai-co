@@ -1051,10 +1051,8 @@ class TransformationMagic(AncientMagic):
             }
     
     # ヘルパーメソッド
-    def _count_nested_keys(self, data: Any, count: int = 0) -> intif isinstance(data, dict)count += len(data)
-    """ネストされた辞書のキー数をカウント""":
-            for value in data.values():
-                count = self._count_nested_keys(value, count)
+    def _count_nested_keys(self, data: Any, count: int = 0) -> intif isinstance(data, dict)count += len(data)for value in data.values()count = self._count_nested_keys(value, count)
+    """ストされた辞書のキー数をカウント""":
         elif isinstance(data, list):
             for item in data:
                 count = self._count_nested_keys(item, count)

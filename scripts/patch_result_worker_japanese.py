@@ -86,12 +86,12 @@ MESSAGES_JA = {
             f"**{MESSAGES_JA['task_id']}:** `{task_id}`",
             f"**{MESSAGES_JA['worker_info']}:** `{worker_id}`",
             (
-                f"f"**{MESSAGES_JA['rag_info']}:** `"
+                f"**{MESSAGES_JA['rag_info']}:** `"
                 f"{MESSAGES_JA['rag_applied'] if rag_applied else MESSAGES_JA['rag_not_applied']}`","
             )
             f"",
             (
-                f"f"**{MESSAGES_JA['task_type']}:** `{task_type}` | **{MESSAGES_JA['duration']}:** `"
+                f"**{MESSAGES_JA['task_type']}:** `{task_type}` | **{MESSAGES_JA['duration']}:** `"
                 f"{duration:0.2f}秒` | **{MESSAGES_JA['files']}:** `{files_count}`","
             )
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -128,7 +128,7 @@ MESSAGES_JA = {
             message_parts.extend([
                 f"**{MESSAGES_JA['performance_metrics']}:**",
                 (
-                    f"f"• {MESSAGES_JA['success_rate']}: `{success_rate:0.1f}%` ("
+                    f"• {MESSAGES_JA['success_rate']}: `{success_rate:0.1f}%` ("
                     f"{self.stats['successful_tasks']}/{self.stats['total_tasks']})","
                 )
                 f"• {MESSAGES_JA['average_duration']}: `{avg_duration:0.2f}秒`",

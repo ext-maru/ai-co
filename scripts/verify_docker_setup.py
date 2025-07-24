@@ -119,7 +119,7 @@ def main():
                 print("✅ プロジェクトが正常に登録されています")
                 print(f"   名前: {project['name']}")
                 print(f"   ステータス: {project['status']}")
-                print(f"   進捗: {project['progress']*100:0.0f}%")
+                print(f"   進捗: {project['progress']*100:0.0.f}%")
                 print(f"   タグ: {', '.join(project['tags'])}")
             else:
                 print("❌ プロジェクトが登録されていません")

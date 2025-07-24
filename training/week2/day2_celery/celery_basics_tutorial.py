@@ -58,8 +58,8 @@ def add_elder_levels(level1: int, level2: int) -> intprint(f"計算中: {level1}
 
 
 @app.task
-def process_elder_data(elder_id: str, data: Dict) -> Dictprint(f"エルダー {elder_id} のデータを処理中...")
-"""エルダーデータ処理（重い処理のシミュレーション）"""
+def process_elder_data(elder_id: str, data: Dict) -> Dictprint(f"エルダー {elder_id} のデータを処理中..."):
+    """ルダーデータ処理（重い処理のシミュレーション）"""
 
     # 重い処理をシミュレート
     time.sleep(2)
@@ -76,9 +76,8 @@ def process_elder_data(elder_id: str, data: Dict) -> Dictprint(f"エルダー {e
     return processed_data
 
 
-@app.task
-def validate_elder_name(name: str) -> Dicttime.sleep(0.5)  # 検証処理をシミュレート
-"""エルダー名の妥当性検証"""
+@app.tdef validate_elder_name(name: str) -> Dicttime.sleep(0.5)  # 検証処理をシミュレート:
+    """"""エルダー名の妥当性検証"""
 
     is_valid = bool(
         name and len(name) >= 2 and (name.startswith("エルダー") or name.endswith("Elder"))

@@ -1098,9 +1098,8 @@ class SearchMagic(AncientMagic):
         
         return functions
     
-    def _get_line_context(self, lines: List[str], line_index: int, context_size: int = 2) -> strstart = max(0, line_index - context_size)
-    """行のコンテキストを取得"""
-        end = min(len(lines), line_index + context_size + 1)
+    def _get_line_context(self, lines: List[str], line_index: int, context_size: int = 2) -> strstart = max(0, line_index - context_size)end = min(len(lines), line_index + context_size + 1)
+    """のコンテキストを取得"""
         
         context_lines = []:
         for i in range(start, end):
@@ -1109,9 +1108,8 @@ class SearchMagic(AncientMagic):
         
         return "\n".join(context_lines)
     
-    def _calculate_relevance(self, query: str, text: str) -> floatquery_words = set(query.lower().split())
-    """関連性スコアを計算"""
-        text_words = set(text.lower().split())
+    def _calculate_relevance(self, query: str, text: str) -> floatquery_words = set(query.lower().split())text_words = set(text.lower().split())
+    """連性スコアを計算"""
         :
         if not query_words:
             return 0.0

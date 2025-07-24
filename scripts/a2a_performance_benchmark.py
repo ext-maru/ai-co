@@ -41,9 +41,8 @@ class A2APerformanceBenchmark:
             "memory_available_mb": psutil.virtual_memory().available / 1024 / 1024,
         }
 
-    def single_communication_test(self, test_id: str) -> Dictstart_time = time.time()
-    """単一通信テスト"""
-        start_resources = self.measure_system_resources()
+    def single_communication_test(self, test_id: str) -> Dictstart_time = time.time()start_resources = self.measure_system_resources()
+    """一通信テスト"""
 
         # A2A通信をシミュレート
         communication_start = time.time()
@@ -121,8 +120,8 @@ class A2APerformanceBenchmark:
             "end_resources": end_resources,
         }
 
-    def four_sages_collaboration_benchmark(self) -> Dictprint("🧙‍♂️ 4賢者協調パフォーマンステスト開始")
-    """4賢者協調ベンチマーク"""
+    def four_sages_collaboration_benchmark(self) -> Dictprint("🧙‍♂️ 4賢者協調パフォーマンステスト開始"):
+    """賢者協調ベンチマーク"""
 
         start_time = time.time()
         start_resources = self.measure_system_resources()
@@ -248,9 +247,8 @@ class A2APerformanceBenchmark:
             "end_resources": end_resources,
         }
 
-    def run_comprehensive_benchmark(self) -> Dictprint("🚀 A2A通信パフォーマンス包括ベンチマーク開始")
-    """包括的ベンチマーク実行"""
-        print("=" * 60)
+    def run_comprehensive_benchmark(self) -> Dictprint("🚀 A2A通信パフォーマンス包括ベンチマーク開始")print("=" * 60)
+    """括的ベンチマーク実行"""
 
         benchmark_start = time.time()
 

@@ -43,8 +43,8 @@ class AuditCache:
         # SHA256ハッシュでキーを生成
         return hashlib.sha256(combined.encode()).hexdigest()
     
-    def get(self, auditor: str, target: Dict[str, Any]) -> Optional[Dict[str, Any]]cache_key = self._generate_cache_key(auditor, target)
-    """キャッシュから結果を取得"""
+    def get(self, auditor: str, target: Dict[str, Any]) -> Optional[Dict[str, Any]]cache_key = self._generate_cache_key(auditor, target):
+    """ャッシュから結果を取得"""
         cache_file = self.cache_dir / f"{cache_key}.json"
         
         if not cache_file.exists():

@@ -172,8 +172,8 @@ class RAGSageSoul(BaseSoul):
             logger.error(f"Error processing message: {e}")
             return self._create_error_response(message, str(e))
     
-    async def _handle_query(self, message: Dict[str, Any]) -> Dict[str, Any]action = message.get("action")
-    """クエリ処理"""
+    async def _handle_query(self, message: Dict[str, Any]) -> Dict[str, Any]action = message.get("action"):
+    """エリ処理"""
         :
         if action == "search_knowledge":
             query_text = message.get("query", "")
@@ -357,8 +357,8 @@ class RAGSageSoul(BaseSoul):
         
         return search_results
     
-    async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path))
-    """全文検索を実行""":
+    async def _full_text_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path)):
+    """文検索を実行""":
         try:
             # SQLクエリ構築
             where_conditions = ["content LIKE ? OR title LIKE ?"]
@@ -442,8 +442,8 @@ class RAGSageSoul(BaseSoul):
         
         return merged_results[:query.limit]
     
-    async def _exact_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path))
-    """完全一致検索を実行""":
+    async def _exact_search(self, query: SearchQuery) -> List[SearchResult]conn = sqlite3connect(str(self.db_path)):
+    """全一致検索を実行""":
         try:
             sql = """
                 SELECT id, content, source, title, category, tags, author,
@@ -654,8 +654,8 @@ class RAGSageSoul(BaseSoul):
                 del self.cache[cache_key]
         return None
     
-    def _cache_result(self, cache_key: str, results: SearchResults) -> Noneexpires_at = datetime.now() + timedelta(seconds=self.cache_ttl_seconds)
-    """結果をキャッシュ"""
+    def _cache_result(self, cache_key: str, results: SearchResults) -> Noneexpires_at = datetime.now() + timedelta(seconds=self.cache_ttl_seconds):
+    """果をキャッシュ"""
         self.cache[cache_key] = CacheEntry(
             key=cache_key,
             value=results,
@@ -748,8 +748,8 @@ class RAGSageSoul(BaseSoul):
             relevance_boost=row[11] or 1.0
         )
     
-    async def _increment_access_count(self, document_id: str) -> Noneconn = sqlite3connect(str(self.db_path))
-    """ドキュメントのアクセス数を増加""":
+    async def _increment_access_count(self, document_id: str) -> Noneconn = sqlite3connect(str(self.db_path)):
+    """キュメントのアクセス数を増加""":
         try:
             conn.execute(
                 "UPDATE documents SET access_count = access_count + 1 WHERE id = ?",
@@ -759,8 +759,8 @@ class RAGSageSoul(BaseSoul):
         finally:
             conn.close()
     
-    async def _save_search_history(self, query: SearchQuery, results: SearchResults) -> Noneconn = sqlite3connect(str(self.db_path))
-    """検索履歴を保存""":
+    async def _save_search_history(self, query: SearchQuery, results: SearchResults) -> Noneconn = sqlite3connect(str(self.db_path)):
+    """索履歴を保存""":
         try:
             conn.execute("""
                 INSERT INTO search_history 
@@ -968,8 +968,8 @@ class RAGSageSoul(BaseSoul):
     
     # === RAG Sage補助機能実装 ===
     
-    def _preprocess_query(self, query: str) -> strreturn query.strip().lower()
-    """クエリ前処理"""
+    def _preprocess_query(self, query: str) -> strreturn query.strip().lower():
+    """エリ前処理"""
     :
     async def _perform_vector_search(self, query: str, limit: int) -> List[Dict[str, Any]]:
         """ベクトル検索実行"""
@@ -1023,9 +1023,8 @@ class RAGSageSoul(BaseSoul):
                 clusters.append(cluster)
         return clusters
     
-    def _calculate_average_similarity(self, matrix: List[List[float]]) -> floattotal = sum(sum(row) for row in matrix)
-    """平均類似度計算"""
-        count = len(matrix) * len(matrix[0])
+    def _calculate_average_similarity(self, matrix: List[List[float]]) -> floattotal = sum(sum(row) for row in matrix)count = len(matrix) * len(matrix[0])
+    """均類似度計算"""
         return total / count if count > 0 else 0.0
     
     def _find_most_similar_pair(
@@ -1092,9 +1091,8 @@ class RAGSageSoul(BaseSoul):
             scores.append(score)
         return scores
     
-    def _calculate_sentiment_distribution(self, scores: List[float]) -> Dict[str, int]positive = sum(1 for score in scores if score > 0.1)
-    """センチメント分布計算"""
-        negative = sum(1 for score in scores if score < -0.1)
+    def _calculate_sentiment_distribution(self, scores: List[float]) -> Dict[str, int]positive = sum(1 for score in scores if score > 0.1)negative = sum(1 for score in scores if score < -0.1)
+    """ンチメント分布計算"""
         neutral = len(scores) - positive - negative:
         return {"positive": positive, "negative": negative, "neutral": neutral}
     
@@ -1123,9 +1121,8 @@ class RAGSageSoul(BaseSoul):
         required_fields = ["content"]
         return all(field in document for field in required_fields)
     
-    async def _preprocess_document(self, document: Dict[str, Any]) -> Dict[str, Any]processed = document.copy()
-    """ドキュメント前処理"""
-        processed.setdefault("title", "Untitled Document")
+    async def _preprocess_document(self, document: Dict[str, Any]) -> Dict[str, Any]processed = document.copy()processed.setdefault("title", "Untitled Document")
+    """キュメント前処理"""
         processed.setdefault("metadata", {})
         return processed
     :

@@ -19,7 +19,8 @@ from commands.base_command import BaseCommand, CommandResult
 class AIDLQCommand(BaseCommand):
     """DLQ管理コマンド"""
 
-    def __init__(self)super().__init__(
+    def __init__(self):
+        """super().__init__(
     """初期化メソッド"""
             name="ai-dlq", description="Dead Letter Queue (不達メッセージ) 管理", version="1.0.0"
         )

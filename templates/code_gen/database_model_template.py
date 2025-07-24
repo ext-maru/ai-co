@@ -194,9 +194,8 @@ class {model_name}CRUD:
         """初期化メソッド"""
         self.db = db
 
-    def create(self, **kwargs) -> {model_name}db_{model_name.lower()} = {model_name}(**kwargs)
-    """Create a new {model_name}"""
-        self.db.add(db_{model_name.lower()})
+    def create(self, **kwargs) -> {model_name}db_{model_name.lower()} = {model_name}(**kwargs)self.db.add(db_{model_name.lower()})
+    """reate a new {model_name}"""
         self.db.commit()
         self.db.refresh(db_{model_name.lower()})
         return db_{model_name.lower()}
@@ -212,8 +211,8 @@ class {model_name}CRUD:
 
         content += f'''        return query.first()
 
-    def get_all(self, skip: int = 0, limit: int = 100) -> List[{model_name}]query = self.db.query({model_name})
-    """Get all {model_name}s with pagination"""
+    def get_all(self, skip: int = 0, limit: int = 100) -> List[{model_name}]query = self.db.query({model_name}):
+    """et all {model_name}s with pagination"""
 '''
 :
         if soft_delete:
@@ -251,8 +250,8 @@ class {model_name}CRUD:
         content += '''            return True
         return False
 
-    def search(self, **filters) -> List[{model_name}]query = self.db.query({model_name})
-    """Search {model_name}s with filters"""
+    def search(self, **filters) -> List[{model_name}]query = self.db.query({model_name}):
+    """earch {model_name}s with filters"""
 '''
 :
         if soft_delete:

@@ -70,7 +70,7 @@ def validate_integration():
     # ファイル存在チェック
     files = [
         "libs/integrations/github/enhanced_auto_issue_processor.py",
-        "libs/integrations/github/enhanced_merge_system_v2.0py",
+        "libs/integrations/github/enhanced_merge_system_v2.0.py",
         "libs/integrations/github/smart_merge_retry.py",
         "libs/integrations/github/pr_state_monitor.py",
         "libs/integrations/github/improved_conflict_analyzer.py",

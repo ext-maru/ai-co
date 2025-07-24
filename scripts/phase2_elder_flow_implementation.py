@@ -133,9 +133,8 @@ class ElderFlowCLI(EldersFlowLegacy[Dict[str, Any], Dict[str, Any]]):
             logger.error(f"CLI処理エラー: {e}")
             return {"error": str(e)}
 
-    async def _execute_task(self, args: Dict[str, Any]) -> Dict[str, Any]task_name = args.get("task_name", "")
-    """タスク実行"""
-        priority = args.get("priority", "medium")
+    async def _execute_task(self, args: Dict[str, Any]) -> Dict[str, Any]task_name = args.get("task_name", "")priority = args.get("priority", "medium")
+    """スク実行"""
 :
         if not task_name:
             return {"error": "タスク名が必要です"}
@@ -169,9 +168,8 @@ class ElderFlowCLI(EldersFlowLegacy[Dict[str, Any], Dict[str, Any]]):
             "timestamp": datetime.now().isoformat()
         }
 
-    async def _manage_workflow(self, args: Dict[str, Any]) -> Dict[str, Any]action = args.get("action", "")
-    """ワークフロー管理"""
-        workflow_name = args.get("workflow_name", "")
+    async def _manage_workflow(self, args: Dict[str, Any]) -> Dict[str, Any]action = args.get("action", "")workflow_name = args.get("workflow_name", "")
+    """ークフロー管理"""
 :
         if action == "create":
             return await self.engine.create_workflow({
@@ -208,8 +206,8 @@ Examples:
 """
         return {"help": help_text}
 
-    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "command" in request
-    """リクエスト検証"""
+    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict) and "command" in request:
+    """クエスト検証"""
 :
     def get_capabilities(self) -> List[str]:
         """機能一覧"""
@@ -397,9 +395,8 @@ class ElderFlowEngine(EldersFlowLegacy[Dict[str, Any], Dict[str, Any]]):
             logger.error(f"Elder Flow Engine処理エラー: {e}")
             return {"error": str(e)}
 
-    async def execute_elder_flow(self, request: Dict[str, Any]) -> Dict[str, Any]task_name = request.get("task_name", "")
-    """Elder Flow実行"""
-        priority = request.get("priority", "medium")
+    async def execute_elder_flow(self, request: Dict[str, Any]) -> Dict[str, Any]task_name = request.get("task_name", "")priority = request.get("priority", "medium")
+    """lder Flow実行"""
         flow_id = str(uuid.uuid4())
 :
         logger.info(f"🌊 Elder Flow実行開始: {task_name} (ID: {flow_id})")
@@ -552,9 +549,8 @@ class ElderFlowEngine(EldersFlowLegacy[Dict[str, Any], Dict[str, Any]]):
             for flow_id, data in self.active_flows.items()
         ]
 
-    async def create_workflow(self, request: Dict[str, Any]) -> Dict[str, Any]workflow_name = request.get("name", "")
-    """ワークフロー作成"""
-        execute = request.get("execute", False)
+    async def create_workflow(self, request: Dict[str, Any]) -> Dict[str, Any]workflow_name = request.get("name", "")execute = request.get("execute", False)
+    """ークフロー作成"""
 :
         if not workflow_name:
             return {"error": "ワークフロー名が必要です"}
@@ -599,8 +595,8 @@ class ElderFlowEngine(EldersFlowLegacy[Dict[str, Any], Dict[str, Any]]):
             for workflow_id, data in self.workflows.items()
         ]
 
-    async def manage_workflow(self, request: Dict[str, Any]) -> Dict[str, Any]action = request.get("action", "")
-    """ワークフロー管理"""
+    async def manage_workflow(self, request: Dict[str, Any]) -> Dict[str, Any]action = request.get("action", ""):
+    """ークフロー管理"""
 :
         if action == "create":
             return await self.create_workflow(request)
@@ -609,8 +605,8 @@ class ElderFlowEngine(EldersFlowLegacy[Dict[str, Any], Dict[str, Any]]):
         else:
             return {"error": f"Unknown workflow action: {action}"}
 
-    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict)
-    """リクエスト検証"""
+    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict):
+    """クエスト検証"""
 :
     def get_capabilities(self) -> List[str]:
         """機能一覧"""
@@ -624,8 +620,8 @@ class ElderFlowEngine(EldersFlowLegacy[Dict[str, Any], Dict[str, Any]]):
 
 
 # エクスポート用のファクトリ関数
-def create_elder_flow_engine() -> ElderFlowEnginereturn ElderFlowEngine()
-"""Elder Flow Engine作成"""
+def create_elder_flow_engine() -> ElderFlowEnginereturn ElderFlowEngine():
+    """lder Flow Engine作成"""
 
 :
 if __name__ == "__main__":
@@ -676,8 +672,8 @@ if __name__ == "__main__":
             ],
         }
 
-    async def execute_parallel_implementation(self) -> Dict[str, Any]logger.info("🚀 Phase 2 Elder Flow並列実装開始")
-    """並列実装の実行"""
+    asdef execute_parallel_implementation(self) -> Dict[str, Any]logger.info("🚀 Phase 2 Elder Flow並列実装開始"):
+    """"""並列実装の実行"""
 
         # 実装対象の定義
         implementation_targets = [

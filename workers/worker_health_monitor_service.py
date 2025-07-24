@@ -388,8 +388,8 @@ class WorkerHealthMonitorService:
         if len(self.metrics_history) > self.max_history_length:
             self.metrics_history = self.metrics_history[-self.max_history_length :]
 
-    def _get_recent_metrics(self, minutes: int = 30) -> listcutoff_time = datetime.now() - timedelta(minutes=minutes)
-    """最近のメトリクス取得"""
+    def _get_recent_metrics(self, minutes: int = 30) -> listcutoff_time = datetime.now() - timedelta(minutes=minutes):
+    """近のメトリクス取得"""
 
         recent_metrics = []:
         for metric in reversed(self.metrics_history):

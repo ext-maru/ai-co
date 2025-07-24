@@ -279,7 +279,7 @@ DASHBOARD_TEMPLATE = """
                 <div class="status-item">
                     <span>接続:</span>
                     <span>{{ "✅" \
-                        if status.rabbitmq.status == "connected" \
+                        if status.rabbitmq.status == "connected" \:
                         else "❌" }} {{ status.rabbitmq.status }}</span>
                 </div>
                 {% if status.rabbitmq.queues %}

@@ -665,8 +665,8 @@ class ProgressVisualization:
 
         return str(report_path)
 
-    async def _generate_json_report(self, report_data: Dict) -> strreport_filename = f"progress_report_{report_data['project_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    """JSONレポートを生成"""
+    async def _generate_json_report(self, report_data: Dict) -> strreport_filename = f"progress_report_{report_data['project_id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json":
+    """SONレポートを生成"""
         report_path = self.reports_path / report_filename
 :
         with open(report_path, "w", encoding="utf-8") as f:

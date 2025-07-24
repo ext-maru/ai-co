@@ -707,8 +707,8 @@ class IntegrationTestRunner:
             )
         ]
     
-    async def run_all_tests(self) -> Dict[str, Any]start_time = time.time()
-    """全テスト実行"""
+    async def run_all_tests(self) -> Dict[str, Any]start_time = time.time():
+    """テスト実行"""
         overall_result = {:
             "success": True,
             "total_tests": 0,

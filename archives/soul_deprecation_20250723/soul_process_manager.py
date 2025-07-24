@@ -101,8 +101,8 @@ class SoulProcessInfo:
     capabilities: List[str] = field(default_factory=list)
     configuration: Dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]data = asdict(self)
-    """辞書形式に変換"""
+    def to_dict(self) -> Dict[str, Any]data = asdict(self):
+    """書形式に変換"""
         data["elder_type"] = self.elder_type.value
         data["state"] = self.state.value
         data["created_at"] = self.created_at.isoformat() if self.created_at else None
@@ -642,8 +642,8 @@ class SoulProcessManager:
                 self.logger.error(f"❌ Statistics loop error: {e}")
                 await asyncio.sleep(60)
 
-    def _can_create_soul(self, elder_type: ElderType) -> boolhierarchy_info = self.elder_hierarchy.get(elder_type)
-    """魂作成可能チェック""":
+    def _can_create_soul(self, elder_type: ElderType) -> boolhierarchy_info = self.elder_hierarchy.get(elder_type):
+    """作成可能チェック""":
         if not hierarchy_info:
             return False
 
@@ -717,8 +717,8 @@ class SoulProcessManager:
 # === 便利な関数 ===
 
 
-async def create_soul_process_manager(max_processes: int = None) -> SoulProcessManagermanager = SoulProcessManager(max_processes)
-"""魂プロセス管理システムの作成"""
+async def create_soul_process_manager(max_processes: int = None) -> SoulProcessManagermanager = SoulProcessManager(max_processes):
+    """プロセス管理システムの作成"""
 :
     if await manager.start_manager():
         return manager

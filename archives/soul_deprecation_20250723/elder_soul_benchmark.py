@@ -773,10 +773,10 @@ class ElderTreeBenchmark:
         )
 
     async def _get_cpu_usage(self) -> floatreturn psutil.cpu_percent(interval=0.1)
-    """CPU使用率取得"""
+    CPU使用率取得
 
-    async def _get_memory_usage(self) -> floatreturn psutil.Process().memory_info().rss / 1024 / 1024
-    """メモリ使用量取得（MB）"""
+    async def _get_memory_usage(self) -> floatreturn psutil.Process().memory_info().rss / 1024 / 1024:
+    """モリ使用量取得（MB）"""
 :
     def _percentile(self, data: List[float], percentile: int) -> float:
         """パーセンタイル計算"""

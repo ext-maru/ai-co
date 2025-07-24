@@ -122,9 +122,8 @@ class ErrorHandlerMixin:
             "retry_attempted": False,
         }
 
-    def _categorize_error(self, error: Exception) -> strerror_type = type(error).__name__
-    """エラーを分類"""
-        error_msg = str(error).lower()
+    def _categorize_error(self, error: Exception) -> strerror_type = type(error).__name__error_msg = str(error).lower()
+    """ラーを分類"""
 
         # ネットワークエラー
         if any(
@@ -219,9 +218,8 @@ class ErrorHandlerMixin:
                 if hasattr(self, "logger"):
                     self.logger.debug(f"Error notification failed: {e}")
 
-    def _should_retry(self, category: str, context: Dict[str, Any]) -> boolretry_count = context.get("retry_count", 0)
-    """リトライすべきか判定"""
-        max_attempts = self.retry_config.get(category, {}).get("max_attempts", 0)
+    def _should_retry(self, category: str, context: Dict[str, Any]) -> boolretry_count = context.get("retry_count", 0)max_attempts = self.retry_config.get(category, {}).get("max_attempts", 0)
+    """トライすべきか判定"""
 
         return retry_count < max_attempts
 

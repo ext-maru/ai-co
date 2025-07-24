@@ -131,8 +131,8 @@ class RabbitMQA2AMessage:
             reply_to=data.get("reply_to"),
         )
 
-    def to_amqp_message(self, encryption_key: Optional[str] = None) -> Messagemessage_data = self.to_dict()
-    """AMQP Messageに変換"""
+    def to_amqp_message(self, encryption_key: Optional[str] = None) -> Messagemessage_data = self.to_dict():
+    """MQP Messageに変換"""
 
         # 暗号化:
         if encryption_key:

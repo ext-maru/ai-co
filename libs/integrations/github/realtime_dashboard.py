@@ -576,7 +576,7 @@ DASHBOARD_HTML_TEMPLATE = """
         
         // Update dashboard with new data
         function updateDashboard(data) {
-            if (data.error) {
+            if (data.error) {:
                 console.error('Dashboard error:', data.error);
                 return;
             }
@@ -602,7 +602,7 @@ DASHBOARD_HTML_TEMPLATE = """
             document.getElementById('priority-low').textContent = priorityStats.low || 0;
             
             // Update priority chart
-            if (priorityChart) {
+            if (priorityChart) {:
                 priorityChart.data.datasets[0].data = [
                     priorityStats.critical || 0,
                     priorityStats.high || 0,
@@ -635,7 +635,7 @@ DASHBOARD_HTML_TEMPLATE = """
                 (statusColors[systemStatus.four_sages] || 'info');
             
             // Update hourly chart
-            if (hourlyChart && Object.keys(hourlyStats).length > 0) {
+            if (hourlyChart && Object.keys(hourlyStats).length > 0) {:
                 const hours = Object.keys(hourlyStats).sort();
                 const successRates = hours.map(hour => hourlyStats[hour].success_rate || 0);
                 
@@ -700,7 +700,7 @@ DASHBOARD_HTML_TEMPLATE = """
         
         // Manual refresh button
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {:
                 e.preventDefault();
                 socket.emit('request_metrics');
             }

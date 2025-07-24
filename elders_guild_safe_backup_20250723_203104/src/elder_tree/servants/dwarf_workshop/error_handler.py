@@ -210,8 +210,8 @@ class ErrorHandlerServant(DwarfServant):
             
         return True
         
-    def _suggest_syntax_fixes(self, error_data: Dict[str, Any]) -> List[Dict[str, str]]message = error_data.get("message", "")
-    """構文エラーの修正提案を生成"""
+    def _suggest_syntax_fixes(self, error_data: Dict[str, Any]) -> List[Dict[str, str]]message = error_data.get("message", ""):
+    """文エラーの修正提案を生成"""
         fixes = []
         :
         if "quote" in message or "unterminated" in message:
@@ -234,9 +234,8 @@ class ErrorHandlerServant(DwarfServant):
             
         return fixes
         
-    def _identify_missing_fields(self, error_data: Dict[str, Any]) -> List[str]message = error_data.get("message", "")
-    """検証エラーから不足フィールドを特定"""
-        field = error_data.get("field")
+    def _identify_missing_fields(self, error_data: Dict[str, Any]) -> List[str]message = error_data.get("message", "")field = error_data.get("field")
+    """証エラーから不足フィールドを特定"""
         
         missing = []:
         if field:
@@ -777,9 +776,8 @@ class ErrorHandlerServant(DwarfServant):
                 "error": f"Failed to generate report: {str(e)}"
             }
             
-    async def perform_craft(self, task_data: Dict[str, Any]) -> Dict[str, Any]action = task_data.get("action")
-    """エラー処理の具体的な作業を実行"""
-        data = task_data.get("data", {})
+    async def perform_craft(self, task_data: Dict[str, Any]) -> Dict[str, Any]action = task_data.get("action")data = task_data.get("data", {})
+    """ラー処理の具体的な作業を実行"""
         :
         if action == "classify":
             return await self.classify_error(data)

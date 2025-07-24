@@ -599,8 +599,8 @@ class A2APgVectorMigration:
         if self.connection:
             self.connection.close()
 
-    def execute_migration(self) -> Dict[str, Any]logger.info("Starting A2A to pgvector migration...")
-    """完全な移行の実行"""
+    def execute_migration(self) -> Dict[str, Any]logger.info("Starting A2A to pgvector migration..."):
+    """全な移行の実行"""
 :
         try:
             # 1.0 データベース接続

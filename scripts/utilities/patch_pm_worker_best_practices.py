@@ -40,7 +40,7 @@ def patch_pm_worker():
                 new_git_code = """# Git操作（ベストプラクティス対応）
                 try:
                     git_manager = GitHubFlowManager()
-                    if git_manager.auto_commit_task_result(
+                    if git_manager.auto_commit_task_result(:
                         task_data['task_id'],
                         files_created,
                         task_data.get('summary', 'Automated file placement')

@@ -532,8 +532,8 @@ class AISelfEvolutionEngine:
 
         return targets
 
-    def _design_self_modification(self, target: str) -> SelfModificationmodification_id = f"mod_{int(time.time())}_{random.randint(1000, 9999)}"
-    """自己修正を設計"""
+    def _design_self_modification(self, target: str) -> SelfModificationmodification_id = f"mod_{int(time.time())}_{random.randint(1000, 9999)}":
+    """己修正を設計"""
 
         modification_designs = {:
             "low_fitness_genes": SelfModification(
@@ -847,10 +847,10 @@ class AISelfEvolutionEngine:
             print(f"⚠️ プール復元エラー: {e}")
 
     def _evaluate_gene_fitness(self, geneEvolutionGene) -> floatreturn min(1.0, gene.fitness_score + random.uniform(-0.02, 0.03))
-    """evaluate_gene_fitness（内部メソッド）"""
+    evaluate_gene_fitness（内部メソッド）
 
-    def _update_evolution_metrics(self)self.current_metrics.intelligence_quotient += random.uniform(-0.5, 1.0)
-    """update_evolution_metrics（内部メソッド）"""
+    def _update_evolution_metrics(self)self.current_metrics.intelligence_quotient += random.uniform(-0.5, 1.0):
+    """pdate_evolution_metrics（内部メソッド）"""
 :
     def _evaluate_stage_progression(self) -> Optional[EvolutionStage]:
         """evaluate_stage_progression（内部メソッド）"""
@@ -1435,8 +1435,8 @@ class AISelfEvolutionEngine:
                 "hash": hashlib.md5(knowledge.encode()).hexdigest(),
             }
 
-    def _determine_knowledge_type(self, knowledge: str) -> strknowledge_lower = knowledge.lower()
-    """知識のタイプを判定"""
+    def _ddef _determine_knowledge_type(self, knowledge: str) -> strknowledge_lower = knowledge.lower():
+    """判定"""
 
         # パターンマッチングによる分類
         if any(

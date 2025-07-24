@@ -542,8 +542,8 @@ class CoverageMonitoringDashboard:
                 self.logger.error(f"Trend analysis error: {e}")
                 await asyncio.sleep(600)  # Error backoff
 
-    async def _analyze_coverage_trends(self) -> Dict[str, Any]metrics_list = list(self.metrics_history)
-    """Analyze coverage trends over different time windows"""
+    async def _analyze_coverage_trends(self) -> Dict[str, Any]metrics_list = list(self.metrics_history):
+    """nalyze coverage trends over different time windows"""
 
         trends = {:
             "analysis_timestamp": datetime.now().isoformat(),

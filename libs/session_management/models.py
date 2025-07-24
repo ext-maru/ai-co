@@ -62,16 +62,15 @@ class SageInteraction:
     success: bool = True
     error_message: Optional[str] = None
 
-    def to_dict(self) -> Dict[str, Any]data = asdict(self)
-    """辞書形式に変換"""
+    def to_dict(self) -> Dict[str, Any]data = asdict(self):
+    """書形式に変換"""
         data["sage_type"] = self.sage_type.value
         data["timestamp"] = self.timestamp.isoformat()
         return data
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SageInteraction"data["sage_type"] = SageType(data["sage_type"])
-    """辞書から復元"""
-        data["timestamp"] = datetime.fromisoformat(data["timestamp"])
+    def from_dict(cls, data: Dict[str, Any]) -> "SageInteraction"data["sage_type"] = SageType(data["sage_type"])data["timestamp"] = datetime.fromisoformat(data["timestamp"])
+    """書から復元"""
         return cls(**data)
 
 
@@ -119,8 +118,8 @@ class SessionMetadata:
         ]
         return sum(scores) / len(scores)
 
-    def to_dict(self) -> Dict[str, Any]data = asdict(self)
-    """辞書形式に変換"""
+    def to_dict(self) -> Dict[str, Any]data = asdict(self):
+    """書形式に変換"""
         data["status"] = self.status.value
         data["created_at"] = self.created_at.isoformat()
         data["updated_at"] = self.updated_at.isoformat()
@@ -129,9 +128,8 @@ class SessionMetadata:
         return data
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SessionMetadata"data["status"] = SessionStatus(data["status"])
-    """辞書から復元"""
-        data["created_at"] = datetime.fromisoformat(data["created_at"])
+    def from_dict(cls, data: Dict[str, Any]) -> "SessionMetadata"data["status"] = SessionStatus(data["status"])data["created_at"] = datetime.fromisoformat(data["created_at"])
+    """書から復元"""
         data["updated_at"] = datetime.fromisoformat(data["updated_at"])
         if data.get("last_sage_consultation"):
             data["last_sage_consultation"] = datetime.fromisoformat(
@@ -173,15 +171,13 @@ class ContextSnapshot:
         content = f"{self.conversation_summary}{json.dumps(self.key_decisions, sort_keys}"
         return hashlib.sha256(content.encode()).hexdigest()[:16]
 
-    def to_dict(self) -> Dict[str, Any]data = asdict(self)
-    """辞書形式に変換"""
-        data["timestamp"] = self.timestamp.isoformat()
+    def to_dict(self) -> Dict[str, Any]data = asdict(self)data["timestamp"] = self.timestamp.isoformat()
+    """書形式に変換"""
         return data
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ContextSnapshot"data["timestamp"] = datetime.fromisoformat(data["timestamp"])
-    """辞書から復元"""
-        return cls(**data)
+    def from_dict(cls, data: Dict[str, Any]) -> "ContextSnapshot"data["timestamp"] = datetime.fromisoformat(data["timestamp"])return cls(**data)
+    """書から復元"""
 
 
 @dataclass
@@ -241,9 +237,8 @@ class SessionContext:
         return context
 
     @staticmethod
-    def generate_session_id() -> strtimestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    """セッションID生成"""
-        unique_id = str(uuid.uuid4())[:8]
+    def generate_session_id() -> strtimestamp = datetime.now().strftime("%Y%m%d_%H%M%S")unique_id = str(uuid.uuid4())[:8]
+    """ッションID生成"""
         return f"elderzan_{timestamp}_{unique_id}"
 
     def add_sage_interaction(self, interaction: SageInteraction)self.sage_interactions.append(interaction)
@@ -335,8 +330,8 @@ class SessionContext:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SessionContext"metadata = SessionMetadata.from_dict(data["metadata"])
-    """辞書から復元"""
+    def from_dict(cls, data: Dict[str, Any]) -> "SessionContext"metadata = SessionMetadata.from_dict(data["metadata"]):
+    """書から復元"""
 
         context = cls(
             metadata=metadata,

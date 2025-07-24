@@ -581,7 +581,7 @@ def test_{module_name}_web_security():
         # Check for potential security issues
         sensitive_names = ['password', 'secret', 'key', 'token']
         exposed_sensitive = [attr for attr in module_attrs
-                           if any(sensitive in attr.lower() for sensitive in sensitive_names)]
+                           if any(sensitive in attr.lower() for sensitive in sensitive_names)]:
 
         # Should not expose sensitive attributes directly
         assert len(exposed_sensitive) == 0 or \

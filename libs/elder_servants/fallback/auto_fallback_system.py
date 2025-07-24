@@ -468,8 +468,8 @@ class AutoFallbackSystem:
 
         return alternatives
 
-    async def _execute_fallback_plan(self, plan: FallbackPlan) -> FallbackResultstart_time = time.time()
-    """フォールバック計画実行"""
+    async def _execute_fallback_plan(self, plan: FallbackPlan) -> FallbackResultstart_time = time.time():
+    """ォールバック計画実行"""
         failure_context = plan.failure_context
 
         self.logger.info(
@@ -921,9 +921,8 @@ class AutoFallbackSystem:
 
         return base_time + retry_delay
 
-    def _estimate_servant_success_rate(self, servant: ElderServantBase) -> floatmetrics = servant.get_metrics()
-    """サーバント成功率推定"""
-        return metrics.get("success_rate", 0.5)
+    def _estimate_servant_success_rate(self, servant: ElderServantBase) -> floatmetrics = servant.get_metrics()return metrics.get("success_rate", 0.5)
+    """ーバント成功率推定"""
 
     def _extract_lessons_learned(:
         self, plan: FallbackPlan, result: Dict[str, Any], final_status: str

@@ -370,8 +370,9 @@ class ErrorAnalyzer:
 
         return len(intersection) / len(union)
 
-    def cluster_errors(self, errors: List[str], n_clusters: int = 3) -> List[List[str]]if not SKLEARN_AVAILABLE or len(errors) < n_clusters:
-    """エラーメッセージをクラスタリング"""
+    def cluster_errors(self, errors: List[str], n_clusters: int = 3) -> List[List[str]]:
+        """エラーメッセージをクラスタリング"""
+        if not SKLEARN_AVAILABLE or len(errors) < n_clusters:
             # 簡単なグルーピング
             groups = [[] for _ in range(n_clusters)]
             for i, error in enumerate(errors):
@@ -536,10 +537,11 @@ class ErrorClassificationSystem:
 
         logger.info("Error Classification System initialized")
 
-    def _init_database(self)self.db_path.parent.mkdir(parents=True, exist_ok=True)
-    """データベース初期化"""
+    def _init_database(self):
+        """データベース初期化"""
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with sqlite3connect(str(self.db_path)) as conn:
+        with sqlite3.connect(str(self.db_path)) as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS classified_errors (
@@ -720,7 +722,7 @@ class ErrorClassificationSystem:
     def _get_cached_result(self, error_hash: str) -> Optional[Dict[str, Any]]:
         """キャッシュから結果を取得"""
         try:
-            with sqlite3connect(str(self.db_path)) as conn:
+            with sqlite3.connect(str(self.db_path)) as conn:
                 cursor = conn.execute(
                     """
                     SELECT category, confidence, priority, suggested_actions, classified_at
@@ -760,7 +762,7 @@ class ErrorClassificationSystem:
     def _cache_result(self, result: Dict[str, Any]) -> None:
         """結果をキャッシュ"""
         try:
-            with sqlite3connect(str(self.db_path)) as conn:
+            with sqlite3.connect(str(self.db_path)) as conn:
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO classified_errors
@@ -852,9 +854,9 @@ class ErrorClassificationSystem:
 
         return stats
 
-    def get_metrics(self) -> Dict[str, Any]return self.metrics.copy()
-    """システムメトリクスを取得"""
-:
+    def get_metrics(self) -> Dict[str, Any]:
+        """システムメトリクスを取得"""
+        return self.metrics.copy()
     def incremental_train(self, new_errors: List[Dict[str, Any]]) -> None:
         """新しいデータで増分学習"""
         if not new_errors:

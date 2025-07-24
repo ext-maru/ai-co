@@ -135,7 +135,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
     パフォーマンス目標達成の検証
     """
 
-    def __init__(self)super().__init__(EldersLegacyDomain.EXECUTION)
+    def __init__(self):
+        """super().__init__(EldersLegacyDomain.EXECUTION)
     """初期化メソッド"""
         self.logger = logging.getLogger("elder_integration_test")
 
@@ -250,8 +251,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                 "meets_target": False,
             }
 
-    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict)
-    """リクエスト妥当性検証"""
+    def validate_request(self, request: Dict[str, Any]) -> boolreturn isinstance(request, dict):
+    """クエスト妥当性検証"""
 :
     def get_capabilities(self) -> List[str]:
         """テストスイート能力一覧"""
@@ -290,8 +291,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             self.logger.error(f"Test environment preparation failed: {e}")
             raise
 
-    async def _run_baseline_test(self) -> TestResultself.logger.info("Running baseline performance test...")
-    """ベースライン性能測定"""
+    async def _run_baseline_test(self) -> TestResultself.logger.info("Running baseline performance test..."):
+    """ースライン性能測定"""
 
         start_time = time.time()
         start_memory = psutil.Process().memory_info().rss / 1024 / 1024
@@ -365,8 +366,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         proxy_result = await self._test_proxy_overhead()
         self.test_results.append(proxy_result)
 
-    async def _test_cache_performance(self) -> TestResultself.logger.info("Testing cache performance...")
-    """キャッシュパフォーマンステスト"""
+    async def _test_cache_performance(self) -> TestResultself.logger.info("Testing cache performance..."):
+    """ャッシュパフォーマンステスト"""
 
         start_time = time.time()
         start_memory = psutil.Process().memory_info().rss / 1024 / 1024
@@ -429,8 +430,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             errors=[f"Cache test errors: {errors}"] if errors > 0 else [],
         )
 
-    async def _test_async_optimization(self) -> TestResultself.logger.info("Testing async optimization...")
-    """非同期最適化テスト"""
+    async def _test_async_optimization(self) -> TestResultself.logger.info("Testing async optimization..."):
+    """同期最適化テスト"""
 
         start_time = time.time()
         start_memory = psutil.Process().memory_info().rss / 1024 / 1024
@@ -501,8 +502,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             errors=[f"Async test errors: {errors}"] if errors > 0 else [],
         )
 
-    async def _test_proxy_overhead(self) -> TestResultself.logger.info("Testing proxy overhead...")
-    """プロキシオーバーヘッドテスト"""
+    async def _test_proxy_overhead(self) -> TestResultself.logger.info("Testing proxy overhead..."):
+    """ロキシオーバーヘッドテスト"""
 
         start_time = time.time()
         start_memory = psutil.Process().memory_info().rss / 1024 / 1024
@@ -571,8 +572,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         health_result = await self._test_health_monitoring_integration()
         self.test_results.append(health_result)
 
-    async def _test_error_handling_integration(self) -> TestResultself.logger.info("Testing error handling integration...")
-    """エラーハンドリング統合テスト"""
+    async def _test_error_handling_integration(self) -> TestResultself.logger.info("Testing error handling integration..."):
+    """ラーハンドリング統合テスト"""
 
         start_time = time.time()
 
@@ -635,8 +636,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             errors=errors,
         )
 
-    async def _test_health_monitoring_integration(self) -> TestResultself.logger.info("Testing health monitoring integration...")
-    """ヘルスモニタリング統合テスト"""
+    async def _test_health_monitoring_integration(self) -> TestResultself.logger.info("Testing health monitoring integration..."):
+    """ルスモニタリング統合テスト"""
 
         start_time = time.time()
 
@@ -695,8 +696,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         # 信頼性テストは既にエラーハンドリングとヘルスチェックで実装済み
         pass
 
-    async def _run_full_integration_test(self) -> TestResultself.logger.info("Running full integration test...")
-    """フル統合テスト"""
+    async def _run_full_integration_test(self) -> TestResultself.logger.info("Running full integration test..."):
+    """ル統合テスト"""
 
         start_time = time.time()
         start_memory = psutil.Process().memory_info().rss / 1024 / 1024
@@ -793,8 +794,8 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         self.logger.info(f"Full integration test completed: {throughput:0.1f} ops/sec")
         return result
 
-    async def _run_stress_test(self) -> TestResultself.logger.info("Running stress test...")
-    """ストレステスト"""
+    async def _run_stress_test(self) -> TestResultself.logger.info("Running stress test..."):
+    """トレステスト"""
 
         start_time = time.time()
         concurrent_users = self.test_config["concurrent_users"]

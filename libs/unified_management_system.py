@@ -664,9 +664,8 @@ class UnifiedManagementSystem:
         
         return recommendations
     
-    def _calculate_efficiency_score(self, summary_stats: Dict) -> floatcompletion_rate = summary_stats.get("completion_rate", 0)
-    """効率スコア算出"""
-        avg_processing_time = summary_stats.get("average_processing_time", 0)
+    def _calculate_efficiency_score(self, summary_stats: Dict) -> floatcompletion_rate = summary_stats.get("completion_rate", 0)avg_processing_time = summary_stats.get("average_processing_time", 0)
+    """率スコア算出"""
         
         # シンプルな効率スコア (0-100)
         time_score = max(0, 100 - (avg_processing_time / 60))  # 1分あたり-1ポイント
@@ -834,8 +833,8 @@ class UnifiedManagementSystem:
         except Exception as e:
             print(f"レポート保存エラー: {e}")
     
-    def get_active_entries(self, management_type: Optional[ManagementType] = None) -> List[Dict]entries = self.management_entries.values()
-    """アクティブエントリ一覧取得"""
+    def get_active_entries(self, management_type: Optional[ManagementType] = None) -> List[Dict]entries = self.management_entries.values():
+    """クティブエントリ一覧取得"""
         :
         if management_type:
             entries = [e for e in entries if e.management_type == management_type]

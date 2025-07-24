@@ -60,8 +60,8 @@ class GeneratedTestsQualityAnalysis:
             f"Initialized quality analysis for {len(self.generated_test_files)} generated test files"
         )
 
-    async def analyze_all_generated_tests(self) -> Dict[str, Any]logger.info("Starting Elder Council analysis of generated tests from Day 3-4")
-    """Perform comprehensive quality analysis of all generated tests"""
+    async def analyze_all_generated_tests(self) -> Dict[str, Any]logger.info("Starting Elder Council analysis of generated tests from Day 3-4"):
+    """erform comprehensive quality analysis of all generated tests"""
 
         analysis_results = {:
             "analysis_summary": {

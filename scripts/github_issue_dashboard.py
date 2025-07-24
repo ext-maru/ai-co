@@ -99,8 +99,8 @@ class GitHubIssueDashboard:
         else:
             print("\n💬 コメントなし")
 
-    def get_master_issue_progress(self, master_issue_number: int) -> Dictissue = self.get_issue_with_comments(master_issue_number)
-    """Master Issueの進捗を分析""":
+    def get_master_issue_progress(self, master_issue_number: int) -> Dictissue = self.get_issue_with_comments(master_issue_number):
+    """aster Issueの進捗を分析""":
         if not issue:
             return {}
 

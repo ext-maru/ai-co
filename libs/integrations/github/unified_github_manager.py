@@ -485,8 +485,8 @@ class UnifiedGitHubManager:
         Returns:
             作成結果リスト
         """
-        async def create_single_issue(issue_dataDict[str, Any]) -> Dict[str, Any]return await self.create_issue(**issue_data)
-    """single_issue作成メソッド"""
+        async def create_single_issue(issue_dataDict[str, Any]) -> Dict[str, Any]return await self.create_issue(**issue_data):
+    """ingle_issue作成メソッド"""
         
         results = await self.parallel_processor.map_async(
             create_single_issue,
@@ -523,9 +523,8 @@ class UnifiedGitHubManager:
         Returns:
             更新結果リスト
         """
-        def update_single_issue(update_dataDict[str, Any]) -> Dict[str, Any]issue_number = update_data.pop("issue_number")
-    """single_issue更新メソッド"""
-            return self.update_issue(issue_number, **update_data)
+        def update_single_issue(update_dataDict[str, Any]) -> Dict[str, Any]issue_number = update_data.pop("issue_number")return self.update_issue(issue_number, **update_data)
+    """ingle_issue更新メソッド"""
         
         # スレッドプールで実行（同期APIのため）
         results = self.parallel_processor.map_threads(

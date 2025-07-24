@@ -168,8 +168,8 @@ class KnowledgeSage(BaseSoul):
             self.logger.error(f"Error storing knowledge: {e}")
             return {"status": "error", "message": str(e)}
     
-    def get_knowledge(self, knowledge_id: str) -> Optional[KnowledgeItem]item = self._knowledge_items.get(knowledge_id)
-    """知識アイテム取得""":
+    def get_knowledge(self, knowledge_id: str) -> Optional[KnowledgeItem]item = self._knowledge_items.get(knowledge_id):
+    """識アイテム取得""":
         if item:
             item.access()  # アクセス記録
             self._save_knowledge_items()
@@ -222,14 +222,14 @@ class KnowledgeSage(BaseSoul):
             self.logger.error(f"Error storing best practice: {e}")
             return {"status": "error", "message": str(e)}
     
-    def get_best_practice(self, practice_id: str) -> Optional[BestPractice]return self._best_practices.get(practice_id)
-    """ベストプラクティス取得"""
+    def get_best_practice(self, practice_id: str) -> Optional[BestPractice]return self._best_practices.get(practice_id):
+    """ストプラクティス取得"""
     :
-    def get_best_practices_by_domain(self, domain: str) -> List[BestPractice]return [p for p in self._best_practices.values() if p.domain == domain]
-    """ドメイン別ベストプラクティス取得"""
+    def get_best_practices_by_domain(self, domain: str) -> List[BestPractice]return [p for p in self._best_practices.values() if p.domain == domain]:
+    """メイン別ベストプラクティス取得"""
     :
-    def get_best_practices_by_impact(self, impact_level: str) -> List[BestPractice]return [p for p in self._best_practices.values() if p.impact_level == impact_level]
-    """影響レベル別ベストプラクティス取得"""
+    def get_best_practices_by_impact(self, impact_level: str) -> List[BestPractice]return [p for p in self._best_practices.values() if p.impact_level == impact_level]:
+    """響レベル別ベストプラクティス取得"""
     
     # === 学習パターン管理 ===
     :
@@ -251,8 +251,8 @@ class KnowledgeSage(BaseSoul):
             self.logger.error(f"Error storing learning pattern: {e}")
             return {"status": "error", "message": str(e)}
     
-    def get_learning_pattern(self, pattern_id: str) -> Optional[LearningPattern]return self._learning_patterns.get(pattern_id)
-    """学習パターン取得"""
+    def get_learning_pattern(self, pattern_id: str) -> Optional[LearningPattern]return self._learning_patterns.get(pattern_id):
+    """習パターン取得"""
     :
     def get_learning_patterns(self, pattern_name: str = None, 
                             trigger: str = None) -> List[LearningPattern]:
@@ -269,8 +269,8 @@ class KnowledgeSage(BaseSoul):
     
     # === 知識検索機能 ===
     
-    def search_knowledge(self, query: str, limit: int = 20) -> List[KnowledgeItem]query_lower = query.lower()
-    """基本的な知識検索"""
+    def search_knowledge(self, query: str, limit: int = 20) -> List[KnowledgeItem]query_lower = query.lower():
+    """本的な知識検索"""
         results = []
         :
         for item in self._knowledge_items.values():
@@ -290,11 +290,11 @@ class KnowledgeSage(BaseSoul):
         self._save_knowledge_items()
         return results[:limit]
     
-    def search_by_category(self, category: KnowledgeCategory) -> List[KnowledgeItem]return [item for item in self._knowledge_items.values() if item.category == category]
-    """カテゴリ検索"""
+    def search_by_category(self, category: KnowledgeCategory) -> List[KnowledgeItem]return [item for item in self._knowledge_items.values() if item.category == category]:
+    """テゴリ検索"""
     :
-    def search_by_tags(self, tags: List[str]) -> List[KnowledgeItem]tag_set = {tag.lower() for tag in tags}
-    """タグ検索"""
+    def search_by_tags(self, tags: List[str]) -> List[KnowledgeItem]tag_set = {tag.lower() for tag in tags}:
+    """グ検索"""
         results = []
         :
         for item in self._knowledge_items.values():
@@ -389,8 +389,8 @@ class KnowledgeSage(BaseSoul):
         
         return stats
     
-    def get_popular_tags(self, limit: int = 10) -> List[Dict[str, Any]]tag_counts = Counter()
-    """人気タグ分析"""
+    def get_popular_tags(self, limit: int = 10) -> List[Dict[str, Any]]tag_counts = Counter():
+    """気タグ分析"""
         
         # 繰り返し処理:
         for item in self._knowledge_items.values():

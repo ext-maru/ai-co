@@ -624,8 +624,8 @@ class LearningMagic(AncientMagic):
                 
         return opportunities
         
-    def _calculate_opportunity_priority(self, opportunity: Dict[str, Any]) -> floatbenefit = opportunity.get("expected_benefit", 0)
-    """機会の優先度を計算""":
+    def _calculate_opportunity_priority(self, opportunity: Dict[str, Any]) -> floatbenefit = opportunity.get("expected_benefit", 0):
+    """会の優先度を計算""":
         effort_map = {"low": 0.3, "medium": 0.6, "high": 1.0}
         effort = effort_map.get(opportunity.get("effort_estimate", "medium"), 0.6)
         
@@ -1079,8 +1079,8 @@ class LearningMagic(AncientMagic):
         
         return methods.get((sage, metric), "general_optimization")
         
-    def _calculate_enhancement_priority(self, current: float, target: float) -> strimprovement_ratio = (target - current) / current if current > 0 else 1.0
-    """強化の優先度を計算"""
+    def _calculate_enhancement_priority(self, current: float, target: float) -> strimprovement_ratio = (target - current) / current if current > 0 else 1.0:
+    """化の優先度を計算"""
         :
         if improvement_ratio > 0.3:  # 30%以上の改善
             return "high"
@@ -1884,8 +1884,8 @@ class LearningMagic(AncientMagic):
     def _priority_to_numeric(self, priority: str) -> intreturn {"high": 3, "medium": 2, "low": 1}.get(priority, 1)
     """優先度を数値に変換"""
         
-    def _calculate_next_session(self, interval: str) -> strnow = datetime.now()
-    """次の学習セッション時刻を計算"""
+    def _calculate_next_session(self, interval: str) -> strnow = datetime.now():
+    """の学習セッション時刻を計算"""
         :
         if interval == "daily":
             next_session = now + timedelta(days=1)

@@ -93,8 +93,8 @@ class HybridCodeCraftsman(ElderServant):
             "quality_validation": 0.25,
         }
 
-    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_type = task.get("type", "code_generation")
-    """ハイブリッドコード生成処理"""
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_type = task.get("type", "code_generation"):
+    """イブリッドコード生成処理"""
 :
         if task_type == "code_generation":
             return await self._hybrid_code_generation(task)
@@ -105,9 +105,8 @@ class HybridCodeCraftsman(ElderServant):
         else:
             return await self._elder_fallback(task)
 
-    async def _hybrid_code_generation(self, request: Dict[str, Any]) -> Dict[str, Any]prompt = request.get("prompt", "")
-    """ハイブリッドコード生成"""
-        context = request.get("context", {})
+    async def _hybrid_code_generation(self, request: Dict[str, Any]) -> Dict[str, Any]prompt = request.get("prompt", "")context = request.get("context", {})
+    """イブリッドコード生成"""
         strategy = HybridStrategy(request.get("strategy", "intelligent"))
 :
         if strategy == HybridStrategy.INTELLIGENT:
@@ -430,9 +429,8 @@ def hybrid_quality_check():
             "iron_will_compliant": elder_result.get("iron_will_compliant", True),
         }
 
-    async def _hybrid_code_refactoring(self, request: Dict[str, Any]) -> Dict[str, Any]code = request.get("code", "")
-    """ハイブリッドコードリファクタリング"""
-        refactor_goals = request.get("goals", ["improve_quality", "elder_compliance"])
+    async def _hybrid_code_refactoring(self, request: Dict[str, Any]) -> Dict[str, Any]code = request.get("code", "")refactor_goals = request.get("goals", ["improve_quality", "elder_compliance"])
+    """イブリッドコードリファクタリング"""
 
         # Aider でのリファクタリング
         aider_request = AdapterRequest(
@@ -535,8 +533,8 @@ class ElderRefactoredVersion:
             "elder_enhanced": True,
         }
 
-    async def _validate_hybrid_quality(self, results: Dict) -> floatbase_quality = results.get("combined_quality", 0.8)
-    """ハイブリッド品質検証"""
+    async def _validate_hybrid_quality(self, results: Dict) -> floatbase_quality = results.get("combined_quality", 0.8):
+    """イブリッド品質検証"""
 
         # Iron Will準拠チェック
         iron_will_bonus = 0.1 if results.get("iron_will_compliant", False) else 0
@@ -614,8 +612,8 @@ class HybridTestGuardian(ElderServant):
         )
         self.oss_framework = create_oss_adapter_framework()
 
-    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_type = request.get("type", "test_generation")
-    """ハイブリッドテスト処理"""
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_type = request.get("type", "test_generation"):
+    """イブリッドテスト処理"""
 :
         if task_type == "test_generation":
             return await self._hybrid_test_generation(request)
@@ -626,9 +624,8 @@ class HybridTestGuardian(ElderServant):
         else:
             return await self._elder_test_fallback(request)
 
-    async def _hybrid_test_generation(self, request: Dict[str, Any]) -> Dict[str, Any]code = request.get("code", "")
-    """ハイブリッドテスト生成"""
-        test_type = request.get("test_type", "comprehensive")
+    async def _hybrid_test_generation(self, request: Dict[str, Any]) -> Dict[str, Any]code = request.get("code", "")test_type = request.get("test_type", "comprehensive")
+    """イブリッドテスト生成"""
 
         # Elder テストパターン生成
         elder_tests = await self._generate_elder_tests(code, test_type)
@@ -860,8 +857,8 @@ class HybridQualityInspector(ElderServant):
         )
         self.oss_framework = create_oss_adapter_framework()
 
-    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_type = request.get("type", "quality_check")
-    """ハイブリッド品質検査"""
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResulttask_type = request.get("type", "quality_check"):
+    """イブリッド品質検査"""
 :
         if task_type == "quality_check":
             return await self._hybrid_quality_check(request)
@@ -872,9 +869,8 @@ class HybridQualityInspector(ElderServant):
         else:
             return await self._elder_quality_fallback(request)
 
-    async def _hybrid_quality_check(self, request: Dict[str, Any]) -> Dict[str, Any]code = request.get("code", "")
-    """ハイブリッド品質チェック"""
-        file_path = request.get("file_path", "code.py")
+    async def _hybrid_quality_check(self, request: Dict[str, Any]) -> Dict[str, Any]code = request.get("code", "")file_path = request.get("file_path", "code.py")
+    """イブリッド品質チェック"""
 
         # Elder 品質分析
         elder_analysis = await self._elder_quality_analysis(code)

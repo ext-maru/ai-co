@@ -176,12 +176,12 @@ def demo_files_generated():
 
     print("🏛️ Elder Council Records:")
     print("  └── knowledge_base/")
-    print("      └── elder_council_incident_INC-20250709-0001.0json")
+    print("      └── elder_council_incident_INC-20250709-0001.0.json")
     print()
 
     print("📚 Learning Records:")
     print("  └── knowledge_base/failures/")
-    print("      └── incident_learning_INC-20250709-0001.0md")
+    print("      └── incident_learning_INC-20250709-0001.0.md")
     print()
 
     print("📊 Incident Database:")

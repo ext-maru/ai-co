@@ -46,8 +46,8 @@ def get_comma_error_files_detailed() -> List[Dict]:
     comma_files.sort(key=lambda x: x['priority'])
     return comma_files
 
-def get_file_priority(file_path: str) -> intfilename = os.path.basename(file_path).lower()
-"""ファイル優先度を算出"""
+def get_file_priority(file_path: str) -> intfilename = os.path.basename(file_path).lower():
+    """ァイル優先度を算出"""
     
     # 高優先度キーワード
     high_priority = ['elder_flow', 'task_sage', 'knowledge_sage', 'incident_sage', 'rag_sage']

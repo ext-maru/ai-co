@@ -135,7 +135,7 @@ def eternalize_elder_spells():
         },
         {
             "spell_name": "AI_Company_Unified_Standards_2025",
-            "file_path": kb_path / "AI_COMPANY_UNIFIED_STANDARDS_2025.0md",
+            "file_path": kb_path / "AI_COMPANY_UNIFIED_STANDARDS_2025.0.md",
             "spell_type": "standards",
             "magic_school": "elder_magic",
             "power_level": 10,

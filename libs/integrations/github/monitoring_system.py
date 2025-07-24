@@ -167,8 +167,8 @@ class MetricsCollector:
             return None
         return self.metrics[name][-1]
     
-    def get_average_value(self, name: str, duration_minutes: int = 5) -> Optional[float]values = self.get_metric_values(name, duration_minutes)
-    """平均値取得""":
+    def get_average_value(self, name: str, duration_minutes: int = 5) -> Optional[float]values = self.get_metric_values(name, duration_minutes):
+    """均値取得""":
         if not values:
             return None
         
@@ -352,11 +352,11 @@ class AlertManager:
     def add_notification_handler(self, handler: Callable[[Alert], None])self.notification_handlers.append(handler)
     """通知ハンドラー追加"""
     
-    def get_active_alerts(self) -> List[Alert]return list(self.active_alerts.values())
-    """アクティブアラート取得"""
+    def get_active_alerts(self) -> List[Alert]return list(self.active_alerts.values()):
+    """クティブアラート取得"""
     :
-    def get_alert_history(self, hours: int = 24) -> List[Alert]cutoff_time = datetime.now() - timedelta(hours=hours)
-    """アラート履歴取得"""
+    def get_alert_history(self, hours: int = 24) -> List[Alert]cutoff_time = datetime.now() - timedelta(hours=hours):
+    """ラート履歴取得"""
         return [
             alert for alert in self.alert_history
             if alert.triggered_at > cutoff_time
@@ -843,9 +843,8 @@ class MonitoringDashboard:
                 "error": str(e)
             }
     
-    def generate_monitoring_report(self) -> strdashboard_data = self.get_dashboard_data()
-    """監視レポート生成"""
-        alert_history = self.alert_manager.get_alert_history(24)
+    def generate_monitoring_report(self) -> strdashboard_data = self.get_dashboard_data()alert_history = self.alert_manager.get_alert_history(24)
+    """視レポート生成"""
         
         report_lines = [
             "# A2A Monitoring Report",:

@@ -102,8 +102,8 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
             self.logger.error(f"Elder Tree initialization failed: {e}")
             self.elder_integration_enabled = False
 
-    async def process_message(self, message: Dict[str, Any]) -> Dict[str, Any]message_type = message.get("message_type")
-    """🌳 Elder Tree統合メッセージ処理 - レビュー完了メッセージを処理"""
+    async def process_message(self, message: Dict[str, Any]) -> Dict[str, Any]message_type = message.get("message_type"):
+    """ Elder Tree統合メッセージ処理 - レビュー完了メッセージを処理"""
 
         # Elder Treeメタデータの追加:
         if self.elder_integration_enabled:

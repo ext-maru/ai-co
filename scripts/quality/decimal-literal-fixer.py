@@ -21,7 +21,7 @@ def fix_decimal_literals(content):
     content = re.sub(r'\.0intersection\(', '.intersection(', content)
     content = re.sub(r'\.0union\(', '.union(', content)
     
-    # パターン4: sqlite3.0 -> sqlite3
+    # パターン4: sqlite3 -> sqlite3
     content = re.sub(r'\bsqlite3\.0\b', 'sqlite3', content)
     
     # パターン5: 一般的な .0method( -> .method(
