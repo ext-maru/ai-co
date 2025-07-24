@@ -86,8 +86,9 @@ class HealthCheck:
 class MetricsCollector:
     """メトリクス収集システム"""
     
-    def __init__(self)self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
-    """初期化メソッド"""
+    def __init__(self):
+        """初期化メソッド"""
+        self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
         self.metric_types: Dict[str, MetricType] = {}
         self.metric_metadata: Dict[str, Dict[str, Any]] = {}
         
@@ -137,14 +138,17 @@ class MetricsCollector:
         except Exception as e:
             logger.error(f"Failed to record metric {name}: {str(e)}")
     
-    def increment_counter(self, name: str, value: int = 1, labels: Dict[str, str] = None)self.record_metric(name, value, labels, MetricType.COUNTER)
-    """カウンター増加"""
+    def increment_counter(self, name: str, value: int = 1, labels: Dict[str, str] = None):
+        """カウンター増加"""
+        self.record_metric(name, value, labels, MetricType.COUNTER)
     
-    def set_gauge(self, name: str, value: Union[int, float], labels: Dict[str, str] = None)self.record_metric(name, value, labels, MetricType.GAUGE)
-    """ゲージ設定"""
+    def set_gauge(self, name: str, value: Union[int, float], labels: Dict[str, str] = None):
+        """ゲージ設定"""
+        self.record_metric(name, value, labels, MetricType.GAUGE)
     
-    def record_timer(self, name: str, duration: float, labels: Dict[str, str] = None)self.record_metric(name, duration, labels, MetricType.TIMER)
-    """タイマー記録"""
+    def record_timer(self, name: str, duration: float, labels: Dict[str, str] = None):
+        """タイマー記録"""
+        self.record_metric(name, duration, labels, MetricType.TIMER)
     
     def get_metric_values(
         self, 
@@ -167,8 +171,9 @@ class MetricsCollector:
             return None
         return self.metrics[name][-1]
     
-    def get_average_value(self, name: str, duration_minutes: int = 5) -> Optional[float]values = self.get_metric_values(name, duration_minutes):
-    """均値取得""":
+    def get_average_value(self, name: str, duration_minutes: int = 5) -> Optional[float]:
+        """平均値取得"""
+        values = self.get_metric_values(name, duration_minutes)
         if not values:
             return None
         
@@ -349,20 +354,20 @@ class AlertManager:
             except Exception as e:
                 logger.error(f"Notification handler failed: {str(e)}")
     
-    def add_notification_handler(self, handler: Callable[[Alert], None])self.notification_handlers.append(handler)
-    """通知ハンドラー追加"""
+    def add_notification_handler(self, handler: Callable[[Alert], None]):
+        """通知ハンドラー追加"""
+        self.notification_handlers.append(handler)
     
-    def get_active_alerts(self) -> List[Alert]return list(self.active_alerts.values()):
-    """クティブアラート取得"""
-    :
-    def get_alert_history(self, hours: int = 24) -> List[Alert]cutoff_time = datetime.now() - timedelta(hours=hours):
-    """ラート履歴取得"""
+    def get_active_alerts(self) -> List[Alert]:
+        """アクティブアラート取得"""
+        return list(self.active_alerts.values())
+    def get_alert_history(self, hours: int = 24) -> List[Alert]:
+        """アラート履歴取得"""
+        cutoff_time = datetime.now() - timedelta(hours=hours)
         return [
             alert for alert in self.alert_history
             if alert.triggered_at > cutoff_time
         ]
-
-:
 class HealthMonitor:
     """ヘルスモニター"""
     
@@ -451,8 +456,7 @@ class HealthMonitor:
             active_executions = pool_stats["active_executions"]
             
             if current_workers > 0:
-                return HealthStatus.HEALTHY, f"Claude CLI pool healthy ({current_workers} workers)" \
-                    "Claude CLI pool healthy ({current_workers} workers)", pool_stats
+                return HealthStatus.HEALTHY, f"Claude CLI pool healthy ({current_workers} workers)", pool_stats
             else:
                 return HealthStatus.DEGRADED, "No Claude CLI workers available", pool_stats
                 
@@ -478,10 +482,7 @@ class HealthMonitor:
                 rate_limit = response.headers.get("X-RateLimit-Remaining", "unknown")
                 return HealthStatus.HEALTHY, "GitHub API accessible", {"rate_limit_remaining": rate_limit}
             else:
-                return HealthStatus.DEGRADED, f"GitHub API error: {
-                    response.status_code}",
-                    {"status_code": response.status_code
-                }
+                return HealthStatus.DEGRADED, f"GitHub API error: {response.status_code}", {"status_code": response.status_code}
                 
         except Exception as e:
             return HealthStatus.UNHEALTHY, f"GitHub API health check error: {str(e)}", {"error": str(e)}
@@ -519,11 +520,9 @@ class HealthMonitor:
             if recent_errors < 10:  # 過去1時間で10件未満
                 return HealthStatus.HEALTHY, "Error recovery system healthy", error_stats
             elif recent_errors < 50:
-                return HealthStatus.DEGRADED, f"High error rate: {recent_errors} recent errors" \
-                    "High error rate: {recent_errors} recent errors", error_stats
+                return HealthStatus.DEGRADED, f"High error rate: {recent_errors} recent errors", error_stats
             else:
-                return HealthStatus.UNHEALTHY, f"Very high error rate: {recent_errors} recent errors" \
-                    "Very high error rate: {recent_errors} recent errors", error_stats
+                return HealthStatus.UNHEALTHY, f"Very high error rate: {recent_errors} recent errors", error_stats
                 
         except Exception as e:
             return HealthStatus.UNHEALTHY, f"Error recovery health check error: {str(e)}", {"error": str(e)}
@@ -546,8 +545,10 @@ class HealthMonitor:
 class LogSystem:
     """包括的ログシステム"""
     
-    def __init__(self)self.log_directory.mkdir(parents=True, exist_ok=True)
-    """初期化メソッド"""
+    def __init__(self):
+        """初期化メソッド"""
+        self.log_directory = Path("/home/aicompany/ai_co/logs/monitoring")
+        self.log_directory.mkdir(parents=True, exist_ok=True)
         
         # ログレベル別ファイル
         self.log_files = {
@@ -645,8 +646,10 @@ class LogSystem:
 class MonitoringDashboard:
     """リアルタイム監視ダッシュボード"""
     
-    def __init__(self)self.alert_manager = AlertManager(self.metrics_collector)
-    """初期化メソッド"""
+    def __init__(self):
+        """初期化メソッド"""
+        self.metrics_collector = MetricsCollector()
+        self.alert_manager = AlertManager(self.metrics_collector)
         self.health_monitor = HealthMonitor()
         self.log_system = LogSystem()
         
@@ -658,13 +661,15 @@ class MonitoringDashboard:
         # 通知設定
         self._setup_notification_handlers()
     
-    def _setup_notification_handlers(self)def log_alert_handler(alert: Alert):
-    """通知ハンドラー設定"""
-        """log_alert_handlerメソッド"""
+    def _setup_notification_handlers(self):
+        """通知ハンドラー設定"""
+        def log_alert_handler(alert: Alert):
+            """log_alert_handlerメソッド"""
             self.log_system.log_alert(alert)
         
-        def console_alert_handler(alert: Alert)print(f"🚨 ALERT: {alert.title} - {alert.description}")
-    """console_alert_handlerメソッド"""
+        def console_alert_handler(alert: Alert):
+            """console_alert_handlerメソッド"""
+            print(f"🚨 ALERT: {alert.title} - {alert.description}")
         
         self.alert_manager.add_notification_handler(log_alert_handler)
         self.alert_manager.add_notification_handler(console_alert_handler)
@@ -843,11 +848,13 @@ class MonitoringDashboard:
                 "error": str(e)
             }
     
-    def generate_monitoring_report(self) -> strdashboard_data = self.get_dashboard_data()alert_history = self.alert_manager.get_alert_history(24)
-    """視レポート生成"""
+    def generate_monitoring_report(self) -> str:
+        """監視レポート生成"""
+        dashboard_data = self.get_dashboard_data()
+        alert_history = self.alert_manager.get_alert_history(24)
         
         report_lines = [
-            "# A2A Monitoring Report",:
+            "# A2A Monitoring Report",
             f"Generated at: {dashboard_data['timestamp']}",
             "",
             f"## Overall Health: {dashboard_data.get('overall_health', 'Unknown')}",

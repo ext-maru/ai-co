@@ -32,6 +32,7 @@ class QualityCheckType(Enum):
     UNIT_TESTS = "unit_tests"
     INTEGRATION_TESTS = "integration_tests"
     CODE_QUALITY = "code_quality"
+    PYLINT = "pylint"
     SECURITY_SCAN = "security_scan"
     PERFORMANCE = "performance"
     COVERAGE = "coverage"

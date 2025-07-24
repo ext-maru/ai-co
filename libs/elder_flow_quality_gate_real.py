@@ -817,6 +817,129 @@ class SecurityCheckerReal(BaseQualityChecker):
         return max(0, round(score, 1))
 
 
+class PylintCheckerReal(BaseQualityChecker):
+    """Pylintチェッカー - 実装版"""
+
+    def __init__(self):
+        """初期化メソッド"""
+        super().__init__(QualityCheckType.PYLINT)
+        
+    async def _perform_check(self, context: Dict) -> QualityCheckResult:
+        """Pylintチェックを実行"""
+        try:
+            # pylintチェッカーをインポート
+            from libs.elder_flow_pylint_checker import ElderFlowPylintChecker
+            
+            # ターゲットファイル取得
+            target_files = context.get('files', [])
+            if not target_files:
+                # デフォルトでlibsディレクトリをチェック
+                target_files = ['libs/']
+            
+            # pylintチェッカー初期化
+            pylint_checker = ElderFlowPylintChecker()
+            
+            # 品質分析実行
+            results = []
+            total_score = 0
+            total_files = 0
+            
+            for target in target_files:
+                result = await pylint_checker.analyze_file(target)
+                results.append(result)
+                
+                if result.score > 0:
+                    total_score += result.score
+                    total_files += 1
+            
+            # 平均スコア計算
+            avg_score = total_score / total_files if total_files > 0 else 0
+            
+            # 問題の重要度別集計
+            critical_issues = 0
+            high_issues = 0
+            medium_issues = 0
+            
+            all_issues = []
+            for result in results:
+                for issue in result.issues:
+                    all_issues.append({
+                        'file': result.file_path,
+                        'line': issue.line,
+                        'type': issue.type,
+                        'message': issue.message,
+                        'message_id': issue.message_id
+                    })
+                    
+                    # 重要度分類
+                    if issue.type == 'error':
+                        critical_issues += 1
+                    elif issue.type == 'warning':
+                        high_issues += 1
+                    else:
+                        medium_issues += 1
+            
+            # 品質スコア（10点満点から100点満点に変換）
+            quality_score = avg_score * 10
+            
+            # 合格判定（7.0/10 = 70点以上で合格）
+            status = QualityGateStatus.PASSED if avg_score >= 7.0 else QualityGateStatus.FAILED
+            
+            # メッセージ生成
+            if status == QualityGateStatus.PASSED:
+                message = f"Pylint品質チェック通過 (スコア: {avg_score:.1f}/10)"
+            else:
+                message = f"Pylint品質チェック失敗 (スコア: {avg_score:.1f}/10, 最低7.0必要)"
+            
+            return QualityCheckResult(
+                check_type=self.check_type,
+                status=status,
+                score=quality_score,
+                message=message,
+                details={
+                    'pylint_score': avg_score,
+                    'total_files_checked': total_files,
+                    'total_issues': len(all_issues),
+                    'critical_issues': critical_issues,
+                    'high_issues': high_issues,
+                    'medium_issues': medium_issues,
+                    'issues': all_issues[:10],  # 最初の10件のみ
+                    'recommendations': self._generate_recommendations(avg_score, critical_issues, high_issues)
+                }
+            )
+        
+        except Exception as e:
+            self.logger.error(f"Pylint check failed: {e}")
+            return QualityCheckResult(
+                check_type=self.check_type,
+                status=QualityGateStatus.FAILED,
+                score=0,
+                message=f"Pylintチェック実行エラー: {str(e)}",
+                details={"error": str(e)}
+            )
+    
+    def _generate_recommendations(self, score: float, critical: int, high: int) -> List[str]:
+        """推奨事項を生成"""
+        recommendations = []
+        
+        if score < 5.0:
+            recommendations.append("🚨 Critical: 大規模なリファクタリングが必要です")
+        elif score < 7.0:
+            recommendations.append("⚠️ Warning: コード品質の改善が必要です")
+        elif score < 9.0:
+            recommendations.append("📈 Good: 軽微な改善でより高品質になります")
+        else:
+            recommendations.append("✨ Excellent: 高品質なコードです")
+        
+        if critical > 0:
+            recommendations.append(f"🔧 {critical}件のクリティカル問題を修正してください")
+        
+        if high > 0:
+            recommendations.append(f"⚡ {high}件の重要度高問題を修正してください")
+        
+        return recommendations
+
+
 # Quality Gate Manager Real Implementation
 class QualityGateManagerReal:
     """品質ゲートマネージャー - 実装版"""
@@ -827,6 +950,7 @@ class QualityGateManagerReal:
         self.checkers = {
             QualityCheckType.UNIT_TESTS: UnitTestCheckerReal(),
             QualityCheckType.CODE_QUALITY: CodeQualityCheckerReal(),
+            QualityCheckType.PYLINT: PylintCheckerReal(),
             QualityCheckType.SECURITY_SCAN: SecurityCheckerReal(),
         }
 

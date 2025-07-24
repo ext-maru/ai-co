@@ -45,13 +45,14 @@ class TechnicalRequirement:
     constraints: List[str]
     acceptance_criteria: List[str]
     
-    def to_dict(self) -> Dictresult = asdict(self):
-    """書形式に変換"""
+    def to_dict(self) -> Dict:
+        """辞書形式に変換"""
+        result = asdict(self)
         result['requirement_type'] = self.requirement_type.value
         return result
 
 
-@dataclass:
+@dataclass
 class TechnicalStack:
     """技術スタック"""
     languages: List[str]

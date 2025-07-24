@@ -26,6 +26,7 @@ from libs.elder_flow_servant_executor import (
     create_quality_task,
 )
 from libs.elder_flow_quality_gate import QualityGateSystem, run_quality_gate
+from libs.elder_flow_quality_gate_real import QualityGateManagerReal
 from libs.elder_flow_quality_integration import get_elder_flow_quality_integration
 from libs.elder_flow_council_reporter import (
     create_task_completion_report,
@@ -387,18 +388,48 @@ class ElderFlowIntegration:
             "target_files": [f"/tmp/{task.task_id}_setup.py"],
         }
 
-        quality_result = await run_quality_gate(quality_context)
+        # Use QualityGateManagerReal for actual quality checks including pylint
+        quality_manager = QualityGateManagerReal()
+        quality_result = await quality_manager.run_quality_checks(quality_context)
 
+        # QualityGateManagerReal returns different format
+        overall_status = quality_result.get("overall_status", "unknown")
+        
+        # Calculate overall score from individual check results
+        overall_score = 0.0
+        total_checks = 0
+        check_results_list = []
+        all_recommendations = []
+        
+        for check_type, result in quality_result.get("results", {}).items():
+            if hasattr(result, 'score') and result.score > 0:
+                overall_score += result.score
+                total_checks += 1
+            
+            check_results_list.append({
+                "check_type": check_type.value if hasattr(check_type, 'value') else str(check_type),
+                "status": result.status.value if hasattr(result, 'status') else "unknown",
+                "score": getattr(result, 'score', 0),
+                "message": getattr(result, 'message', ''),
+                "details": getattr(result, 'details', {})
+            })
+            
+            if hasattr(result, 'details') and 'recommendations' in result.details:
+                all_recommendations.extend(result.details['recommendations'])
+        
+        # Calculate average score
+        if total_checks > 0:
+            overall_score = overall_score / total_checks
+        
         task.quality_result = {
-            "overall_status": quality_result.get("summary", {}).get(
-                "overall_status", "unknown"
-            ),
-            "overall_score": quality_result.get("summary", {}).get(
-                "overall_score", 0.0
-            ),
-            "quality_summary": quality_result.get("summary", {}),
-            "check_results": quality_result.get("check_results", []),
-            "recommendations": quality_result.get("recommendations", []),
+            "overall_status": overall_status.value if hasattr(overall_status, 'value') else str(overall_status),
+            "overall_score": overall_score,
+            "quality_summary": {
+                "total_checks": total_checks,
+                "pylint_included": True
+            },
+            "check_results": check_results_list,
+            "recommendations": all_recommendations,
         }
 
         self.logger.info(
