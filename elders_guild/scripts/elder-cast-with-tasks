@@ -21,6 +21,9 @@ script_path = Path(__file__).resolve()
 project_root = script_path.parent.parent.parent  # ai_coディレクトリ
 sys.path.insert(0, str(project_root))
 
+# Elder Tree構造に合わせてインポートパスを修正
+sys.path.insert(0, str(project_root / "elders_guild"))
+
 from libs.todo_tracker_integration import TodoTrackerIntegration
 from libs.postgres_claude_task_tracker import TaskStatus, TaskPriority
 

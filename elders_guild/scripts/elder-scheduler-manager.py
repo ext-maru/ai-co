@@ -22,7 +22,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent  # ai_coディレクトリ
 PID_FILE = PROJECT_ROOT / "logs" / "elder_scheduler.pid"
 LOG_DIR = PROJECT_ROOT / "logs" / "elder_scheduler"
 
@@ -83,12 +83,8 @@ def status_command():
                 try:
                     result = subprocess.run(['tail', '-5', str(latest_log)], 
                                           capture_output=True, text=True)
-                    if not (result.returncode == 0):
-                        continue  # Early return to reduce nesting
-                    # Reduced nesting - original condition satisfied
                     if result.returncode == 0:
                         print("📄 Recent log entries:")
-                        # Deep nesting detected (depth: 6) - consider refactoring
                         for line in result.stdout.strip().split('\n'):
                             print(f"   {line}")
                 except:
@@ -158,6 +154,7 @@ def jobs_command():
     
     # 一時的にスケジューラーを起動してジョブ情報取得
     sys.path.insert(0, str(PROJECT_ROOT))
+    sys.path.insert(0, str(PROJECT_ROOT / "elders_guild"))
     
     try:
         from libs.elder_scheduled_tasks import start_elder_scheduled_tasks
