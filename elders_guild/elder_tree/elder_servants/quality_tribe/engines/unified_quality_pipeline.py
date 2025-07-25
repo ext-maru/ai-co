@@ -18,13 +18,13 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
 # Engine imports
-from elders_guild.quality.static_analysis_engine import StaticAnalysisEngine
-from elders_guild.quality.test_automation_engine import TestAutomationEngine
-from elders_guild.quality.comprehensive_quality_engine import ComprehensiveQualityEngine
+from elders_guild.elder_tree.elder_servants.quality_tribe.engines.static_analysis_engine import StaticAnalysisEngine
+from elders_guild.elder_tree.elder_servants.quality_tribe.engines.test_automation_engine import TestAutomationEngine
+from elders_guild.elder_tree.elder_servants.quality_tribe.engines.comprehensive_quality_engine import ComprehensiveQualityEngine
 
 # Servant imports
-from elders_guild.quality_servants.quality_watcher_judgment import QualityWatcherJudgment
-from elders_guild.quality_servants.test_forge_judgment import TestForgeJudgment
+from elders_guild.elder_tree.elder_servants.quality_tribe.quality_watcher.quality_watcher_judgment import QualityWatcherJudgment
+from elders_guild.elder_tree.elder_servants.quality_tribe.test_forge.test_forge_judgment import TestForgeJudgment
 
 
 @dataclass
@@ -659,7 +659,7 @@ class UnifiedQualityPipeline:
     # エラーハンドリング用フォールバック結果生成
     def _create_error_static_result(self, error: Exception):
         """エラー時静的解析結果生成"""
-        from elders_guild.quality.static_analysis_engine import StaticAnalysisResult
+        from elders_guild.elder_tree.elder_servants.quality_tribe.engines.static_analysis_engine import StaticAnalysisResult
         
         return StaticAnalysisResult(
             status="ERROR",
@@ -676,7 +676,7 @@ class UnifiedQualityPipeline:
     
     def _create_error_test_result(self, error: Exception):
         """エラー時テスト結果生成"""
-        from elders_guild.quality.test_automation_engine import TestExecutionResult, PytestResult, HypothesisResult
+        from elders_guild.elder_tree.elder_servants.quality_tribe.engines.test_automation_engine import TestExecutionResult, PytestResult, HypothesisResult
         
         pytest_result = PytestResult(
             all_passed=False, test_count=0, passed_count=0, failed_count=0,
@@ -698,7 +698,7 @@ class UnifiedQualityPipeline:
     
     def _create_error_comprehensive_result(self, error: Exception):
         """エラー時包括結果生成"""
-        from elders_guild.quality.comprehensive_quality_engine import ComprehensiveQualityResult
+        from elders_guild.elder_tree.elder_servants.quality_tribe.engines.comprehensive_quality_engine import ComprehensiveQualityResult
         
         return ComprehensiveQualityResult(
             unified_quality_score=0.0, status="ERROR", iterations=0,

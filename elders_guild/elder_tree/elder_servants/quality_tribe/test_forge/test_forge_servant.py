@@ -14,7 +14,7 @@ from pathlib import Path
 from python_a2a import A2AServer, skill, Message, TextContent, MessageRole
 
 # 既存エンジンの活用
-from elders_guild.quality.test_automation_engine import TestAutomationEngine
+from elders_guild.elder_tree.elder_servants.quality_tribe.engines.test_automation_engine import TestAutomationEngine
 
 logger = logging.getLogger(__name__)
 

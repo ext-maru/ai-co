@@ -30,19 +30,19 @@ fi
 
 # 各サーバントを別プロセスで起動
 echo -e "${YELLOW}🧝‍♂️ Starting QualityWatcher Servant (Port 8810)...${NC}"
-python3 -m elders_guild.quality_servants.quality_watcher_servant &
+python3 -m elders_guild.elder_tree.elder_servants.quality_tribe.quality_watcher.quality_watcher_servant &
 QUALITY_WATCHER_PID=$!
 echo "PID: $QUALITY_WATCHER_PID"
 sleep 2
 
 echo -e "${YELLOW}🔨 Starting TestForge Servant (Port 8811)...${NC}"
-python3 -m elders_guild.quality_servants.test_forge_servant &
+python3 -m elders_guild.elder_tree.elder_servants.quality_tribe.test_forge.test_forge_servant &
 TEST_FORGE_PID=$!
 echo "PID: $TEST_FORGE_PID"
 sleep 2
 
 echo -e "${YELLOW}🛡️ Starting ComprehensiveGuardian Servant (Port 8812)...${NC}"
-python3 -m elders_guild.quality_servants.comprehensive_guardian_servant &
+python3 -m elders_guild.elder_tree.elder_servants.quality_tribe.comprehensive_guardian.comprehensive_guardian_servant &
 COMPREHENSIVE_GUARDIAN_PID=$!
 echo "PID: $COMPREHENSIVE_GUARDIAN_PID"
 sleep 2
@@ -59,7 +59,7 @@ echo "  - QualityWatcher: http://localhost:8810 (PID: $QUALITY_WATCHER_PID)"
 echo "  - TestForge: http://localhost:8811 (PID: $TEST_FORGE_PID)"
 echo "  - ComprehensiveGuardian: http://localhost:8812 (PID: $COMPREHENSIVE_GUARDIAN_PID)"
 echo ""
-echo "💡 To stop servants, run: ./scripts/stop-quality-servants.sh"
+echo "💡 To stop servants, run: ./elder_tree/elder_servants/dwarf_tribe/tools/stop-quality-servants.sh"
 echo ""
 
 # ヘルスチェック（オプション）

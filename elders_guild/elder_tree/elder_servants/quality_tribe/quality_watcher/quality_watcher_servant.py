@@ -14,7 +14,7 @@ from pathlib import Path
 from python_a2a import A2AServer, skill, Message, TextContent, MessageRole
 
 # 既存エンジンの活用
-from elders_guild.quality.static_analysis_engine import StaticAnalysisEngine
+from elders_guild.elder_tree.elder_servants.quality_tribe.engines.static_analysis_engine import StaticAnalysisEngine
 
 logger = logging.getLogger(__name__)
 
