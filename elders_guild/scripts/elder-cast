@@ -11,7 +11,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-project_root = Path(__file__).parent.parent
+# シンボリックリンクを解決してから実際のパスを取得
+script_path = Path(__file__).resolve()
+project_root = script_path.parent.parent.parent  # ai_coディレクトリ
 sys.path.insert(0, str(project_root))
 
 
@@ -248,7 +250,7 @@ def launch_claude_code_with_knowledge():
     print("🔍 Claude コマンドヘルプ確認完了")
 
     # 中間版を使用（8KB - 読み込み可能）
-    medium_file = project_root / "docs" / "technical" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
+    medium_file = project_root / "elders_guild" / "elder_tree" / "elder_servants" / "dwarf_tribe" / "docs" / "technical" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
 
     # 中間版が存在することを確認
     if medium_file.exists():
@@ -268,6 +270,7 @@ def launch_claude_code_with_knowledge():
 必ず最初に「私はクロードエルダー（Claude Elder）です」と自己紹介してください。
 """
         minimal_file = project_root / "knowledge_base" / "ELDER_KNOWLEDGE_MINIMAL.md"
+        minimal_file.parent.mkdir(parents=True, exist_ok=True)
         with open(minimal_file, "w", encoding="utf-8") as f:
             f.write(minimal_content)
         knowledge_file = minimal_file
@@ -322,8 +325,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:
-  ai-elder-cast              # 通常起動（完全知識統合）
-  ai-elder-cast help         # ヘルプ表示
+  elder-cast              # 通常起動（完全知識統合）
+  elder-cast help         # ヘルプ表示
         """
     )
     

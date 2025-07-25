@@ -11,7 +11,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-project_root = Path(__file__).parent.parent
+# シンボリックリンクを解決してから実際のパスを取得
+script_path = Path(__file__).resolve()
+project_root = script_path.parent.parent.parent  # ai_coディレクトリ
 
 # 知識セクション定義
 KNOWLEDGE_SECTIONS = {

@@ -12,7 +12,9 @@ from datetime import datetime
 from pathlib import Path
 
 # プロジェクトルートをパスに追加
-project_root = Path(__file__).parent.parent
+# シンボリックリンクを解決してから実際のパスを取得
+script_path = Path(__file__).resolve()
+project_root = script_path.parent.parent.parent  # ai_coディレクトリ
 sys.path.insert(0, str(project_root))
 
 # 色付き出力用のANSIコード
