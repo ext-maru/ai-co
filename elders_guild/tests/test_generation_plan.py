@@ -7,18 +7,20 @@ import asyncio
 from typing import List, Dict, Any
 import os
 import sys
+from pathlib import Path
 
-# エルダーズギルドのパスを追加
-sys.path.insert(0, '/home/aicompany/ai_co')
+# 環境変数を使用してパスを設定
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from shared_libs.config import config
+
+# パスを環境変数ベースで設定
+sys.path.insert(0, str(Path(config.ELDERS_GUILD_HOME).parent))
 
 # Elder Flow活用
 from libs.elder_flow import execute_elder_flow
 
 # 品質チェックシステム活用
 from libs.elders_code_quality import CodeQualityAnalyzer
-
-# Task Sage活用 (elders_guild_dev)
-sys.path.insert(0, '/home/aicompany/ai_co/elders_guild_dev')
 
 
 class ElderTreeTestGenerator:
@@ -33,7 +35,7 @@ class ElderTreeTestGenerator:
         
     def _identify_test_targets(self) -> List[Dict[str, Any]]:
         """テスト対象の特定"""
-        base_path = "/home/aicompany/ai_co/elder_tree_v2/src/elder_tree"
+        base_path = Path(config.ELDERS_GUILD_HOME) / "elder_tree"
         
         targets = []
         

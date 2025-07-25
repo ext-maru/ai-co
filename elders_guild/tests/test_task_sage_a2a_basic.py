@@ -15,10 +15,14 @@ from unittest.mock import AsyncMock, patch
 
 # python-a2a imports
 from python_a2a import Message, TextContent, MessageRole, A2AError
+import os
 
-# Task Sage A2A Agent
+# 環境変数を使用してパスを設定
 import sys
-sys.path.append("/home/aicompany/ai_co/elders_guild")
+# shared_libs.configからELDERS_GUILD_HOMEを取得
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from shared_libs.config import config
+sys.path.insert(0, config.ELDERS_GUILD_HOME)
 from task_sage.a2a_agent import TaskSageAgent
 from task_sage.business_logic import TaskProcessor
 

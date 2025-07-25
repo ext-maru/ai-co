@@ -24,9 +24,13 @@ import tempfile
 import os
 from statistics import mean
 
-# Incident Sage imports
+# 環境変数を使用してパスを設定
 import sys
-sys.path.append("/home/aicompany/ai_co/elders_guild")
+import os
+# shared_libs.configからELDERS_GUILD_HOMEを取得
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from shared_libs.config import config
+sys.path.insert(0, config.ELDERS_GUILD_HOME)
 from incident_sage.business_logic import IncidentProcessor
 
 

@@ -21,6 +21,9 @@ from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
+# 環境変数設定のインポート
+from shared_libs.config import config
+
 # エルダーズシステムのインポート
 try:
     from .claude_elder_error_wrapper import get_error_wrapper, incident_aware
@@ -68,8 +71,10 @@ class RuleDefinition:
 class ClaudeElderRuleEnforcementSystem:
     """クロードエルダー ルール遵守強制システム"""
 
-    def __init__(self, project_dir: str = "/home/aicompany/ai_co"):
+    def __init__(self, project_dir: str = None):
         """初期化メソッド"""
+        if project_dir is None:
+            project_dir = config.ELDERS_GUILD_HOME
         self.project_dir = Path(project_dir)
         self.rules_config = self.project_dir / "config" / "elder_rules.json"
         self.violation_log = self.project_dir / "logs" / "rule_violations.json"

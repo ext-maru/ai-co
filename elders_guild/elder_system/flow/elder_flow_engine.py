@@ -20,6 +20,7 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 import logging
+from shared_libs.config import config
 
 def get_logger(name):
     """logger取得メソッド"""
@@ -187,7 +188,7 @@ class ElderFlowEngine(EldersFlowLegacy):
                         "soul_mode": soul_mode,
                         "claude_elder_soul": flow_data["claude_elder_soul_active"],
                         "quality_engines_integration": quality_engines_enabled,
-                        "project_path": request.get("project_path", "/home/aicompany/ai_co")
+                        "project_path": request.get("project_path", config.ELDERS_GUILD_HOME)
                     }
                 )
 

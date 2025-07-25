@@ -133,23 +133,23 @@ class ElderTreeMigrationExecutor:
         # import更新マップ
         import_updates = [
             # サーバント関連
-            ("from elder_servants.dwarf_workshop", "from elders_guild.elder_tree.elder_servants.dwarf_tribe"),
-            ("from elder_servants.elf_forest", "from elders_guild.elder_tree.elder_servants.elf_tribe"),
-            ("from elder_servants.rag_wizards", "from elders_guild.elder_tree.elder_servants.wizard_tribe"),
+            ("from elders_guild.elder_tree.elder_servants.dwarf_workshop", "from elders_guild.elder_tree.elder_servants.dwarf_tribe"),
+            ("from elders_guild.elder_tree.elder_servants.elf_forest", "from elders_guild.elder_tree.elder_servants.elf_tribe"),
+            ("from elders_guild.elder_tree.elder_servants.rag_wizards", "from elders_guild.elder_tree.elder_servants.wizard_tribe"),
             ("from quality_servants", "from elders_guild.elder_tree.elder_servants.quality_tribe"),
             
             # 4賢者関連
-            ("from four_sages.knowledge", "from elders_guild.elder_tree.four_sages.knowledge_sage"),
-            ("from four_sages.task", "from elders_guild.elder_tree.four_sages.task_sage"),
-            ("from four_sages.incident", "from elders_guild.elder_tree.four_sages.incident_sage"),
-            ("from four_sages.rag", "from elders_guild.elder_tree.four_sages.rag_sage"),
+            ("from elders_guild.elder_tree.four_sages.knowledge", "from elders_guild.elder_tree.four_sages.knowledge_sage"),
+            ("from elders_guild.elder_tree.four_sages.task", "from elders_guild.elder_tree.four_sages.task_sage"),
+            ("from elders_guild.elder_tree.four_sages.incident", "from elders_guild.elder_tree.four_sages.incident_sage"),
+            ("from elders_guild.elder_tree.four_sages.rag", "from elders_guild.elder_tree.four_sages.rag_sage"),
             
             # クロードエルダー関連
             ("from elder_flow", "from elders_guild.elder_tree.claude_elder.flow"),
             ("from cli", "from elders_guild.elder_tree.claude_elder.integration.cli"),
             
             # import文も同様に
-            ("import elder_servants.dwarf_workshop", "import elders_guild.elder_tree.elder_servants.dwarf_tribe"),
+            ("import elders_guild.elder_tree.elder_servants.dwarf_workshop", "import elders_guild.elder_tree.elder_servants.dwarf_tribe"),
             ("import four_sages", "import elders_guild.elder_tree.four_sages"),
         ]
         
