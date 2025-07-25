@@ -39,7 +39,8 @@ class ResultWorker:
 
     def connect(self):
         try:
-            self.connection = pika.BlockingConnection(                pika.ConnectionParameters("localhost")
+            self.connection = pika.BlockingConnection(
+                pika.ConnectionParameters("localhost")
             )
             self.channel = self.connection.channel()
             self.channel.queue_declare(queue="result_queue", durable=True)
@@ -132,8 +133,8 @@ class ResultWorker:
             traceback.print_exc()
 
     def process_result(self, ch, method, properties, body):
-        try:
         """process_resultを処理"""
+        try:
             result = json.loads(body)
             logger.info(f"結果受信: {result['task_id']} - {result['status']}")
 
@@ -150,9 +151,8 @@ class ResultWorker:
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
     def start(self):
-    """iメソッド"""
-    f not self.connect():
-    """startメソッド"""
+        """startメソッド"""
+        if not self.connect():
             return
 
         self.channel.basic_consume(

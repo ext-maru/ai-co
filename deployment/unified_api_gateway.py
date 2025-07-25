@@ -151,11 +151,10 @@ auth = UnifiedAPIAuth()
 
 def require_permission(resource: str, action: str):
     """権限チェックデコレータ"""
-
-        def decorated_function(*args, **kwargs):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            sage_type = auth.get_sage_from_request(request)
             if not sage_type:
                 raise APIError("Authentication required", 401)
 
@@ -182,13 +181,14 @@ def handle_async(f):
             return loop.run_until_complete(f(*args, **kwargs))
         finally:
             loop.close()
-def entity_to_dict(entity: BaseEntity) -> Dict[str, Any]:
-    """エンティティを辞書に変換"""
-
+    
     return wrapper
 
 def entity_to_dict(entity: BaseEntity) -> Dict[str, Any]:
     """エンティティを辞書に変換"""
+    result = {
+        "id": entity.id,
+        "type": entity.type,
         "title": entity.title,
         "content": entity.content,
         "metadata": entity.metadata,
@@ -732,9 +732,10 @@ def handle_not_found(error):
 
 @api_v1.errorhandler(500)
 def handle_internal_error(error):
-def handle_internal_error(error):
     """500ハンドラー"""
     logger.error(f"Internal server error: {error}")
+    return (
+        jsonify(
             {
                 "success": False,
                 "error": {"message": "Internal server error"},
@@ -747,8 +748,6 @@ def handle_internal_error(error):
 # ============================================
 # アプリケーション設定
 # ============================================
-    return (
-        jsonify(
 app.register_blueprint(api_v1)
 
 

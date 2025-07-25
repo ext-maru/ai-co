@@ -36,8 +36,8 @@ class SimpleDialogWorker:
             return False
 
     def process_dialog_task(self, ch, method, properties, body):
-        try:
         """process_dialog_taskを処理"""
+        try:
             task_data = json.loads(body)
             conversation_id = task_data.get("conversation_id")
             instruction = task_data.get("instruction")
@@ -68,9 +68,8 @@ class SimpleDialogWorker:
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
     def start(self):
-    """iメソッド"""
-    f not self.connect():
-    """startメソッド"""
+        """startメソッド"""
+        if not self.connect():
             return
 
         self.channel.basic_qos(prefetch_count=1)
