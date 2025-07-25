@@ -1,0 +1,288 @@
+#!/usr/bin/env python3
+"""
+Elder - エルダーズ知識管理システムCLI
+知識の追加、検索、管理を行うコマンドラインインターフェース
+"""
+
+import argparse
+import json
+import os
+import sys
+from typing import Any, Dict, List
+
+# プロジェクトのルートパスを追加
+sys.path.append("/home/aicompany/ai_co")
+
+# elder cast 機能の復活
+if len(sys.argv) > 1 and sys.argv[1] == "cast":
+    # elder-cast コマンドにリダイレクト（TTY保持のためexecを使用）
+    import os
+    cast_args = ["elder-cast"] + sys.argv[2:]
+    os.execvp("elder-cast", cast_args)
+    # execvpは戻らないのでexit不要
+
+print("⚠️ elderコマンドは現在4賢者システムに統合されています")
+print()
+print("🔮 魔法詠唱コマンド:")
+print("  elder cast 知識召喚 'キーワード'")
+print("  elder cast 4賢者会議 'トピック'")
+print("  elder cast 完全自動化 'タスク名' --power high")
+print()
+print("🤖 その他利用可能なコマンド:")
+print("  - elder-flow execute 'タスク名' --priority high")
+print("  - elder-cast 知識召喚 'クエリ' --power medium")
+print()
+print("📚 詳細ヘルプ:")
+print("  elder-cast --help")
+print()
+exit(0)
+
+
+class AIElderCLI:
+    """AI Elder CLIのメインクラス"""
+
+    def __init__(self):
+        self.manager = EldersKnowledgeManager()
+
+    def search(
+        self, query: str, limit: int = 10, category: str = None, elder: str = None
+    ):
+        """知識を検索"""
+        print(f"\n🔍 検索中: '{query}'")
+
+        # カテゴリIDとエルダーIDの取得
+        category_id = None
+        elder_id = None
+
+        if category:
+            categories = self.manager.get_categories()
+            for cat in categories:
+                if cat["name"].lower() == category.lower():
+                    category_id = cat["id"]
+                    break
+
+        if elder:
+            elders = self.manager.get_elders()
+            for e in elders:
+                if e["name"].lower() == elder.lower():
+                    elder_id = e["id"]
+                    break
+
+        # 検索実行
+        results = self.manager.search_knowledge(
+            query, limit=limit, category_id=category_id, elder_id=elder_id
+        )
+
+        if not results:
+            print("❌ 該当する知識が見つかりませんでした。")
+            return
+
+        print(f"\n✅ {len(results)}件の知識が見つかりました:\n")
+
+        for i, result in enumerate(results, 1):
+            print(f"{i}. 📚 {result['title']}")
+            print(f"   👤 エルダー: {result['elder_name']}")
+            print(f"   📁 カテゴリ: {result['category_name']}")
+            if "similarity_score" in result:
+                print(f"   🎯 類似度: {result['similarity_score']:.2%}")
+            print(f"   📝 内容: {result['content'][:100]}...")
+            if result["tags"]:
+                print(f"   🏷️  タグ: {', '.join(result['tags'])}")
+            print()
+
+    def add(
+        self,
+        title: str,
+        content: str,
+        category: str = "技術",
+        elder: str = "技術長老",
+        tags: List[str] = None,
+        importance: float = 0.5,
+    ):
+        """新しい知識を追加"""
+        # カテゴリとエルダーの検証
+        categories = self.manager.get_categories()
+        category_id = 1  # デフォルト
+        for cat in categories:
+            if cat["name"] == category:
+                category_id = cat["id"]
+                break
+
+        elders = self.manager.get_elders()
+        elder_id = 1  # デフォルト
+        for e in elders:
+            if e["name"] == elder:
+                elder_id = e["id"]
+                break
+
+        # 知識の追加
+        try:
+            knowledge_id = self.manager.add_knowledge(
+                title=title,
+                content=content,
+                category_id=category_id,
+                elder_id=elder_id,
+                tags=tags or [],
+                importance_score=importance,
+            )
+            print(f"✅ 知識を追加しました (ID: {knowledge_id})")
+            print(f"   📚 タイトル: {title}")
+            print(f"   👤 エルダー: {elder}")
+            print(f"   📁 カテゴリ: {category}")
+        except Exception as e:
+            print(f"❌ エラー: {e}")
+
+    def list_categories(self):
+        """カテゴリ一覧を表示"""
+        categories = self.manager.get_categories()
+        print("\n📁 カテゴリ一覧:")
+        for cat in categories:
+            print(f"  - {cat['name']}: {cat['description']}")
+
+    def list_elders(self):
+        """エルダー一覧を表示"""
+        elders = self.manager.get_elders()
+        print("\n👥 エルダー一覧:")
+        for elder in elders:
+            expertise = ", ".join(elder["expertise"]) if elder["expertise"] else "なし"
+            print(f"  - {elder['name']} (信頼度: {elder['reliability_score']:.1f})")
+            print(f"    専門分野: {expertise}")
+            print(f"    説明: {elder['description']}")
+
+    def add_elder(
+        self,
+        name: str,
+        expertise: List[str],
+        description: str = "",
+        reliability: float = 1.0,
+    ):
+        """新しいエルダーを追加"""
+        try:
+            elder_id = self.manager.add_elder(
+                name=name,
+                expertise=expertise,
+                description=description,
+                reliability_score=reliability,
+            )
+            print(f"✅ エルダーを追加しました (ID: {elder_id})")
+            print(f"   👤 名前: {name}")
+            print(f"   🎓 専門分野: {', '.join(expertise)}")
+        except Exception as e:
+            print(f"❌ エラー: {e}")
+
+    def import_json(self, filepath: str):
+        """JSONファイルから知識を一括インポート"""
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            if not isinstance(data, list):
+                print("❌ JSONファイルは知識エントリの配列である必要があります")
+                return
+
+            print(f"📥 {len(data)}件の知識をインポート中...")
+            success, errors = self.manager.bulk_import_knowledge(data)
+            print(f"✅ インポート完了: 成功 {success}件, エラー {errors}件")
+        except Exception as e:
+            print(f"❌ エラー: {e}")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="AI Elder - エルダーズ知識管理システム",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  # 知識を検索
+  ai-elder search "ベクトルデータベース"
+
+  # カテゴリを指定して検索
+  ai-elder search "睡眠" --category "生活の知恵" --limit 5
+
+  # 新しい知識を追加
+  ai-elder add "タイトル" "内容" --category "技術" --tags "Python,AI"
+
+  # カテゴリ一覧を表示
+  ai-elder list-categories
+
+  # エルダー一覧を表示
+  ai-elder list-elders
+
+  # 新しいエルダーを追加
+  ai-elder add-elder "AI専門家" --expertise "機械学習,深層学習" --description "AIの専門家"
+
+  # JSONファイルから一括インポート
+  ai-elder import knowledge.json
+""",
+    )
+
+    subparsers = parser.add_subparsers(dest="command", help="実行するコマンド")
+
+    # search コマンド
+    search_parser = subparsers.add_parser("search", help="知識を検索")
+    search_parser.add_argument("query", help="検索クエリ")
+    search_parser.add_argument("--limit", type=int, default=10, help="表示件数")
+    search_parser.add_argument("--category", help="カテゴリで絞り込み")
+    search_parser.add_argument("--elder", help="エルダーで絞り込み")
+
+    # add コマンド
+    add_parser = subparsers.add_parser("add", help="新しい知識を追加")
+    add_parser.add_argument("title", help="知識のタイトル")
+    add_parser.add_argument("content", help="知識の内容")
+    add_parser.add_argument("--category", default="技術", help="カテゴリ")
+    add_parser.add_argument("--elder", default="技術長老", help="エルダー")
+    add_parser.add_argument("--tags", nargs="+", help="タグ（スペース区切り）")
+    add_parser.add_argument("--importance", type=float, default=0.5, help="重要度 (0-1)")
+
+    # list-categories コマンド
+    subparsers.add_parser("list-categories", help="カテゴリ一覧を表示")
+
+    # list-elders コマンド
+    subparsers.add_parser("list-elders", help="エルダー一覧を表示")
+
+    # add-elder コマンド
+    elder_parser = subparsers.add_parser("add-elder", help="新しいエルダーを追加")
+    elder_parser.add_argument("name", help="エルダーの名前")
+    elder_parser.add_argument(
+        "--expertise", nargs="+", required=True, help="専門分野（スペース区切り）"
+    )
+    elder_parser.add_argument("--description", default="", help="説明")
+    elder_parser.add_argument(
+        "--reliability", type=float, default=1.0, help="信頼度 (0-1)"
+    )
+
+    # import コマンド
+    import_parser = subparsers.add_parser("import", help="JSONファイルから一括インポート")
+    import_parser.add_argument("filepath", help="JSONファイルのパス")
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        return
+
+    cli = AIElderCLI()
+
+    if args.command == "search":
+        cli.search(args.query, args.limit, args.category, args.elder)
+    elif args.command == "add":
+        cli.add(
+            args.title,
+            args.content,
+            args.category,
+            args.elder,
+            args.tags,
+            args.importance,
+        )
+    elif args.command == "list-categories":
+        cli.list_categories()
+    elif args.command == "list-elders":
+        cli.list_elders()
+    elif args.command == "add-elder":
+        cli.add_elder(args.name, args.expertise, args.description, args.reliability)
+    elif args.command == "import":
+        cli.import_json(args.filepath)
+
+
+if __name__ == "__main__":
+    main()
