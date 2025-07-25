@@ -349,7 +349,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
             "claude-cli",
             "execute",
             "--model",
-            self.config.get("claude_model", "claude-3-5-sonnet-20241022"),
+            self.config.get("claude_model", "claude-sonnet-4-20250514"),
             "--max-tokens",
             str(self.config.get("max_tokens", 4096)),
 

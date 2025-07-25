@@ -1,3 +1,0 @@
-# Elders Guild Log Maintenance
-0 2 * * * /usr/bin/python3 /home/aicompany/ai_co/scripts/log_maintenance_system.py --maintenance 2>&1 | logger -t log_maintenance
-0 */6 * * * /usr/bin/python3 /home/aicompany/ai_co/scripts/log_maintenance_system.py --rotate 2>&1 | logger -t log_maintenance

@@ -1,1 +1,0 @@
-# Elders Guild Test Suite

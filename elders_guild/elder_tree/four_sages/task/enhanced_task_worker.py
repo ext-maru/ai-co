@@ -1531,7 +1531,7 @@ from libs.slack_notifier import SlackNotifier
                 validation_errors.append(f"Missing required config: {attr}")
 
         # モデルの妥当性確認
-        valid_models = ["claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022"]
+        valid_models = ["claude-sonnet-4-20250514", "claude-sonnet-4-20250514"]
         if self.model not in valid_models:
             validation_errors.append(f"Invalid model: {self.model}")
 
