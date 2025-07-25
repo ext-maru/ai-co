@@ -21,7 +21,13 @@ class TrueCompleteElderTreeMigrator:
     """本当の完全Elder Tree移行"""
     
     def __init__(self):
-        self.base_path = Path("/home/aicompany/ai_co/elders_guild")
+        # 環境変数から設定を取得
+        try:
+            from shared_libs.config import config  
+            self.base_path = Path(config.ELDERS_GUILD_HOME)
+        except ImportError:
+            # fallback to default
+            self.base_path = Path("/home/aicompany/ai_co/elders_guild")
         self.elder_tree_path = self.base_path / "elder_tree"
         
     def get_migration_mapping(self) -> Dict[str, str]:

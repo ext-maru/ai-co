@@ -19,7 +19,13 @@ logger = logging.getLogger(__name__)
 
 def execute_complete_migration():
     """完全移行を実行"""
-    base_path = Path("/home/aicompany/ai_co/elders_guild")
+    # 環境変数から設定を取得
+    try:
+        from shared_libs.config import config  
+        base_path = Path(config.ELDERS_GUILD_HOME)
+    except ImportError:
+        # fallback to default
+        base_path = Path("/home/aicompany/ai_co/elders_guild")
     
     # 移行マッピング
     mapping = {
