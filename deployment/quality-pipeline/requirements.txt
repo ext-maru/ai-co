@@ -1,0 +1,44 @@
+# Quality Pipeline Dependencies
+
+# Core Dependencies
+python-a2a==0.5.9
+httpx>=0.25.0
+asyncio-mqtt>=0.13.0
+
+# Quality Tools
+pylint>=2.17.0
+mypy>=1.5.0
+black>=23.0.0
+isort>=5.12.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+coverage>=7.3.0
+
+# Monitoring & Metrics
+prometheus-client>=0.17.0
+psutil>=5.9.0
+
+# Logging & Configuration
+structlog>=23.1.0
+pydantic>=2.3.0
+pydantic-settings>=2.0.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Utilities
+rich>=13.5.0
+click>=8.1.0
+pathlib2>=2.3.0
+
+# Security
+bandit>=1.7.0
+safety>=2.3.0
+
+# Documentation
+sphinx>=7.1.0
+sphinx-rtd-theme>=1.3.0

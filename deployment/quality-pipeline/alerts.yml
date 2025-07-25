@@ -1,0 +1,58 @@
+# Quality Pipeline アラートルール
+groups:
+  - name: quality-servants
+    rules:
+      # サーバント死活監視
+      - alert: ServantDown
+        expr: up{job=~"quality-watcher|test-forge|comprehensive-guardian"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          service: quality-pipeline
+        annotations:
+          summary: "Quality Servant {{ $labels.job }} is down"
+          description: "{{ $labels.job }} has been down for more than 30 seconds"
+
+      # 高いエラー率
+      - alert: HighErrorRate
+        expr: rate(quality_pipeline_errors_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: quality-pipeline
+        annotations:
+          summary: "High error rate in quality pipeline"
+          description: "Error rate is {{ $value }} errors per second"
+
+      # レスポンス時間異常
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, quality_pipeline_request_duration_seconds) > 30
+        for: 5m
+        labels:
+          severity: warning
+          service: quality-pipeline
+        annotations:
+          summary: "High response time in quality pipeline"
+          description: "95th percentile response time is {{ $value }} seconds"
+
+      # 品質スコア低下
+      - alert: QualityScoreDropped
+        expr: quality_pipeline_average_score < 80
+        for: 10m
+        labels:
+          severity: warning
+          service: quality-pipeline
+        annotations:
+          summary: "Quality score has dropped"
+          description: "Average quality score is {{ $value }}, below 80 threshold"
+
+      # メモリ使用量高
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes / 1024 / 1024 > 500
+        for: 5m
+        labels:
+          severity: warning
+          service: quality-pipeline
+        annotations:
+          summary: "High memory usage in {{ $labels.job }}"
+          description: "Memory usage is {{ $value }}MB"

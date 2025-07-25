@@ -1,0 +1,132 @@
+version: '3.8'
+
+# 🏛️ Quality Pipeline Docker Compose
+# Elder Council 品質保証システム
+
+services:
+  # 🧝‍♂️ Quality Watcher (Block A)
+  quality-watcher:
+    build:
+      context: ../..
+      dockerfile: deployment/quality-pipeline/Dockerfile.quality-watcher
+    container_name: quality-watcher-servant
+    hostname: quality-watcher
+    ports:
+      - "8810:8810"
+    environment:
+      - SERVANT_NAME=quality-watcher
+      - SERVANT_PORT=8810
+      - LOG_LEVEL=INFO
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ../../logs:/app/logs
+      - ../../data:/app/data
+    networks:
+      - quality-net
+    restart: unless-stopped
+    labels:
+      - "com.ai-company.service=quality-watcher"
+      - "com.ai-company.block=A"
+      - "com.ai-company.role=static-analysis"
+
+  # 🔨 Test Forge (Block B)
+  test-forge:
+    build:
+      context: ../..
+      dockerfile: deployment/quality-pipeline/Dockerfile.test-forge
+    container_name: test-forge-servant
+    hostname: test-forge
+    ports:
+      - "8811:8811"
+    environment:
+      - SERVANT_NAME=test-forge
+      - SERVANT_PORT=8811
+      - LOG_LEVEL=INFO
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ../../logs:/app/logs
+      - ../../data:/app/data
+    networks:
+      - quality-net
+    restart: unless-stopped
+    labels:
+      - "com.ai-company.service=test-forge"
+      - "com.ai-company.block=B"
+      - "com.ai-company.role=test-quality"
+
+  # 🛡️ Comprehensive Guardian (Block C)
+  comprehensive-guardian:
+    build:
+      context: ../..
+      dockerfile: deployment/quality-pipeline/Dockerfile.comprehensive-guardian
+    container_name: comprehensive-guardian-servant
+    hostname: comprehensive-guardian
+    ports:
+      - "8812:8812"
+    environment:
+      - SERVANT_NAME=comprehensive-guardian
+      - SERVANT_PORT=8812
+      - LOG_LEVEL=INFO
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ../../logs:/app/logs
+      - ../../data:/app/data
+    networks:
+      - quality-net
+    restart: unless-stopped
+    labels:
+      - "com.ai-company.service=comprehensive-guardian"
+      - "com.ai-company.block=C"
+      - "com.ai-company.role=overall-quality"
+
+  # 📊 Prometheus (モニタリング)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: quality-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    networks:
+      - quality-net
+    restart: unless-stopped
+
+  # 📈 Grafana (ダッシュボード)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: quality-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=elder-council
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - quality-net
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+# ネットワーク
+networks:
+  quality-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ボリューム
+volumes:
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local

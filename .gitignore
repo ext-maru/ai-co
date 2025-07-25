@@ -5,6 +5,8 @@ __pycache__/
 *$py.class
 venv/
 .env
+elders_guild/venv/
+elders_guild/*/venv/
 
 # Logs - 完全に無視
 logs/

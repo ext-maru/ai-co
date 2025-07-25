@@ -1,0 +1,53 @@
+# 🔨 TestForge Servant Docker Image
+FROM python:3.10-slim
+
+# ラベル
+LABEL maintainer="Elder Council <elders@ai-company.com>"
+LABEL description="Test Forge Servant - Test Quality Judge"
+LABEL version="1.0.0"
+
+# 作業ディレクトリ
+WORKDIR /app
+
+# システムパッケージ更新
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# 依存関係をコピー
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# python-a2a インストール
+RUN pip install --no-cache-dir python-a2a==0.5.9
+
+# アプリケーションコードをコピー
+COPY libs/quality/engines/test_automation_engine.py /app/libs/quality/engines/
+COPY libs/quality/servants/test_forge_servant.py /app/libs/quality/servants/
+COPY libs/quality/servants/__init__.py /app/libs/quality/servants/
+COPY libs/quality/__init__.py /app/libs/quality/
+COPY libs/__init__.py /app/libs/
+
+# 非root ユーザー作成
+RUN useradd -m -u 1000 servant && \
+    chown -R servant:servant /app
+
+USER servant
+
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD python -c "import httpx; httpx.get('http://localhost:8811/health')"
+
+# ポート公開
+EXPOSE 8811
+
+# 環境変数
+ENV PYTHONUNBUFFERED=1
+ENV SERVANT_NAME=test-forge
+ENV SERVANT_PORT=8811
+ENV LOG_LEVEL=INFO
+
+# 起動コマンド
+CMD ["python", "-m", "libs.quality.servants.test_forge_servant"]
