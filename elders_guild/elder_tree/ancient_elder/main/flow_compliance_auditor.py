@@ -19,7 +19,7 @@ import sys
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from libs.ancient_elder.base import AncientElderBase, AuditResult, ViolationSeverity
+from elders_guild.elder_tree.ancient_elder.base import AncientElderBase, AuditResult, ViolationSeverity
 
 
 class FlowStage(str):

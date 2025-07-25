@@ -17,7 +17,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
 # EldersLegacy統合インポート
-from libs.core.elders_legacy import (
+from elders_guild.elder_tree.core.elders_legacy import (
     EldersLegacyDomain,
     EldersServiceLegacy,
     IronWillCriteria,

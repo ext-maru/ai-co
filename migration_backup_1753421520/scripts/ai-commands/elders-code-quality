@@ -1,0 +1,500 @@
+#!/usr/bin/env python3
+"""
+🏛️ Elders Guild Code Quality CLI Tool
+エルダーズギルド最高品質コーディングシステム CLI
+
+Usage:
+    elders-code-quality analyze <file_or_code>
+    elders-code-quality learn-bug <bug_file.json>
+    elders-code-quality learn-pattern <pattern_file.json>
+    elders-code-quality report <directory>
+    elders-code-quality server [--port=8000]
+    elders-code-quality --help
+
+Examples:
+    elders-code-quality analyze mycode.py
+    elders-code-quality analyze "def hello(): return 'world'"
+    elders-code-quality report /path/to/project
+    elders-code-quality server --port=8080
+"""
+
+import sys
+import os
+import json
+import asyncio
+import argparse
+import tempfile
+from pathlib import Path
+from typing import Dict, List, Any
+from datetime import datetime
+
+# Add project root to path
+sys.path.insert(0, '/home/aicompany/ai_co')
+
+from libs.elders_code_quality_engine import (
+    EldersCodeQualityEngine,
+    BugLearningCase,
+    QualityPattern,
+    quick_analyze
+)
+
+# Configuration
+DB_PARAMS = {
+    'host': 'localhost',
+    'database': 'elders_guild_pgvector',
+    'user': 'postgres',
+    'password': ''
+}
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+class Colors:
+    """ANSI color codes for terminal output"""
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
+def print_header():
+    """Print Elders Guild header"""
+    print(f"{Colors.PURPLE}{Colors.BOLD}")
+    print("🏛️  ELDERS GUILD CODE QUALITY SYSTEM")
+    print("    グランドエルダーmaru承認済み最高品質保証システム")
+    print(f"{Colors.END}")
+
+def print_quality_score(score: float):
+    """Print quality score with color coding"""
+    if score >= 90:
+        color = Colors.GREEN
+        level = "🏆 EXCELLENT"
+    elif score >= 75:
+        color = Colors.BLUE
+        level = "✨ GOOD"
+    elif score >= 60:
+        color = Colors.YELLOW
+        level = "⚠️  NEEDS IMPROVEMENT"
+    else:
+        color = Colors.RED
+        level = "🚨 POOR"
+    
+    print(f"{color}{Colors.BOLD}Quality Score: {score:.1f}/100 - {level}{Colors.END}")
+
+def print_analysis_result(result: Dict[str, Any]):
+    """Print comprehensive analysis result"""
+    analysis = result.get('analysis', {})
+    
+    print(f"\n{Colors.BOLD}📊 CODE ANALYSIS REPORT{Colors.END}")
+    print("=" * 50)
+    
+    # Quality Score
+    quality_score = analysis.get('quality_score', 0)
+    print_quality_score(quality_score)
+    
+    # Basic Metrics
+    print(f"\n{Colors.CYAN}📈 Metrics:{Colors.END}")
+    print(f"  Complexity Score: {analysis.get('complexity_score', 'N/A')}")
+    print(f"  Maintainability Index: {analysis.get('maintainability_index', 'N/A'):.1f}")
+    print(f"  Iron Will Compliance: {'✅' if analysis.get('iron_will_compliance') else '❌'}")
+    print(f"  TDD Compatibility: {'✅' if analysis.get('tdd_compatibility') else '❌'}")
+    
+    # Issues
+    issues = analysis.get('issues', [])
+    if issues:
+        print(f"\n{Colors.RED}🚨 Issues Found ({len(issues)}):{Colors.END}")
+        for i, issue in enumerate(issues[:5], 1):  # Show top 5
+            severity = issue.get('severity', 0)
+            severity_color = Colors.RED if severity > 7 else Colors.YELLOW if severity > 4 else Colors.WHITE
+            print(f"  {i}. {severity_color}{issue.get('name', 'Unknown')} (Severity: {severity}){Colors.END}")
+            print(f"     {issue.get('description', 'No description')}")
+            if 'line_start' in issue:
+                print(f"     Line {issue['line_start']}")
+    
+    # Suggestions
+    suggestions = analysis.get('suggestions', [])
+    if suggestions:
+        print(f"\n{Colors.GREEN}💡 Improvement Suggestions ({len(suggestions)}):{Colors.END}")
+        for i, suggestion in enumerate(suggestions[:5], 1):  # Show top 5
+            priority = suggestion.get('priority', 'medium')
+            priority_color = Colors.RED if priority == 'high' else Colors.YELLOW if priority == 'medium' else Colors.WHITE
+            print(f"  {i}. {priority_color}{suggestion.get('title', 'Suggestion')}{Colors.END}")
+            print(f"     {suggestion.get('description', 'No description')}")
+    
+    # Bug Risks
+    bug_risks = analysis.get('bug_risks', [])
+    if bug_risks:
+        print(f"\n{Colors.RED}⚠️  Bug Risks ({len(bug_risks)}):{Colors.END}")
+        for i, risk in enumerate(bug_risks[:3], 1):  # Show top 3
+            risk_level = risk.get('risk_level', 0)
+            print(f"  {i}. {risk.get('name', 'Unknown Risk')} (Level: {risk_level}/10)")
+            print(f"     {risk.get('description', 'No description')}")
+            if 'line' in risk:
+                print(f"     Line {risk['line']}")
+    
+    # Similar Patterns
+    similar_patterns = result.get('similar_patterns', [])
+    if similar_patterns:
+        print(f"\n{Colors.BLUE}🎯 Similar Quality Patterns Found ({len(similar_patterns)}):{Colors.END}")
+        for i, pattern in enumerate(similar_patterns[:3], 1):
+            similarity = pattern.get('similarity', 0)
+            print(f"  {i}. {pattern.get('pattern_name', 'Unknown')} ({similarity:.1%} similar)")
+            print(f"     Type: {pattern.get('pattern_type', 'N/A')}")
+            print(f"     Improvement Score: {pattern.get('improvement_score', 'N/A')}")
+    
+    # Similar Bugs
+    similar_bugs = result.get('similar_bugs', [])
+    if similar_bugs:
+        print(f"\n{Colors.YELLOW}🐛 Similar Bug Patterns Found ({len(similar_bugs)}):{Colors.END}")
+        for i, bug in enumerate(similar_bugs[:3], 1):
+            similarity = bug.get('similarity', 0)
+            severity = bug.get('severity_level', 0)
+            print(f"  {i}. {bug.get('bug_title', 'Unknown')} ({similarity:.1%} similar)")
+            print(f"     Category: {bug.get('bug_category', 'N/A')} (Severity: {severity}/10)")
+            print(f"     Solution: {bug.get('fix_solution', 'No solution')}")
+    
+    # Overall Recommendation
+    recommendation = result.get('overall_recommendation', {})
+    if recommendation:
+        print(f"\n{Colors.PURPLE}🎯 OVERALL RECOMMENDATION:{Colors.END}")
+        quality_level = recommendation.get('quality_level', 'unknown')
+        iron_will_status = recommendation.get('iron_will_status', 'unknown')
+        tdd_status = recommendation.get('tdd_status', 'unknown')
+        
+        print(f"  Quality Level: {quality_level.upper()}")
+        print(f"  Iron Will Status: {iron_will_status.upper()}")
+        print(f"  TDD Status: {tdd_status.upper()}")
+        
+        priority_actions = recommendation.get('priority_actions', [])
+        if priority_actions:
+            print(f"  Priority Actions:")
+            for action in priority_actions:
+                print(f"    • {action}")
+        
+        estimated_time = recommendation.get('estimated_improvement_time', 0)
+        if estimated_time > 0:
+            print(f"  Estimated Improvement Time: {estimated_time} minutes")
+
+async def analyze_code(target: str):
+    """Analyze code from file or direct input"""
+    print_header()
+    
+    # Determine if target is a file or code snippet
+    if os.path.isfile(target):
+        print(f"📁 Analyzing file: {target}")
+        with open(target, 'r', encoding='utf-8') as f:
+            code = f.read()
+        file_path = target
+    else:
+        print("📝 Analyzing code snippet:")
+        print(f"{Colors.CYAN}{target}{Colors.END}")
+        code = target
+        file_path = "<snippet>"
+    
+    print("\n🔍 Running analysis...")
+    
+    try:
+        result = await quick_analyze(code, DB_PARAMS, OPENAI_API_KEY)
+        print_analysis_result(result)
+        
+        # Save detailed report
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        report_file = f"/tmp/elders_quality_report_{timestamp}.json"
+        with open(report_file, 'w', encoding='utf-8') as f:
+            json.dump(result, f, indent=2, default=str)
+        print(f"\n📄 Detailed report saved: {report_file}")
+        
+    except Exception as e:
+        print(f"{Colors.RED}❌ Analysis failed: {e}{Colors.END}")
+        return 1
+    
+    return 0
+
+async def learn_bug_case(bug_file: str):
+    """Learn from a bug case JSON file"""
+    print_header()
+    print(f"🧠 Learning from bug case: {bug_file}")
+    
+    if not os.path.isfile(bug_file):
+        print(f"{Colors.RED}❌ Bug file not found: {bug_file}{Colors.END}")
+        return 1
+    
+    try:
+        with open(bug_file, 'r', encoding='utf-8') as f:
+            bug_data = json.load(f)
+        
+        bug_case = BugLearningCase(**bug_data)
+        
+        engine = EldersCodeQualityEngine(DB_PARAMS, OPENAI_API_KEY)
+        await engine.initialize()
+        
+        try:
+            uuid = await engine.learn_bug_case(bug_case)
+            print(f"{Colors.GREEN}✅ Bug case learned successfully: {uuid}{Colors.END}")
+        finally:
+            await engine.shutdown()
+            
+    except Exception as e:
+        print(f"{Colors.RED}❌ Failed to learn bug case: {e}{Colors.END}")
+        return 1
+    
+    return 0
+
+async def learn_quality_pattern(pattern_file: str):
+    """Learn from a quality pattern JSON file"""
+    print_header()
+    print(f"🎯 Learning quality pattern: {pattern_file}")
+    
+    if not os.path.isfile(pattern_file):
+        print(f"{Colors.RED}❌ Pattern file not found: {pattern_file}{Colors.END}")
+        return 1
+    
+    try:
+        with open(pattern_file, 'r', encoding='utf-8') as f:
+            pattern_data = json.load(f)
+        
+        pattern = QualityPattern(**pattern_data)
+        
+        engine = EldersCodeQualityEngine(DB_PARAMS, OPENAI_API_KEY)
+        await engine.initialize()
+        
+        try:
+            uuid = await engine.learn_quality_pattern(pattern)
+            print(f"{Colors.GREEN}✅ Quality pattern learned successfully: {uuid}{Colors.END}")
+        finally:
+            await engine.shutdown()
+            
+    except Exception as e:
+        print(f"{Colors.RED}❌ Failed to learn quality pattern: {e}{Colors.END}")
+        return 1
+    
+    return 0
+
+async def generate_project_report(directory: str):
+    """Generate quality report for entire project"""
+    print_header()
+    print(f"📊 Generating project report for: {directory}")
+    
+    if not os.path.isdir(directory):
+        print(f"{Colors.RED}❌ Directory not found: {directory}{Colors.END}")
+        return 1
+    
+    # Find all Python files
+    python_files = []
+    for root, dirs, files in os.walk(directory):
+        # Skip common directories
+        dirs[:] = [d for d in dirs if d not in ['.git', '__pycache__', '.pytest_cache', 'node_modules']]
+        for file in files:
+            if file.endswith('.py'):
+                python_files.append(os.path.join(root, file))
+    
+    print(f"📁 Found {len(python_files)} Python files")
+    
+    if not python_files:
+        print(f"{Colors.YELLOW}⚠️  No Python files found{Colors.END}")
+        return 0
+    
+    # Analyze each file
+    results = []
+    engine = EldersCodeQualityEngine(DB_PARAMS, OPENAI_API_KEY)
+    await engine.initialize()
+    
+    try:
+        print("\n🔍 Analyzing files...")
+        for i, file_path in enumerate(python_files[:20], 1):  # Limit to 20 files for demo
+            rel_path = os.path.relpath(file_path, directory)
+            print(f"  {i:2d}. {rel_path}", end=" ... ")
+            
+            try:
+                result = await engine.analyze_file(file_path)
+                if 'error' not in result:
+                    analysis = result.get('analysis', {})
+                    quality_score = analysis.get('quality_score', 0)
+                    print(f"{Colors.GREEN}✅ {quality_score:.1f}/100{Colors.END}")
+                    results.append({
+                        'file': rel_path,
+                        'quality_score': quality_score,
+                        'complexity': analysis.get('complexity_score', 0),
+                        'maintainability': analysis.get('maintainability_index', 0),
+                        'iron_will': analysis.get('iron_will_compliance', False),
+                        'tdd': analysis.get('tdd_compatibility', False),
+                        'issues_count': len(analysis.get('issues', [])),
+                        'bug_risks_count': len(analysis.get('bug_risks', []))
+                    })
+                else:
+                    print(f"{Colors.RED}❌ Error{Colors.END}")
+                    
+            except Exception as e:
+                print(f"{Colors.RED}❌ {str(e)[:50]}{Colors.END}")
+                
+    finally:
+        await engine.shutdown()
+    
+    # Generate summary report
+    if results:
+        print(f"\n{Colors.BOLD}📊 PROJECT QUALITY SUMMARY{Colors.END}")
+        print("=" * 60)
+        
+        avg_quality = sum(r['quality_score'] for r in results) / len(results)
+        avg_complexity = sum(r['complexity'] for r in results) / len(results)
+        avg_maintainability = sum(r['maintainability'] for r in results) / len(results)
+        iron_will_compliance = sum(1 for r in results if r['iron_will']) / len(results) * 100
+        tdd_compatibility = sum(1 for r in results if r['tdd']) / len(results) * 100
+        total_issues = sum(r['issues_count'] for r in results)
+        total_bug_risks = sum(r['bug_risks_count'] for r in results)
+        
+        print(f"📁 Files analyzed: {len(results)}")
+        print(f"🏆 Average quality score: {avg_quality:.1f}/100")
+        print(f"🧮 Average complexity: {avg_complexity:.1f}")
+        print(f"🔧 Average maintainability: {avg_maintainability:.1f}")
+        print(f"⚔️  Iron Will compliance: {iron_will_compliance:.1f}%")
+        print(f"🧪 TDD compatibility: {tdd_compatibility:.1f}%")
+        print(f"🚨 Total issues: {total_issues}")
+        print(f"⚠️  Total bug risks: {total_bug_risks}")
+        
+        # Top and bottom files
+        results.sort(key=lambda x: x['quality_score'], reverse=True)
+        
+        print(f"\n{Colors.GREEN}🏆 TOP 5 QUALITY FILES:{Colors.END}")
+        for i, result in enumerate(results[:5], 1):
+            print(f"  {i}. {result['file']} - {result['quality_score']:.1f}/100")
+        
+        if len(results) > 5:
+            print(f"\n{Colors.RED}🚨 BOTTOM 5 FILES NEEDING ATTENTION:{Colors.END}")
+            for i, result in enumerate(results[-5:], 1):
+                print(f"  {i}. {result['file']} - {result['quality_score']:.1f}/100")
+        
+        # Save detailed report
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        report_file = f"/tmp/elders_project_report_{timestamp}.json"
+        with open(report_file, 'w', encoding='utf-8') as f:
+            json.dump({
+                'summary': {
+                    'avg_quality': avg_quality,
+                    'avg_complexity': avg_complexity,
+                    'avg_maintainability': avg_maintainability,
+                    'iron_will_compliance': iron_will_compliance,
+                    'tdd_compatibility': tdd_compatibility,
+                    'total_issues': total_issues,
+                    'total_bug_risks': total_bug_risks
+                },
+                'files': results,
+                'timestamp': datetime.now().isoformat()
+            }, f, indent=2)
+        print(f"\n📄 Detailed report saved: {report_file}")
+    
+    return 0
+
+def create_sample_files():
+    """Create sample learning files for demonstration"""
+    # Sample bug case
+    bug_case = {
+        "bug_category": "logic_error",
+        "bug_title": "Off-by-one error in loop",
+        "original_code": "for i in range(len(items) + 1):\n    process(items[i])",
+        "bug_description": "Loop iterates one time too many causing IndexError",
+        "error_message": "IndexError: list index out of range",
+        "fix_solution": "Remove the +1 from range() to iterate only over valid indices",
+        "fix_code": "for i in range(len(items)):\n    process(items[i])",
+        "severity_level": 7,
+        "language": "python",
+        "prevention_tips": [
+            "Use enumerate() instead of range(len())",
+            "Use for item in items: instead of indexing",
+            "Always check array bounds"
+        ]
+    }
+    
+    # Sample quality pattern
+    quality_pattern = {
+        "pattern_type": "best_practice",
+        "pattern_name": "Type Hints for Better Code",
+        "problematic_code": "def calculate_discount(price, discount):\n    return price * (1 - discount)",
+        "improved_code": "def calculate_discount(price: float, discount: float) -> float:\n    \"\"\"Calculate discounted price.\"\"\"\n    return price * (1 - discount)",
+        "description": "Adding type hints improves code readability and enables static type checking",
+        "improvement_score": 85.0,
+        "language": "python",
+        "tags": ["typing", "documentation", "best_practice"]
+    }
+    
+    # Save sample files
+    with open('/tmp/sample_bug_case.json', 'w') as f:
+        json.dump(bug_case, f, indent=2)
+    
+    with open('/tmp/sample_quality_pattern.json', 'w') as f:
+        json.dump(quality_pattern, f, indent=2)
+    
+    print(f"{Colors.GREEN}✅ Sample files created:{Colors.END}")
+    print("  📄 /tmp/sample_bug_case.json")
+    print("  📄 /tmp/sample_quality_pattern.json")
+
+async def main():
+    """Main CLI entry point"""
+    parser = argparse.ArgumentParser(
+        description="🏛️ Elders Guild Code Quality System",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__
+    )
+    
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    
+    # Analyze command
+    analyze_parser = subparsers.add_parser('analyze', help='Analyze code quality')
+    analyze_parser.add_argument('target', help='File path or code snippet to analyze')
+    
+    # Learn bug command
+    bug_parser = subparsers.add_parser('learn-bug', help='Learn from a bug case')
+    bug_parser.add_argument('bug_file', help='JSON file containing bug case data')
+    
+    # Learn pattern command
+    pattern_parser = subparsers.add_parser('learn-pattern', help='Learn from a quality pattern')
+    pattern_parser.add_argument('pattern_file', help='JSON file containing quality pattern data')
+    
+    # Report command
+    report_parser = subparsers.add_parser('report', help='Generate project quality report')
+    report_parser.add_argument('directory', help='Project directory to analyze')
+    
+    # Sample command
+    sample_parser = subparsers.add_parser('samples', help='Create sample learning files')
+    
+    # Version command
+    version_parser = subparsers.add_parser('version', help='Show version information')
+    
+    args = parser.parse_args()
+    
+    if not args.command:
+        parser.print_help()
+        return 0
+    
+    try:
+        if args.command == 'analyze':
+            return await analyze_code(args.target)
+        elif args.command == 'learn-bug':
+            return await learn_bug_case(args.bug_file)
+        elif args.command == 'learn-pattern':
+            return await learn_quality_pattern(args.pattern_file)
+        elif args.command == 'report':
+            return await generate_project_report(args.directory)
+        elif args.command == 'samples':
+            create_sample_files()
+            return 0
+        elif args.command == 'version':
+            print_header()
+            print("Version: 1.0.0 - Elders Guild Quality Engine")
+            print("Author: Claude Elder (エルダーズギルド)")
+            print("License: Iron Will Protocol")
+            return 0
+    except KeyboardInterrupt:
+        print(f"\n{Colors.YELLOW}🛑 Operation cancelled{Colors.END}")
+        return 1
+    except Exception as e:
+        print(f"\n{Colors.RED}❌ Unexpected error: {e}{Colors.END}")
+        return 1
+
+if __name__ == "__main__":
+    exit_code = asyncio.run(main())
+    sys.exit(exit_code)

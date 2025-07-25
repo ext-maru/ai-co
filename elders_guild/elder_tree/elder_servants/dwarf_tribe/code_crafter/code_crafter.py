@@ -28,13 +28,13 @@ except ImportError:
     # Handle specific exception case
     HAS_AUTOPEP8 = False
 
-from libs.elder_servants.base.elder_servant import (
+from elders_guild.elder_tree.elder_servants.base.elder_servant import (
     ServantCapability,
     ServantCategory,
     TaskResult,
     TaskStatus,
 )
-from libs.elder_servants.base.specialized_servants import DwarfServant
+from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
 
 class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
@@ -1319,7 +1319,7 @@ class {test_class_name}(unittest.TestCase):
         Returns:
             ServantResponse: 処理結果
         """
-        from libs.elder_servants.base.elder_servant import ServantResponse
+        from elders_guild.elder_tree.elder_servants.base.elder_servant import ServantResponse
 
         try:
             # タスクを実行 (task_idとtask_typeを含める)

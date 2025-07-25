@@ -28,7 +28,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 import psutil
 
 # EldersLegacy統合インポート
-from libs.core.elders_legacy import (
+from elders_guild.elder_tree.core.elders_legacy import (
     EldersLegacyDomain,
     EldersServiceLegacy,
     IronWillCriteria,
@@ -36,12 +36,12 @@ from libs.core.elders_legacy import (
 )
 
 # プロダクション統合インポート
-from libs.elder_servants.integrations.production.error_handling import (
+from elders_guild.elder_tree.elder_servants.integrations.production.error_handling import (
     ElderIntegrationError,
     ErrorCategory,
     ErrorSeverity,
 )
-from libs.elder_servants.integrations.production.monitoring import (
+from elders_guild.elder_tree.elder_servants.integrations.production.monitoring import (
     ElderIntegrationMonitor,
     log_error,
     log_info,

@@ -13,8 +13,8 @@ import logging
 from typing import Any, Dict, List, Optional
 from datetime import datetime
 
-from libs.elder_servants.dwarf_workshop.doc_forge import DocForge, DocumentationConfig
-from libs.design_generation.requirement_analyzer import (
+from elders_guild.elder_tree.elder_servants.dwarf_workshop.doc_forge import DocForge, DocumentationConfig
+from elders_guild.elder_tree.design_generation.requirement_analyzer import (
     EnhancedRequirementAnalyzer,
     BusinessEntity,
     BusinessRelationship, 

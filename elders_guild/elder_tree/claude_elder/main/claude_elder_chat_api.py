@@ -18,26 +18,26 @@ from typing import Any, Callable, Dict, List, Optional
 # プロジェクトルートをパスに追加
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from libs.env_config import get_config
+from elders_guild.elder_tree.env_config import get_config
 
 # Conditional imports to handle compatibility issues
 try:
-    from libs.pm_elder_integration import PMElderIntegration
+    from elders_guild.elder_tree.pm_elder_integration import PMElderIntegration
 except ImportError:
     PMElderIntegration = None
 
 try:
-    from libs.elder_council_auto_decision import ElderCouncilAutoDecision
+    from elders_guild.elder_tree.elder_council_auto_decision import ElderCouncilAutoDecision
 except ImportError:
     ElderCouncilAutoDecision = None
 
 try:
-    from libs.elder_servant_dispatcher import ElderServantDispatcher
+    from elders_guild.elder_tree.elder_servant_dispatcher import ElderServantDispatcher
 except ImportError:
     ElderServantDispatcher = None
 
 try:
-    from libs.rag_elder_wizards import RAGElderWizards
+    from elders_guild.elder_tree.rag_elder_wizards import RAGElderWizards
 except ImportError:
     RAGElderWizards = None
 

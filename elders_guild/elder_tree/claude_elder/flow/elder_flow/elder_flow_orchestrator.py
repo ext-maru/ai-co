@@ -15,7 +15,7 @@ from enum import Enum
 import uuid
 
 # Elder Flow Error Handler統合
-from libs.elder_flow_error_handler import (
+from elders_guild.elder_tree.elder_flow_error_handler import (
     ElderFlowError,
     SageConsultationError,
     QualityGateError,
@@ -130,7 +130,7 @@ class SageCouncilSystem:
     ) -> Dict:
         """賢者の専門知識に基づいた助言を生成"""
         # 実際の4賢者システムを使用
-        from libs.elder_flow_four_sages_complete import ElderFlowFourSagesComplete
+        from elders_guild.elder_tree.elder_flow_four_sages_complete import ElderFlowFourSagesComplete
 
         context = context or {}
         four_sages = ElderFlowFourSagesComplete()
@@ -374,7 +374,7 @@ class ElderFlowOrchestrator:
                 self.logger.info("⚡ 品質エンジン統合モード: 3エンジン統合品質チェック実行")
                 
                 # 品質エンジン統合システムをインポート・実行
-                from libs.elder_flow_quality_integration import ElderFlowQualityIntegration
+                from elders_guild.elder_tree.elder_flow_quality_integration import ElderFlowQualityIntegration
                 
                 integration_system = ElderFlowQualityIntegration()
                 
@@ -582,8 +582,8 @@ class ElderFlowOrchestrator:
         task.add_log("👷 Starting execution phase with real servants")
 
         # 実装版サーバントをインポート
-        from libs.elder_flow_servant_executor_real import ServantFactory, ServantType
-        from libs.elder_flow_servant_executor import ServantTask
+        from elders_guild.elder_tree.elder_flow_servant_executor_real import ServantFactory, ServantType
+        from elders_guild.elder_tree.elder_flow_servant_executor import ServantTask
 
         # 賢者のアドバイスから実行タスクを生成
         servant_tasks = self._create_servant_tasks_from_advice(task)
@@ -634,8 +634,8 @@ class ElderFlowOrchestrator:
         task.add_log("🔍 Starting real quality check")
 
         # 実装版サーバントをインポート
-        from libs.elder_flow_servant_executor_real import ServantFactory, ServantType
-        from libs.elder_flow_servant_executor import ServantTask
+        from elders_guild.elder_tree.elder_flow_servant_executor_real import ServantFactory, ServantType
+        from elders_guild.elder_tree.elder_flow_servant_executor import ServantTask
 
         # 品質検査官サーバントを作成
         quality_servant = ServantFactory.create_servant(ServantType.QUALITY_INSPECTOR)
@@ -788,8 +788,8 @@ class ElderFlowOrchestrator:
         task.add_log("📊 Creating council report with real Git operations")
 
         # 実装版サーバントをインポート
-        from libs.elder_flow_servant_executor_real import ServantFactory, ServantType
-        from libs.elder_flow_servant_executor import ServantTask
+        from elders_guild.elder_tree.elder_flow_servant_executor_real import ServantFactory, ServantType
+        from elders_guild.elder_tree.elder_flow_servant_executor import ServantTask
 
         # Git管理者サーバントを作成
         git_servant = ServantFactory.create_servant(ServantType.GIT_KEEPER)
@@ -912,7 +912,7 @@ class ElderFlowOrchestrator:
 
     def _create_servant_tasks_from_advice(self, task: ElderFlowTask) -> List:
         """賢者のアドバイスからサーバントタスクを生成"""
-        from libs.elder_flow_servant_executor import ServantTask, ServantType
+        from elders_guild.elder_tree.elder_flow_servant_executor import ServantTask, ServantType
         import uuid
 
         servant_tasks = []
@@ -1317,7 +1317,7 @@ class ElderFlowOrchestrator:
                 self.logger.info("⚡ 品質エンジン統合モード: 3エンジン統合品質チェック実行")
                 
                 # 品質エンジン統合システムをインポート・実行
-                from libs.elder_flow_quality_integration import ElderFlowQualityIntegration
+                from elders_guild.elder_tree.elder_flow_quality_integration import ElderFlowQualityIntegration
                 
                 integration_system = ElderFlowQualityIntegration()
                 
@@ -1465,8 +1465,8 @@ class ElderFlowOrchestrator:
         task.add_log("📤 Starting Git automation")
         
         # 実装版サーバントをインポート
-        from libs.elder_flow_servant_executor_real import ServantFactory, ServantType
-        from libs.elder_flow_servant_executor import ServantTask
+        from elders_guild.elder_tree.elder_flow_servant_executor_real import ServantFactory, ServantType
+        from elders_guild.elder_tree.elder_flow_servant_executor import ServantTask
         
         # Git管理者サーバントを作成
         git_servant = ServantFactory.create_servant(ServantType.GIT_KEEPER)

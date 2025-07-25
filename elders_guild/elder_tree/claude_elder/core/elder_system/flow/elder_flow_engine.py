@@ -25,14 +25,14 @@ from shared_libs.config import config
 def get_logger(name):
     """logger取得メソッド"""
     return logging.getLogger(name)
-from libs.core.elders_legacy import (
+from elders_guild.elder_tree.core.elders_legacy import (
     EldersFlowLegacy,
     EldersLegacyDomain,
     enforce_boundary,
 )
-from libs.elder_flow_orchestrator import ElderFlowOrchestrator
-from libs.elder_system.flow.pid_lock_manager import PIDLockContext, PIDLockManager
-from libs.tracking.unified_tracking_db import UnifiedTrackingDB
+from elders_guild.elder_tree.elder_flow_orchestrator import ElderFlowOrchestrator
+from elders_guild.elder_tree.elder_system.flow.pid_lock_manager import PIDLockContext, PIDLockManager
+from elders_guild.elder_tree.tracking.unified_tracking_db import UnifiedTrackingDB
 
 logger = get_logger("elder_flow_engine")
 

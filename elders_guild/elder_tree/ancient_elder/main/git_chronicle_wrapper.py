@@ -11,7 +11,7 @@ from typing import Dict, Any, Optional
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from libs.ancient_elder.base import AncientElderBase, AuditResult, ViolationSeverity
+from elders_guild.elder_tree.ancient_elder.base import AncientElderBase, AuditResult, ViolationSeverity
 
 
 class GitChronicle(AncientElderBase):
@@ -38,7 +38,7 @@ class GitChronicle(AncientElderBase):
         
         try:
             # 実装を使用
-            from libs.ancient_elder.git_chronicle_impl import GitChronicleImpl
+            from elders_guild.elder_tree.ancient_elder.git_chronicle_impl import GitChronicleImpl
             impl = GitChronicleImpl(Path(target.get("path", ".")))
             
             # 分析期間

@@ -17,12 +17,12 @@ import time
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from libs.elder_servants.base.elder_servant import (
+from elders_guild.elder_tree.elder_servants.base.elder_servant import (
     ServantCapability,
     TaskResult,
     TaskStatus,
 )
-from libs.elder_servants.base.specialized_servants import DwarfServant
+from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
 
 class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):

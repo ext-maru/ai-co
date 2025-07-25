@@ -15,10 +15,10 @@ from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
 from enum import Enum
 
-from libs.elder_system.issue_classifier_v2 import (
+from elders_guild.elder_tree.elder_system.issue_classifier_v2 import (
     IssueTypeClassifierV2, IssueCategory, IssueType
 )
-from libs.elder_system.technical_requirements_extractor import (
+from elders_guild.elder_tree.elder_system.technical_requirements_extractor import (
     TechnicalRequirementsExtractor, ExtractionResult
 )
 

@@ -1,0 +1,11 @@
+#!/bin/bash
+# AI Dashboard - System monitoring dashboard
+echo "🎯 AI Company Dashboard"
+echo "============================"
+echo "📊 システム状態:"
+./bin/ai-status
+echo ""
+echo "📋 最新タスク:"
+./bin/ai-tasks | head -10
+echo ""
+echo "🔍 リアルタイム監視: ai-monitor"

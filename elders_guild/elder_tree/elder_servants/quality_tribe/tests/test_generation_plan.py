@@ -17,10 +17,10 @@ from shared_libs.config import config
 sys.path.insert(0, str(Path(config.ELDERS_GUILD_HOME).parent))
 
 # Elder Flow活用
-from libs.elder_flow import execute_elder_flow
+from elders_guild.elder_tree.elder_flow import execute_elder_flow
 
 # 品質チェックシステム活用
-from libs.elders_code_quality import CodeQualityAnalyzer
+from elders_guild.elder_tree.elders_code_quality import CodeQualityAnalyzer
 
 
 class ElderTreeTestGenerator:

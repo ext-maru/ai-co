@@ -37,8 +37,8 @@ import sys
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from libs.base_soul import BaseSoul, ElderType, SoulCapability, SoulIdentity, SoulState
-from libs.base_soul import SoulRequest, SoulResponse
+from elders_guild.elder_tree.base_soul import BaseSoul, ElderType, SoulCapability, SoulIdentity, SoulState
+from elders_guild.elder_tree.base_soul import SoulRequest, SoulResponse
 
 logger = logging.getLogger(__name__)
 

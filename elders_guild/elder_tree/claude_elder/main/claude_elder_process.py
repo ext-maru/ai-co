@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 from enum import Enum
 
-from libs.elder_process_base import (
+from elders_guild.elder_tree.elder_process_base import (
     ElderProcessBase, ElderRole, SageType, MessageType, ElderMessage
 )
 
@@ -433,5 +433,5 @@ class ClaudeElderProcess(ElderProcessBase):
 
 # プロセス起動
 if __name__ == "__main__":
-    from libs.elder_process_base import run_elder_process
+    from elders_guild.elder_tree.elder_process_base import run_elder_process
     run_elder_process(ClaudeElderProcess)

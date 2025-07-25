@@ -122,7 +122,7 @@ def execute(task: str, priority: str, auto_commit: bool):
         click.echo("   自動コミット: 有効")
     
     # 実際の実行
-    # from libs.elder_flow import execute_elder_flow
+    # from elders_guild.elder_tree.elder_flow import execute_elder_flow
     # execute_elder_flow(task, priority, auto_commit)
 
 @flow.command()

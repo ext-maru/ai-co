@@ -1,0 +1,126 @@
+#!/bin/bash
+#
+# AI API Health - APIキーのヘルスチェック実行
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_DIR"
+
+# 仮想環境チェック
+if [[ ! "$AI_VENV_ACTIVE" == "1" ]]; then
+    if [[ -f "venv/bin/activate" ]]; then
+        source venv/bin/activate
+        export AI_VENV_ACTIVE=1
+    fi
+fi
+
+# オプション解析
+WATCH_MODE=false
+INTERVAL=30
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --watch)
+            WATCH_MODE=true
+            shift
+            ;;
+        --interval)
+            INTERVAL="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Usage: ai-api-health [--watch] [--interval SECONDS]"
+            exit 1
+            ;;
+    esac
+done
+
+# ヘルスチェック実行関数
+run_health_check() {
+    python3 -c "
+import sys
+import os
+from datetime import datetime
+sys.path.append('$PROJECT_DIR')
+
+try:
+    from libs.claude_client_with_rotation import ClaudeClientWithRotation
+
+    client = ClaudeClientWithRotation('$PROJECT_DIR/config/config.json')
+
+    print(f'🏥 API Health Check - {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}')
+    print('=' * 60)
+
+    # ヘルスチェック実行
+    health_result = client.health_check()
+
+    # クライアント統計
+    stats = health_result['client_stats']
+    print(f'📊 Client Statistics:')
+    print(f'   Total Requests: {stats[\"request_count\"]}')
+    print(f'   Successful: {stats[\"successful_requests\"]}')
+    print(f'   Failed: {stats[\"failed_requests\"]}')
+    print(f'   Success Rate: {stats[\"success_rate\"]:.1f}%')
+    print()
+
+    # API Key Status
+    api_status = stats['api_key_status']
+    print(f'🔑 API Key Manager Status:')
+    print(f'   Total Keys: {api_status[\"total_keys\"]}')
+    print(f'   Active Keys: {api_status[\"active_keys\"]}')
+    print(f'   Rotation Enabled: {api_status[\"rotation_enabled\"]}')
+    print(f'   Strategy: {api_status[\"strategy\"]}')
+    print()
+
+    # 個別キー健康状態
+    api_health = health_result['api_key_health']
+    print(f'💊 Individual Key Health:')
+
+    for key_alias, health in api_health.items():
+        status_emoji = {'healthy': '✅', 'unhealthy': '❌'}
+        emoji = status_emoji.get(health['status'], '❓')
+        print(f'   {emoji} {key_alias}: {health[\"status\"]}')
+
+        if health['status'] == 'unhealthy':
+            print(f'      Error: {health[\"error\"]}')
+
+    print()
+
+    # 推奨アクション
+    if api_status['active_keys'] == 0:
+        print('⚠️  WARNING: No active API keys available!')
+        print('   Recommended actions:')
+        print('   1. Check API key validity')
+        print('   2. Reset keys with: ai-api-reset all')
+        print('   3. Check rate limits')
+    elif api_status['active_keys'] < api_status['total_keys'] // 2:
+        print('⚠️  CAUTION: Limited API key availability')
+        print('   Consider resetting failed keys')
+    else:
+        print('✅ System healthy with sufficient API key availability')
+
+except ImportError as e:
+    print(f'❌ Import Error: {e}')
+except Exception as e:
+    print(f'❌ Error: {e}')
+"
+}
+
+if [[ "$WATCH_MODE" == "true" ]]; then
+    echo "🔄 Continuous health monitoring (Ctrl+C to stop)"
+    echo "📊 Update interval: ${INTERVAL} seconds"
+    echo ""
+
+    while true; do
+        run_health_check
+        echo ""
+        echo "⏳ Next update in ${INTERVAL} seconds..."
+        sleep "$INTERVAL"
+        clear
+    done
+else
+    run_health_check
+fi

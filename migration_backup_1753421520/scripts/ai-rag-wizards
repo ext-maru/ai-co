@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+"""
+RAG Elder Wizards 管理コマンド
+"""
+
+import argparse
+import asyncio
+import json
+import sys
+from pathlib import Path
+
+# プロジェクトルートをPythonパスに追加
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from libs.task_sender import TaskSender
+from workers.rag_wizards_worker import RAGWizardsWorker
+
+
+def start_worker():
+    """ワーカーを起動"""
+    print("🧙 Starting RAG Elder Wizards Worker...")
+
+    async def run():
+        worker = RAGWizardsWorker()
+        try:
+            await worker.start()
+        except KeyboardInterrupt:
+            print("\n⏹️ Stopping worker...")
+            await worker.stop()
+
+    asyncio.run(run())
+
+
+def trigger_learning(topic=None):
+    """手動学習をトリガー"""
+    print(f"🎯 Triggering manual learning for: {topic or 'all topics'}")
+
+    sender = TaskSender()
+    task_id = f"rag_wizard_learn_{int(asyncio.get_event_loop().time())}"
+
+    message = {"task_id": task_id, "task_type": "manual_learning", "topic": topic}
+
+    success = sender.send_to_queue("rag_wizards_tasks", message)
+
+    if success:
+        print(f"✅ Learning task sent: {task_id}")
+    else:
+        print(f"❌ Failed to send learning task")
+
+    sender.close()
+
+
+def get_status():
+    """ステータスを取得"""
+    print("📊 Getting RAG Wizards status...")
+
+    sender = TaskSender()
+    task_id = f"rag_wizard_status_{int(asyncio.get_event_loop().time())}"
+
+    message = {"task_id": task_id, "task_type": "status_report"}
+
+    success = sender.send_to_queue("rag_wizards_tasks", message)
+
+    if success:
+        print(f"✅ Status request sent: {task_id}")
+    else:
+        print(f"❌ Failed to send status request")
+
+    sender.close()
+
+
+def process_gap(gap_type, topic, description, priority=0.5):
+    """特定の知識ギャップを処理"""
+    print(f"🔍 Processing knowledge gap: {topic}")
+
+    sender = TaskSender()
+    task_id = f"rag_wizard_gap_{int(asyncio.get_event_loop().time())}"
+
+    message = {
+        "task_id": task_id,
+        "task_type": "knowledge_gap",
+        "gap": {
+            "gap_type": gap_type,
+            "topic": topic,
+            "description": description,
+            "priority": priority,
+        },
+    }
+
+    success = sender.send_to_queue("rag_wizards_tasks", message)
+
+    if success:
+        print(f"✅ Gap processing task sent: {task_id}")
+    else:
+        print(f"❌ Failed to send gap processing task")
+
+    sender.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description="RAG Elder Wizards Management")
+
+    subparsers = parser.add_subparsers(dest="command", help="Commands")
+
+    # start コマンド
+    parser_start = subparsers.add_parser("start", help="Start RAG Wizards Worker")
+
+    # learn コマンド
+    parser_learn = subparsers.add_parser("learn", help="Trigger manual learning")
+    parser_learn.add_argument("--topic", "-t", help="Specific topic to learn about")
+
+    # status コマンド
+    parser_status = subparsers.add_parser("status", help="Get system status")
+
+    # gap コマンド
+    parser_gap = subparsers.add_parser("gap", help="Process knowledge gap")
+    parser_gap.add_argument(
+        "--type",
+        "-t",
+        required=True,
+        choices=[
+            "missing_context",
+            "incomplete_documentation",
+            "outdated_information",
+            "unexplored_relationship",
+        ],
+        help="Type of knowledge gap",
+    )
+    parser_gap.add_argument("--topic", required=True, help="Topic of the gap")
+    parser_gap.add_argument(
+        "--description", "-d", required=True, help="Gap description"
+    )
+    parser_gap.add_argument(
+        "--priority", "-p", type=float, default=0.5, help="Priority (0.0-1.0)"
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "start":
+        start_worker()
+    elif args.command == "learn":
+        trigger_learning(args.topic)
+    elif args.command == "status":
+        get_status()
+    elif args.command == "gap":
+        process_gap(args.type, args.topic, args.description, args.priority)
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()

@@ -29,14 +29,14 @@ from typing import Any, Dict, List, Optional, Union
 
 import yaml
 
-from libs.elder_servants.base.elder_servant import (
+from elders_guild.elder_tree.elder_servants.base.elder_servant import (
     ServantCapability,
     ServantRequest,
     ServantResponse,
     TaskResult,
     TaskStatus,
 )
-from libs.elder_servants.base.specialized_servants import DwarfServant
+from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
 
 @dataclass
@@ -1286,7 +1286,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         self, request: "ServantRequest[Dict[str, Any]]"
     ) -> "ServantResponse[Dict[str, Any]]":
         """EldersLegacy準拠のリクエスト処理"""
-        from libs.elder_servants.base.elder_servant import ServantResponse
+        from elders_guild.elder_tree.elder_servants.base.elder_servant import ServantResponse
 
         try:
             task_data = {

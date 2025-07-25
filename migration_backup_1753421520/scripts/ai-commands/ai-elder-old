@@ -1,0 +1,98 @@
+#!/bin/bash
+# AI Elder - Enhanced Claude CLI with Elders Guild Knowledge
+# エルダーズギルド統合Claude CLI
+
+# 使用方法チェック
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "🏛️  ai-elder - Elders Guild Enhanced Claude CLI"
+    echo ""
+    echo "使用方法:"
+    echo "  ai-elder cast              エルダーズギルド知識付きClaude起動（推奨）"
+    echo "  ai-elder cast [prompt]     特定プロンプトで起動"
+    echo "  ai-elder status            システム状況確認"
+    echo "  ai-elder knowledge         CLAUDE.md知識確認"
+    echo "  ai-elder test              起動フック単体テスト"
+    echo "  ai-elder old [args]        旧ai-elderコマンド実行"
+    echo ""
+    echo "🧙‍♂️ Elders Guild Features:"
+    echo "  • CLAUDE.md自動読み込み"
+    echo "  • クロードエルダーアイデンティティ"
+    echo "  • 4賢者システム知識"
+    echo "  • CO-STARフレームワーク"
+    echo "  • TDD開発原則"
+    echo ""
+    echo "例:"
+    echo "  ai-elder cast                    # 対話式で起動"
+    echo "  ai-elder cast 'TDDで新機能作成'   # プロンプト指定"
+    echo "  ai-elder old council status      # 旧機能使用"
+    exit 0
+fi
+
+# プロジェクトルート移動
+cd /home/aicompany/ai_co
+
+# サブコマンド処理
+case "$1" in
+    "cast")
+        echo "🧙‍♂️ Elder Casting - Summoning Claude with Elders Guild Knowledge..."
+        shift  # 'cast'を引数から除去
+        exec /home/aicompany/ai_co/claude-enhanced "$@"
+        ;;
+    "status")
+        echo "🏛️  Elders Guild System Status"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "📍 Project Root: $(pwd)"
+        echo "📄 CLAUDE.md: $([ -f CLAUDE.md ] && echo '✅ Present' || echo '❌ Missing')"
+        echo "🔧 claude-enhanced: $([ -x claude-enhanced ] && echo '✅ Executable' || echo '❌ Missing')"
+        echo "📚 Startup Hook: $([ -f claude_startup_hook.js ] && echo '✅ Present' || echo '❌ Missing')"
+        echo "🧙‍♂️ Knowledge Base: $([ -d knowledge_base ] && echo "✅ $(ls knowledge_base | wc -l) files" || echo '❌ Missing')"
+        echo ""
+        echo "🎯 Quick Test:"
+        node claude_startup_hook.js 2>/dev/null && echo "✅ Startup hook working" || echo "❌ Startup hook failed"
+        ;;
+    "knowledge")
+        echo "📚 CLAUDE.md Knowledge Check"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        if [ -f CLAUDE.md ]; then
+            echo "📊 File Size: $(du -h CLAUDE.md | cut -f1)"
+            echo "📝 Lines: $(wc -l < CLAUDE.md)"
+            echo ""
+            echo "🔍 Key Sections Detected:"
+            grep -E "^##\s+" CLAUDE.md | head -10
+            echo ""
+            echo "🧙‍♂️ Testing Knowledge Extraction:"
+            node claude_startup_hook.js | grep "Sections loaded"
+        else
+            echo "❌ CLAUDE.md not found in current directory"
+        fi
+        ;;
+    "test")
+        echo "🧪 Testing Elders Guild Startup Hook"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        node claude_startup_hook.js
+        echo ""
+        echo "Environment Variables Set:"
+        env | grep CLAUDE_ || echo "No CLAUDE_* environment variables found"
+        ;;
+    "old")
+        echo "🔄 Executing legacy ai-elder command..."
+        shift  # 'old'を引数から除去
+        exec /home/aicompany/ai_co/ai-elder-old "$@"
+        ;;
+    *)
+        echo "🏛️  AI Elder - Elders Guild Enhanced Claude CLI"
+        echo ""
+        echo "使用方法: ai-elder <command>"
+        echo ""
+        echo "主要コマンド:"
+        echo "  cast       🧙‍♂️ エルダーズギルド知識付きでClaude起動（推奨）"
+        echo "  status     📊 システム状況確認"
+        echo "  knowledge  📚 CLAUDE.md知識確認"
+        echo "  test       🧪 起動フック単体テスト"
+        echo "  old        🔄 旧ai-elderコマンド実行"
+        echo ""
+        echo "詳細: ai-elder --help"
+        echo ""
+        echo "🚀 クイックスタート: ai-elder cast"
+        ;;
+esac

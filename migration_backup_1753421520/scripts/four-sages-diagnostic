@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+"""
+🏥 Four Sages Diagnostic CLI
+4賢者システム診断コマンドラインツール
+"""
+
+import argparse
+import asyncio
+import json
+import sys
+from pathlib import Path
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from libs.four_sages_diagnostic_system import FourSagesDiagnosticSystem, run_four_sages_diagnosis
+
+
+async def main():
+    """メイン実行関数"""
+    parser = argparse.ArgumentParser(
+        description="🏥 Four Sages System Diagnostic Tool",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  four-sages-diagnostic                    # 基本診断実行
+  four-sages-diagnostic --auto-fix         # 診断＋自動修復
+  four-sages-diagnostic --json-output      # JSON形式で出力
+  four-sages-diagnostic --components env,db # 特定コンポーネントのみ診断
+        """
+    )
+    
+    parser.add_argument(
+        "--auto-fix", 
+        action="store_true",
+        help="自動修復を問い合わせなしで実行"
+    )
+    
+    parser.add_argument(
+        "--json-output",
+        action="store_true", 
+        help="結果をJSON形式で出力"
+    )
+    
+    parser.add_argument(
+        "--components",
+        help="診断対象コンポーネント (env,db,kb,proc,fs,config)"
+    )
+    
+    parser.add_argument(
+        "--output-file",
+        help="結果出力先ファイル"
+    )
+    
+    parser.add_argument(
+        "--base-path",
+        help="プロジェクトベースパス",
+        default="/home/aicompany/ai_co"
+    )
+    
+    parser.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="詳細出力"
+    )
+    
+    args = parser.parse_args()
+    
+    try:
+        # 診断システム初期化
+        diagnostic = FourSagesDiagnosticSystem()
+        diagnostic.base_path = Path(args.base_path)
+        
+        if not args.json_output:
+            print("🏥 4賢者システム診断を開始します...")
+        
+        # 診断実行
+        report = await diagnostic.run_full_diagnosis()
+        
+        # 自動修復実行（必要に応じて）
+        if args.auto_fix or (not args.json_output and report['summary']['auto_fixable'] > 0):
+            if args.auto_fix or input("\n🔧 自動修復を実行しますか? (y/n): ").lower() == 'y':
+                if not args.json_output:
+                    print("🔧 自動修復を実行中...")
+                    
+                fix_results = await diagnostic.apply_auto_fixes()
+                
+                if not args.json_output:
+                    print(f"  修復完了: {fix_results['fixes_applied']}")
+                    print(f"  修復失敗: {fix_results['fixes_failed']}")
+                    
+                    if fix_results['fixes_applied'] > 0:
+                        print("🔄 再診断を実行中...")
+                        report = await diagnostic.run_full_diagnosis()
+                
+                # 修復結果をレポートに追加
+                report['fix_results'] = fix_results
+        
+        # 結果出力
+        if args.json_output:
+            output = json.dumps(report, indent=2, default=str)
+            if args.output_file:
+                with open(args.output_file, 'w') as f:
+                    f.write(output)
+                print(f"診断結果を {args.output_file} に保存しました")
+            else:
+                print(output)
+        else:
+            # ヒューマンリーダブルな出力
+            display_report(report, verbose=args.verbose)
+            
+            if args.output_file:
+                with open(args.output_file, 'w') as f:
+                    json.dump(report, f, indent=2, default=str)
+                print(f"\n📄 詳細レポートを {args.output_file} に保存しました")
+        
+        # 終了コード決定
+        if report['overall_status'] in ['critical', 'error']:
+            sys.exit(2)
+        elif report['overall_status'] == 'warning':
+            sys.exit(1)
+        else:
+            sys.exit(0)
+            
+    except KeyboardInterrupt:
+        print("\n❌ 診断がキャンセルされました")
+        sys.exit(130)
+    except Exception as e:
+        print(f"❌ 診断実行中にエラーが発生しました: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
+
+
+def display_report(report, verbose=False):
+    """レポートをヒューマンリーダブル形式で表示"""
+    print(f"\n📊 診断レポート - {report['timestamp']}")
+    print(f"全体ステータス: {get_status_emoji(report['overall_status'])} {report['overall_status'].upper()}")
+    print(f"健全性スコア: {report['health_score']:.1f}/100")
+    
+    summary = report['summary']
+    print(f"\n📋 サマリー:")
+    print(f"  総テスト数: {summary['total_tests']}")
+    print(f"  健全: {summary['healthy']} | 警告: {summary['warnings']} | エラー: {summary['errors']} | 重大: {summary['critical']}")
+    
+    if summary['auto_fixable'] > 0:
+        print(f"  🔧 自動修復可能: {summary['auto_fixable']}")
+    
+    # コンポーネント別状況
+    if verbose:
+        print(f"\n🔍 コンポーネント別詳細:")
+        for component_name, results in report['components'].items():
+            if results:
+                component_status = get_component_status(results)
+                print(f"  {get_component_emoji(component_name)} {component_name}: {component_status}")
+                
+                for result in results:
+                    status_emoji = get_status_emoji(result['status'])
+                    print(f"    {status_emoji} {result['test_name']}: {result['message']}")
+    
+    # 推奨事項
+    if report['recommendations']:
+        print(f"\n💡 推奨事項:")
+        for recommendation in report['recommendations']:
+            print(f"  {recommendation}")
+    
+    # 修復結果（あれば）
+    if 'fix_results' in report:
+        fix_results = report['fix_results']
+        print(f"\n🔧 自動修復結果:")
+        print(f"  修復完了: {fix_results['fixes_applied']}")
+        print(f"  修復失敗: {fix_results['fixes_failed']}")
+        
+        if verbose and fix_results['applied']:
+            print(f"  修復内容:")
+            for fix in fix_results['applied']:
+                print(f"    ✅ {fix['component']}: {fix['action']}")
+
+
+def get_status_emoji(status):
+    """ステータス絵文字を取得"""
+    emojis = {
+        'healthy': '✅',
+        'warning': '⚠️', 
+        'error': '❌',
+        'critical': '🚨'
+    }
+    return emojis.get(status, '❓')
+
+
+def get_component_emoji(component):
+    """コンポーネント絵文字を取得"""
+    emojis = {
+        'environment': '🌍',
+        'database': '💾',
+        'knowledge_base': '📚',
+        'processes': '⚙️',
+        'filesystem': '📁',
+        'configuration': '⚙️'
+    }
+    return emojis.get(component, '🔧')
+
+
+def get_component_status(results):
+    """コンポーネント全体ステータスを取得"""
+    statuses = [r['status'] for r in results]
+    if 'critical' in statuses:
+        return '🚨 CRITICAL'
+    elif 'error' in statuses:
+        return '❌ ERROR'
+    elif 'warning' in statuses:
+        return '⚠️ WARNING'
+    else:
+        return '✅ HEALTHY'
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

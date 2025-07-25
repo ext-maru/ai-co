@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+# AI API Reset - 指定されたAPIキーのステータスをリセット
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+if [[ $# -eq 0 ]]; then
+    echo "Usage: ai-api-reset <key_alias|all>"
+    echo ""
+    echo "Examples:"
+    echo "  ai-api-reset primary"
+    echo "  ai-api-reset key_1"
+    echo "  ai-api-reset all"
+    exit 1
+fi
+
+KEY_ALIAS="$1"
+
+cd "$PROJECT_DIR"
+
+# 仮想環境チェック
+if [[ ! "$AI_VENV_ACTIVE" == "1" ]]; then
+    if [[ -f "venv/bin/activate" ]]; then
+        source venv/bin/activate
+        export AI_VENV_ACTIVE=1
+    fi
+fi
+
+# Python実行
+python3 -c "
+import sys
+import os
+sys.path.append('$PROJECT_DIR')
+
+try:
+    from libs.claude_client_with_rotation import ClaudeClientWithRotation
+
+    client = ClaudeClientWithRotation('$PROJECT_DIR/config/config.json')
+    key_alias = '$KEY_ALIAS'
+
+    print('🔄 API Key Reset Tool')
+    print('=' * 30)
+
+    if key_alias.lower() == 'all':
+        # 全キーリセット
+        success_count = 0
+        for key in client.api_key_manager.api_keys:
+            if client.reset_api_key(key.alias):
+                print(f'✅ Reset: {key.alias}')
+                success_count += 1
+            else:
+                print(f'❌ Failed to reset: {key.alias}')
+
+        print(f'\\n📊 Reset Summary: {success_count}/{len(client.api_key_manager.api_keys)} keys reset')
+    else:
+        # 個別キーリセット
+        if client.reset_api_key(key_alias):
+            print(f'✅ Successfully reset API key: {key_alias}')
+        else:
+            print(f'❌ Failed to reset API key: {key_alias}')
+            print('   Key not found. Available keys:')
+            for key in client.api_key_manager.api_keys:
+                print(f'   - {key.alias}')
+
+except ImportError as e:
+    print(f'❌ Import Error: {e}')
+except Exception as e:
+    print(f'❌ Error: {e}')
+"

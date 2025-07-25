@@ -28,7 +28,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Union
 import psutil
 
 # EldersLegacy統合インポート
-from libs.core.elders_legacy import (
+from elders_guild.elder_tree.core.elders_legacy import (
     EldersLegacyDomain,
     EldersServiceLegacy,
     IronWillCriteria,

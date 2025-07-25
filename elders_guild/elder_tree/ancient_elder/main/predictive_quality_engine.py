@@ -28,7 +28,7 @@ import pickle
 
 # 基底クラスのインポート
 try:
-    from libs.ancient_elder.base import AncientMagicBase
+    from elders_guild.elder_tree.ancient_elder.base import AncientMagicBase
 except ImportError:
     logging.warning("AncientMagicBase not available")
     AncientMagicBase = object

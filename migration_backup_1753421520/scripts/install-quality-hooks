@@ -1,0 +1,229 @@
+#!/bin/bash
+"""
+🏛️ Elder Guild Quality Hooks Installer
+エルダーズギルド品質フック インストーラー
+"""
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+# Project root
+PROJECT_ROOT="/home/aicompany/ai_co"
+HOOKS_DIR="$PROJECT_ROOT/.git/hooks"
+
+print_header() {
+    echo -e "${PURPLE}${BOLD}"
+    echo "🏛️  ELDERS GUILD QUALITY HOOKS INSTALLER"
+    echo "    エルダーズギルド品質フック インストーラー"
+    echo -e "${NC}"
+}
+
+print_status() {
+    echo -e "${CYAN}$1${NC}"
+}
+
+print_success() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+check_git_repo() {
+    if [ ! -d "$PROJECT_ROOT/.git" ]; then
+        print_error "Not in a git repository: $PROJECT_ROOT"
+        exit 1
+    fi
+    print_success "Git repository detected"
+}
+
+backup_existing_hooks() {
+    if [ -f "$HOOKS_DIR/pre-commit" ]; then
+        backup_file="$HOOKS_DIR/pre-commit.backup.$(date +%Y%m%d_%H%M%S)"
+        cp "$HOOKS_DIR/pre-commit" "$backup_file"
+        print_warning "Backed up existing pre-commit hook to: $backup_file"
+    fi
+}
+
+install_pre_commit_hook() {
+    print_status "Installing Elder Guild pre-commit quality hook..."
+    
+    # Create hooks directory if it doesn't exist
+    mkdir -p "$HOOKS_DIR"
+    
+    # Copy our quality hook as the pre-commit hook
+    cp "$PROJECT_ROOT/scripts/git-hooks/pre-commit-quality" "$HOOKS_DIR/pre-commit"
+    chmod +x "$HOOKS_DIR/pre-commit"
+    
+    print_success "Pre-commit quality hook installed"
+}
+
+install_commit_msg_hook() {
+    print_status "Installing Elder Guild commit message hook..."
+    
+    cat > "$HOOKS_DIR/commit-msg" << 'EOF'
+#!/bin/bash
+# Elder Guild Commit Message Quality Hook
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat $COMMIT_MSG_FILE)
+
+# Check commit message format (Conventional Commits)
+if ! echo "$COMMIT_MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|ci|build|perf)(\(.+\))?: .+"; then
+    echo -e "${RED}${BOLD}🚨 COMMIT MESSAGE FORMAT ERROR${NC}"
+    echo -e "${YELLOW}Elder Guild requires Conventional Commits format:${NC}"
+    echo ""
+    echo -e "${CYAN}Examples:${NC}"
+    echo "  feat: add OAuth2.0 authentication system"
+    echo "  fix: resolve memory leak in data processor"
+    echo "  docs: update API documentation"
+    echo "  refactor: simplify user validation logic"
+    echo "  test: add unit tests for payment module"
+    echo ""
+    echo -e "${YELLOW}Your message:${NC} $COMMIT_MSG"
+    echo ""
+    echo -e "${RED}❌ Commit rejected${NC}"
+    exit 1
+fi
+
+# Check for Elder Guild signature
+if ! echo "$COMMIT_MSG" | grep -q "🤖 Generated with \[Claude Code\]"; then
+    # Add Elder Guild signature if not present
+    echo "" >> $COMMIT_MSG_FILE
+    echo "🤖 Generated with [Claude Code](https://claude.ai/code)" >> $COMMIT_MSG_FILE
+    echo "" >> $COMMIT_MSG_FILE
+    echo "Co-Authored-By: Claude <noreply@anthropic.com>" >> $COMMIT_MSG_FILE
+fi
+
+echo -e "${GREEN}✅ Commit message approved${NC}"
+exit 0
+EOF
+
+    chmod +x "$HOOKS_DIR/commit-msg"
+    print_success "Commit message hook installed"
+}
+
+create_hook_config() {
+    print_status "Creating hook configuration..."
+    
+    cat > "$PROJECT_ROOT/.elder-guild-hooks.conf" << EOF
+# Elder Guild Quality Hooks Configuration
+# Created: $(date)
+
+[quality_gate]
+enabled=true
+minimum_quality_score=70.0
+iron_will_required=true
+max_files_per_commit=50
+
+[pre_commit]
+check_python_files=true
+check_syntax=true
+check_imports=true
+check_complexity=true
+
+[commit_message]
+enforce_conventional_commits=true
+require_elder_signature=true
+max_length=100
+
+[bypass]
+# Emergency bypass (use with caution)
+# export ELDER_GUILD_BYPASS=1
+bypass_env_var=ELDER_GUILD_BYPASS
+EOF
+
+    print_success "Hook configuration created: .elder-guild-hooks.conf"
+}
+
+test_hooks() {
+    print_status "Testing hook installation..."
+    
+    # Test pre-commit hook
+    if [ -x "$HOOKS_DIR/pre-commit" ]; then
+        print_success "Pre-commit hook is executable"
+    else
+        print_error "Pre-commit hook is not executable"
+        exit 1
+    fi
+    
+    # Test commit-msg hook
+    if [ -x "$HOOKS_DIR/commit-msg" ]; then
+        print_success "Commit-msg hook is executable"
+    else
+        print_error "Commit-msg hook is not executable"
+        exit 1
+    fi
+    
+    print_success "All hooks installed successfully"
+}
+
+print_usage_info() {
+    echo ""
+    echo -e "${BLUE}${BOLD}📚 USAGE INFORMATION:${NC}"
+    echo ""
+    echo -e "${CYAN}🔍 Quality Check:${NC}"
+    echo "  • Automatic quality check on every commit"
+    echo "  • Minimum quality score: 70/100"
+    echo "  • Iron Will compliance required (no TODO/FIXME)"
+    echo "  • High-risk security issues blocked"
+    echo ""
+    echo -e "${CYAN}💬 Commit Messages:${NC}"
+    echo "  • Must follow Conventional Commits format"
+    echo "  • Automatic Elder Guild signature added"
+    echo "  • Examples: feat:, fix:, docs:, refactor:"
+    echo ""
+    echo -e "${CYAN}🚨 Emergency Bypass:${NC}"
+    echo "  • Export ELDER_GUILD_BYPASS=1 (use with extreme caution)"
+    echo "  • Or use: git commit --no-verify"
+    echo ""
+    echo -e "${CYAN}🛠️  Quality Tools:${NC}"
+    echo "  • elders-code-quality analyze <file>"
+    echo "  • elders-code-quality report ."
+    echo ""
+    echo -e "${GREEN}🎉 Elder Guild Quality Assurance is now active!${NC}"
+}
+
+main() {
+    print_header
+    
+    # Change to project directory
+    cd "$PROJECT_ROOT"
+    
+    # Installation steps
+    check_git_repo
+    backup_existing_hooks
+    install_pre_commit_hook
+    install_commit_msg_hook
+    create_hook_config
+    test_hooks
+    print_usage_info
+    
+    echo ""
+    print_success "Elder Guild Quality Hooks installation completed!"
+}
+
+# Run main function
+main "$@"

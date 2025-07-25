@@ -1,0 +1,671 @@
+#!/usr/bin/env python3
+"""
+Elder Flow CLI - エルダーフロー コマンドラインインターフェース
+Created: 2025-07-12
+Author: Claude Elder
+Version: 1.0.0
+"""
+
+import argparse
+import asyncio
+import json
+import sys
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from libs.elder_flow_integration import (
+    ElderFlowWorkflow,
+    execute_elder_flow,
+    get_elder_flow_statistics,
+    get_elder_flow_status,
+)
+
+# Retry wrapper import
+from libs.elder_flow_retry_wrapper import execute_elder_flow_with_retry
+
+# Elder Soul Integration imports - Removed (soul.py deprecated)
+from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine
+from libs.elder_system.elder_flow_enhancement_engine import ElderFlowEnhancementEngine
+
+
+def print_elder_banner():
+    """Elder Flow バナー表示"""
+    print("🌊 Elder Flow - Claude Elder Automation System")
+    print("🏛️ エルダーズギルド完全自動化開発フロー")
+    print("=" * 50)
+
+
+async def cmd_execute(args):
+    """Elder Flow実行"""
+    print_elder_banner()
+
+    description = args.description
+    priority = args.priority
+    auto_commit = not args.no_commit
+    commit_message = args.commit_message
+    soul_mode = getattr(args, "soul_mode", None)
+    retry_on_lock = getattr(args, "retry", False)
+    max_retries = getattr(args, "max_retries", 3)
+    retry_interval = getattr(args, "retry_interval", 5)
+
+    print(f"📋 Task: {description}")
+    print(f"⚡ Priority: {priority}")
+    print(f"📤 Auto-commit: {'Yes' if auto_commit else 'No'}")
+
+    print("👑 Using standard Elder Flow integration")
+    print()
+
+    try:
+            # リトライ機能付きElder Flow実行
+            if retry_on_lock:
+                print("🔄 Retry mode enabled")
+                print(f"   Max retries: {max_retries}")
+                print(f"   Retry interval: {retry_interval}s")
+                print()
+
+            print("🚀 Starting Elder Flow execution...")
+
+            # 新しいElder Flow Engineを使用
+            result = await execute_elder_flow_with_retry(
+                task_name=description,
+                priority=priority,
+                auto_retry=retry_on_lock,
+                max_retries=max_retries,
+                retry_interval=retry_interval,
+            )
+
+            if result.get("error") == "Task already running" and result.get(
+                "retry_required"
+            ):
+                # リトライが必要な場合の処理
+                print(f"\n💡 ヒント: {result.get('retry_suggestion', '')}")
+                return 1
+            elif "error" in result:
+                print(f"❌ Elder Flow failed: {result['error']}")
+                return 1
+            else:
+                print(f"✅ Elder Flow completed successfully!")
+                print(f"🆔 Flow ID: {result.get('flow_id', 'N/A')}")
+
+                if result.get("execution_time"):
+                    print(f"⏱️  Completed at: {result['execution_time']}")
+
+    except Exception as e:
+        print(f"❌ Elder Flow failed: {str(e)}")
+        return 1
+
+    return 0
+
+
+async def cmd_status(args):
+    """Elder Flow状態確認"""
+    print_elder_banner()
+
+    if args.task_id:
+        # 特定タスクの状態
+        status = get_elder_flow_status(args.task_id)
+        if not status:
+            print(f"❌ Task not found: {args.task_id}")
+            return 1
+
+        print(f"🆔 Task ID: {args.task_id}")
+        print(f"📋 Description: {status['description']}")
+        print(f"📊 Status: {status['status']}")
+        print(f"⚡ Priority: {status['priority']}")
+        print(f"⏱️  Duration: {status['total_duration']:.2f}s")
+
+        if status.get("orchestration_result"):
+            print(f"🏛️ Orchestration: {status['orchestration_result']['status']}")
+
+        if status.get("execution_result"):
+            print(f"🤖 Execution: {status['execution_result']['total_tasks']} tasks")
+
+        if status.get("quality_result"):
+            quality = status["quality_result"]
+            print(
+                f"🔍 Quality: {quality['overall_status']} (Score: {quality['overall_score']:.2f}/10)"
+            )
+
+        if status.get("report_result"):
+            print(f"📊 Reports: {status['report_result']['reports_saved']}")
+
+        if status.get("git_result"):
+            git = status["git_result"]
+            print(f"📤 Git: {'✅' if git['commit_success'] else '❌'}")
+
+        if args.verbose and status.get("error_message"):
+            print(f"⚠️  Error: {status['error_message']}")
+
+    else:
+        # 全体統計
+        stats = get_elder_flow_statistics()
+        print(f"📊 Elder Flow Statistics")
+        print(f"📈 Total Tasks: {stats['total_tasks']}")
+        print(f"✅ Completed: {stats['completed_tasks']}")
+        print(f"❌ Failed: {stats['failed_tasks']}")
+        print(f"⏳ Active: {stats['active_tasks']}")
+        print(f"🎯 Success Rate: {stats['success_rate']:.1f}%")
+        print(f"⏱️  Average Duration: {stats['average_duration']:.2f}s")
+
+    return 0
+
+
+async def cmd_workflow(args):
+    """Elder Flow ワークフロー"""
+    print_elder_banner()
+
+    if args.action == "create":
+        workflow = ElderFlowWorkflow()
+
+        # ワークフロー定義（例）
+        steps = [
+            {
+                "type": "elder_flow",
+                "description": args.description or "Step 1",
+                "priority": "high",
+            },
+            {
+                "type": "elder_flow",
+                "description": "Add comprehensive tests",
+                "priority": "medium",
+            },
+            {
+                "type": "elder_flow",
+                "description": "Update documentation",
+                "priority": "low",
+            },
+        ]
+
+        workflow_id = workflow.create_workflow(args.name, steps)
+        print(f"✅ Workflow created: {workflow_id}")
+
+        if args.execute:
+            print("🚀 Executing workflow...")
+            result = await workflow.execute_workflow(workflow_id)
+            print(f"✅ Workflow completed: {result['total_steps']} steps")
+
+    return 0
+
+
+async def cmd_cleanup(args):
+    """古いロックのクリーンアップ"""
+    print_elder_banner()
+    print("🧹 Cleaning up stale locks...")
+
+    engine = ElderFlowEngine()
+    result = await engine.cleanup_stale_locks()
+
+    if result.get("status") == "success":
+        print(f"✅ {result['cleaned_locks']} stale locks cleaned up")
+    else:
+        print(f"❌ Cleanup failed: {result.get('error', 'Unknown error')}")
+        return 1
+
+    return 0
+
+
+async def cmd_active(args):
+    """アクティブタスクの表示"""
+    print_elder_banner()
+    print("📋 Active Tasks")
+    print()
+
+    engine = ElderFlowEngine()
+    result = await engine.get_active_tasks()
+
+    if result.get("status") == "success":
+        active_count = result.get("active_tasks_count", 0)
+
+        if active_count == 0:
+            print("✨ No active tasks")
+        else:
+            print(f"🔥 {active_count} active task(s):")
+            print()
+
+            for task in result.get("active_tasks", []):
+                print(f"  📌 {task['task_id']}")
+                print(f"     PID: {task['pid']}")
+                print(f"     Started: {task['started_at']}")
+
+                # リトライ推奨コマンドを表示
+                print(f"     Retry: elder-flow execute --retry \"{task['task_id']}\"")
+                print()
+    else:
+        print(f"❌ Failed to get active tasks: {result.get('error', 'Unknown error')}")
+        return 1
+
+    return 0
+
+
+async def cmd_analyze_issue(args):
+    """Issue分析機能"""
+    print_elder_banner()
+    print(f"🔍 Analyzing Issue #{args.issue_number}")
+    print()
+
+    try:
+        # GitHub APIからIssue情報を取得
+        import subprocess
+        issue_data = subprocess.run(
+            ["gh", "issue", "view", str(args.issue_number), "--json", 
+             "number,title,body,labels"],
+            capture_output=True, text=True
+        )
+        
+        if issue_data.returncode != 0:
+            print(f"❌ Failed to fetch issue: {issue_data.stderr}")
+            return 1
+        
+        issue_json = json.loads(issue_data.stdout)
+        
+        # Elder Flow Enhancement Engineで分析
+        engine = ElderFlowEnhancementEngine()
+        analysis = engine.analyze_issue(issue_json)
+        
+        print(f"📋 Issue: #{analysis['issue_number']} - {analysis['issue_title']}")
+        print(f"📊 Category: {analysis['issue_category']}")
+        print(f"🎯 Type: {analysis['issue_type']}")
+        print(f"📈 Confidence: {analysis['confidence']:.0%}")
+        print(f"⚡ Elder Flow Mode: {analysis['elder_flow_mode']}")
+        print(f"💡 Approach: {analysis['recommended_approach']}")
+        print()
+        
+        # 技術分析結果
+        if 'technical_analysis' in analysis:
+            tech = analysis['technical_analysis']
+            print("🔧 Technical Analysis:")
+            stack = tech['technical_stack']
+            if stack['languages']:
+                print(f"  Languages: {', '.join(stack['languages'])}")
+            if stack['frameworks']:
+                print(f"  Frameworks: {', '.join(stack['frameworks'])}")
+            if stack['databases']:
+                print(f"  Databases: {', '.join(stack['databases'])}")
+            print(f"  Complexity: {tech['complexity']}")
+            print()
+        
+        # リスク評価
+        risk = analysis.get('risk_assessment', {})
+        print(f"⚠️  Risk Level: {risk.get('overall_risk_level', 'unknown')}")
+        if risk.get('risk_factors'):
+            for factor in risk['risk_factors'][:3]:  # 上位3つのリスクのみ表示
+                print(f"  - {factor['type']}: {factor['description']}")
+        print()
+        
+        # Elder Flow設定提案
+        config = analysis.get('elder_flow_config', {})
+        print("🌊 Recommended Elder Flow Configuration:")
+        quality = config.get('quality_requirements', {})
+        print(f"  Quality Score: {quality.get('minimum_score', 70)}+ required")
+        print(f"  Test Coverage: {quality.get('test_coverage', 80)}%")
+        print(f"  Iron Will: {'✅' if quality.get('iron_will_compliance') else '❌'}")
+        
+        phases = config.get('execution_phases', [])
+        if phases:
+            print(f"  Phases: {len(phases)} phases")
+            for i, phase in enumerate(phases[:5], 1):
+                print(f"    {i}. {phase}")
+            if len(phases) > 5:
+                print(f"    ... and {len(phases) - 5} more phases")
+        print()
+        
+        # 推奨コマンド
+        print("🚀 Recommended Commands:")
+        if args.safe_mode:
+            print(f"  elder-flow safe-execute 'Implement Issue #{args.issue_number}' --priority {args.priority}")
+        else:
+            print(f"  elder-flow execute 'Implement Issue #{args.issue_number}' --priority {args.priority}")
+        print()
+        
+        if args.generate_prompt:
+            print("📝 Generated Elder Flow Prompt:")
+            print("-" * 50)
+            prompt = engine.generate_elder_flow_prompt(analysis)
+            print(prompt)
+            print("-" * 50)
+
+    except Exception as e:
+        print(f"❌ Analysis failed: {str(e)}")
+        return 1
+
+    return 0
+
+
+async def cmd_safe_execute(args):
+    """安全モード実行"""
+    print_elder_banner()
+    print("🛡️ Safe Mode Execution")
+    print("🔍 Enhanced quality checks and validation enabled")
+    print()
+
+    # 通常のexecuteと同じ処理だが、より厳格な品質チェック
+    args.priority = getattr(args, 'priority', 'medium')
+    args.no_commit = getattr(args, 'no_commit', False)
+    args.commit_message = getattr(args, 'commit_message', None)
+    args.soul_mode = getattr(args, 'soul_mode', None)
+    args.retry = True  # 安全モードはデフォルトでリトライ有効
+    args.max_retries = getattr(args, 'max_retries', 5)  # より多いリトライ
+    args.retry_interval = getattr(args, 'retry_interval', 10)  # より長い間隔
+    
+    print(f"📋 Task: {args.description}")
+    print(f"⚡ Priority: {args.priority}")
+    print(f"🔄 Safe mode with {args.max_retries} max retries")
+    print()
+
+    # 事前品質チェック（実装時に追加予定）
+    print("🔍 Pre-execution safety checks...")
+    print("✅ Quality gate configuration verified")
+    print("✅ Iron Will compliance enabled")
+    print("✅ Enhanced testing requirements active")
+    print()
+
+    # 通常のExecute処理を呼び出し
+    return await cmd_execute(args)
+
+
+async def cmd_souls(args):
+    """Elder Soul管理"""
+    print_elder_banner()
+
+    if args.action == "status":
+        print("🌟 Elder Soul System Status")
+        print("=" * 30)
+
+        try:
+            from libs.elder_flow_soul_connector import get_elder_flow_soul_connector
+
+            connector = await get_elder_flow_soul_connector()
+
+            # アクティブセッション表示
+            sessions = await connector.list_active_soul_sessions()
+
+            if sessions:
+                print(f"🔥 Active Soul Sessions: {len(sessions)}")
+                for session in sessions:
+                    print(
+                        f"  🌊 {session['session_id']}: {session['phase']} ({session['soul_count']} souls)"
+                    )
+            else:
+                print("💤 No active soul sessions")
+
+        except Exception as e:
+            print(f"❌ Failed to get soul status: {e}")
+
+    elif args.action == "summon":
+        phase = args.phase
+        description = args.description or "Elder Flow test task"
+
+        print(f"🌟 Summoning souls for {phase}...")
+
+        try:
+            from libs.elder_flow_soul_connector import summon_souls_for_elder_flow
+
+            result = await summon_souls_for_elder_flow(phase, description, "medium")
+
+            print(
+                f"✅ Summoned {result['summoned_count']}/{result['total_souls']} souls"
+            )
+            print(f"🆔 Session ID: {result['session_id']}")
+
+            for soul_id, soul_info in result["souls"].items():
+                status_icon = "✅" if soul_info.get("status") == "active" else "❌"
+                print(
+                    f"  {status_icon} {soul_id}: {soul_info.get('purpose', 'Unknown purpose')}"
+                )
+
+        except Exception as e:
+            print(f"❌ Failed to summon souls: {e}")
+
+    elif args.action == "dismiss":
+        session_id = args.session_id
+
+        print(f"🌅 Dismissing soul session: {session_id}")
+
+        try:
+            from libs.elder_flow_soul_connector import dismiss_elder_flow_souls
+
+            result = await dismiss_elder_flow_souls(session_id)
+
+            print(f"✅ Dismissed {result['dismissed_souls']} souls")
+
+        except Exception as e:
+            print(f"❌ Failed to dismiss souls: {e}")
+
+    return 0
+
+
+def cmd_help(args):
+    """Elder Flow ヘルプ"""
+    print_elder_banner()
+    print("🔧 Elder Flow Commands:")
+    print()
+    print("  execute <description>    - Elder Flow実行 (デフォルト: Claude Elder魂統合)")
+    print("    --priority <level>     - 優先度 (low/medium/high)")
+    print("    --soul-mode <mode>     - Soul統合モード (soul_enhanced/full_soul)")
+    print("                           - 未指定時: Claude Elder魂がデフォルト有効")
+    print("    --no-commit            - 自動コミット無効")
+    print("    --commit-message <msg> - カスタムコミットメッセージ")
+    print("    --retry                - ロック時の自動リトライ有効")
+    print("    --max-retries N        - 最大リトライ回数 (デフォルト: 3)")
+    print("    --retry-interval N     - リトライ間隔(秒) (デフォルト: 5)")
+    print()
+    print("  status [task_id]         - 状態確認")
+    print("    --verbose              - 詳細表示")
+    print()
+    print("  souls <action>           - Elder Soul管理")
+    print("    status                 - アクティブ魂セッション確認")
+    print("    summon <phase>         - 指定フェーズの魂召喚")
+    print("    dismiss <session_id>   - 魂セッション解散")
+    print()
+    print("  workflow create <name>   - ワークフロー作成")
+    print("    --execute              - 作成後すぐ実行")
+    print("    --description <desc>   - ワークフロー説明")
+    print()
+    print("  cleanup                  - 古いロックのクリーンアップ")
+    print()
+    print("  active                   - アクティブタスクの表示")
+    print()
+    print("  analyze-issue <number>   - Issue詳細分析 (GitHub連携)")
+    print("    --priority <level>     - 推奨実行優先度")
+    print("    --safe-mode            - 安全モード推奨表示")
+    print("    --generate-prompt      - Elder Flowプロンプト生成")
+    print()
+    print("  safe-execute <description> - 安全モード実行 (品質強化)")
+    print("    --priority <level>     - 優先度 (デフォルト: medium)")
+    print("    (その他のオプションはexecuteと同様)")
+    print()
+    print("  help                     - このヘルプ")
+    print()
+    print("👑 Default Claude Elder Soul Examples:")
+    print(
+        "  elder-flow execute 'OAuth2.0認証システム実装' --priority high  # Claude Elder魂自動統合"
+    )
+    print(
+        "  elder-flow execute 'バグ修正' --retry --max-retries 5         # Claude Elder魂自動統合"
+    )
+    print("  elder-flow status")
+    print("  elder-flow active")
+    print("  elder-flow cleanup")
+    print("  elder-flow workflow create oauth_system --execute")
+    print()
+    print("📊 Issue Analysis Examples:")
+    print("  elder-flow analyze-issue 254                                 # Issue分析")
+    print("  elder-flow analyze-issue 83 --generate-prompt               # プロンプト生成")
+    print("  elder-flow analyze-issue 189 --safe-mode --priority high     # 安全モード推奨")
+    print()
+    print("🛡️ Safe Mode Examples:")
+    print("  elder-flow safe-execute 'Critical bug fix' --priority high   # 安全モード実行")
+    print("  elder-flow safe-execute 'Implement Issue #254'              # Issue実装")
+    print()
+    print("🌟 Advanced Soul Enhanced Examples:")
+    print(
+        "  elder-flow execute 'OAuth2.0実装' --soul-mode soul_enhanced    # より高度なSoul統合"
+    )
+    print(
+        "  elder-flow execute 'バグ修正' --soul-mode full_soul --priority high  # 完全Soul統合"
+    )
+    print("  elder-flow souls status")
+    print("  elder-flow souls summon phase1_analysis")
+    print()
+    print("📋 Available Soul Phases:")
+    print(
+        "  phase1_analysis  - 4賢者会議 (knowledge_sage, task_sage, rag_sage, incident_sage)"
+    )
+    print(
+        "  phase2_execution - サーバント実行 (code_servant, test_guardian, quality_inspector)"
+    )
+    print(
+        "  phase3_quality   - 品質ゲート (security_auditor, performance_monitor, documentation_keeper)"
+    )
+    print(
+        "  phase4_reporting - 評議会報告 (council_secretary, report_generator, approval_manager)"
+    )
+    print("  phase5_git       - Git自動化 (git_master, version_guardian, deploy_manager)")
+    print()
+
+
+def main():
+    """メイン関数"""
+    parser = argparse.ArgumentParser(
+        description="Elder Flow - Claude Elder Automation System",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # execute コマンド
+    parser_execute = subparsers.add_parser("execute", help="Execute Elder Flow")
+    parser_execute.add_argument("description", help="Task description")
+    parser_execute.add_argument(
+        "--priority",
+        choices=["low", "medium", "high"],
+        default="medium",
+        help="Task priority",
+    )
+    parser_execute.add_argument(
+        "--soul-mode",
+        choices=["soul_enhanced", "full_soul"],
+        help="Elder Soul integration mode",
+    )
+    parser_execute.add_argument(
+        "--no-commit", action="store_true", help="Disable auto-commit"
+    )
+    parser_execute.add_argument("--commit-message", help="Custom commit message")
+    parser_execute.add_argument(
+        "--retry", action="store_true", help="Enable automatic retry on lock"
+    )
+    parser_execute.add_argument(
+        "--max-retries", type=int, default=3, help="Maximum retry attempts (default: 3)"
+    )
+    parser_execute.add_argument(
+        "--retry-interval",
+        type=int,
+        default=5,
+        help="Retry interval in seconds (default: 5)",
+    )
+    parser_execute.set_defaults(func=cmd_execute)
+
+    # status コマンド
+    parser_status = subparsers.add_parser("status", help="Check Elder Flow status")
+    parser_status.add_argument("task_id", nargs="?", help="Specific task ID")
+    parser_status.add_argument(
+        "--verbose", "-v", action="store_true", help="Verbose output"
+    )
+    parser_status.set_defaults(func=cmd_status)
+
+    # souls コマンド
+    parser_souls = subparsers.add_parser("souls", help="Elder Soul management")
+    parser_souls.add_argument(
+        "action", choices=["status", "summon", "dismiss"], help="Soul action"
+    )
+    parser_souls.add_argument("phase", nargs="?", help="Phase for summon action")
+    parser_souls.add_argument(
+        "session_id", nargs="?", help="Session ID for dismiss action"
+    )
+    parser_souls.add_argument("--description", help="Task description for summon")
+    parser_souls.set_defaults(func=cmd_souls)
+
+    # workflow コマンド
+    parser_workflow = subparsers.add_parser(
+        "workflow", help="Elder Flow workflow management"
+    )
+    parser_workflow.add_argument("action", choices=["create"], help="Workflow action")
+    parser_workflow.add_argument("name", help="Workflow name")
+    parser_workflow.add_argument(
+        "--execute", action="store_true", help="Execute immediately"
+    )
+    parser_workflow.add_argument("--description", help="Workflow description")
+    parser_workflow.set_defaults(func=cmd_workflow)
+
+    # analyze-issue コマンド
+    parser_analyze = subparsers.add_parser("analyze-issue", help="Analyze GitHub issue")
+    parser_analyze.add_argument("issue_number", type=int, help="GitHub issue number")
+    parser_analyze.add_argument(
+        "--priority", choices=["low", "medium", "high"], default="medium",
+        help="Recommended execution priority"
+    )
+    parser_analyze.add_argument(
+        "--safe-mode", action="store_true", help="Recommend safe mode execution"
+    )
+    parser_analyze.add_argument(
+        "--generate-prompt", action="store_true", help="Generate Elder Flow prompt"
+    )
+    parser_analyze.set_defaults(func=cmd_analyze_issue)
+
+    # safe-execute コマンド
+    parser_safe_execute = subparsers.add_parser("safe-execute", help="Execute Elder Flow in safe mode")
+    parser_safe_execute.add_argument("description", help="Task description")
+    parser_safe_execute.add_argument(
+        "--priority", choices=["low", "medium", "high"], default="medium",
+        help="Task priority"
+    )
+    parser_safe_execute.add_argument(
+        "--soul-mode", choices=["soul_enhanced", "full_soul"],
+        help="Elder Soul integration mode"
+    )
+    parser_safe_execute.add_argument(
+        "--no-commit", action="store_true", help="Disable auto-commit"
+    )
+    parser_safe_execute.add_argument("--commit-message", help="Custom commit message")
+    parser_safe_execute.add_argument(
+        "--max-retries", type=int, default=5, help="Maximum retry attempts (default: 5)"
+    )
+    parser_safe_execute.add_argument(
+        "--retry-interval", type=int, default=10, 
+        help="Retry interval in seconds (default: 10)"
+    )
+    parser_safe_execute.set_defaults(func=cmd_safe_execute)
+
+    # cleanup コマンド
+    parser_cleanup = subparsers.add_parser("cleanup", help="Clean up stale locks")
+    parser_cleanup.set_defaults(func=cmd_cleanup)
+
+    # active コマンド
+    parser_active = subparsers.add_parser("active", help="Show active tasks")
+    parser_active.set_defaults(func=cmd_active)
+
+    # help コマンド
+    parser_help = subparsers.add_parser("help", help="Show help")
+    parser_help.set_defaults(func=cmd_help)
+
+    args = parser.parse_args()
+
+    if not args.command:
+        cmd_help(args)
+        return 0
+
+    if args.command == "help":
+        cmd_help(args)
+        return 0
+
+    # 非同期コマンド実行
+    if asyncio.iscoroutinefunction(args.func):
+        return asyncio.run(args.func(args))
+    else:
+        return args.func(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

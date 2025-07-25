@@ -34,13 +34,13 @@ sys.path.insert(0, str(project_root))
 from shared_libs.config import config
 
 # EldersLegacy統合インポート
-from libs.core.elders_legacy import (
+from elders_guild.elder_tree.core.elders_legacy import (
     EldersLegacyDomain,
     EldersServiceLegacy,
     IronWillCriteria,
     enforce_boundary,
 )
-from libs.elder_servants.integrations.performance.async_optimizer import (
+from elders_guild.elder_tree.elder_servants.integrations.performance.async_optimizer import (
     AsyncOptimizationRequest,
     AsyncOptimizationResponse,
     AsyncWorkerOptimizer,
@@ -49,29 +49,29 @@ from libs.elder_servants.integrations.performance.async_optimizer import (
 )
 
 # プロダクションシステム統合インポート
-from libs.elder_servants.integrations.performance.cache_manager import (
+from elders_guild.elder_tree.elder_servants.integrations.performance.cache_manager import (
     CacheRequest,
     CacheResponse,
     CacheStrategy,
     ElderCacheManager,
 )
-from libs.elder_servants.integrations.performance.lightweight_proxy import (
+from elders_guild.elder_tree.elder_servants.integrations.performance.lightweight_proxy import (
     LightweightElderProxy,
     ProxyMode,
     ProxyRequest,
     ProxyResponse,
 )
-from libs.elder_servants.integrations.production.error_handling import (
+from elders_guild.elder_tree.elder_servants.integrations.production.error_handling import (
     ElderIntegrationErrorHandler,
     ErrorContext,
     RecoveryStrategy,
 )
-from libs.elder_servants.integrations.production.health_check import (
+from elders_guild.elder_tree.elder_servants.integrations.production.health_check import (
     ComponentType,
     ElderIntegrationHealthChecker,
     HealthStatus,
 )
-from libs.elder_servants.integrations.production.monitoring import (
+from elders_guild.elder_tree.elder_servants.integrations.production.monitoring import (
     ElderIntegrationMonitor,
     log_error,
     log_info,

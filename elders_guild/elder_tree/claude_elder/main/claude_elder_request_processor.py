@@ -20,7 +20,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from core.lightweight_logger import get_logger
-from libs.claude_elder_auto_flow_interceptor import get_claude_elder_interceptor
+from elders_guild.elder_tree.claude_elder_auto_flow_interceptor import get_claude_elder_interceptor
 
 logger = get_logger("claude_elder_request_processor")
 

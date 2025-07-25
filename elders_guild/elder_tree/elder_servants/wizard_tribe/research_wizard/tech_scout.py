@@ -16,8 +16,8 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 from pathlib import Path
 
-from libs.elder_servants.base.specialized_servants import WizardServant
-from libs.elder_servants.base.elder_servant import ServantRequest, ServantResponse
+from elders_guild.elder_tree.elder_servants.base.specialized_servants import WizardServant
+from elders_guild.elder_tree.elder_servants.base.elder_servant import ServantRequest, ServantResponse
 
 
 class TechScout(WizardServant):

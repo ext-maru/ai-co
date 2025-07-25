@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+"""
+Deploy Test Guardian Knight - テスト守護騎士の展開スクリプト
+"""
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+
+# Add project root to path
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+
+def deploy_test_guardian(mode="daemon", interval=300):
+    """テスト守護騎士を展開"""
+    print("🧪 Deploying Test Guardian Knight...")
+
+    # Check if already running
+    result = subprocess.run(
+        ["pgrep", "-f", "test_guardian_knight"], capture_output=True
+    )
+    if result.returncode == 0:
+        print("⚠️  Test Guardian Knight is already running")
+        print("   Use 'scripts/deploy-test-guardian --stop' to stop it first")
+        return False
+
+    # Create systemd service or run as daemon
+    if mode == "daemon":
+        # Run as background process
+        cmd = [
+            "nohup",
+            "python3",
+            str(PROJECT_ROOT / "libs" / "test_guardian_knight.py"),
+            f"--interval={interval}",
+            ">",
+            str(PROJECT_ROOT / "logs" / "test_guardian.log"),
+            "2>&1",
+            "&",
+        ]
+
+        subprocess.Popen(" ".join(cmd), shell=True)
+        print(f"✅ Test Guardian Knight deployed as daemon")
+        print(f"   - Test interval: {interval} seconds")
+        print(f"   - Log file: logs/test_guardian.log")
+
+    elif mode == "service":
+        # Create systemd service
+        service_content = f"""[Unit]
+Description=AI Company Test Guardian Knight
+After=network.target
+
+[Service]
+Type=simple
+User={os.environ.get('USER', 'aicompany')}
+WorkingDirectory={PROJECT_ROOT}
+ExecStart=/usr/bin/python3 {PROJECT_ROOT}/libs/test_guardian_knight.py --interval={interval}
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+        service_path = Path("/etc/systemd/system/ai-test-guardian.service")
+        try:
+            with open(service_path, "w") as f:
+                f.write(service_content)
+
+            subprocess.run(["sudo", "systemctl", "daemon-reload"], check=True)
+            subprocess.run(
+                ["sudo", "systemctl", "enable", "ai-test-guardian"], check=True
+            )
+            subprocess.run(
+                ["sudo", "systemctl", "start", "ai-test-guardian"], check=True
+            )
+
+            print("✅ Test Guardian Knight deployed as systemd service")
+            print("   Use 'sudo systemctl status ai-test-guardian' to check status")
+
+        except PermissionError:
+            print("❌ Need sudo permission to create systemd service")
+            print("   Falling back to daemon mode...")
+            return deploy_test_guardian("daemon", interval)
+
+    # Save deployment info
+    deployment_info = {
+        "deployed_at": datetime.now().isoformat(),
+        "mode": mode,
+        "interval": interval,
+        "pid": os.getpid(),
+    }
+
+    with open(PROJECT_ROOT / "logs" / "test_guardian_deployment.json", "w") as f:
+        json.dump(deployment_info, f, indent=2)
+
+    return True
+
+
+def stop_test_guardian():
+    """テスト守護騎士を停止"""
+    print("🛑 Stopping Test Guardian Knight...")
+
+    # Try to stop systemd service first
+    result = subprocess.run(
+        ["sudo", "systemctl", "stop", "ai-test-guardian"], capture_output=True
+    )
+    if result.returncode == 0:
+        print("✅ Stopped systemd service")
+        return True
+
+    # Kill process
+    result = subprocess.run(
+        ["pkill", "-f", "test_guardian_knight"], capture_output=True
+    )
+    if result.returncode == 0:
+        print("✅ Stopped daemon process")
+        return True
+
+    print("⚠️  No running Test Guardian Knight found")
+    return False
+
+
+def status_test_guardian():
+    """テスト守護騎士のステータスを表示"""
+    print("📊 Test Guardian Knight Status")
+    print("-" * 40)
+
+    # Check systemd service
+    result = subprocess.run(
+        ["systemctl", "is-active", "ai-test-guardian"], capture_output=True, text=True
+    )
+    if result.stdout.strip() == "active":
+        print("✅ Running as systemd service")
+        subprocess.run(["systemctl", "status", "ai-test-guardian", "--no-pager"])
+    else:
+        # Check process
+        result = subprocess.run(
+            ["pgrep", "-f", "test_guardian_knight"], capture_output=True
+        )
+        if result.returncode == 0:
+            print("✅ Running as daemon process")
+            pids = result.stdout.decode().strip().split("\n")
+            print(f"   PIDs: {', '.join(pids)}")
+        else:
+            print("❌ Not running")
+
+    # Show recent history
+    history_file = PROJECT_ROOT / "logs" / "knights" / "test_guardian_history.json"
+    if history_file.exists():
+        with open(history_file, "r") as f:
+            history = json.load(f)
+
+        print("\n📈 Statistics:")
+        stats = history.get("stats", {})
+        print(f"   Total sessions: {stats.get('total_sessions', 0)}")
+        print(f"   Total tests run: {stats.get('total_tests_run', 0)}")
+        print(f"   Total failures found: {stats.get('total_failures_found', 0)}")
+        print(f"   Total auto-fixed: {stats.get('total_auto_fixed', 0)}")
+
+        if stats.get("last_full_pass"):
+            print(f"   Last full pass: {stats['last_full_pass']}")
+
+        print("\n📅 Recent Sessions:")
+        for session in history.get("recent_sessions", [])[:5]:
+            print(
+                f"   {session['started_at']}: "
+                f"{session['passed']}/{session['total_tests']} passed "
+                f"({session['duration']:.1f}s)"
+            )
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Deploy Test Guardian Knight")
+    parser.add_argument(
+        "--mode",
+        choices=["daemon", "service"],
+        default="daemon",
+        help="Deployment mode",
+    )
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=300,
+        help="Test interval in seconds (default: 300)",
+    )
+    parser.add_argument("--stop", action="store_true", help="Stop Test Guardian Knight")
+    parser.add_argument("--status", action="store_true", help="Show status")
+
+    args = parser.parse_args()
+
+    if args.stop:
+        stop_test_guardian()
+    elif args.status:
+        status_test_guardian()
+    else:
+        deploy_test_guardian(args.mode, args.interval)
+
+
+if __name__ == "__main__":
+    main()

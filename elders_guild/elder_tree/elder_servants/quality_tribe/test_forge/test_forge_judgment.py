@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
-from libs.quality.test_automation_engine import TestExecutionResult
+from elders_guild.elder_tree.quality.test_automation_engine import TestExecutionResult
 
 
 @dataclass

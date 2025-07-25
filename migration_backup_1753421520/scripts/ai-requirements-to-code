@@ -1,0 +1,286 @@
+#!/usr/bin/env python3
+"""
+AI Requirements to Code - 要件JSONから直接コード生成
+Gemini要約結果を受け取ってAI Companyで即座に開発開始
+"""
+
+import argparse
+import json
+import os
+import sys
+from pathlib import Path
+
+# プロジェクトルートをパスに追加
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+def load_requirements(requirements_file: str) -> dict:
+    """要件JSONファイルを読み込み"""
+    try:
+        with open(requirements_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"❌ 要件ファイル読み込み失敗: {e}")
+        return None
+
+
+def start_development(
+    requirements: dict, output_dir: str, parallel: bool = False
+) -> bool:
+    """AI Companyで開発開始"""
+    try:
+        import subprocess
+
+        # 出力ディレクトリ作成
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+
+        # 要件ファイル保存
+        requirements_file = output_path / "requirements.json"
+        with open(requirements_file, "w", encoding="utf-8") as f:
+            json.dump(requirements, f, indent=2, ensure_ascii=False)
+
+        tasks = requirements.get("ai_company_tasks", [])
+        if not tasks:
+            print("❌ AI Companyタスクが見つかりません")
+            return False
+
+        print(f"🚀 {len(tasks)}個のタスクで開発開始...")
+
+        if parallel:
+            # 並列実行
+            processes = []
+            for i, task in enumerate(tasks, 1):
+                print(f"📋 タスク {i} 並列実行: {task}")
+
+                cmd = [
+                    sys.executable,
+                    "scripts/ai-send-simple",
+                    "--type",
+                    "code",
+                    "--priority",
+                    "high",
+                    f"プロジェクト: {requirements.get('project_overview', 'Unknown')}\\n\\n{task}\\n\\n出力ディレクトリ: {output_dir}",
+                ]
+
+                process = subprocess.Popen(
+                    cmd,
+                    cwd=str(Path(__file__).parent.parent),
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                processes.append((i, task, process))
+
+            # 結果を待機
+            success_count = 0
+            for i, task, process in processes:
+                stdout, stderr = process.communicate()
+                if process.returncode == 0:
+                    print(f"✅ タスク {i} 送信完了")
+                    success_count += 1
+                else:
+                    print(f"❌ タスク {i} 送信失敗: {stderr.decode()}")
+
+        else:
+            # 順次実行
+            success_count = 0
+            for i, task in enumerate(tasks, 1):
+                print(f"📋 タスク {i}/{len(tasks)}: {task}")
+
+                # 技術仕様を含めた詳細なプロンプト作成
+                detailed_prompt = f"""
+プロジェクト: {requirements.get('project_overview', 'Unknown')}
+
+# タスク
+{task}
+
+# 技術仕様
+- フレームワーク: {requirements.get('technical_specs', {}).get('framework', 'fastapi')}
+- データベース: {requirements.get('technical_specs', {}).get('database', 'postgresql')}
+- 開発手法: TDD (テスト駆動開発)
+
+# 受け入れ基準
+{chr(10).join('- ' + criteria for criteria in requirements.get('acceptance_criteria', []))}
+
+# 出力先
+{output_dir}
+
+# 指示
+1. TDDでテストを先に作成
+2. 最小限の実装でテストを通す
+3. 段階的にリファクタリング
+4. 他のタスクとの整合性を考慮
+5. 適切なディレクトリ構造で整理
+"""
+
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        "scripts/ai-send-simple",
+                        "--type",
+                        "code",
+                        "--priority",
+                        "high",
+                        detailed_prompt,
+                    ],
+                    cwd=str(Path(__file__).parent.parent),
+                    capture_output=True,
+                    text=True,
+                )
+
+                if result.returncode == 0:
+                    print(f"✅ タスク {i} 送信完了")
+                    success_count += 1
+                else:
+                    print(f"❌ タスク {i} 送信失敗: {result.stderr}")
+
+        # プロジェクト情報ファイル作成
+        create_project_info(requirements, output_path, success_count, len(tasks))
+
+        print(f"\\n🎉 開発タスク送信完了: {success_count}/{len(tasks)} 成功")
+        print(f"📁 プロジェクトディレクトリ: {output_dir}")
+        print(f"📋 要件ファイル: {requirements_file}")
+
+        return success_count > 0
+
+    except Exception as e:
+        print(f"❌ 開発開始エラー: {e}")
+        return False
+
+
+def create_project_info(
+    requirements: dict, output_path: Path, success_count: int, total_tasks: int
+):
+    """プロジェクト情報ファイルを作成"""
+    from datetime import datetime
+
+    info = f"""# {requirements.get('project_overview', 'AI Generated Project')}
+
+## 📋 プロジェクト概要
+{requirements.get('project_overview', 'N/A')}
+
+## 🎯 主要機能
+{chr(10).join('- ' + req for req in requirements.get('main_requirements', []))}
+
+## 🛠️ 技術仕様
+- **フレームワーク**: {requirements.get('technical_specs', {}).get('framework', 'N/A')}
+- **データベース**: {requirements.get('technical_specs', {}).get('database', 'N/A')}
+- **開発手法**: TDD
+
+## ✅ 開発タスク状況
+- **送信済み**: {success_count}/{total_tasks} タスク
+- **開始日時**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## 📋 実行タスク一覧
+{chr(10).join(f'{i}. {task}' for i, task in enumerate(requirements.get('ai_company_tasks', []), 1))}
+
+## 🚀 次のステップ
+1. AI Companyの処理を確認: `./scripts/ai-status`
+2. 生成されたコードをレビュー
+3. テストを実行: `pytest`
+4. 追加要件があれば追加開発
+
+## 📊 進捗確認方法
+```bash
+# システム状態確認
+./scripts/ai-status
+
+# ログ監視
+tail -f logs/simple_task_worker.log
+
+# キュー状況確認
+./scripts/ai-status | grep "queue:"
+```
+
+---
+*Generated by AI Requirements-to-Code System*
+"""
+
+    readme_file = output_path / "PROJECT_INFO.md"
+    with open(readme_file, "w", encoding="utf-8") as f:
+        f.write(info)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="要件JSONからAI Companyで直接開発開始",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  # 要件JSONファイルから開発開始
+  ai-requirements-to-code requirements.json --output ./my-project
+
+  # 並列実行でスピードアップ
+  ai-requirements-to-code requirements.json --output ./my-project --parallel
+
+  # 特定のタスクのみ実行
+  ai-requirements-to-code requirements.json --output ./my-project --tasks 1,3,5
+
+要件JSONフォーマット:
+  {
+    "project_overview": "プロジェクト概要",
+    "main_requirements": ["要件1", "要件2"],
+    "technical_specs": {
+      "framework": "fastapi",
+      "database": "postgresql"
+    },
+    "ai_company_tasks": [
+      "タスク1の詳細説明",
+      "タスク2の詳細説明"
+    ]
+  }
+        """,
+    )
+
+    parser.add_argument("requirements_file", help="要件JSONファイル")
+    parser.add_argument("--output", "-o", required=True, help="出力ディレクトリ")
+    parser.add_argument("--parallel", "-p", action="store_true", help="タスクを並列実行")
+    parser.add_argument("--tasks", "-t", help="実行するタスク番号 (例: 1,3,5)")
+    parser.add_argument("--dry-run", action="store_true", help="実際に実行せずにプレビューのみ")
+
+    args = parser.parse_args()
+
+    # 要件読み込み
+    requirements = load_requirements(args.requirements_file)
+    if not requirements:
+        sys.exit(1)
+
+    # タスクフィルタリング
+    if args.tasks:
+        try:
+            task_indices = [int(x.strip()) - 1 for x in args.tasks.split(",")]
+            all_tasks = requirements.get("ai_company_tasks", [])
+            filtered_tasks = [
+                all_tasks[i] for i in task_indices if 0 <= i < len(all_tasks)
+            ]
+            requirements["ai_company_tasks"] = filtered_tasks
+            print(f"🎯 選択されたタスク: {len(filtered_tasks)}個")
+        except Exception as e:
+            print(f"❌ タスク番号の解析エラー: {e}")
+            sys.exit(1)
+
+    # プレビューモード
+    if args.dry_run:
+        print(f"📋 プロジェクト: {requirements.get('project_overview', 'Unknown')}")
+        print(f"📁 出力先: {args.output}")
+        print(f"📊 実行予定タスク: {len(requirements.get('ai_company_tasks', []))}個")
+        print("\\n🎯 タスク一覧:")
+        for i, task in enumerate(requirements.get("ai_company_tasks", []), 1):
+            print(f"  {i}. {task}")
+        print("\\n※ 実際の実行は --dry-run を外してください")
+        return
+
+    # 開発開始
+    success = start_development(requirements, args.output, args.parallel)
+
+    if success:
+        print(f"\\n🎉 開発が開始されました！")
+        print(f"📁 プロジェクト: {args.output}")
+        print(f"📊 状態確認: ./scripts/ai-status")
+    else:
+        print("❌ 開発開始に失敗しました")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

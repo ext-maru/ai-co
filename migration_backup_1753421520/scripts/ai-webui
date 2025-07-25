@@ -1,0 +1,18 @@
+#!/bin/bash
+# AI Company WebUI 起動スクリプト
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_ROOT"
+
+# Pythonパスを設定
+export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
+
+# 仮想環境をアクティベート（存在する場合）
+if [ -f "$PROJECT_ROOT/venv/bin/activate" ]; then
+    source "$PROJECT_ROOT/venv/bin/activate"
+fi
+
+# WebUIを起動
+python3 "$PROJECT_ROOT/commands/ai_webui.py" "$@"

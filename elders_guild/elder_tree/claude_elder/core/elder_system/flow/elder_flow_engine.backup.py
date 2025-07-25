@@ -20,9 +20,9 @@ sys.path.insert(0, str(project_root))
 
 from core.elders_legacy import DomainBoundary, EldersFlowLegacy, enforce_boundary
 from core.lightweight_logger import get_logger
-from libs.elder_system.flow.elder_flow_orchestrator import ElderFlowOrchestrator
-from libs.elder_system.flow.pid_lock_manager import PIDLockContext, PIDLockManager
-from libs.tracking.unified_tracking_db import UnifiedTrackingDB
+from elders_guild.elder_tree.elder_system.flow.elder_flow_orchestrator import ElderFlowOrchestrator
+from elders_guild.elder_tree.elder_system.flow.pid_lock_manager import PIDLockContext, PIDLockManager
+from elders_guild.elder_tree.tracking.unified_tracking_db import UnifiedTrackingDB
 
 logger = get_logger("elder_flow_engine")
 

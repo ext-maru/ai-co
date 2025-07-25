@@ -1,0 +1,100 @@
+#!/bin/bash
+# 🏗️ AI Project Builder - エルダーズギルド統合プロジェクト構築システム
+# フル自動版: 完全機能実装 + 即座運用可能 + PDCA機構
+
+set -e
+
+# カラー定義
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+PURPLE='\033[0;35m'
+NC='\033[0m'
+
+PROJECT_ROOT="/home/aicompany/ai_co"
+PROJECTS_DIR="$PROJECT_ROOT/projects"
+
+# ロゴ表示
+show_logo() {
+    echo -e "${PURPLE}"
+    echo "╔═══════════════════════════════════════════════════════════════╗"
+    echo "║       🏗️  AI Project Builder - エルダーズギルド統合           ║"
+    echo "║         フル自動版: 完全機能実装 + 即座運用可能               ║"
+    echo "╚═══════════════════════════════════════════════════════════════╝"
+    echo -e "${NC}"
+}
+
+# 使用方法
+usage() {
+    echo "使用方法: ai-project <command> [options]"
+    echo ""
+    echo "Commands:"
+    echo "  create          新規プロジェクト作成（インタラクティブ）"
+    echo "  scaffold        テンプレートから即座生成"
+    echo "  list            既存プロジェクト一覧"
+    echo "  pdca            PDCA分析実行"
+    echo "  report          プロジェクト品質レポート"
+    echo ""
+    echo "Examples:"
+    echo "  ai-project create"
+    echo "  ai-project scaffold upload-image --type=upload-service"
+    echo "  ai-project pdca upload-image"
+}
+
+# メインコマンド処理
+case "$1" in
+    "create")
+        show_logo
+        echo -e "${GREEN}🚀 新規プロジェクト作成ウィザード起動${NC}"
+        cd "$PROJECT_ROOT"
+        python3 scripts/project_builder_wizard.py
+        ;;
+
+    "scaffold")
+        show_logo
+        if [ -z "$2" ]; then
+            echo -e "${RED}エラー: プロジェクト名を指定してください${NC}"
+            exit 1
+        fi
+        echo -e "${BLUE}🏗️ プロジェクト '$2' を構築中...${NC}"
+        cd "$PROJECT_ROOT"
+        python3 scripts/project_scaffolder.py "$2" "${@:3}"
+        ;;
+
+    "list")
+        show_logo
+        echo -e "${YELLOW}📋 既存プロジェクト一覧${NC}"
+        cd "$PROJECT_ROOT"
+        python3 scripts/project_lister.py
+        ;;
+
+    "pdca")
+        show_logo
+        if [ -z "$2" ]; then
+            echo -e "${RED}エラー: プロジェクト名を指定してください${NC}"
+            exit 1
+        fi
+        echo -e "${GREEN}🔄 PDCA分析実行: $2${NC}"
+        cd "$PROJECT_ROOT"
+        python3 scripts/project_pdca_analyzer.py "$2"
+        ;;
+
+    "report")
+        show_logo
+        echo -e "${BLUE}📊 プロジェクト品質レポート生成${NC}"
+        cd "$PROJECT_ROOT"
+        python3 scripts/project_quality_reporter.py "$2"
+        ;;
+
+    "--help"|"-h"|"")
+        show_logo
+        usage
+        ;;
+
+    *)
+        echo -e "${RED}不明なコマンド: $1${NC}"
+        usage
+        exit 1
+        ;;
+esac

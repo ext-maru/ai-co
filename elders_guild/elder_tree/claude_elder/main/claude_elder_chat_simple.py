@@ -23,7 +23,7 @@ from typing import Any, Dict, List, Optional
 # プロジェクトルートをパスに追加
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from libs.env_config import get_config
+from elders_guild.elder_tree.env_config import get_config
 
 
 class ClaudeElderChatSimple:

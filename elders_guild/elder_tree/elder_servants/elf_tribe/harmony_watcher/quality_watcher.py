@@ -17,14 +17,14 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple
 
-from libs.elder_servants.base.elder_servant import (
+from elders_guild.elder_tree.elder_servants.base.elder_servant import (
     ServantCapability,
     ServantRequest,
     ServantResponse,
     TaskResult,
     TaskStatus,
 )
-from libs.elder_servants.base.specialized_servants import ElfServant
+from elders_guild.elder_tree.elder_servants.base.specialized_servants import ElfServant
 
 
 class QualityWatcher(ElfServant):

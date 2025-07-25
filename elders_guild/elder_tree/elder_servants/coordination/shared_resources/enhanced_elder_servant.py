@@ -35,7 +35,7 @@ from pathlib import Path
 from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 # EldersLegacy統合インポート
-from libs.core.elders_legacy import (
+from elders_guild.elder_tree.core.elders_legacy import (
     EldersLegacyBase,
     EldersLegacyDomain,
     IronWillCriteria,
@@ -43,7 +43,7 @@ from libs.core.elders_legacy import (
 )
 
 # BaseSoul統合インポート
-from libs.base_soul import (
+from elders_guild.elder_tree.base_soul import (
     ElderType,
     SoulCapability,
     SoulIdentity,

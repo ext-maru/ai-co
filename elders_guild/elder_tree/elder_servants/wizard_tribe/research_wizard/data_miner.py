@@ -173,7 +173,7 @@ class DataMiner(WizardServant):
 
     async def execute_task(self, task: Dict[str, Any]) -> "TaskResult":
         """タスク実行"""
-        from libs.elder_servants.base.elder_servant import TaskResult
+        from elders_guild.elder_tree.elder_servants.base.elder_servant import TaskResult
 
         # cast_research_spellを呼び出し
         result = await self.cast_research_spell(task)

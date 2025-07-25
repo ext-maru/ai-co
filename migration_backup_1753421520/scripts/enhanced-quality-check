@@ -1,0 +1,4 @@
+#!/bin/bash
+# Enhanced quality check with Elder Guild 85+ standards
+echo "🏛️ Running Enhanced Quality Check (Elder Guild 85+ Standards)..."
+python3 scripts/integrated_quality_daemon.py single

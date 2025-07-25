@@ -1,0 +1,81 @@
+#!/bin/bash
+# ユーザー応答送信コマンド
+
+# ヘルプ表示
+show_help() {
+    cat << EOF
+ai-reply - AI Company対話応答送信コマンド
+
+使用方法:
+    ai-reply <conversation_id> <response>
+    ai-reply --help | -h
+
+説明:
+    ai-dialogで開始された対話セッションに対して、
+    ユーザーの応答を送信します。
+
+引数:
+    <conversation_id>   対話セッションID (ai-dialogで生成)
+    <response>          送信する応答メッセージ
+
+オプション:
+    --help, -h          このヘルプを表示
+
+例:
+    ai-reply dialog_20250705_203015 "了解しました。実装を開始してください"
+    ai-reply dialog_20250705_203015 "別の方法を提案してください"
+
+注意:
+    - conversation_idは ai-dialog 実行時に表示されます
+    - 応答は対話の流れに沿って送信してください
+EOF
+}
+
+# 引数チェック
+if [ $# -eq 0 ]; then
+    echo "使用方法: ai-reply <conversation_id> <response>"
+    echo "詳細: ai-reply --help"
+    exit 1
+fi
+
+# ヘルプオプションチェック
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    show_help
+    exit 0
+fi
+
+if [ $# -lt 2 ]; then
+    echo "使用方法: ai-reply <conversation_id> <response>"
+    echo "詳細: ai-reply --help"
+    exit 1
+fi
+
+CONV_ID=$1
+shift
+RESPONSE="$*"
+
+cd /root/ai_co
+source venv/bin/activate
+
+python3 -c "
+import pika
+import json
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+data = {
+    'conversation_id': '$CONV_ID',
+    'response': '$RESPONSE'
+}
+
+channel.basic_publish(
+    exchange='',
+    routing_key='user_input_queue',
+    body=json.dumps(data),
+    properties=pika.BasicProperties(delivery_mode=2)
+)
+
+print(f'✅ 応答送信: $CONV_ID')
+connection.close()
+"

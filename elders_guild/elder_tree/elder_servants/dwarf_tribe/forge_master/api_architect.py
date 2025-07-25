@@ -22,12 +22,12 @@ import yaml
 sys.path.append(str(Path(__file__).parent.parent.parent))
 from shared_libs.config import config
 
-from libs.elder_servants.base.elder_servant import (
+from elders_guild.elder_tree.elder_servants.base.elder_servant import (
     ServantCapability,
     TaskResult,
     TaskStatus,
 )
-from libs.elder_servants.base.specialized_servants import DwarfServant
+from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
 
 class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):

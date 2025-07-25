@@ -30,14 +30,14 @@ import traceback
 
 # エルダーズギルド品質システムとの統合
 try:
-    from libs.elders_code_quality_engine import EldersCodeQualityEngine
+    from elders_guild.elder_tree.elders_code_quality_engine import EldersCodeQualityEngine
 except ImportError:
     logging.warning("EldersCodeQualityEngine not available")
     EldersCodeQualityEngine = None
 
 # 既存古代魔法システムとの統合
 try:
-    from libs.ancient_elder.base import AncientMagicBase
+    from elders_guild.elder_tree.ancient_elder.base import AncientMagicBase
 except ImportError:
     logging.warning("AncientMagicBase not available")
     AncientMagicBase = object

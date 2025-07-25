@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 import statistics
 
-from libs.quality.static_analysis_engine import StaticAnalysisResult
+from elders_guild.elder_tree.quality.static_analysis_engine import StaticAnalysisResult
 
 
 @dataclass

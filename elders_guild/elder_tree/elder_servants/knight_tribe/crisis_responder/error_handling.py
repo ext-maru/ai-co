@@ -24,7 +24,7 @@ from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
 
 # EldersLegacy統合インポート
-from libs.core.elders_legacy import (
+from elders_guild.elder_tree.core.elders_legacy import (
     EldersLegacyDomain,
     EldersServiceLegacy,
     IronWillCriteria,

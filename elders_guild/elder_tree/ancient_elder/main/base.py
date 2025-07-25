@@ -16,7 +16,7 @@ import sys
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from libs.base_soul import BaseSoul, ElderType, SoulIdentity, SoulCapability
+from elders_guild.elder_tree.base_soul import BaseSoul, ElderType, SoulIdentity, SoulCapability
 
 
 class ViolationSeverity(Enum):
