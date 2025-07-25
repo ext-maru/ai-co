@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elder Dashboard Advanced - エルダーズ・ハーモニー・システム</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(26, 26, 46, 0.3);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #87ceeb;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(26, 26, 46, 0.4);
+            border-radius: 15px;
+            border: 2px solid rgba(135, 206, 235, 0.3);
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .sage-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+
+        .sage-status.active {
+            border-left-color: #32cd32;
+        }
+
+        .sage-status.inactive {
+            border-left-color: #ff6b6b;
+        }
+
+        .sage-name {
+            font-weight: bold;
+            color: #87ceeb;
+        }
+
+        .sage-load {
+            color: #ffd700;
+            font-size: 0.9em;
+        }
+
+        .protocol-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .protocol-stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .protocol-stat h3 {
+            color: #ffd700;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .protocol-stat .value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #87ceeb;
+        }
+
+        .protocol-stat .label {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .alerts {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .alert.error {
+            border-left-color: #ff6b6b;
+        }
+
+        .alert.warning {
+            border-left-color: #ffa500;
+        }
+
+        .alert.info {
+            border-left-color: #87ceeb;
+        }
+
+        .alert.success {
+            border-left-color: #32cd32;
+        }
+
+        .alert-title {
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .alert-message {
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .alert-time {
+            color: #888;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .predictions {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .predictions h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .prediction-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .prediction-item:last-child {
+            border-bottom: none;
+        }
+
+        .prediction-label {
+            color: #87ceeb;
+        }
+
+        .prediction-value {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .suggestions {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .suggestion {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid #87ceeb;
+        }
+
+        .suggestion.high {
+            border-left-color: #ff6b6b;
+        }
+
+        .suggestion.medium {
+            border-left-color: #ffa500;
+        }
+
+        .suggestion.low {
+            border-left-color: #32cd32;
+        }
+
+        .suggestion-title {
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .suggestion-description {
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-primary {
+            background: rgba(135, 206, 235, 0.8);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            background: rgba(135, 206, 235, 1);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 165, 0, 0.8);
+            color: #1a1a2e;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 165, 0, 1);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.active {
+            background: #32cd32;
+            box-shadow: 0 0 10px rgba(50, 205, 50, 0.5);
+        }
+
+        .status-indicator.inactive {
+            background: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #87ceeb;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(135, 206, 235, 0.3);
+            border-radius: 50%;
+            border-top-color: #87ceeb;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin-top: 10px;
+        }
+
+        .timestamp {
+            text-align: center;
+            color: #888;
+            font-size: 0.8em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Elder Dashboard Advanced</h1>
+            <p>エルダーズ・ハーモニー・システム高度監視機能</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="toggleAdvancedMonitoring()">
+                <span id="monitoring-btn-text">🚀 高度監視開始</span>
+            </button>
+            <button class="btn btn-secondary" onclick="refreshData()">
+                🔄 データ更新
+            </button>
+        </div>
+
+        <div class="grid">
+            <!-- 4賢者ステータス -->
+            <div class="card">
+                <h2>🧙‍♂️ 4賢者ステータス</h2>
+                <div id="sage-status" class="loading">データ読み込み中...</div>
+            </div>
+
+            <!-- プロトコル統計 -->
+            <div class="card">
+                <h2>⚡ プロトコル統計</h2>
+                <div id="protocol-stats" class="protocol-stats">
+                    <div class="loading">データ読み込み中...</div>
+                </div>
+            </div>
+
+            <!-- リアルタイムアラート -->
+            <div class="card">
+                <h2>🚨 リアルタイムアラート</h2>
+                <div id="alerts" class="alerts loading">データ読み込み中...</div>
+            </div>
+
+            <!-- 予測分析 -->
+            <div class="card">
+                <h2>🔮 予測分析</h2>
+                <div id="predictions" class="predictions loading">データ読み込み中...</div>
+            </div>
+
+            <!-- 最適化提案 -->
+            <div class="card">
+                <h2>💡 最適化提案</h2>
+                <div id="suggestions" class="suggestions loading">データ読み込み中...</div>
+            </div>
+
+            <!-- システム概要 -->
+            <div class="card">
+                <h2>📊 システム概要</h2>
+                <div id="system-overview" class="loading">データ読み込み中...</div>
+            </div>
+        </div>
+
+        <div class="timestamp">
+            最終更新: <span id="last-update">---</span>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        let monitoringActive = false;
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Elder Dashboard Advanced 初期化');
+            refreshData();
+
+            // 自動接続
+            socket.emit('advanced_connect');
+        });
+
+        // WebSocketイベントハンドラー
+        socket.on('connect', function() {
+            console.log('🔗 WebSocket接続');
+        });
+
+        socket.on('disconnect', function() {
+            console.log('❌ WebSocket切断');
+        });
+
+        socket.on('initial_advanced_data', function(data) {
+            console.log('📊 初期データ受信:', data);
+            updateSageStatus(data.sage_status);
+            updateProtocolStats(data.protocol_stats);
+            updateAlerts(data.alerts);
+            updateOptimizationSuggestions(data.optimization_suggestions);
+            updateLastUpdate();
+        });
+
+        socket.on('advanced_update', function(data) {
+            console.log('🔄 リアルタイムデータ更新:', data);
+            updateSageStatus(data.sage_status);
+            updateProtocolStats(data.protocol_stats);
+            updateAlerts(data.alerts);
+            updatePredictions(data.predictions);
+            updateLastUpdate();
+        });
+
+        socket.on('new_alert', function(alert) {
+            console.log('🚨 新規アラート:', alert);
+            addNewAlert(alert);
+        });
+
+        // 監視切り替え
+        function toggleAdvancedMonitoring() {
+            if (monitoringActive) {
+                socket.emit('stop_advanced_monitoring');
+                monitoringActive = false;
+                document.getElementById('monitoring-btn-text').textContent = '🚀 高度監視開始';
+            } else {
+                socket.emit('start_advanced_monitoring');
+                monitoringActive = true;
+                document.getElementById('monitoring-btn-text').textContent = '⏹️ 高度監視停止';
+            }
+        }
+
+        // データ更新
+        function refreshData() {
+            console.log('🔄 データ更新要求');
+
+            // システム概要
+            fetch('/api/advanced-overview')
+                .then(response => response.json())
+                .then(data => {
+                    updateSystemOverview(data);
+                })
+                .catch(error => console.error('システム概要取得エラー:', error));
+
+            // 最適化提案
+            fetch('/api/optimization-suggestions')
+                .then(response => response.json())
+                .then(data => {
+                    updateOptimizationSuggestions(data);
+                })
+                .catch(error => console.error('最適化提案取得エラー:', error));
+        }
+
+        // 4賢者ステータス更新
+        function updateSageStatus(sageStatus) {
+            const container = document.getElementById('sage-status');
+            container.innerHTML = '';
+
+            Object.entries(sageStatus).forEach(([sageName, status]) => {
+                const div = document.createElement('div');
+                div.className = `sage-status ${status.active ? 'active' : 'inactive'}`;
+                div.innerHTML = `
+                    <div class="sage-name">
+                        <span class="status-indicator ${status.active ? 'active' : 'inactive'}"></span>
+                        ${sageName}賢者
+                    </div>
+                    <div class="sage-load">負荷: ${status.load}/時間</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // プロトコル統計更新
+        function updateProtocolStats(protocolStats) {
+            const container = document.getElementById('protocol-stats');
+            container.innerHTML = '';
+
+            Object.entries(protocolStats).forEach(([protocol, stats]) => {
+                const div = document.createElement('div');
+                div.className = 'protocol-stat';
+                div.innerHTML = `
+                    <h3>${protocol.toUpperCase()}</h3>
+                    <div class="value">${stats.executions}</div>
+                    <div class="label">実行回数</div>
+                    <div class="value">${stats.success_rate.toFixed(1)}%</div>
+                    <div class="label">成功率</div>
+                    <div class="value">${stats.avg_time.toFixed(1)}s</div>
+                    <div class="label">平均時間</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // アラート更新
+        function updateAlerts(alerts) {
+            const container = document.getElementById('alerts');
+            container.innerHTML = '';
+
+            if (alerts.length === 0) {
+                container.innerHTML = '<div class="alert info"><div class="alert-title">✅ アラートなし</div><div class="alert-message">現在、システムは正常に動作しています</div></div>';
+                return;
+            }
+
+            alerts.forEach(alert => {
+                addAlertElement(container, alert);
+            });
+        }
+
+        // 新規アラート追加
+        function addNewAlert(alert) {
+            const container = document.getElementById('alerts');
+            const firstChild = container.firstChild;
+
+            addAlertElement(container, alert, true);
+
+            // 最新10件を保持
+            while (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        // アラート要素追加
+        function addAlertElement(container, alert, prepend = false) {
+            const div = document.createElement('div');
+            div.className = `alert ${alert.type}`;
+            div.innerHTML = `
+                <div class="alert-title">${alert.title}</div>
+                <div class="alert-message">${alert.message}</div>
+                <div class="alert-time">${formatTimestamp(alert.timestamp)}</div>
+            `;
+
+            if (prepend && container.firstChild) {
+                container.insertBefore(div, container.firstChild);
+            } else {
+                container.appendChild(div);
+            }
+        }
+
+        // 予測分析更新
+        function updatePredictions(predictions) {
+            const container = document.getElementById('predictions');
+            container.innerHTML = `
+                <h3>📈 予測データ</h3>
+                <div class="prediction-item">
+                    <span class="prediction-label">明日の予想コミット数</span>
+                    <span class="prediction-value">${predictions.next_day_commits}</span>
+                </div>
+                <div class="prediction-item">
+                    <span class="prediction-label">トレンド</span>
+                    <span class="prediction-value">${predictions.trend}</span>
+                </div>
+                <div class="prediction-item">
+                    <span class="prediction-label">最多使用プロトコル</span>
+                    <span class="prediction-value">${predictions.busiest_protocol}</span>
+                </div>
+            `;
+
+            if (predictions.recommended_actions && predictions.recommended_actions.length > 0) {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.innerHTML = '<h3>📋 推奨アクション</h3>';
+
+                predictions.recommended_actions.forEach(action => {
+                    const actionDiv = document.createElement('div');
+                    actionDiv.className = 'prediction-item';
+                    actionDiv.innerHTML = `<span class="prediction-label">• ${action}</span>`;
+                    actionsDiv.appendChild(actionDiv);
+                });
+
+                container.appendChild(actionsDiv);
+            }
+        }
+
+        // 最適化提案更新
+        function updateOptimizationSuggestions(suggestions) {
+            const container = document.getElementById('suggestions');
+            container.innerHTML = '';
+
+            if (suggestions.length === 0) {
+                container.innerHTML = '<div class="suggestion"><div class="suggestion-title">✅ 最適化不要</div><div class="suggestion-description">現在の設定で最適に動作しています</div></div>';
+                return;
+            }
+
+            suggestions.forEach(suggestion => {
+                const div = document.createElement('div');
+                div.className = `suggestion ${suggestion.priority}`;
+                div.innerHTML = `
+                    <div class="suggestion-title">${suggestion.title}</div>
+                    <div class="suggestion-description">${suggestion.description}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // システム概要更新
+        function updateSystemOverview(overview) {
+            const container = document.getElementById('system-overview');
+            container.innerHTML = `
+                <div class="prediction-item">
+                    <span class="prediction-label">監視状態</span>
+                    <span class="prediction-value">${overview.monitoring_active ? '🟢 アクティブ' : '🔴 非アクティブ'}</span>
+                </div>
+                <div class="prediction-item">
+                    <span class="prediction-label">接続クライアント</span>
+                    <span class="prediction-value">${overview.connected_clients}</span>
+                </div>
+                <div class="prediction-item">
+                    <span class="prediction-label">アクティブアラート</span>
+                    <span class="prediction-value">${overview.active_alerts}</span>
+                </div>
+                <div class="prediction-item">
+                    <span class="prediction-label">総アラート数</span>
+                    <span class="prediction-value">${overview.total_alerts}</span>
+                </div>
+            `;
+        }
+
+        // 最終更新時刻更新
+        function updateLastUpdate() {
+            document.getElementById('last-update').textContent = new Date().toLocaleString('ja-JP');
+        }
+
+        // タイムスタンプフォーマット
+        function formatTimestamp(isoString) {
+            return new Date(isoString).toLocaleString('ja-JP');
+        }
+
+        // 切断時の処理
+        window.addEventListener('beforeunload', function() {
+            socket.emit('advanced_disconnect');
+        });
+    </script>
+</body>
+</html>

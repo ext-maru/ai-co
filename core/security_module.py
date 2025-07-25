@@ -142,9 +142,6 @@ class SecureTaskExecutor:
                     # フルパスの場合、実行ファイル名をチェック
                     if "/" in cmd_parts[0]:
                         exe_name = os.path.basename(cmd_parts[0])
-                        if not (exe_name not in self.allowed_commands):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
                         if exe_name not in self.allowed_commands:
                             return False, f"Command not allowed: {base_command}"
                     else:

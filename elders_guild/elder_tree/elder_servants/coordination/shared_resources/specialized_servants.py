@@ -21,7 +21,6 @@ from .elder_servant import (
 T_Request = TypeVar("T_Request")
 T_Response = TypeVar("T_Response")
 
-
 class DwarfServant(ElderServant, Generic[T_Request, T_Response]):
     """
     ドワーフ工房専門サーバント基底クラス
@@ -45,7 +44,7 @@ class DwarfServant(ElderServant, Generic[T_Request, T_Response]):
 
         # ドワーフ工房固有の設定
         self.production_quality_threshold = 95.0  # 生産品質基準
-        self.crafting_templates = {}  # 製作テンプレート
+
         self.tools_registry = {}  # 工具レジストリ
 
         self.logger.info(f"Dwarf Servant {servant_name} ready for crafting")
@@ -101,12 +100,8 @@ class DwarfServant(ElderServant, Generic[T_Request, T_Response]):
     def register_crafting_tool(self, tool_name: str, tool_config: Dict[str, Any]):
         """工具登録"""
         self.tools_registry[tool_name] = tool_config
-        self.logger.debug(f"Registered tool: {tool_name}")
 
-    def get_crafting_template(self, template_name: str) -> Optional[Dict[str, Any]]:
         """製作テンプレート取得"""
-        return self.crafting_templates.get(template_name)
-
 
 class WizardServant(ElderServant, Generic[T_Request, T_Response]):
     """
@@ -193,7 +188,6 @@ class WizardServant(ElderServant, Generic[T_Request, T_Response]):
                 "registered_at": datetime.now(),
             }
         )
-        self.logger.debug(f"Registered knowledge source: {source_name}")
 
     def cache_research_result(
         self, query_hash: str, result: T_Response, ttl_hours: int = 24
@@ -216,7 +210,6 @@ class WizardServant(ElderServant, Generic[T_Request, T_Response]):
             # 期限切れキャッシュを削除
             del self.research_cache[query_hash]
         return None
-
 
 class ElfServant(ElderServant, Generic[T_Request, T_Response]):
     """
@@ -302,7 +295,6 @@ class ElfServant(ElderServant, Generic[T_Request, T_Response]):
             "last_check": None,
             "registered_at": datetime.now(),
         }
-        self.logger.debug(f"Registered monitoring target: {target_name}")
 
     def register_healing_protocol(self, condition_name: str, healing_steps: List[str]):
         """癒しプロトコル登録"""
@@ -312,7 +304,6 @@ class ElfServant(ElderServant, Generic[T_Request, T_Response]):
             "last_used": None,
             "registered_at": datetime.now(),
         }
-        self.logger.debug(f"Registered healing protocol: {condition_name}")
 
     async def apply_healing(self, condition: str, target: Any) -> Dict[str, Any]:
         """癒し適用"""
@@ -343,7 +334,6 @@ class ElfServant(ElderServant, Generic[T_Request, T_Response]):
             # Handle specific exception case
             self.logger.error(f"Healing application failed: {e}")
             return {"success": False, "error": str(e)}
-
 
 # 型エイリアス
 ServantRequest = TypeVar("ServantRequest")

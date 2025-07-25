@@ -12,7 +12,6 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
-
 class BaseSage(ABC):
     """4賢者の基盤クラス"""
 
@@ -76,7 +75,6 @@ class BaseSage(ABC):
     async def set_memory(self, key: str, value: Any):
         """メモリに値を保存"""
         self._memory[key] = value
-        self.logger.debug(f"Memory updated: {key}")
 
     async def log_request(self, request: Dict[str, Any], result: Dict[str, Any]):
         """リクエストと結果をログに記録"""
@@ -138,7 +136,6 @@ class BaseSage(ABC):
     def __repr__(self) -> str:
         """オブジェクト表現取得"""
         return f"<{self.sage_name}Sage status={self.status} requests={self._metrics['requests_processed']}>"
-
 
 class SageRegistry:
     """賢者レジストリ - 4賢者の管理"""
@@ -203,7 +200,6 @@ class SageRegistry:
             "total_sages": len(self._sages),
             "sages": health_results,
         }
-
 
 # グローバルレジストリインスタンス
 sage_registry = SageRegistry()

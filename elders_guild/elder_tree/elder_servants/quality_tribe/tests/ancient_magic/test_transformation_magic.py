@@ -15,7 +15,7 @@ import asyncio
 import json
 import csv
 import xml.etree.ElementTree as ET
-import tempfile
+
 import os
 from typing import Dict, Any, List, Optional, Union
 from pathlib import Path
@@ -28,7 +28,6 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from ancient_magic.transformation_magic.transformation_magic import TransformationMagic
-
 
 class TestTransformationMagic:
     """Transformation Magic テストクラス"""
@@ -285,7 +284,7 @@ class TestTransformationMagic:
                 "version": "2.0",
                 "components": ["4_sages", "ancient_elder", "elder_servants"],
                 "config": {
-                    "debug": True,
+
                     "log_level": "INFO",
                     "max_workers": 8
                 }
@@ -667,7 +666,7 @@ class TestTransformationMagic:
                 "Content-Type": "application/json",
                 "X-Elder-Guild-Secret": "webhook_secret_key"
             },
-            "payload_template": {
+
                 "event_type": "incident_detected",
                 "timestamp": "{{timestamp}}",
                 "severity": "{{severity}}",
@@ -826,7 +825,6 @@ class TestTransformationMagic:
             assert result["success"] is True
             assert "transformation_result" in result
 
-
 @pytest.mark.asyncio  
 class TestTransformationMagicIntegration:
     """Transformation Magic統合テスト"""
@@ -927,7 +925,6 @@ class TestTransformationMagicIntegration:
         assert final_data["elders_guild"]["version"] == "2.0"
         assert final_data["elders_guild"]["active_sages"] == 4
         assert len(final_data["elders_guild"]["ancient_magics"]) == 4
-
 
 if __name__ == "__main__":
     pytest.main(["-v", __file__])

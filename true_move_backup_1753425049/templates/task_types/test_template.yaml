@@ -1,0 +1,23 @@
+name: "test_creation"
+description: "テスト作成用テンプレート"
+task_type: "test"
+template_data:
+  prompt: |
+    以下のファイルに対するテストを作成してください：
+
+    対象ファイル: {{file_path}}
+
+    要件：
+    1. pytestを使用したユニットテスト
+    2. 必要なモックの実装
+    3. エッジケースのテスト
+    4. カバレッジ80%以上
+    5. AI Command Executorでの自動実行設定
+
+    テストファイルをtests/ディレクトリに配置してください。
+
+parameters:
+  - name: file_path
+    type: string
+    description: "テスト対象ファイルのパス"
+    required: true

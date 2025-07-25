@@ -1,0 +1,19 @@
+#!/bin/bash
+"""
+AI Identity Guard - Claude Elder Identity Protocol Enforcement
+==============================================================
+
+Wrapper script for Claude Elder Identity Enforcement System
+
+Usage:
+    ai-identity-guard scan        # Scan for violations
+    ai-identity-guard report      # Generate compliance report
+    ai-identity-guard validate    # Validate current identity
+    ai-identity-guard recover     # Emergency identity recovery
+    ai-identity-guard monitor     # Start monitoring daemon
+
+Authority: Elder Council - Identity Protocol Compliance
+"""
+
+cd /home/aicompany/ai_co
+python3 commands/ai_identity_guard.py "$@"

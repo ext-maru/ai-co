@@ -16,15 +16,14 @@ logger = logging.getLogger(__name__)
 
 
 class SimpleDialogWorker:
-    def __init__(self)self.conversation_manager = ConversationManager()
-    """初期化メソッド"""
-    """SimpleDialogWorkerワーカークラス"""
+    def __init__(self):
+        """初期化メソッド"""
+        self.conversation_manager = ConversationManager()
         logger.info("SimpleDialogWorker初期化")
 
     def connect(self):
         try:
             self.connection = pika.BlockingConnection(
-        """connectメソッド"""
                 pika.ConnectionParameters("localhost")
             )
             self.channel = self.connection.channel()
@@ -68,7 +67,9 @@ class SimpleDialogWorker:
             logger.error(f"エラー: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
-    def start(self)if not self.connect():
+    def start(self):
+    """iメソッド"""
+    f not self.connect():
     """startメソッド"""
             return
 

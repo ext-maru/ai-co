@@ -32,8 +32,8 @@ def retry(
     """
 
     def decorator(func: Callable) -> Callable:
-        @functools.wraps(func)
         """decoratorメソッド"""
+        @functools.wraps(func)
         def wrapper(*args, **kwargs) -> Any:
             """wrapperメソッド"""
             last_exception = None
@@ -109,8 +109,10 @@ class RetryableWorker:
 
         return wrapped_operation()
 
-    def retry_with_config(self, **custom_config) -> Callableconfig = self.retry_config.copy()config.update(custom_config)
-    """スタム設定でのリトライデコレータ"""
+    def retry_with_config(self, **custom_config) -> Callable:
+        """カスタム設定でのリトライデコレータ"""
+        config = self.retry_config.copy()
+        config.update(custom_config)
         return retry(**config)
 
 

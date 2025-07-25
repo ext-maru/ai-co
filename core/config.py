@@ -288,8 +288,11 @@ class EldersGuildConfig:
         if custom_config:
             self._custom_configs.update(custom_config)
 
-    def _update_dataclass(self, obj: Any, updates: Dict[str, Any])for key, value in updates.items()if hasattr(obj, key)setattr(obj, key, value)
-    """データクラスの更新"""
+    def _update_dataclass(self, obj: Any, updates: Dict[str, Any]):
+        """データクラスの更新"""
+        for key, value in updates.items():
+            if hasattr(obj, key):
+                setattr(obj, key, value)
 
     def get(self, key_path: str, default: Any = None) -> Any:
         """
@@ -338,8 +341,9 @@ class EldersGuildConfig:
         # カスタム設定として保存
         self._set_nested(self._custom_configs, key_path, value)
 
-    def _set_nested(self, dictionary: Dict[str, Any], key_path: str, value: Any)keys = key_path.split(".")
-    """ネストされた辞書に値を設定"""
+    def _set_nested(self, dictionary: Dict[str, Any], key_path: str, value: Any):
+        """ネストされた辞書に値を設定"""
+        keys = key_path.split(".")
 
         for key in keys[:-1]:
             if key not in dictionary:
@@ -400,8 +404,7 @@ class EldersGuildConfig:
 
     def __repr__(self) -> str:
         """設定の文字列表現"""
-        return f"EldersGuildConfig(rabbitmq={self.rabbitmq.host}, slack_enabled={self." \
-            "slack.enabled}, workers={self.worker.min_workers}-{self.worker.max_workers})"
+        return f"EldersGuildConfig(rabbitmq={self.rabbitmq.host}, slack_enabled={self.slack.enabled}, workers={self.worker.min_workers}-{self.worker.max_workers})"
 
 
 # グローバル設定インスタンス（シングルトン）

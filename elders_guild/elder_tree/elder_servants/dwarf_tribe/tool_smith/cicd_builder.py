@@ -40,7 +40,6 @@ from elders_guild.elder_tree.elder_servants.base.elder_servant import (
 )
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
-
 class CICDPlatform(Enum):
     """CI/CD Platform Types"""
 
@@ -51,7 +50,6 @@ class CICDPlatform(Enum):
     CIRCLECI = "circleci"
     AWS_CODEPIPELINE = "aws_codepipeline"
 
-
 class PipelineStatus(Enum):
     """Pipeline Execution Status"""
 
@@ -61,7 +59,6 @@ class PipelineStatus(Enum):
     FAILED = "failed"
     CANCELLED = "cancelled"
     TIMEOUT = "timeout"
-
 
 @dataclass
 class PipelineJob:
@@ -78,7 +75,6 @@ class PipelineJob:
     coverage_threshold: Optional[int] = None
     resources: Dict[str, str] = field(default_factory=dict)
 
-
 @dataclass
 class PipelineStage:
     """Pipeline stage configuration"""
@@ -87,7 +83,6 @@ class PipelineStage:
     jobs: List[PipelineJob]
     parallel: bool = False
     condition: Optional[str] = None
-
 
 @dataclass
 class QualityGate:
@@ -98,7 +93,6 @@ class QualityGate:
     threshold: float
     fail_fast: bool = False
     required: bool = True
-
 
 @dataclass
 class PipelineConfig:
@@ -111,7 +105,6 @@ class PipelineConfig:
     triggers: Dict[str, Any] = field(default_factory=dict)
     environment_variables: Dict[str, str] = field(default_factory=dict)
     notifications: List[Dict[str, Any]] = field(default_factory=list)
-
 
 @dataclass
 class BuildArtifact:
@@ -127,7 +120,6 @@ class BuildArtifact:
     expires_at: Optional[datetime] = None
     storage_url: Optional[str] = None
 
-
 @dataclass
 class PipelineExecutionResult:
     """Pipeline execution result"""
@@ -142,7 +134,6 @@ class PipelineExecutionResult:
     artifacts: List[BuildArtifact] = field(default_factory=list)
     logs: List[str] = field(default_factory=list)
     error: Optional[str] = None
-
 
 class CICDBuilder(DwarfServant):
     """
@@ -218,12 +209,6 @@ class CICDBuilder(DwarfServant):
             "performance": self._check_performance_gate,
         }
 
-        # Pipeline templates
-        self.pipeline_templates = {
-            "node_js_app": self._get_nodejs_template,
-            "python_app": self._get_python_template,
-            "docker_app": self._get_docker_template,
-            "microservice": self._get_microservice_template,
         }
 
         self.logger.info(
@@ -246,7 +231,7 @@ class CICDBuilder(DwarfServant):
                 "quality_gates",
             ],
             "supported_platforms": list(self.supported_platforms.keys()),
-            "pipeline_templates": list(self.pipeline_templates.keys()),
+
             "quality_gate_types": list(self.quality_gate_handlers.keys()),
             "version": "1.0.0",
             "status": "active",
@@ -277,8 +262,7 @@ class CICDBuilder(DwarfServant):
                 return await self._handle_get_metrics(request)
             elif request_type == "analyze_costs":
                 return await self._handle_analyze_costs(request)
-            elif request_type == "create_from_template":
-                return await self._handle_create_from_template(request)
+
             elif request_type == "configure_notifications":
                 return await self._handle_configure_notifications(request)
             elif request_type == "optimize_pipeline":
@@ -720,22 +704,14 @@ class CICDBuilder(DwarfServant):
 
         return {"status": "success", "cost_analysis": cost_analysis}
 
-    async def _handle_create_from_template(
         self, request: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Handle template-based pipeline creation"""
-        template = request.get("template")
+
         customizations = request.get("customizations", {})
-
-        if template not in self.pipeline_templates:
-            return {"status": "error", "error": f"Unknown template: {template}"}
-
-        template_func = self.pipeline_templates[template]
-        pipeline_config = await template_func(customizations)
 
         return {
             "status": "success",
-            "pipeline": {"template_used": template, **pipeline_config},
+
         }
 
     async def _handle_configure_notifications(
@@ -1309,12 +1285,9 @@ class CICDBuilder(DwarfServant):
 
         return result
 
-    # Template methods
-
-    async def _get_nodejs_template(
         self, customizations: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Get Node.js application template"""
+
         node_version = customizations.get("node_version", "18")
         test_command = customizations.get("test_command", "npm test")
         deploy_targets = customizations.get("deploy_targets", ["staging"])
@@ -1336,20 +1309,17 @@ class CICDBuilder(DwarfServant):
             "stages": stages,
         }
 
-    async def _get_python_template(
         self, customizations: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Get Python application template"""
+
         return {"name": "python-app-pipeline", "stages": []}
 
-    async def _get_docker_template(
         self, customizations: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Get Docker application template"""
+
         return {"name": "docker-app-pipeline", "stages": []}
 
-    async def _get_microservice_template(
         self, customizations: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Get microservice template"""
+
         return {"name": "microservice-pipeline", "stages": []}

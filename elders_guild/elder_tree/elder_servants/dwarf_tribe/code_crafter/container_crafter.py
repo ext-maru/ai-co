@@ -17,7 +17,7 @@ import json
 import logging
 import os
 import subprocess
-import tempfile
+
 import uuid
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
@@ -34,7 +34,6 @@ from elders_guild.elder_tree.elder_servants.base.elder_servant import (
     TaskStatus,
 )
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
-
 
 @dataclass
 class ContainerMetrics:
@@ -57,7 +56,6 @@ class ContainerMetrics:
         if self.timestamp is None:
             self.timestamp = datetime.now()
 
-
 @dataclass
 class BuildResult:
     """Container build result"""
@@ -70,7 +68,6 @@ class BuildResult:
     vulnerabilities: Optional[Dict[str, int]] = None
     optimization_applied: bool = False
 
-
 @dataclass
 class DeploymentResult:
     """Container deployment result"""
@@ -82,7 +79,6 @@ class DeploymentResult:
     load_balancer_dns: Optional[str] = None
     health_checks_passed: bool = False
     rollback_available: bool = True
-
 
 class ContainerCrafter(DwarfServant):
     """
@@ -991,20 +987,15 @@ class ContainerCrafter(DwarfServant):
             # Handle specific exception case
             return {"success": False, "error": str(e)}
 
-    async def debug_container(self, debug_request: Dict[str, Any]) -> Dict[str, Any]:
-        """Debug container issues"""
         try:
-            container = debug_request.get("container")
-            tools = debug_request.get("tools", [])
 
             return {
                 "success": True,
                 "container": container,
-                "debug_session_id": f"debug-{uuid.uuid4().hex[:8]}",
-                "debug_session_active": True,
+
                 "tools_available": tools,
                 "diagnostics_collected": True,
-                "coredump_available": debug_request.get("capture_coredump", False),
+
             }
 
         except Exception as e:
@@ -1170,10 +1161,8 @@ class ContainerCrafter(DwarfServant):
             "quality_score": 0.95,
         }
 
-    async def _attach_debugger(self, *args, **kwargs) -> Dict[str, Any]:
-        """Attach debugger (mock implementation)"""
         return {
-            "debug_session_id": f"debug-{uuid.uuid4().hex[:8]}",
+
             "tools_attached": ["strace", "tcpdump", "gdb"],
             "coredump_location": "/tmp/coredump-123",
             "performance_profile": {

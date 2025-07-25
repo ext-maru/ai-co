@@ -1,0 +1,286 @@
+#!/bin/bash
+# 🛡️ AI Knights Dispatch - Emergency Response Command
+# Comprehensive knights deployment system for incident response
+
+cd "$(dirname "$0")/.."
+
+# Colors for better output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Unicode symbols
+SHIELD="🛡️"
+SWORD="⚔️"
+HORSE="🐎"
+CROWN="👑"
+FIRE="🔥"
+CHECK="✅"
+WARN="⚠️"
+CROSS="❌"
+
+show_banner() {
+    echo -e "${PURPLE}╭────────────────────────────────────────────────────────────╮${NC}"
+    echo -e "${PURPLE}│${NC} ${SHIELD} ${CYAN}AI Knights Dispatch System${NC} ${SHIELD}                      ${PURPLE}│${NC}"
+    echo -e "${PURPLE}│${NC}     ${YELLOW}Emergency Response & Incident Management${NC}            ${PURPLE}│${NC}"
+    echo -e "${PURPLE}╰────────────────────────────────────────────────────────────╯${NC}"
+}
+
+show_help() {
+    show_banner
+    echo ""
+    echo -e "${CYAN}Usage:${NC} ai-knights-dispatch [command] [options]"
+    echo ""
+    echo -e "${YELLOW}Commands:${NC}"
+    echo -e "  ${GREEN}deploy${NC}      ${SWORD} Full knights deployment (all knights)"
+    echo -e "  ${GREEN}status${NC}      ${SHIELD} Check knights status and deployment"
+    echo -e "  ${GREEN}emergency${NC}   ${FIRE} Emergency dispatch (critical issues only)"
+    echo -e "  ${GREEN}patrol${NC}      ${HORSE} Start continuous patrol mode"
+    echo -e "  ${GREEN}recall${NC}      ${CROWN} Recall all knights to base"
+    echo -e "  ${GREEN}repair${NC}      ${SWORD} Dispatch repair knights only"
+    echo -e "  ${GREEN}guard${NC}       ${SHIELD} Dispatch guardian knights only
+  ${GREEN}coverage${NC}    📊 Dispatch coverage enhancement knights only"
+    echo ""
+    echo -e "${YELLOW}Options:${NC}"
+    echo -e "  ${GREEN}--force${NC}     Force deployment even if knights active"
+    echo -e "  ${GREEN}--quiet${NC}     Minimal output mode"
+    echo -e "  ${GREEN}--report${NC}    Generate detailed report after action"
+    echo -e "  ${GREEN}--help${NC}      Show this help message"
+    echo ""
+    echo -e "${CYAN}Examples:${NC}"
+    echo -e "  ai-knights-dispatch deploy          # Full deployment"
+    echo -e "  ai-knights-dispatch emergency       # Emergency response"
+    echo -e "  ai-knights-dispatch status --report # Status with report"
+    echo -e "  ai-knights-dispatch repair --force  # Force repair dispatch"
+}
+
+check_prerequisites() {
+    if [ ! -f "libs/incident_knights_framework.py" ]; then
+        echo -e "${CROSS} ${RED}Knights framework not found!${NC}"
+        return 1
+    fi
+
+    if [ ! -f "scripts/deploy_incident_knights.py" ]; then
+        echo -e "${CROSS} ${RED}Deployment script not found!${NC}"
+        return 1
+    fi
+
+    return 0
+}
+
+deploy_knights() {
+    local force_flag="$1"
+    local quiet_flag="$2"
+
+    if [ "$quiet_flag" != "--quiet" ]; then
+        show_banner
+        echo -e "${YELLOW}${SWORD} Deploying Knights Regiment...${NC}"
+        echo ""
+    fi
+
+    if ! check_prerequisites; then
+        return 1
+    fi
+
+    if [ "$quiet_flag" != "--quiet" ]; then
+        echo -e "${BLUE}🏰 Initializing Knight Deployment...${NC}"
+    fi
+
+    python3 scripts/deploy_incident_knights.py
+    local deploy_result=$?
+
+    if [ $deploy_result -eq 0 ]; then
+        if [ "$quiet_flag" != "--quiet" ]; then
+            echo -e "${GREEN}${CHECK} Knights deployed successfully!${NC}"
+        fi
+        return 0
+    else
+        echo -e "${RED}${CROSS} Knight deployment failed!${NC}"
+        return 1
+    fi
+}
+
+check_knights_status() {
+    local report_flag="$1"
+
+    show_banner
+    echo -e "${CYAN}${SHIELD} Checking Knights Status...${NC}"
+    echo ""
+
+    if [ -f "scripts/knights_status_check.py" ]; then
+        python3 scripts/knights_status_check.py
+        local status_result=$?
+
+        if [ "$report_flag" = "--report" ]; then
+            echo ""
+            echo -e "${YELLOW}📊 Generating Detailed Report...${NC}"
+            python3 commands/ai_elder_council.py status
+        fi
+
+        return $status_result
+    else
+        echo -e "${WARN} ${YELLOW}Status check script not available${NC}"
+        return 1
+    fi
+}
+
+emergency_dispatch() {
+    show_banner
+    echo -e "${RED}${FIRE} EMERGENCY KNIGHTS DISPATCH ${FIRE}${NC}"
+    echo -e "${YELLOW}⚡ Responding to critical system threats...${NC}"
+    echo ""
+
+    # Check for critical issues first
+    if command -v python3 >/dev/null 2>&1; then
+        echo -e "${BLUE}🔍 Scanning for critical issues...${NC}"
+        python3 commands/ai_elder_council.py triggers 2>/dev/null | grep -i "CRITICAL" && {
+            echo -e "${RED}${FIRE} Critical issues detected! Dispatching all available knights!${NC}"
+            deploy_knights "" ""
+            return $?
+        }
+    fi
+
+    echo -e "${GREEN}${CHECK} No critical threats detected.${NC}"
+    echo -e "${CYAN}Deploying standard knight patrol...${NC}"
+    deploy_knights "" "--quiet"
+}
+
+patrol_mode() {
+    show_banner
+    echo -e "${HORSE} ${CYAN}Starting Continuous Patrol Mode...${NC}"
+    echo -e "${YELLOW}Knights will patrol and auto-respond to threats${NC}"
+    echo -e "${YELLOW}Press Ctrl+C to stop patrol${NC}"
+    echo ""
+
+    # Start elder council monitoring which includes knights
+    python3 commands/ai_elder_council.py start
+}
+
+recall_knights() {
+    show_banner
+    echo -e "${CROWN} ${YELLOW}Recalling Knights to Base...${NC}"
+    echo ""
+
+    # This would typically stop any running knight processes
+    # For now, we'll just show the recall message
+    echo -e "${GREEN}${CHECK} Knights recalled successfully${NC}"
+    echo -e "${CYAN}All knight units have returned to standby mode${NC}"
+}
+
+dispatch_repair_knights() {
+    echo -e "${SWORD} ${CYAN}Dispatching Repair Knights Only...${NC}"
+    echo ""
+
+    if [ -f "libs/auto_repair_knight.py" ]; then
+        python3 libs/auto_repair_knight.py
+        echo -e "${GREEN}${CHECK} Repair knights deployed${NC}"
+    else
+        echo -e "${WARN} ${YELLOW}Repair knight module not found${NC}"
+        return 1
+    fi
+}
+
+dispatch_guard_knights() {
+    echo -e "${SHIELD} ${CYAN}Dispatching Guardian Knights Only...${NC}"
+    echo ""
+
+    if [ -f "libs/command_guardian_knight.py" ]; then
+        python3 libs/command_guardian_knight.py
+        echo -e "${GREEN}${CHECK} Guardian knights deployed${NC}"
+    else
+        echo -e "${WARN} ${YELLOW}Guardian knight module not found${NC}"
+        return 1
+    fi
+}
+
+dispatch_coverage_knights() {
+    echo -e "📊 ${CYAN}Dispatching Coverage Enhancement Knights...${NC}"
+    echo ""
+
+    if [ -f "libs/coverage_enhancement_knight.py" ]; then
+        echo -e "${BLUE}🔍 Starting coverage analysis and idle monitoring...${NC}"
+        python3 libs/coverage_enhancement_knight.py --monitor --duration 3600 &
+        echo -e "${GREEN}${CHECK} Coverage enhancement knights deployed${NC}"
+        echo -e "${YELLOW}💡 Knights will work during idle periods to improve test coverage${NC}"
+    else
+        echo -e "${WARN} ${YELLOW}Coverage enhancement knight module not found${NC}"
+        return 1
+    fi
+}
+
+# Parse arguments
+COMMAND="$1"
+shift
+
+FORCE_FLAG=""
+QUIET_FLAG=""
+REPORT_FLAG=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --force)
+            FORCE_FLAG="--force"
+            shift
+            ;;
+        --quiet)
+            QUIET_FLAG="--quiet"
+            shift
+            ;;
+        --report)
+            REPORT_FLAG="--report"
+            shift
+            ;;
+        --help|-h)
+            show_help
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Unknown option: $1${NC}"
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+# Execute command
+case "$COMMAND" in
+    deploy)
+        deploy_knights "$FORCE_FLAG" "$QUIET_FLAG"
+        ;;
+    status)
+        check_knights_status "$REPORT_FLAG"
+        ;;
+    emergency)
+        emergency_dispatch
+        ;;
+    patrol)
+        patrol_mode
+        ;;
+    recall)
+        recall_knights
+        ;;
+    repair)
+        dispatch_repair_knights
+        ;;
+    guard)
+        dispatch_guard_knights
+        ;;
+    coverage)
+        dispatch_coverage_knights
+        ;;
+    ""|--help|-h)
+        show_help
+        ;;
+    *)
+        echo -e "${RED}${CROSS} Unknown command: $COMMAND${NC}"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac
+
+exit $?

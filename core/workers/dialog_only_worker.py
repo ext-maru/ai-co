@@ -33,14 +33,12 @@ class DialogOnlyWorker:
     def __init__(self, worker_id="dialog-only-1"):
         """初期化メソッド"""
         self.worker_id = worker_id
-    """DialogOnlyWorkerワーカークラス"""
         self.conversation_manager = ConversationManager()
         logger.info(f"{worker_id} 初期化")
 
     def connect(self):
         try:
             self.connection = pika.BlockingConnection(
-        """connectメソッド"""
                 pika.ConnectionParameters("localhost")
             )
             self.channel = self.connection.channel()
@@ -53,8 +51,8 @@ class DialogOnlyWorker:
             return False
 
     def process_dialog_task(self, ch, method, properties, body):
-        try:
         """process_dialog_taskを処理"""
+        try:
             task_data = json.loads(body)
             conversation_id = task_data.get("conversation_id")
             instruction = task_data.get("instruction")
@@ -107,8 +105,9 @@ class DialogOnlyWorker:
             traceback.print_exc()
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
-    def start(self)if not self.connect():
-    """startメソッド"""
+    def start(self):
+        """startメソッド"""
+        if not self.connect():
             return
 
         self.channel.basic_qos(prefetch_count=1)

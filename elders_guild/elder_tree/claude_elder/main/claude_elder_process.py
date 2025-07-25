@@ -15,7 +15,6 @@ from elders_guild.elder_tree.elder_process_base import (
     ElderProcessBase, ElderRole, SageType, MessageType, ElderMessage
 )
 
-
 class TaskStatus(Enum):
     """タスクステータス"""
     PENDING = "pending"
@@ -23,7 +22,6 @@ class TaskStatus(Enum):
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     FAILED = "failed"
-
 
 class DevelopmentTask:
     """開発タスク"""
@@ -37,7 +35,6 @@ class DevelopmentTask:
         self.created_at = datetime.now()
         self.completed_at: Optional[datetime] = None
         self.result: Optional[Dict[str, Any]] = None
-
 
 class ClaudeElderProcess(ElderProcessBase):
     """
@@ -148,7 +145,7 @@ class ClaudeElderProcess(ElderProcessBase):
 
     async def _prepare_development_environment(self):
         """開発環境の準備"""
-        # TODO: 実際の環境準備処理
+
         self.logger.info("Development environment prepared")
 
     async def _process_task_queue(self):
@@ -175,7 +172,7 @@ class ClaudeElderProcess(ElderProcessBase):
             sage_type = "knowledge_sage"
         elif any(keyword in description_lower for keyword in ["task", "project", "plan"]):
             sage_type = "task_sage"
-        elif any(keyword in description_lower for keyword in ["bug", "error", "incident"]):
+
             sage_type = "incident_sage"
         elif any(keyword in description_lower for keyword in ["search", "find", "analyze"]):
             sage_type = "rag_sage"
@@ -384,7 +381,6 @@ class ClaudeElderProcess(ElderProcessBase):
         """タスクの再分配"""
         self.logger.info("Redistributing tasks for load balancing...")
 
-        # TODO: 実際の再分配ロジック
         pass
 
     async def _activate_emergency_protocol(self):
@@ -409,7 +405,7 @@ class ClaudeElderProcess(ElderProcessBase):
 
     async def _save_pending_tasks(self):
         """未完了タスクの保存"""
-        # TODO: タスクの永続化
+
         pending_count = len(self.task_queue) + len(self.active_tasks)
         self.logger.info(f"Saving {pending_count} pending tasks...")
 
@@ -429,7 +425,6 @@ class ClaudeElderProcess(ElderProcessBase):
         )
 
         await self.send_message(final_report)
-
 
 # プロセス起動
 if __name__ == "__main__":

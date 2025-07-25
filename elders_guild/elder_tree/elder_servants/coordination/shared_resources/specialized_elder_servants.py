@@ -37,7 +37,6 @@ from .enhanced_elder_servant import (
 TRequest = TypeVar("TRequest")
 TResponse = TypeVar("TResponse")
 
-
 class DwarfWorkshopServant(EnhancedElderServant[TRequest, TResponse]):
     """
     🔨 ドワーフ工房サーバント - 開発・製作・実装専門
@@ -76,7 +75,7 @@ class DwarfWorkshopServant(EnhancedElderServant[TRequest, TResponse]):
         
         # ドワーフ工房固有設定
         self.production_quality_threshold = 98.0  # 生産品質基準（高品質）
-        self.crafting_templates = {}              # 製作テンプレート
+
         self.tools_registry = {}                  # 開発ツールレジストリ
         self.build_pipeline = []                  # ビルドパイプライン
         self.deployment_configs = {}              # デプロイメント設定
@@ -87,7 +86,7 @@ class DwarfWorkshopServant(EnhancedElderServant[TRequest, TResponse]):
             "builds_successful": 0,               # ビルド成功数  
             "tests_passed": 0,                    # テスト成功数
             "deployments_successful": 0,          # デプロイ成功数
-            "bugs_fixed": 0,                      # バグ修正数
+
             "refactoring_completed": 0,           # リファクタリング完了数
             "documentation_generated": 0,         # ドキュメント生成数
             "security_patches_applied": 0,        # セキュリティパッチ適用数
@@ -117,15 +116,13 @@ class DwarfWorkshopServant(EnhancedElderServant[TRequest, TResponse]):
             validated_spec = await self._validate_craft_specification(specification)
             
             # テンプレート選択
-            template = await self._select_crafting_template(validated_spec)
-            
+
             # 品質事前チェック
             if not await self._pre_craft_quality_check(validated_spec):
                 raise ValueError("Pre-craft quality check failed")
             
             # 実際の製作処理
-            artifact = await self._execute_crafting(validated_spec, template)
-            
+
             # 品質検証
             quality_result = await self._validate_craft_quality(artifact)
             if not quality_result["passed"]:
@@ -198,14 +195,10 @@ class DwarfWorkshopServant(EnhancedElderServant[TRequest, TResponse]):
                 raise ValueError(f"Missing required specification field: {field}")
         
         return specification
-    
-    async def _select_crafting_template(self, specification: Dict[str, Any]) -> Dict[str, Any]:
+
         """製作テンプレート選択"""
         craft_type = specification.get("type", "generic")
-        
-        if craft_type in self.crafting_templates:
-            return self.crafting_templates[craft_type]
-        
+
         # デフォルトテンプレート
         return {
             "type": "default",
@@ -229,12 +222,11 @@ class DwarfWorkshopServant(EnhancedElderServant[TRequest, TResponse]):
         self,
         specification: Dict[str,
         Any],
-        template: Dict[str,
+
         Any]
     ) -> Dict[str, Any]:
         """実際の製作処理（各専門サーバントで実装）"""
         pass
-
 
 class RAGWizardServant(EnhancedElderServant[TRequest, TResponse]):
     """
@@ -398,7 +390,6 @@ class RAGWizardServant(EnhancedElderServant[TRequest, TResponse]):
         """研究データ収集（各専門サーバントで実装）"""
         pass
 
-
 class ElfForestServant(EnhancedElderServant[TRequest, TResponse]):
     """
     🧝‍♂️ エルフの森サーバント - 監視・メンテナンス・最適化専門
@@ -442,7 +433,7 @@ class ElfForestServant(EnhancedElderServant[TRequest, TResponse]):
         self.forest_metrics = {
             "monitoring_cycles": 0,                   # 監視サイクル数
             "issues_detected": 0,                     # 問題検出数
-            "healing_attempts": 0,                    # ヒーリング試行数
+
             "healing_successful": 0,                  # ヒーリング成功数
             "optimizations_applied": 0,               # 最適化適用数
             "alerts_generated": 0,                    # アラート生成数
@@ -507,8 +498,7 @@ class ElfForestServant(EnhancedElderServant[TRequest, TResponse]):
             # 自動ヒーリング試行
             for issue in issues:
                 if await self._should_auto_heal(issue):
-                    await self._attempt_healing(issue)
-        
+
         # パフォーマンス最適化チェック
         optimization_opportunities = await self._identify_optimization_opportunities(health_status)
         for opportunity in optimization_opportunities:
@@ -545,7 +535,7 @@ class ElfForestServant(EnhancedElderServant[TRequest, TResponse]):
             post_healing_status = await self._verify_healing_effectiveness(target_system)
             
             # メトリクス更新
-            self.forest_metrics["healing_attempts"] += 1
+
             if post_healing_status.get("improved", False):
                 self.forest_metrics["healing_successful"] += 1
             
@@ -574,7 +564,6 @@ class ElfForestServant(EnhancedElderServant[TRequest, TResponse]):
     async def _detect_issues(self, health_status: Dict[str, Any]) -> List[Dict[str, Any]]:
         """問題検出（各専門サーバントで実装）"""
         pass
-
 
 class IncidentKnightServant(EnhancedElderServant[TRequest, TResponse]):
     """
@@ -725,8 +714,7 @@ class IncidentKnightServant(EnhancedElderServant[TRequest, TResponse]):
             containment_result = await self._contain_incident_spread(incident)
             
             # 自動修復試行
-            recovery_result = await self._attempt_auto_recovery(incident)
-            
+
             # エスカレーション判定
             if severity >= self.escalation_threshold:
                 escalation_result = await self._escalate_to_higher_authority(incident)
@@ -781,7 +769,6 @@ class IncidentKnightServant(EnhancedElderServant[TRequest, TResponse]):
     async def _execute_preventive_action(self, threat: Dict[str, Any]) -> Dict[str, Any]:
         """予防アクション実行（各専門サーバントで実装）"""
         pass
-
 
 # =============================================================================
 # ファクトリクラス
@@ -846,7 +833,7 @@ class SpecializedServantFactory:
                 ServantSpecialization.IMPLEMENTATION,
                 ServantSpecialization.TESTING,
                 ServantSpecialization.API_SHA256IGN,
-                ServantSpecialization.BUG_HUNTING,
+
                 ServantSpecialization.REFACTORING,
                 ServantSpecialization.DOCUMENTATION,
                 ServantSpecialization.CONFIGURATION,

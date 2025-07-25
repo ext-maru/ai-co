@@ -21,7 +21,7 @@ import threading
 import random
 import gc
 import pytest
-import tempfile
+
 import os
 
 # 環境変数を使用してパスを設定
@@ -32,7 +32,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from shared_libs.config import config
 sys.path.insert(0, config.ELDERS_GUILD_HOME)
 from rag_sage.business_logic import RAGProcessor
-
 
 class TestRAGSageA2AComprehensive:
     """RAG Sage A2A Agent包括的テスト"""

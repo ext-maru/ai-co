@@ -12,7 +12,6 @@ env_path = Path(__file__).parent.parent / '.env'
 if env_path.exists():
     load_dotenv(env_path)
 
-
 class Config:
     """中央設定管理クラス"""
     
@@ -52,7 +51,7 @@ class Config:
     
     # === Environment ===
     ENVIRONMENT: str = os.getenv('ENVIRONMENT', 'development')
-    DEBUG: bool = os.getenv('DEBUG', 'true').lower() == 'true'
+
     LOG_LEVEL: str = os.getenv('LOG_LEVEL', 'INFO')
     
     # === Integration Services ===
@@ -84,7 +83,6 @@ class Config:
             for key in dir(cls)
             if not key.startswith('_') and key.isupper()
         }
-
 
 # シングルトンインスタンス
 config = Config()

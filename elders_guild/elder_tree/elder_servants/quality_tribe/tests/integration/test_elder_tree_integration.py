@@ -8,7 +8,7 @@ import asyncio
 from unittest.mock import Mock, AsyncMock, patch
 from datetime import datetime
 import os
-import tempfile
+
 from typing import Dict, Any, List
 
 # Elder Tree コンポーネント
@@ -19,7 +19,6 @@ from elder_tree.agents.incident_sage import IncidentSage
 from elder_tree.agents.rag_sage import RAGSage
 from elder_tree.servants.dwarf_servant import CodeCrafter
 from elder_tree.servants.elf_servant import QualityGuardian
-
 
 class TestElderTreeIntegration:
     """Elder Tree統合テストスイート"""
@@ -33,7 +32,7 @@ class TestElderTreeIntegration:
             "redis_url": "redis://localhost:6379",
             "agents": {},
             "servants": {},
-            "temp_dir": tempfile.mkdtemp()
+
         }
         
         # 4賢者の初期化
@@ -45,7 +44,7 @@ class TestElderTreeIntegration:
         )
         env["agents"]["rag_sage"] = RAGSage(
             db_url=env["db_url"],
-            chroma_persist_dir=os.path.join(env["temp_dir"], "chroma")
+
         )
         
         # サーバントの初期化
@@ -69,7 +68,6 @@ class TestElderTreeIntegration:
         
         # クリーンアップ
         import shutil
-        shutil.rmtree(env["temp_dir"])
 
     @pytest.mark.asyncio
     async def test_full_workflow_execution(self, test_environment):
@@ -302,17 +300,15 @@ def bad_function(x, y, z):
     # Non-compliant code for testing purposes
     return result
 """
-        
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+
             f.write(low_quality_code)
-            temp_file = f.name
-        
+
         try:
             # 品質分析実行
             quality_result = await quality_guardian.execute_specialized_task(
                 "quality_analysis",
                 {
-                    "file_path": temp_file,
+
                     "checks": ["all"]
                 },
                 {}
@@ -324,7 +320,7 @@ def bad_function(x, y, z):
             
             # Elder Flowの品質ゲートでブロック
             execution_result = {
-                "files_created": [temp_file],
+
                 "quality": quality_result
             }
             
@@ -333,7 +329,6 @@ def bad_function(x, y, z):
             assert len(gate_result["detailed_checks"]["iron_will"]["issues"]) > 0
             
         finally:
-            os.unlink(temp_file)
 
     @pytest.mark.asyncio
     async def test_concurrent_task_processing(self, test_environment):

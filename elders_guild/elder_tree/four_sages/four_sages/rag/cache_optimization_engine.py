@@ -29,7 +29,6 @@ from elders_guild.elder_tree.tracking.unified_tracking_db import UnifiedTracking
 
 logger = get_logger("cache_optimization_engine")
 
-
 @dataclass
 class CacheEntry:
     """キャッシュエントリ"""
@@ -44,7 +43,6 @@ class CacheEntry:
     ttl: Optional[int] = None
     priority: float = 0.0
 
-
 @dataclass
 class CacheMetrics:
     """キャッシュメトリクス"""
@@ -58,7 +56,6 @@ class CacheMetrics:
     total_hits: int = 0
     total_misses: int = 0
 
-
 @dataclass
 class OptimizationStrategy:
     """最適化戦略"""
@@ -70,7 +67,6 @@ class OptimizationStrategy:
     prefetch_enabled: bool = False
     compression_enabled: bool = False
     predicted_hit_rate: float = 0.0
-
 
 class LRUCache:
     """LRU + 予測キャッシュ"""
@@ -136,7 +132,6 @@ class LRUCache:
 
             if next_key not in self.prediction_model[current]:
                 self.prediction_model[current].append(next_key)
-
 
 class CacheOptimizationEngine(EldersServiceLegacy):
     """キャッシュ最適化エンジン"""
@@ -253,7 +248,6 @@ class CacheOptimizationEngine(EldersServiceLegacy):
         ]
 
         # 時間的パターン分析
-        temporal_patterns = self._analyze_temporal_patterns(access_times)
 
         # メモリ使用量分析
         memory_usage = sum(entry.size_bytes for entry in cache.cache.values())
@@ -263,10 +257,10 @@ class CacheOptimizationEngine(EldersServiceLegacy):
             "total_accesses": total_accesses,
             "avg_access_frequency": avg_access_frequency,
             "hot_keys": hot_keys,
-            "temporal_patterns": temporal_patterns,
+
             "memory_usage_bytes": memory_usage,
             "estimated_improvement": self._estimate_improvement_potential(
-                access_frequency, temporal_patterns
+
             ),
         }
 
@@ -425,14 +419,13 @@ class CacheOptimizationEngine(EldersServiceLegacy):
 
         return metrics
 
-    def _analyze_temporal_patterns(
         self, access_times: Dict[str, List[datetime]]
     ) -> Dict[str, Any]:
         """時間的パターン分析"""
         patterns = {
             "peak_hours": [],
             "access_frequency_distribution": {},
-            "temporal_clustering": {},
+
         }
 
         # 時間帯別アクセス分析
@@ -448,7 +441,7 @@ class CacheOptimizationEngine(EldersServiceLegacy):
         return patterns
 
     def _estimate_improvement_potential(
-        self, access_frequency: Dict[str, int], temporal_patterns: Dict[str, Any]
+
     ) -> float:
         """改善可能性推定"""
         # 基本改善可能性
@@ -464,7 +457,7 @@ class CacheOptimizationEngine(EldersServiceLegacy):
                 base_improvement += 0.15
 
         # 時間的パターンに基づく改善
-        if temporal_patterns.get("peak_hours"):
+
             base_improvement += 0.1
 
         return min(base_improvement, 0.5)  # 最大50%改善
@@ -573,12 +566,10 @@ class CacheOptimizationEngine(EldersServiceLegacy):
             "performance_prediction",
         ]
 
-
 # エクスポート用のファクトリ関数
 def create_cache_optimization_engine() -> CacheOptimizationEngine:
     """Cache Optimization Engine作成"""
     return CacheOptimizationEngine()
-
 
 if __name__ == "__main__":
     # テスト実行

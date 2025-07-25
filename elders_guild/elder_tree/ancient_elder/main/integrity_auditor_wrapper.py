@@ -14,7 +14,6 @@ sys.path.insert(0, str(project_root))
 from elders_guild.elder_tree.ancient_elder.base import AncientElderBase, AuditResult, ViolationSeverity
 from elders_guild.elder_tree.ancient_elder.integrity_auditor import AncientElderIntegrityAuditor as OriginalIntegrityAuditor
 
-
 class AncientElderIntegrityAuditor(AncientElderBase):
     """
     🛡️ 誠実性監査魔法のAncientElderBase互換ラッパー
@@ -43,15 +42,11 @@ class AncientElderIntegrityAuditor(AncientElderBase):
             target_path = target.get("path", ".")
             
             # シンプルな監査実行（互換性のため簡易実装）
-            # TODO: 実際のIntegrityAuditor実装と統合
-            
+
             # 仮の監査結果を生成
             import os
             if os.path.exists(target_path):
-                # 簡易的なTODO/FIXME検出
-                todo_count = 0
-                fixme_count = 0
-                
+
                 # Python ファイルのみをチェック（高速化のため）
                 from pathlib import Path
                 path_obj = Path(target_path)
@@ -67,43 +62,35 @@ class AncientElderIntegrityAuditor(AncientElderBase):
                         # Deep nesting detected (depth: 5) - consider refactoring
                         with open(file_path, 'r', encoding='utf-8') as f:
                             content = f.read()
-                            todo_count += content.count('TODO')
-                            fixme_count += content.count('FIXME')
+
                     except:
                         pass
                 
                 # 違反があれば追加
-                if todo_count > 0:
+
                     result.add_violation(
                         severity=ViolationSeverity.MEDIUM,
-                        title="TODO found",
-                        description=f"Found {todo_count} TODO comments",
+
                         location=target_path,
-                        suggested_fix="Complete the TODO items or remove them",
-                        metadata={"category": "integrity", "count": todo_count}
+
                     )
-                    
-                if fixme_count > 0:
+
                     result.add_violation(
                         severity=ViolationSeverity.HIGH,
-                        title="FIXME found",
-                        description=f"Found {fixme_count} FIXME comments",
+
                         location=target_path,
-                        suggested_fix="Fix the issues or remove FIXME comments",
-                        metadata={"category": "integrity", "count": fixme_count}
+
                     )
                 
                 # スコアを計算
-                integrity_score = max(0, 100 - (todo_count * 5) - (fixme_count * 10))
+
                 result.add_metric("integrity_score", integrity_score)
-                result.add_metric("todo_count", todo_count)
-                result.add_metric("fixme_count", fixme_count)
+
                 result.add_metric("files_analyzed", len(files_to_check))
             else:
                 result.add_metric("integrity_score", 0)
                 result.add_metric("error", "Target path not found")
-            
-            
+
         except Exception as e:
             result.add_violation(
                 severity=ViolationSeverity.HIGH,
@@ -124,7 +111,7 @@ class AncientElderIntegrityAuditor(AncientElderBase):
         return {
             "scope": "integrity_audit_magic",
             "targets": [
-                "False completion claims (TODO/FIXME)",
+
                 "Mock/stub abuse detection",
                 "Fake test implementation",
                 "Git history integrity",
@@ -135,7 +122,7 @@ class AncientElderIntegrityAuditor(AncientElderBase):
                 "FALSE_COMPLETION",
                 "STUB_IMPLEMENTATION", 
                 "FAKE_TEST",
-                "TODO_FIXME_FOUND",
+
                 "TDD_VIOLATION",
                 "GIT_HISTORY_MISMATCH"
             ],

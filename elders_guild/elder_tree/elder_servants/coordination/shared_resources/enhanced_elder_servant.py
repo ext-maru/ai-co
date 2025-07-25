@@ -35,7 +35,7 @@ from pathlib import Path
 from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 # EldersLegacy統合インポート
-from elders_guild.elder_tree.core.elders_legacy import (
+from libs.core.elders_legacy import (
     EldersLegacyBase,
     EldersLegacyDomain,
     IronWillCriteria,
@@ -43,7 +43,7 @@ from elders_guild.elder_tree.core.elders_legacy import (
 )
 
 # BaseSoul統合インポート
-from elders_guild.elder_tree.base_soul import (
+from libs.base_soul import (
     ElderType,
     SoulCapability,
     SoulIdentity,
@@ -54,7 +54,6 @@ from elders_guild.elder_tree.base_soul import (
 TRequest = TypeVar("TRequest")
 TResponse = TypeVar("TResponse")
 
-
 class ServantTier(Enum):
     """サーバント階級システム"""
     
@@ -64,7 +63,6 @@ class ServantTier(Enum):
     MASTER = "master"            # 達人: 最高難度タスク対応
     LEGEND = "legend"            # 伝説: 新技術創造レベル
 
-
 class ServantSpecialization(Enum):
     """サーバント専門分野"""
     
@@ -72,7 +70,7 @@ class ServantSpecialization(Enum):
     IMPLEMENTATION = "implementation"      # 実装専門
     TESTING = "testing"                   # テスト専門
     API_SHA256IGN = "api_design"             # API設計専門
-    BUG_HUNTING = "bug_hunting"           # バグ検出専門
+
     REFACTORING = "refactoring"           # リファクタリング専門
     DOCUMENTATION = "documentation"        # ドキュメント専門
     CONFIGURATION = "configuration"       # 設定管理専門
@@ -110,7 +108,6 @@ class ServantSpecialization(Enum):
     AUTO_HEALING = "auto_healing"                # 自動修復専門
     ROLLBACK_MANAGEMENT = "rollback_management"  # ロールバック専門
 
-
 @dataclass
 class A2ACommunication:
     """A2A通信設定"""
@@ -121,9 +118,8 @@ class A2ACommunication:
     port: int = 8000
     max_connections: int = 100
     timeout_seconds: int = 30
-    retry_attempts: int = 3
-    circuit_breaker_threshold: int = 5
 
+    circuit_breaker_threshold: int = 5
 
 @dataclass 
 class SageCollaboration:
@@ -137,7 +133,6 @@ class SageCollaboration:
     max_concurrent_requests: int = 5
     auto_escalation: bool = True
 
-
 @dataclass
 class QualityGate:
     """品質ゲート設定"""
@@ -149,7 +144,6 @@ class QualityGate:
     maintainability_minimum: float = 80.0       # 保守性指標最小値
     auto_rejection: bool = True                 # 自動リジェクト有効
     escalation_enabled: bool = True             # 品質問題自動エスカレーション
-
 
 @dataclass
 class LearningConfig:
@@ -163,7 +157,6 @@ class LearningConfig:
     knowledge_retention_days: int = 365
     success_pattern_learning: bool = True
     failure_pattern_learning: bool = True
-
 
 @dataclass
 class ServantMetrics:
@@ -202,7 +195,6 @@ class ServantMetrics:
     created_at: datetime = field(default_factory=datetime.now)
     last_activity: datetime = field(default_factory=datetime.now)
     last_learning_update: datetime = field(default_factory=datetime.now)
-
 
 class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
     """
@@ -368,7 +360,7 @@ class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
             if not quality_result.passed:
                 # 自動修復試行
                 if self.auto_healing_enabled:
-                    response = await self._attempt_auto_healing(request, response, quality_result)
+
                 else:
                     raise ValueError(f"Quality gate validation failed: {quality_result.issues}")
             
@@ -943,8 +935,7 @@ class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
             IronWillCriteria.MAINTAINABILITY_SCORE: 80.0,
         }
         return thresholds.get(criteria, 80.0)
-    
-    async def _attempt_auto_healing(
+
         self, 
         request: TRequest, 
         response: TResponse, 
@@ -952,8 +943,7 @@ class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
     ) -> TResponse:
         """自動修復試行"""
         try:
-            self.logger.info(f"Attempting auto-healing for quality issues: {quality_result.issues}")
-            
+
             # 品質問題に基づく自動修復処理
             for issue in quality_result.issues:
                 if "test_coverage" in issue:
@@ -1273,7 +1263,6 @@ class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
         
         self.metrics.last_activity = datetime.now()
 
-
 @dataclass
 class QualityValidationResult:
     """品質検証結果"""
@@ -1283,7 +1272,6 @@ class QualityValidationResult:
     scores: Dict[str, float] = field(default_factory=dict)
     issues: List[str] = field(default_factory=list)
     error: Optional[str] = None
-
 
 # =============================================================================
 # ユーティリティクラス・関数
@@ -1324,7 +1312,6 @@ class ServantFactory:
         # 基底クラスインスタンス生成 (実際の実装では専門サーバントクラス)
         # この部分は各専門サーバント (DwarfServant, WizardServant等) で実装
         pass
-
 
 def setup_servant_logging(servant_id: str, log_level: str = "INFO") -> logging.Logger:
     """サーバント専用ログ設定"""

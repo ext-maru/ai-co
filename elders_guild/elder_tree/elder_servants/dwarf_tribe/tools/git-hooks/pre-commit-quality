@@ -1,0 +1,322 @@
+#!/usr/bin/env python3
+"""
+🏛️ Elder Guild Git Pre-commit Quality Hook
+エルダーズギルド品質保証 Git フック
+
+Features:
+- コミット前の自動品質チェック
+- Iron Will遵守強制
+- 品質スコア基準未満でコミット阻止
+- 改善提案とガイダンス
+"""
+
+import sys
+import os
+import subprocess
+import json
+import asyncio
+from pathlib import Path
+from typing import List, Dict, Any
+
+# Add project root to path
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+from libs.elders_code_quality_engine import quick_analyze
+
+class Colors:
+    """ANSI color codes"""
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    BOLD = '\033[1m'
+    END = '\033[0m'
+
+class ElderGuildPreCommitHook:
+    """エルダーズギルド品質保証 Pre-commit フック"""
+    
+    def __init__(self):
+        self.db_params = {
+            'host': 'localhost',
+            'database': 'elders_guild_pgvector',
+            'user': 'postgres',
+            'password': ''
+        }
+        self.minimum_quality_score = 70.0
+        self.iron_will_required = True
+        self.max_files_to_check = 50
+        
+    def get_staged_python_files(self) -> List[str]:
+        """ステージされたPythonファイル取得"""
+        try:
+            # Get staged files
+            result = subprocess.run(
+                ['git', 'diff', '--cached', '--name-only', '--diff-filter=ACM'],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            
+            files = result.stdout.strip().split('\n') if result.stdout.strip() else []
+            
+            # Filter Python files and check if they exist
+            python_files = []
+            for file in files:
+                if file.endswith('.py') and os.path.exists(file):
+                    python_files.append(file)
+                    
+            return python_files[:self.max_files_to_check]
+            
+        except subprocess.CalledProcessError as e:
+            print(f"{Colors.RED}❌ Failed to get staged files: {e}{Colors.END}")
+            return []
+            
+    def print_header(self):
+        """ヘッダー表示"""
+        print(f"{Colors.PURPLE}{Colors.BOLD}")
+        print("🏛️  ELDERS GUILD QUALITY ASSURANCE")
+        print("    エルダーズギルド品質保証システム")
+        print("    Pre-commit Quality Check")
+        print(f"{Colors.END}")
+        
+    async def analyze_file_quality(self, file_path: str) -> Dict[str, Any]:
+        """ファイル品質分析"""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                code = f.read()
+                
+            result = await quick_analyze(code, self.db_params)
+            
+            analysis = result.get('analysis', {})
+            return {
+                'file': file_path,
+                'quality_score': analysis.get('quality_score', 0),
+                'iron_will_compliance': analysis.get('iron_will_compliance', False),
+                'tdd_compatibility': analysis.get('tdd_compatibility', False),
+                'issues': analysis.get('issues', []),
+                'suggestions': analysis.get('suggestions', []),
+                'bug_risks': analysis.get('bug_risks', []),
+                'complexity_score': analysis.get('complexity_score', 0)
+            }
+            
+        except Exception as e:
+            return {
+                'file': file_path,
+                'error': str(e),
+                'quality_score': 0,
+                'iron_will_compliance': False
+            }
+            
+    async def check_quality_gate(self, files: List[str]) -> Dict[str, Any]:
+        """品質ゲートチェック"""
+        if not files:
+            return {
+                'status': 'skipped',
+                'reason': 'No Python files to check',
+                'gate_decision': 'approved'
+            }
+            
+        print(f"{Colors.CYAN}🔍 Analyzing {len(files)} Python file(s)...{Colors.END}")
+        
+        results = []
+        quality_violations = []
+        iron_will_violations = []
+        high_risk_bugs = []
+        
+        for file_path in files:
+            print(f"  📄 {file_path}", end=" ... ")
+            
+            analysis = await self.analyze_file_quality(file_path)
+            results.append(analysis)
+            
+            if 'error' in analysis:
+                print(f"{Colors.RED}❌ Error{Colors.END}")
+                continue
+                
+            quality_score = analysis['quality_score']
+            iron_will = analysis['iron_will_compliance']
+            
+            # 品質スコア表示
+            if quality_score >= 85:
+                color = Colors.GREEN
+                status = "✅"
+            elif quality_score >= self.minimum_quality_score:
+                color = Colors.YELLOW
+                status = "⚠️"
+            else:
+                color = Colors.RED
+                status = "❌"
+                
+            print(f"{color}{status} {quality_score:.1f}/100{Colors.END}")
+            
+            # 違反チェック
+            if quality_score < self.minimum_quality_score:
+                quality_violations.append(analysis)
+                
+            if self.iron_will_required and not iron_will:
+                iron_will_violations.append(analysis)
+                
+            high_risk = [risk for risk in analysis.get('bug_risks', []) if risk.get('risk_level', 0) > 7]
+            if high_risk:
+                high_risk_bugs.append(analysis)
+                
+        # 結果判定
+        has_violations = bool(quality_violations or iron_will_violations or high_risk_bugs)
+        
+        # 統計計算
+        valid_results = [r for r in results if 'error' not in r]
+        avg_quality = sum(r['quality_score'] for r in valid_results) / len(valid_results) if valid_results else 0
+        
+        return {
+            'status': 'completed',
+            'gate_decision': 'blocked' if has_violations else 'approved',
+            'total_files': len(files),
+            'analyzed_files': len(valid_results),
+            'average_quality_score': avg_quality,
+            'quality_violations': quality_violations,
+            'iron_will_violations': iron_will_violations,
+            'high_risk_bugs': high_risk_bugs,
+            'all_results': results
+        }
+        
+    def print_quality_summary(self, gate_result: Dict[str, Any]):
+        """品質サマリー表示"""
+        print(f"\n{Colors.BOLD}📊 QUALITY GATE SUMMARY{Colors.END}")
+        print("=" * 40)
+        
+        files = gate_result['analyzed_files']
+        avg_score = gate_result['average_quality_score']
+        
+        print(f"📁 Files analyzed: {files}")
+        
+        # 平均品質スコア
+        if avg_score >= 85:
+            score_color = Colors.GREEN
+            score_icon = "🏆"
+        elif avg_score >= self.minimum_quality_score:
+            score_color = Colors.YELLOW
+            score_icon = "⚠️"
+        else:
+            score_color = Colors.RED
+            score_icon = "🚨"
+            
+        print(f"🎯 Average quality: {score_color}{score_icon} {avg_score:.1f}/100{Colors.END}")
+        
+        # ゲート結果
+        if gate_result['gate_decision'] == 'approved':
+            print(f"{Colors.GREEN}{Colors.BOLD}✅ QUALITY GATE: APPROVED{Colors.END}")
+            print(f"{Colors.GREEN}🎉 All files meet Elder Guild quality standards!{Colors.END}")
+        else:
+            print(f"{Colors.RED}{Colors.BOLD}🚨 QUALITY GATE: BLOCKED{Colors.END}")
+            print(f"{Colors.RED}⛔ Commit blocked due to quality violations{Colors.END}")
+            
+    def print_violations(self, gate_result: Dict[str, Any]):
+        """違反詳細表示"""
+        # Iron Will違反
+        iron_will_violations = gate_result.get('iron_will_violations', [])
+        if iron_will_violations:
+            print(f"\n{Colors.RED}{Colors.BOLD}⚔️  IRON WILL VIOLATIONS (Critical):{Colors.END}")
+            for violation in iron_will_violations:
+                print(f"  📄 {violation['file']}")
+                print(f"     🚨 Workaround/TODO comments detected")
+                print(f"     💡 Remove all temporary fixes and complete implementation")
+                
+        # 品質違反
+        quality_violations = gate_result.get('quality_violations', [])
+        if quality_violations:
+            print(f"\n{Colors.YELLOW}{Colors.BOLD}📊 QUALITY VIOLATIONS:{Colors.END}")
+            for violation in quality_violations:
+                score = violation['quality_score']
+                print(f"  📄 {violation['file']} (Score: {score:.1f}/100)")
+                
+                # 主要問題表示
+                issues = violation.get('issues', [])
+                high_severity_issues = [i for i in issues if i.get('severity', 0) > 6]
+                for issue in high_severity_issues[:3]:
+                    print(f"     🔥 {issue.get('name', 'Issue')}: {issue.get('description', 'No description')}")
+                    
+                # 改善提案
+                suggestions = violation.get('suggestions', [])
+                high_priority_suggestions = [s for s in suggestions if s.get('priority') == 'high']
+                for suggestion in high_priority_suggestions[:2]:
+                    print(f"     💡 {suggestion.get('title', 'Suggestion')}")
+                    
+        # 高リスクバグ
+        high_risk_bugs = gate_result.get('high_risk_bugs', [])
+        if high_risk_bugs:
+            print(f"\n{Colors.RED}{Colors.BOLD}🐛 HIGH-RISK BUGS:{Colors.END}")
+            for bug_file in high_risk_bugs:
+                print(f"  📄 {bug_file['file']}")
+                for risk in bug_file.get('bug_risks', []):
+                    if risk.get('risk_level', 0) > 7:
+                        print(f"     ⚠️  {risk.get('name', 'Bug Risk')}: {risk.get('description', 'No description')}")
+                        
+    def print_improvement_guide(self):
+        """改善ガイド表示"""
+        print(f"\n{Colors.BLUE}{Colors.BOLD}🛠️  IMPROVEMENT GUIDE:{Colors.END}")
+        print(f"{Colors.CYAN}📚 Quick fixes:{Colors.END}")
+        print("  1. Remove all TODO/FIXME comments (Iron Will)")
+        print("  2. Add type hints: def func(x: int) -> str:")
+        print("  3. Add docstrings: \"\"\"Function description\"\"\"")
+        print("  4. Add error handling: try/except blocks")
+        print("  5. Reduce complexity: break large functions")
+        print()
+        print(f"{Colors.CYAN}🔧 Quality tools:{Colors.END}")
+        print("  elders-code-quality analyze <file>    # Detailed analysis")
+        print("  elders-code-quality report .          # Project overview")
+        print()
+        print(f"{Colors.CYAN}📖 Resources:{Colors.END}")
+        print("  CLAUDE.md - Elder Guild development standards")
+        print("  knowledge_base/ - Best practices and guides")
+        
+    async def run_quality_check(self) -> int:
+        """品質チェック実行"""
+        self.print_header()
+        
+        # ステージされたファイル取得
+        staged_files = self.get_staged_python_files()
+        
+        if not staged_files:
+            print(f"{Colors.GREEN}✅ No Python files to check{Colors.END}")
+            return 0
+            
+        print(f"📋 Found {len(staged_files)} staged Python file(s)")
+        
+        # 品質ゲートチェック実行
+        gate_result = await self.check_quality_gate(staged_files)
+        
+        # 結果表示
+        self.print_quality_summary(gate_result)
+        
+        if gate_result['gate_decision'] == 'blocked':
+            self.print_violations(gate_result)
+            self.print_improvement_guide()
+            
+            print(f"\n{Colors.RED}{Colors.BOLD}🛑 COMMIT BLOCKED{Colors.END}")
+            print(f"{Colors.RED}Fix the above issues and try again{Colors.END}")
+            print(f"{Colors.YELLOW}💡 Use: git commit --no-verify to bypass (not recommended){Colors.END}")
+            return 1
+        else:
+            print(f"\n{Colors.GREEN}{Colors.BOLD}🚀 COMMIT APPROVED{Colors.END}")
+            print(f"{Colors.GREEN}Code quality meets Elder Guild standards{Colors.END}")
+            return 0
+
+async def main():
+    """メイン実行"""
+    hook = ElderGuildPreCommitHook()
+    return await hook.run_quality_check()
+
+if __name__ == "__main__":
+    try:
+        exit_code = asyncio.run(main())
+        sys.exit(exit_code)
+    except KeyboardInterrupt:
+        print(f"\n{Colors.YELLOW}🛑 Quality check cancelled{Colors.END}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"\n{Colors.RED}❌ Quality check failed: {e}{Colors.END}")
+        sys.exit(1)

@@ -78,7 +78,6 @@ from elders_guild.elder_tree.elder_servants.integrations.production.monitoring i
     record_metric,
 )
 
-
 class TestSuite(Enum):
     """テストスイート分類"""
 
@@ -87,7 +86,6 @@ class TestSuite(Enum):
     RELIABILITY = "reliability"
     SCALABILITY = "scalability"
     QUALITY = "quality"
-
 
 class TestScenario(Enum):
     """テストシナリオ"""
@@ -100,7 +98,6 @@ class TestScenario(Enum):
     HEALTH_MONITORING = "health_monitoring"
     FULL_INTEGRATION = "full_integration"
     STRESS_TEST = "stress_test"
-
 
 @dataclass
 class TestResult:
@@ -121,7 +118,6 @@ class TestResult:
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
 
-
 @dataclass
 class PerformanceComparison:
     """パフォーマンス比較結果"""
@@ -132,7 +128,6 @@ class PerformanceComparison:
     meets_target: bool
     detailed_metrics: Dict[str, float]
     analysis: str
-
 
 class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]]):
     """
@@ -584,7 +579,6 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
 
         start_time = time.time()
 
-        recovery_attempts = 0
         successful_recoveries = 0
         errors = []
 
@@ -600,7 +594,6 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                     context_data={"test_id": i},
                 )
 
-                recovery_attempts += 1
                 recovery_result = await self.error_handler.process_request(
                     error_context.__dict__
                 )
@@ -616,8 +609,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         execution_time = (end_time - start_time) * 1000
 
         recovery_rate = (
-            (successful_recoveries / recovery_attempts) * 100
-            if recovery_attempts > 0
+
             else 0
         )
 
@@ -628,15 +620,15 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             memory_usage_mb=0,
             cpu_usage_percent=0,
             success_rate=recovery_rate,
-            throughput_ops_sec=recovery_attempts / (execution_time / 1000),
+
             latency_p50_ms=(
-                execution_time / recovery_attempts if recovery_attempts > 0 else 0
+
             ),
             latency_p95_ms=0,
             latency_p99_ms=0,
             timestamp=datetime.now(),
             metadata={
-                "recovery_attempts": recovery_attempts,
+
                 "successful_recoveries": successful_recoveries,
                 "recovery_rate": recovery_rate,
             },
@@ -763,7 +755,6 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                 # Handle specific exception case
                 errors += 1
                 if len(str(e)) < 100:  # 短いエラーメッセージのみ記録
-                    self.logger.debug(f"Integration test error {i}: {e}")
 
         end_time = time.time()
         end_memory = psutil.Process().memory_info().rss / 1024 / 1024
@@ -1030,7 +1021,6 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
 
         return recommendations
 
-
 # メイン実行用スクリプト
 async def main()test_suite = ElderIntegrationTestSuite()
 """統合テスト実行"""
@@ -1073,7 +1063,6 @@ async def main()test_suite = ElderIntegrationTestSuite()
         json.dump(result, f, indent=2, default=str)
 
     print("\n📊 Detailed results saved to: logs/integration_test_results.json")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

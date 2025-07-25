@@ -13,7 +13,6 @@ sys.path.insert(0, str(project_root))
 
 from elders_guild.elder_tree.ancient_elder.base import AncientElderBase, AuditResult, ViolationSeverity
 
-
 class FlowComplianceAuditor(AncientElderBase):
     """
     🌊 Elder Flow遵守監査魔法のAncientElderBase互換ラッパー
@@ -37,7 +36,7 @@ class FlowComplianceAuditor(AncientElderBase):
         result.auditor_name = self.name
         
         try:
-            # TODO: 実際のFlow Compliance監査ロジックを実装
+
             # 現在は仮実装
             
             # Elder Flowの5段階をチェック

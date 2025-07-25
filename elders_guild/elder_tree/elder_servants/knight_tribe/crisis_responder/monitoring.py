@@ -35,16 +35,13 @@ from elders_guild.elder_tree.core.elders_legacy import (
     enforce_boundary,
 )
 
-
 class LogLevel(Enum):
     """ログレベル"""
 
-    DEBUG = "debug"
     INFO = "info"
     WARNING = "warning"
     ERROR = "error"
     CRITICAL = "critical"
-
 
 class MetricType(Enum):
     """メトリクスタイプ"""
@@ -54,7 +51,6 @@ class MetricType(Enum):
     HISTOGRAM = "histogram"  # ヒストグラム（分布）
     SUMMARY = "summary"  # サマリー（分位数）
 
-
 class AlertSeverity(Enum):
     """アラート重要度"""
 
@@ -62,7 +58,6 @@ class AlertSeverity(Enum):
     WARNING = "warning"
     CRITICAL = "critical"
     EMERGENCY = "emergency"
-
 
 @dataclass
 class StructuredLogEntry:
@@ -90,7 +85,6 @@ class StructuredLogEntry:
         data["timestamp"] = self.timestamp.isoformat()
         data["level"] = self.level.value
         return json.dumps(data, ensure_ascii=False, separators=(",", ":"))
-
 
 @dataclass
 class MetricEntry:
@@ -122,7 +116,6 @@ class MetricEntry:
 
         return "\n".join(lines)
 
-
 @dataclass
 class AlertRule:
     """アラートルール"""
@@ -130,11 +123,10 @@ class AlertRule:
     name: str
     condition: Callable[[Dict[str, Any]], bool]
     severity: AlertSeverity
-    message_template: str
+
     cooldown_seconds: int = 300  # 5分間のクールダウン
     enabled: bool = True
     last_triggered: Optional[datetime] = None
-
 
 class StructuredLogger:
     """構造化ログシステム"""
@@ -181,9 +173,8 @@ class StructuredLogger:
             **context,
         )
 
-    def debug(self, message: str, logger_name: str = "default", **kwargs):
         """デバッグログ"""
-        entry = self._create_log_entry(LogLevel.DEBUG, message, logger_name, **kwargs)
+
         self._write_log(entry)
 
     def info(self, message: str, logger_name: str = "default", **kwargs):
@@ -272,7 +263,6 @@ class StructuredLogger:
         self._sync_flush()
         if self.log_file:
             self.log_file.close()
-
 
 class PrometheusMetricsCollector:
     """Prometheusメトリクス収集"""
@@ -428,7 +418,6 @@ class PrometheusMetricsCollector:
 
             return summary
 
-
 class AlertingSystem:
     """アラートシステム"""
 
@@ -474,7 +463,7 @@ class AlertingSystem:
                         alert = {
                             "rule_name": rule.name,
                             "severity": rule.severity.value,
-                            "message": rule.message_template.format(**context),
+
                             "timestamp": datetime.now().isoformat(),
                             "context": context,
                         }
@@ -512,7 +501,6 @@ class AlertingSystem:
             except Exception as e:
                 # Handle specific exception case
                 print(f"Notification handler failed: {str(e)}")
-
 
 class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]]):
     """
@@ -577,7 +565,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
             name="high_cpu_usage",
             condition=lambda ctx: ctx.get("cpu_percent", 0) > 80,
             severity=AlertSeverity.WARNING,
-            message_template="High CPU usage detected: {cpu_percent}%",
+
             cooldown_seconds=300,
         )
         self.alerting_system.add_rule(cpu_rule)
@@ -587,7 +575,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
             name="high_memory_usage",
             condition=lambda ctx: ctx.get("memory_percent", 0) > 85,
             severity=AlertSeverity.CRITICAL,
-            message_template="High memory usage detected: {memory_percent}%",
+
             cooldown_seconds=300,
         )
         self.alerting_system.add_rule(memory_rule)
@@ -597,7 +585,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
             name="high_error_rate",
             condition=lambda ctx: ctx.get("error_rate_percent", 0) > 5,
             severity=AlertSeverity.CRITICAL,
-            message_template="High error rate detected: {error_rate_percent}%",
+
             cooldown_seconds=600,
         )
         self.alerting_system.add_rule(error_rate_rule)
@@ -788,8 +776,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
         context = request.get("context", {})
 
         # ログ出力
-        if level == LogLevel.DEBUG:
-            self.structured_logger.debug(message, logger_name, **context)
+
         elif level == LogLevel.INFO:
             self.structured_logger.info(message, logger_name, **context)
         elif level == LogLevel.WARNING:
@@ -955,7 +942,6 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
         self.structured_logger.info("Elder Integration Monitor shutting down")
         self.structured_logger.close()
 
-
 class PerformanceTracker:
     """パフォーマンス追跡"""
 
@@ -1000,10 +986,8 @@ class PerformanceTracker:
                     }
             return summary
 
-
 # グローバル監視インスタンス
 _global_monitor: Optional[ElderIntegrationMonitor] = None
-
 
 async def get_global_monitor() -> ElderIntegrationMonitor:
     """グローバル監視システム取得"""
@@ -1015,7 +999,6 @@ async def get_global_monitor() -> ElderIntegrationMonitor:
 
     return _global_monitor
 
-
 # 便利関数群
 async def log_info(message: str, **context):
     """情報ログ（便利関数）"""
@@ -1024,14 +1007,12 @@ async def log_info(message: str, **context):
         {"type": "log", "level": "info", "message": message, "context": context}
     )
 
-
 async def log_error(message: str, **context):
     """エラーログ（便利関数）"""
     monitor = await get_global_monitor()
     await monitor.process_request(
         {"type": "log", "level": "error", "message": message, "context": context}
     )
-
 
 async def record_metric(
     name: str, value: float, metric_type: str = "gauge", labels: Dict[str, str] = None
@@ -1048,7 +1029,6 @@ async def record_metric(
         }
     )
 
-
 async def trigger_alert(message: str, severity: str = "warning", **context):
     """アラート発火（便利関数）"""
     monitor = await get_global_monitor()
@@ -1061,7 +1041,6 @@ async def trigger_alert(message: str, severity: str = "warning", **context):
             "context": context,
         }
     )
-
 
 # パフォーマンス追跡デコレータ
 def track_performance(operation_name: str = None):

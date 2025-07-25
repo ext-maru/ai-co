@@ -1,0 +1,64 @@
+#!/bin/bash
+# AI Company Direct Test Command
+# Usage: ai-test "Your prompt here"
+
+if [ $# -eq 0 ]; then
+    echo "❌ Error: No prompt provided"
+    echo "Usage: ai-test \"Your prompt here\""
+    echo "Example: ai-test \"Create a Python hello world script\""
+    exit 1
+fi
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Generate task ID
+TASK_ID="ai_test_$(date +%s)"
+PROMPT="$1"
+
+echo -e "${BLUE}🚀 AI Company Direct Test${NC}"
+echo "📋 Task ID: $TASK_ID"
+echo "📝 Prompt: $PROMPT"
+echo ""
+
+# Create Python script to send task
+python3 << EOF
+import json
+import pika
+from datetime import datetime
+
+try:
+    # Create task data
+    task_data = {
+        'task_id': '$TASK_ID',
+        'type': 'test',
+        'task_type': 'general',
+        'priority': 'normal',
+        'prompt': '''$PROMPT''',
+        'source': 'ai-test',
+        'timestamp': datetime.now().isoformat()
+    }
+
+    # Send to RabbitMQ
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
+    channel.basic_publish(
+        exchange='',
+        routing_key='ai_tasks',
+        body=json.dumps(task_data),
+        properties=pika.BasicProperties(delivery_mode=2)
+    )
+    connection.close()
+
+    print("✅ Task submitted successfully!")
+    print("📡 TaskWorker will process your request...")
+    print("")
+    print("To check logs:")
+    print("  tail -f /home/aicompany/ai_co/logs/simple_task_worker.log")
+
+except Exception as e:
+    print(f"❌ Error: {e}")
+    exit(1)
+EOF

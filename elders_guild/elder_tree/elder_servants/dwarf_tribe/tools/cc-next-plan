@@ -1,0 +1,274 @@
+#!/usr/bin/env python3
+"""
+Claude CLI (cc) - ネクスト計画 実行コマンド
+AI学習・進化システムのClaude CLI統合
+
+Usage:
+    cc next-plan start --phase=foundation
+    cc next-plan status --detailed
+    cc next-plan launch --full-auto
+"""
+
+import argparse
+import json
+import os
+import sys
+from datetime import datetime
+from pathlib import Path
+
+# プロジェクトルートを追加
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+# AI Company のEmoji
+EMOJI = {
+    "sage": "🧙‍♂️",
+    "brain": "🧠",
+    "rocket": "🚀",
+    "chart": "📊",
+    "gear": "⚙️",
+    "check": "✅",
+    "warning": "⚠️",
+    "info": "💡",
+    "success": "🎉",
+}
+
+
+class NextPlanCLI:
+    """ネクスト計画 Claude CLI インターフェース"""
+
+    def __init__(self):
+        self.project_root = PROJECT_ROOT
+        self.knowledge_base = PROJECT_ROOT / "knowledge_base"
+        self.plan_file = self.knowledge_base / "NEXT_PLAN_AI_EVOLUTION.md"
+
+    def start_plan(self, phase=None):
+        """ネクスト計画開始"""
+        print(f"{EMOJI['rocket']} ネクスト計画を開始します！")
+
+        if not self.plan_file.exists():
+            print(f"{EMOJI['warning']} 計画書が見つかりません: {self.plan_file}")
+            return False
+
+        # 計画書を表示
+        print(f"\n{EMOJI['info']} 計画書を確認中...")
+        print(f"📄 計画書: {self.plan_file}")
+
+        if phase:
+            print(f"\n{EMOJI['gear']} Phase: {phase} を開始")
+            return self._execute_phase(phase)
+        else:
+            print(f"\n{EMOJI['chart']} 全フェーズの概要:")
+            self._show_phases()
+            return True
+
+    def show_status(self, detailed=False):
+        """現在の進行状況を表示"""
+        print(f"{EMOJI['chart']} ネクスト計画 進行状況")
+
+        # TODO: 実際の進行状況をチェック
+        status = {
+            "phase": "Planning",
+            "progress": "10%",
+            "active_components": [],
+            "last_update": datetime.now().isoformat(),
+        }
+
+        print(f"\n現在のフェーズ: {status['phase']}")
+        print(f"進行度: {status['progress']}")
+        print(f"最終更新: {status['last_update']}")
+
+        if detailed:
+            self._show_detailed_status()
+
+        return True
+
+    def launch_full_auto(self):
+        """フルオート実行"""
+        print(f"{EMOJI['rocket']} フルオート実行開始！")
+        print(f"{EMOJI['brain']} AI進化システムを全自動で構築します...")
+
+        phases = ["foundation", "intelligence", "automation", "evolution"]
+
+        for i, phase in enumerate(phases, 1):
+            print(f"\n{EMOJI['gear']} Phase {i}: {phase.capitalize()}")
+            success = self._execute_phase(phase)
+
+            if success:
+                print(f"{EMOJI['check']} Phase {i} 完了")
+            else:
+                print(f"{EMOJI['warning']} Phase {i} でエラーが発生")
+                return False
+
+        print(f"\n{EMOJI['success']} ネクスト計画 完全実行完了！")
+        return True
+
+    def _execute_phase(self, phase):
+        """特定フェーズを実行"""
+        phase_map = {
+            "foundation": self._execute_foundation,
+            "intelligence": self._execute_intelligence,
+            "automation": self._execute_automation,
+            "evolution": self._execute_evolution,
+        }
+
+        if phase in phase_map:
+            return phase_map[phase]()
+        else:
+            print(f"{EMOJI['warning']} 不明なフェーズ: {phase}")
+            return False
+
+    def _execute_foundation(self):
+        """Phase 1: 基盤構築"""
+        print(f"{EMOJI['gear']} 基盤構築フェーズを実行中...")
+
+        tasks = [
+            "Learning Data Collector作成",
+            "Pattern Analyzer実装",
+            "ナレッジ賢者連携システム構築",
+            "基本学習エンジン + テスト",
+        ]
+
+        for task in tasks:
+            print(f"  - {task}...")
+            # TODO: 実際のタスク実行
+
+        print(f"{EMOJI['check']} 基盤構築完了")
+        return True
+
+    def _execute_intelligence(self):
+        """Phase 2: 知能実装"""
+        print(f"{EMOJI['brain']} 知能実装フェーズを実行中...")
+
+        tasks = [
+            "Performance Optimizer実装",
+            "Hypothesis Generator構築",
+            "A/B Testing Framework作成",
+        ]
+
+        for task in tasks:
+            print(f"  - {task}...")
+
+        print(f"{EMOJI['check']} 知能実装完了")
+        return True
+
+    def _execute_automation(self):
+        """Phase 3: 自動化"""
+        print(f"{EMOJI['gear']} 自動化フェーズを実行中...")
+
+        tasks = ["Auto Adaptation Engine実装", "Feedback Loop System構築", "Claude CLI統合"]
+
+        for task in tasks:
+            print(f"  - {task}...")
+
+        print(f"{EMOJI['check']} 自動化完了")
+        return True
+
+    def _execute_evolution(self):
+        """Phase 4: 進化"""
+        print(f"{EMOJI['brain']} 進化フェーズを実行中...")
+
+        tasks = [
+            "Meta Learning System実装",
+            "Cross-Worker Learning構築",
+            "完全統合テスト + ドキュメント",
+        ]
+
+        for task in tasks:
+            print(f"  - {task}...")
+
+        print(f"{EMOJI['success']} 進化システム完了")
+        return True
+
+    def _show_phases(self):
+        """フェーズ一覧表示"""
+        phases = {
+            "foundation": "基盤構築 - データ収集・パターン分析",
+            "intelligence": "知能実装 - 最適化・仮説生成",
+            "automation": "自動化 - 適応エンジン・フィードバック",
+            "evolution": "進化 - メタ学習・統合テスト",
+        }
+
+        for phase, description in phases.items():
+            print(f"  {phase}: {description}")
+
+    def _show_detailed_status(self):
+        """詳細ステータス表示"""
+        print(f"\n{EMOJI['info']} 詳細ステータス:")
+
+        # TODO: 実際のシステム状況をチェック
+        details = {
+            "Learning Data Collector": "未実装",
+            "Pattern Analyzer": "未実装",
+            "Performance Optimizer": "未実装",
+            "Auto Adaptation Engine": "未実装",
+            "Knowledge Evolution": "未実装",
+        }
+
+        for component, status in details.items():
+            print(f"  - {component}: {status}")
+
+
+def main():
+    """メイン実行関数"""
+    parser = argparse.ArgumentParser(
+        description="ネクスト計画 - AI学習・進化システム CLI",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  cc next-plan start --phase=foundation    # 基盤構築フェーズ開始
+  cc next-plan status --detailed           # 詳細ステータス確認
+  cc next-plan launch --full-auto          # フルオート実行
+        """,
+    )
+
+    subparsers = parser.add_subparsers(dest="command", help="実行コマンド")
+
+    # start コマンド
+    start_parser = subparsers.add_parser("start", help="ネクスト計画開始")
+    start_parser.add_argument(
+        "--phase",
+        choices=["foundation", "intelligence", "automation", "evolution"],
+        help="実行フェーズ指定",
+    )
+
+    # status コマンド
+    status_parser = subparsers.add_parser("status", help="進行状況確認")
+    status_parser.add_argument("--detailed", action="store_true", help="詳細表示")
+
+    # launch コマンド
+    launch_parser = subparsers.add_parser("launch", help="フルオート実行")
+    launch_parser.add_argument("--full-auto", action="store_true", help="全自動実行")
+
+    args = parser.parse_args()
+
+    if not args.command:
+        parser.print_help()
+        return
+
+    cli = NextPlanCLI()
+
+    try:
+        if args.command == "start":
+            success = cli.start_plan(args.phase)
+        elif args.command == "status":
+            success = cli.show_status(args.detailed)
+        elif args.command == "launch":
+            success = cli.launch_full_auto()
+        else:
+            print(f"不明なコマンド: {args.command}")
+            success = False
+
+        if not success:
+            sys.exit(1)
+
+    except KeyboardInterrupt:
+        print(f"\n{EMOJI['warning']} ユーザーによって中断されました")
+        sys.exit(1)
+    except Exception as e:
+        print(f"{EMOJI['warning']} エラーが発生しました: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

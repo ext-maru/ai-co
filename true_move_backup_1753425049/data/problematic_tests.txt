@@ -1,0 +1,17 @@
+ERROR test_async_integration.py
+ERROR test_docker_api.py
+ERROR test_error_intelligence.py
+ERROR tests/test_enhanced_rag_manager.py
+ERROR tests/test_rag_manager.py
+ERROR tests/unit/test_ai_company_manager.py
+ERROR tests/unit/test_emergency_fix.py
+ERROR tests/unit/test_error_intelligence_worker_incident.py
+ERROR tests/unit/test_health_checker.py
+ERROR tests/unit/test_worker_health_monitor.py
+ERROR tests/unit/test_worker_organizer.py
+ERROR tests/unit/test_workers/test_email_notification_worker.py
+ERROR tests/unit/test_workers/test_error_intelligence_worker.py
+ERROR tests/unit/test_workers/test_knowledge_scheduler_worker.py
+ERROR tests/unit/web/test_flask_app_tdd.py
+ERROR workers/test_generator_worker.py
+ERROR workers/test_manager_worker.py

@@ -48,7 +48,6 @@ from elders_guild.elder_tree.elder_servants.integrations.production.monitoring i
     record_metric,
 )
 
-
 class HealthStatus(Enum):
     """ヘルス状態"""
 
@@ -57,7 +56,6 @@ class HealthStatus(Enum):
     UNHEALTHY = "unhealthy"  # 異常
     CRITICAL = "critical"  # クリティカル
     UNKNOWN = "unknown"  # 不明
-
 
 class ComponentType(Enum):
     """コンポーネントタイプ"""
@@ -71,20 +69,18 @@ class ComponentType(Enum):
     NETWORK = "network"  # ネットワーク
     FILESYSTEM = "filesystem"  # ファイルシステム
 
-
 class HealingAction(Enum):
     """自己修復アクション"""
 
     RESTART_SERVICE = "restart_service"  # サービス再起動
     CLEAR_CACHE = "clear_cache"  # キャッシュクリア
-    CLEANUP_TEMP = "cleanup_temp"  # 一時ファイル削除
+
     RESTART_CONNECTION = "restart_connection"  # 接続再起動
     SCALE_UP = "scale_up"  # スケールアップ
     SCALE_DOWN = "scale_down"  # スケールダウン
     FAILOVER = "failover"  # フェイルオーバー
     GRACEFUL_DEGRADE = "graceful_degrade"  # 機能劣化
     MANUAL_INTERVENTION = "manual_intervention"  # 手動対応必要
-
 
 @dataclass
 class HealthCheckResult:
@@ -101,7 +97,6 @@ class HealthCheckResult:
     dependencies: List[str] = field(default_factory=list)
     suggested_actions: List[HealingAction] = field(default_factory=list)
 
-
 @dataclass
 class HealingActionResult:
     """自己修復アクション結果"""
@@ -113,7 +108,6 @@ class HealingActionResult:
     execution_time_ms: float
     message: str = ""
     details: Dict[str, Any] = field(default_factory=dict)
-
 
 class HealthChecker:
     """ヘルスチェッカー基底クラス"""
@@ -127,7 +121,6 @@ class HealthChecker:
     async def check_health(self) -> HealthCheckResult:
         """ヘルスチェック実行（継承クラスで実装）"""
         raise NotImplementedError
-
 
 class SystemHealthChecker(HealthChecker):
     """システムヘルスチェッカー"""
@@ -178,7 +171,6 @@ class SystemHealthChecker(HealthChecker):
             ):
                 status = HealthStatus.CRITICAL
                 message = "Critical system resource usage detected"
-                suggested_actions = [HealingAction.CLEANUP_TEMP, HealingAction.SCALE_UP]
 
             elif (
             # 複雑な条件判定
@@ -188,7 +180,6 @@ class SystemHealthChecker(HealthChecker):
             ):
                 status = HealthStatus.DEGRADED
                 message = "High system resource usage detected"
-                suggested_actions = [HealingAction.CLEANUP_TEMP]
 
             execution_time = (time.time() - start_time) * 1000
 
@@ -227,7 +218,6 @@ class SystemHealthChecker(HealthChecker):
                 message=f"Health check failed: {str(e)}",
                 suggested_actions=[HealingAction.MANUAL_INTERVENTION],
             )
-
 
 class ServiceHealthChecker(HealthChecker):
     """サービスヘルスチェッカー"""
@@ -306,7 +296,6 @@ class ServiceHealthChecker(HealthChecker):
                 message=f"Service health check failed: {str(e)}",
                 suggested_actions=[HealingAction.RESTART_SERVICE],
             )
-
 
 class NetworkHealthChecker(HealthChecker):
     """ネットワークヘルスチェッカー"""
@@ -415,7 +404,6 @@ class NetworkHealthChecker(HealthChecker):
                 suggested_actions=[HealingAction.MANUAL_INTERVENTION],
             )
 
-
 class FilesystemHealthChecker(HealthChecker):
     """ファイルシステムヘルスチェッカー"""
 
@@ -475,7 +463,7 @@ class FilesystemHealthChecker(HealthChecker):
                             )
                             # Deep nesting detected (depth: 6) - consider refactoring
                             try:
-                                # TODO: Extract this complex nested logic into a separate method
+
                                 with open(test_file, "w") as f:
                                     f.write("health test")
                                 os.remove(test_file)
@@ -516,13 +504,13 @@ class FilesystemHealthChecker(HealthChecker):
                 status = HealthStatus.CRITICAL
                 message = f"Critical filesystem issues: {'; '.join(critical_issues)}"
                 suggested_actions = [
-                    HealingAction.CLEANUP_TEMP,
+
                     HealingAction.MANUAL_INTERVENTION,
                 ]
             elif warnings:
                 status = HealthStatus.DEGRADED
                 message = f"Filesystem warnings: {'; '.join(warnings)}"
-                suggested_actions = [HealingAction.CLEANUP_TEMP]
+
             else:
                 status = HealthStatus.HEALTHY
                 message = "Filesystem is healthy"
@@ -559,7 +547,6 @@ class FilesystemHealthChecker(HealthChecker):
                 suggested_actions=[HealingAction.MANUAL_INTERVENTION],
             )
 
-
 class SelfHealingEngine:
     """自己修復エンジン"""
 
@@ -574,7 +561,7 @@ class SelfHealingEngine:
 
     def _register_default_handlers(self):
         """デフォルト修復ハンドラー登録"""
-        self.healing_handlers[HealingAction.CLEANUP_TEMP] = self._cleanup_temp_files
+
         self.healing_handlers[HealingAction.CLEAR_CACHE] = self._clear_cache
         self.healing_handlers[HealingAction.RESTART_CONNECTION] = (
             self._restart_connection
@@ -660,21 +647,17 @@ class SelfHealingEngine:
 
             return healing_result
 
-    async def _cleanup_temp_files(
         self, component_name: str, context: Dict[str, Any]
     ) -> Dict[str, Any]:
         """一時ファイルクリーンアップ"""
         try:
-            temp_dirs = ["/tmp", "/var/tmp"]
+
             cleaned_files = 0
             freed_bytes = 0
 
-            for temp_dir in temp_dirs:
-                if os.path.exists(temp_dir):
                     # 24時間以上古いファイルを削除
                     cutoff_time = time.time() - (24 * 3600)
 
-                    for root, dirs, files in os.walk(temp_dir):
                         # Process each item in collection
                         # Deep nesting detected (depth: 5) - consider refactoring
                         for file in files:
@@ -814,7 +797,6 @@ class SelfHealingEngine:
             ],
             "healing_enabled": self.healing_enabled,
         }
-
 
 class ElderIntegrationHealthChecker(
     EldersServiceLegacy[Dict[str, Any], Dict[str, Any]]
@@ -1309,10 +1291,8 @@ class ElderIntegrationHealthChecker(
 
         await log_info("Elder Integration Health Checker shutting down")
 
-
 # グローバルヘルスチェッカーインスタンス
 _global_health_checker: Optional[ElderIntegrationHealthChecker] = None
-
 
 async def get_global_health_checker() -> ElderIntegrationHealthChecker:
     """グローバルヘルスチェッカー取得"""
@@ -1323,14 +1303,12 @@ async def get_global_health_checker() -> ElderIntegrationHealthChecker:
 
     return _global_health_checker
 
-
 # 便利関数群
 async def check_component_health(component_name: str = None) -> Dict[str, Any]health_checker = await get_global_health_checker():
     """ンポーネントヘルスチェック（便利関数）"""
     return await health_checker.process_request(:
         {"type": "health_check", "component": component_name}
     )
-
 
 async def trigger_healing_action(
     action: str, component_name: str, context: Dict[str, Any] = None
@@ -1345,7 +1323,6 @@ async def trigger_healing_action(
             "context": context or {},
         }
     )
-
 
 asdef get_health_statistics() -> Dict[str, Any]health_checker = await get_global_health_checker()return await health_checker.process_request({"type": "statistics"})
 """"""ヘルス統計取得（便利関数）""":

@@ -22,13 +22,11 @@ sys.path.insert(0, str(project_root))
 
 from elders_guild.elder_tree.ancient_elder.base import AncientElderBase, AuditResult, ViolationSeverity
 
-
 class TDDCyclePhase:
     """TDD サイクルフェーズ"""
     RED = "red"        # 失敗するテストを書く
     GREEN = "green"    # 最小限の実装でテストを通す
     REFACTOR = "refactor"  # リファクタリング
-
 
 class TDDViolationType:
     """TDD違反の種類"""
@@ -40,7 +38,6 @@ class TDDViolationType:
     POOR_TEST_QUALITY = "POOR_TEST_QUALITY"            # 低品質テスト
     COVERAGE_MANIPULATION = "COVERAGE_MANIPULATION"    # カバレッジ操作
     FAKE_TEST_IMPLEMENTATION = "FAKE_TEST_IMPLEMENTATION"  # 偽テスト実装
-
 
 class TDDCycleTracker:
     """TDDサイクル実行トラッカー"""
@@ -243,7 +240,6 @@ class TDDCycleTracker:
         complete_cycles = sum(1 for cycle in cycles if cycle["complete"])
         return (complete_cycles / len(cycles)) * 100.0
 
-
 class TestQualityAnalyzer:
     """テスト品質・実質性評価システム"""
     
@@ -255,7 +251,7 @@ class TestQualityAnalyzer:
             # 空のテスト
             re.compile(r'def\s+test_\w+\([^)]*\):\s*pass', re.MULTILINE),
             re.compile(r'def\s+test_\w+\([^)]*\):\s*\.\.\.$', re.MULTILINE),
-            # TODO/SKIPマーカー
+
             re.compile(r'@pytest\.mark\.skip|@unittest\.skip', re.IGNORECASE),
             re.compile(r'@pytest\.mark\.xfail', re.IGNORECASE),
             # 常にTrueアサーション
@@ -461,7 +457,6 @@ class TestQualityAnalyzer:
             "suspicious_coverage_patterns": suspicious_patterns,
             "has_coverage_manipulation": suspicious_patterns > 0
         }
-
 
 class CoverageManipulationDetector:
     """カバレッジ操作検出システム"""
@@ -702,7 +697,6 @@ class CoverageManipulationDetector:
             score += severity_weights.get(severity, 1)
             
         return min(100.0, score)
-
 
 class TDDGuardian(AncientElderBase):
     """
@@ -1108,7 +1102,7 @@ class TDDGuardian(AncientElderBase):
         """ファイルをスキップすべきかチェック"""
         skip_patterns = [
             'venv', 'node_modules', '.git', '__pycache__',
-            'migrations', 'static', 'templates'
+
         ]
         
         path_str = str(file_path)

@@ -23,7 +23,6 @@ from elders_guild.elder_tree.elder_servants.base.elder_servant import (
 )
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
-
 class SecurityGuard(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
     D06: SecurityGuard - セキュリティ守護者サーバント
@@ -108,7 +107,7 @@ class SecurityGuard(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         self.security_config = {
             "min_password_length": 12,
             "session_timeout": 1800,  # 30分
-            "max_login_attempts": 3,
+
             "encryption_algorithm": "AES-256-GCM",
             "hash_algorithm": "SHA-256",
         }
@@ -631,9 +630,9 @@ class SecurityGuard(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     def _load_owasp_standards(self) -> Dict[str, Any]:
         """OWASP標準読み込み"""
         return {
-            "A01_broken_access_control": {
+
                 "severity": "high",
-                "description": "Broken Access Control",
+
             },
             "A02_cryptographic_failures": {
                 "severity": "high",
@@ -713,7 +712,6 @@ class SecurityGuard(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             "patterns": [],
             "mitigation_strategies": {},
         }
-
 
 class CryptographyManager:
     """暗号化管理"""
@@ -809,7 +807,6 @@ def verify_password(password: str, stored_hash: bytes, salt: bytes) -> bool:
     return pwdhash == stored_hash
 '''
 
-
 class AccessController:
     """アクセス制御"""
 
@@ -859,7 +856,6 @@ class AccessController:
         return decorator
 '''
 
-
 class ThreatAnalyzer:
     """脅威分析"""
 
@@ -887,7 +883,6 @@ class ThreatAnalyzer:
             )
 
         return threats
-
 
 class SecureCoder:
     """セキュアコーダー"""

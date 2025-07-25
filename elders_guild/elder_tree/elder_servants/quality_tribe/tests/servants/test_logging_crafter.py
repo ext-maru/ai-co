@@ -14,7 +14,7 @@ import pytest
 import asyncio
 from typing import Dict, Any, List
 import json
-import tempfile
+
 from pathlib import Path
 import logging
 from datetime import datetime, timedelta
@@ -26,7 +26,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from src.elder_tree.servants.dwarf_workshop.logging_crafter import LoggingCrafterServant
 
-
 class TestLoggingCrafterServant:
     """Logging Crafter Servantのテストクラス"""
     
@@ -36,9 +35,9 @@ class TestLoggingCrafterServant:
         return LoggingCrafterServant()
         
     @pytest.fixture
-    def temp_log_dir(self):
+
         """一時ログディレクトリを作成"""
-        with tempfile.TemporaryDirectory() as tmpdir:
+
             yield Path(tmpdir)
             
     @pytest.fixture
@@ -51,7 +50,7 @@ class TestLoggingCrafterServant:
                 "handlers": ["console"]
             },
             "advanced": {
-                "level": "DEBUG",
+
                 "format": "%(asctime)s [%(levelname)s] %(name)s - %(funcName)s:%(lineno)d - %(message)s",
                 "handlers": ["console", "file", "rotating"],
                 "file_path": "app.log",
@@ -72,14 +71,14 @@ class TestLoggingCrafterServant:
         requirements = {
             "environment": "development",
             "output": "console",
-            "level": "debug"
+
         }
         
         result = await logging_crafter.generate_config(requirements)
         
         assert result["success"] is True
         config = result["config"]
-        assert config["level"] == "DEBUG"
+
         assert "console" in config["handlers"]
         assert "formatters" in config
         
@@ -120,11 +119,11 @@ class TestLoggingCrafterServant:
         assert config["enrichment"]["enabled"] is True
         
     # Phase 2: ログハンドラー実装（Log Handler Implementation）
-    async def test_implement_file_handler(self, logging_crafter, temp_log_dir):
+
         """ファイルハンドラー実装テスト"""
         handler_config = {
             "type": "file",
-            "filename": str(temp_log_dir / "test.log"),
+
             "mode": "a",
             "encoding": "utf-8"
         }
@@ -235,13 +234,13 @@ class TestLoggingCrafterServant:
     async def test_suggest_log_improvements(self, logging_crafter):
         """ログ改善提案テスト"""
         current_config = {
-            "level": "DEBUG",
+
             "handlers": ["console"],
             "format": "%(message)s"
         }
         
         issues = [
-            "Too much debug output in production",
+
             "No timestamp in logs",
             "No structured logging"
         ]
@@ -364,7 +363,7 @@ class TestLoggingCrafterServant:
         assert optimization["estimated_throughput"] >= 10000
         
     # Phase 9: 完全なログシステム実装
-    async def test_complete_logging_system(self, logging_crafter, temp_log_dir):
+
         """完全なログシステム実装テスト"""
         system_requirements = {
             "application": "microservice",
@@ -376,7 +375,7 @@ class TestLoggingCrafterServant:
                 "performance_monitoring"
             ],
             "outputs": ["file", "elasticsearch"],
-            "log_dir": str(temp_log_dir)
+
         }
         
         result = await logging_crafter.implement_complete_system(system_requirements)
@@ -395,7 +394,6 @@ class TestLoggingCrafterServant:
         assert "correlation_id" in system["filters"]
         assert "json" in system["formatters"]
         assert len(system["handlers"]) >= 2
-
 
 @pytest.mark.asyncio
 class TestLoggingCrafterIntegration:
@@ -428,7 +426,6 @@ class TestLoggingCrafterIntegration:
         assert "logging_config" in result["data"]
         assert "implementation_files" in result["data"]
         assert result["data"]["sage_notified"] is True  # Task Sageに通知
-
 
 if __name__ == "__main__":
     pytest.main(["-v", __file__])

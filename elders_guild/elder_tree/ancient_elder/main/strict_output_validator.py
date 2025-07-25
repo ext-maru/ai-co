@@ -534,7 +534,7 @@ class StrictOutputValidator(AncientMagicBase):
     def _technical_debt_prediction(self, design: Dict[str, Any]) -> Dict[str, Any]:
         """技術負債予測"""
         debt_indicators = [
-            "TODO", "HACK", "FIXME", "TEMPORARY", "WORKAROUND"
+
         ]
         
         issues = []

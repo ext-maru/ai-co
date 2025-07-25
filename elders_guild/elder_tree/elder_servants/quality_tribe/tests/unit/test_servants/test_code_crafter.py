@@ -15,7 +15,6 @@ from textwrap import dedent
 from elder_tree.servants.dwarf_servant import CodeCrafter, DwarfServant
 from python_a2a import Message
 
-
 class TestCodeCrafter:
     """Code Crafterテストスイート"""
     
@@ -395,7 +394,7 @@ def invalid_function(
             message.data = {
                 "task_type": "code_generation",
                 "parameters": {"specification": low_quality_spec, "use_tdd": False},
-                "quality_requirements": {"no_todos": True, "test_coverage": 90}
+
             }
             
             # execute_taskハンドラーを探す
@@ -413,7 +412,6 @@ def invalid_function(
                         
                         # 品質基準を満たさない場合の処理を確認
                         assert result is not None
-
 
 # プロパティベーステスト
 from hypothesis import given, strategies as st

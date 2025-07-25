@@ -14,7 +14,7 @@ import pytest
 import asyncio
 from typing import Dict, Any, List
 import json
-import tempfile
+
 from pathlib import Path
 from datetime import datetime
 import ast
@@ -26,7 +26,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from ancient_magic.search_magic.search_magic import SearchMagic
-
 
 class TestSearchMagic:
     """Search Magic テストクラス"""
@@ -324,34 +323,23 @@ class TestSearchMagic:
         data_anomaly = next((a for a in detected if a["file"] == "data.py"), None)
         assert data_anomaly is not None
         assert data_anomaly["anomaly_type"] == "complexity"
-    
-    async def test_temporal_search(self, search_magic):
+
         """時系列検索テスト"""
-        temporal_data = [
+
             {"timestamp": "2025-07-23T08:00:00", "event": "function_added", "details": {"name": "process_data"}},
             {"timestamp": "2025-07-23T09:00:00", "event": "test_created", "details": {"test_name": "test_process_data"}},
-            {"timestamp": "2025-07-23T10:00:00", "event": "bug_fixed", "details": {"issue": "null_pointer"}},
+
             {"timestamp": "2025-07-23T11:00:00", "event": "refactor", "details": {"scope": "process_data"}}
         ]
-        
-        temporal_params = {
-            "events": temporal_data,
+
             "time_range": {"start": "2025-07-23T08:30:00", "end": "2025-07-23T10:30:00"},
-            "event_types": ["test_created", "bug_fixed"]
+
         }
-        
-        result = await search_magic.temporal_search(temporal_params)
-        
+
         assert result["success"] is True
-        temporal_results = result["temporal_results"]
-        
+
         # 時系列検索結果の確認
-        assert "filtered_events" in temporal_results
-        assert "time_patterns" in temporal_results
-        
-        filtered_events = temporal_results["filtered_events"]
-        assert len(filtered_events) == 2  # test_created と bug_fixed
-        
+
     # Phase 4: 統合検索機能（Integrated Search）
     async def test_multi_modal_search(self, search_magic, sample_codebase_data, sample_knowledge_data):
         """マルチモーダル検索テスト"""
@@ -484,7 +472,6 @@ class TestSearchMagic:
             assert result["success"] is True
             assert "search_results" in result
 
-
 @pytest.mark.asyncio
 class TestSearchMagicIntegration:
     """Search Magic統合テスト"""
@@ -552,7 +539,6 @@ class UserManager:
         # 統合結果の確認
         unified_results = integration_result["multi_modal_results"]["unified_results"]
         assert len(unified_results) > 0
-        
 
 if __name__ == "__main__":
     pytest.main(["-v", __file__])

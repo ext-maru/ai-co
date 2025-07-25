@@ -1,0 +1,8 @@
+#!/bin/bash
+# Claude Elder 起動スクリプト - 常にCLAUDE.mdを読み込む
+
+# プロジェクトディレクトリに移動
+cd /home/aicompany/ai_co
+
+# CLAUDE.mdを読み込んでClaude CLIを起動
+exec claude --dangerously-skip-permissions /home/aicompany/ai_co/CLAUDE.md "$@"

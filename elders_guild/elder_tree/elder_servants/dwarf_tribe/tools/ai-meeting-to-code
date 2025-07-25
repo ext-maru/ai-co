@@ -1,0 +1,423 @@
+#!/usr/bin/env python3
+"""
+AI Meeting to Code - 会議録音から直接コードを生成
+録音 → 文字起こし → Gemini要約 → AI Company → コード完成
+"""
+
+import argparse
+import json
+import logging
+import os
+import sys
+import tempfile
+from datetime import datetime
+from pathlib import Path
+
+# プロジェクトルートをパスに追加
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+class MeetingToCodeProcessor:
+    """会議からコードへの変換プロセッサー"""
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        logging.basicConfig(level=logging.INFO)
+
+    def transcribe_audio(self, audio_file: str) -> str:
+        """音声ファイルを文字起こし（OpenAI Whisper API使用）"""
+        try:
+            import openai
+
+            self.logger.info(f"📼 音声ファイルを文字起こし中: {audio_file}")
+
+            with open(audio_file, "rb") as audio:
+                # OpenAI Whisper APIを使用
+                transcript = openai.Audio.transcribe(
+                    model="whisper-1", file=audio, language="ja"  # 日本語指定
+                )
+
+            text = transcript.text
+            self.logger.info(f"✅ 文字起こし完了 ({len(text)} 文字)")
+            return text
+
+        except ImportError:
+            self.logger.error("OpenAI package not installed. Run: pip install openai")
+            return self._fallback_transcription(audio_file)
+        except Exception as e:
+            self.logger.error(f"文字起こしエラー: {e}")
+            return self._fallback_transcription(audio_file)
+
+    def _fallback_transcription(self, audio_file: str) -> str:
+        """フォールバック: ローカルツールで文字起こし"""
+        try:
+            # ffmpegでWAVに変換 → SpeechRecognitionで処理
+            import speech_recognition as sr
+
+            recognizer = sr.Recognizer()
+
+            # 音声ファイルを読み込み
+            with sr.AudioFile(audio_file) as source:
+                audio = recognizer.record(source)
+
+            # Google Web Speech APIで文字起こし
+            text = recognizer.recognize_google(audio, language="ja-JP")
+            return text
+
+        except Exception as e:
+            self.logger.error(f"フォールバック文字起こしも失敗: {e}")
+            # 最後の手段: ユーザーに手動入力を求める
+            print("\n⚠️  自動文字起こしが失敗しました")
+            print("会議の内容を手動で入力してください（Ctrl+D で終了）:")
+
+            lines = []
+            try:
+                while True:
+                    line = input()
+                    lines.append(line)
+            except EOFError:
+                pass
+
+            return "\\n".join(lines)
+
+    def summarize_with_gemini(self, transcript: str) -> dict:
+        """Geminiで会議内容を要約・構造化"""
+        try:
+            import google.generativeai as genai
+
+            self.logger.info("🤖 Geminiで会議内容を分析中...")
+
+            # Gemini APIキーの設定
+            api_key = os.environ.get("GEMINI_API_KEY")
+            if not api_key:
+                raise ValueError("GEMINI_API_KEY environment variable not set")
+
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel("gemini-pro")
+
+            # 要約・構造化プロンプト
+            prompt = f"""
+会議の録音を文字起こししたテキストを分析して、開発要件を抽出してください。
+
+# 会議内容:
+{transcript}
+
+# 出力形式（JSON）:
+{{
+  "project_overview": "プロジェクトの概要（1-2文）",
+  "main_requirements": [
+    "主要な機能要件1",
+    "主要な機能要件2",
+    "主要な機能要件3"
+  ],
+  "technical_specs": {{
+    "framework": "使用技術・フレームワーク",
+    "database": "データベース要件",
+    "api_endpoints": ["必要なAPIエンドポイント"],
+    "ui_components": ["UI/UXコンポーネント"]
+  }},
+  "user_stories": [
+    "ユーザーストーリー1",
+    "ユーザーストーリー2"
+  ],
+  "acceptance_criteria": [
+    "受け入れ基準1",
+    "受け入れ基準2"
+  ],
+  "priority": "high|medium|low",
+  "deadline": "期限があれば抽出",
+  "development_approach": "TDD|BDD|agile等の開発手法",
+  "ai_company_tasks": [
+    "AI Companyに実行させるタスク1",
+    "AI Companyに実行させるタスク2"
+  ]
+}}
+
+JSONのみを出力してください。説明文は不要です。
+"""
+
+            response = model.generate_content(prompt)
+
+            # JSONパース
+            json_text = response.text.strip()
+            if json_text.startswith("```json"):
+                json_text = json_text.split("```json")[1].split("```")[0].strip()
+            elif json_text.startswith("```"):
+                json_text = json_text.split("```")[1].strip()
+
+            requirements = json.loads(json_text)
+
+            self.logger.info("✅ Gemini分析完了")
+            return requirements
+
+        except ImportError:
+            self.logger.error(
+                "Google Generative AI package not installed. Run: pip install google-generativeai"
+            )
+            return self._manual_requirements_input()
+        except Exception as e:
+            self.logger.error(f"Gemini分析エラー: {e}")
+            return self._manual_requirements_input()
+
+    def _manual_requirements_input(self) -> dict:
+        """手動で要件を入力"""
+        print("\\n⚠️  自動要件抽出が失敗しました")
+        print("開発要件を手動で入力してください:")
+
+        overview = input("プロジェクト概要: ")
+        requirements = []
+
+        print("主要機能を入力してください（空行で終了）:")
+        while True:
+            req = input("- ")
+            if not req.strip():
+                break
+            requirements.append(req.strip())
+
+        framework = input("使用フレームワーク (fastapi/flask/django): ") or "fastapi"
+
+        return {
+            "project_overview": overview,
+            "main_requirements": requirements,
+            "technical_specs": {"framework": framework},
+            "priority": "medium",
+            "ai_company_tasks": requirements,
+        }
+
+    def generate_code_with_aicompany(self, requirements: dict, output_dir: str) -> bool:
+        """AI Companyでコード生成"""
+        try:
+            self.logger.info("🏗️  AI Companyでコード生成開始...")
+
+            # 出力ディレクトリ作成
+            output_path = Path(output_dir)
+            output_path.mkdir(parents=True, exist_ok=True)
+
+            # 要件ファイル保存
+            requirements_file = output_path / "requirements.json"
+            with open(requirements_file, "w", encoding="utf-8") as f:
+                json.dump(requirements, f, indent=2, ensure_ascii=False)
+
+            success_count = 0
+            total_tasks = len(requirements.get("ai_company_tasks", []))
+
+            # AI Companyタスクを順次実行
+            for i, task in enumerate(requirements.get("ai_company_tasks", []), 1):
+                self.logger.info(f"📋 タスク {i}/{total_tasks}: {task}")
+
+                # AI Companyにタスク送信
+                task_file = output_path / f"task_{i}.txt"
+                with open(task_file, "w", encoding="utf-8") as f:
+                    f.write(
+                        f"""
+# プロジェクト: {requirements.get('project_overview', 'Unknown')}
+# タスク {i}: {task}
+
+## 技術仕様
+- フレームワーク: {requirements.get('technical_specs', {}).get('framework', 'fastapi')}
+- 開発手法: TDD
+- 優先度: {requirements.get('priority', 'medium')}
+
+## タスク詳細
+{task}
+
+## 受け入れ基準
+{chr(10).join('- ' + criteria for criteria in requirements.get('acceptance_criteria', []))}
+
+## 指示
+1. まずテストコードを作成
+2. テストが失敗することを確認
+3. 最小限の実装でテストを通す
+4. リファクタリングして品質を向上
+5. 全体的な整合性を確認
+
+プロジェクトディレクトリ: {output_dir}
+"""
+                    )
+
+                # AI Company実行
+                import subprocess
+
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        "scripts/ai-send-simple",
+                        "--type",
+                        "code",
+                        "--priority",
+                        "high",
+                        task,
+                    ],
+                    capture_output=True,
+                    text=True,
+                    cwd=str(Path(__file__).parent.parent),
+                )
+
+                if result.returncode == 0:
+                    success_count += 1
+                    self.logger.info(f"✅ タスク {i} 送信完了")
+                else:
+                    self.logger.error(f"❌ タスク {i} 送信失敗: {result.stderr}")
+
+            # プロジェクトサマリー生成
+            self._generate_project_summary(
+                requirements, output_path, success_count, total_tasks
+            )
+
+            self.logger.info(f"🎉 コード生成完了: {success_count}/{total_tasks} タスク成功")
+            return success_count > 0
+
+        except Exception as e:
+            self.logger.error(f"AI Companyコード生成エラー: {e}")
+            return False
+
+    def _generate_project_summary(
+        self,
+        requirements: dict,
+        output_path: Path,
+        success_count: int,
+        total_tasks: int,
+    ):
+        """プロジェクトサマリーを生成"""
+        summary = f"""# {requirements.get('project_overview', 'AI Generated Project')}
+
+## 📋 プロジェクト概要
+{requirements.get('project_overview', 'N/A')}
+
+## 🎯 主要機能
+{chr(10).join('- ' + req for req in requirements.get('main_requirements', []))}
+
+## 🛠️ 技術仕様
+- **フレームワーク**: {requirements.get('technical_specs', {}).get('framework', 'N/A')}
+- **データベース**: {requirements.get('technical_specs', {}).get('database', 'N/A')}
+- **開発手法**: {requirements.get('development_approach', 'TDD')}
+
+## ✅ タスク実行状況
+- **成功**: {success_count}/{total_tasks} タスク
+- **生成日時**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## 🚀 次のステップ
+1. AI Companyの実行結果を確認
+2. 生成されたコードをレビュー
+3. テストを実行して品質確認
+4. 必要に応じて追加開発
+
+## 📁 ファイル構成
+```
+{output_path.name}/
+├── requirements.json      # 抽出された要件
+├── README.md             # このファイル
+├── task_*.txt            # AI Companyタスク
+└── [生成されたコード]      # AI Companyの出力
+```
+
+---
+*Generated by AI Meeting-to-Code System*
+"""
+
+        readme_file = output_path / "README.md"
+        with open(readme_file, "w", encoding="utf-8") as f:
+            f.write(summary)
+
+    def process_meeting(self, audio_file: str, output_dir: str) -> bool:
+        """会議録音から完成コードまでの全プロセス"""
+        try:
+            # ステップ1: 文字起こし
+            transcript = self.transcribe_audio(audio_file)
+            if not transcript.strip():
+                self.logger.error("文字起こし結果が空です")
+                return False
+
+            # ステップ2: Gemini要約
+            requirements = self.summarize_with_gemini(transcript)
+            if not requirements:
+                self.logger.error("要件抽出に失敗しました")
+                return False
+
+            # ステップ3: AI Companyでコード生成
+            success = self.generate_code_with_aicompany(requirements, output_dir)
+
+            if success:
+                print(f"\\n🎉 会議からコードへの変換が完了しました！")
+                print(f"📁 出力ディレクトリ: {output_dir}")
+                print(f"📋 要件ファイル: {output_dir}/requirements.json")
+                print(f"📖 プロジェクト概要: {output_dir}/README.md")
+
+            return success
+
+        except Exception as e:
+            self.logger.error(f"プロセス実行エラー: {e}")
+            return False
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="会議録音から直接コードを生成",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  # 会議録音ファイルから
+  ai-meeting-to-code meeting.mp4 --output ./my-project
+
+  # テキストファイルから（既に文字起こし済み）
+  ai-meeting-to-code transcript.txt --text --output ./my-project
+
+  # インタラクティブモード
+  ai-meeting-to-code --interactive --output ./my-project
+
+環境変数:
+  OPENAI_API_KEY     - OpenAI API key (文字起こし用)
+  GEMINI_API_KEY     - Google Gemini API key (要約用)
+  ANTHROPIC_API_KEY  - Anthropic API key (AI Company用)
+        """,
+    )
+
+    parser.add_argument("input_file", nargs="?", help="音声ファイルまたはテキストファイル")
+    parser.add_argument("--output", "-o", required=True, help="出力ディレクトリ")
+    parser.add_argument("--text", action="store_true", help="入力がテキストファイル")
+    parser.add_argument("--interactive", "-i", action="store_true", help="インタラクティブモード")
+
+    args = parser.parse_args()
+
+    processor = MeetingToCodeProcessor()
+
+    if args.interactive:
+        # インタラクティブモード
+        print("🎤 AI Meeting-to-Code インタラクティブモード")
+        print("会議の内容を入力してください（Ctrl+D で終了）:")
+
+        lines = []
+        try:
+            while True:
+                line = input()
+                lines.append(line)
+        except EOFError:
+            pass
+
+        transcript = "\\n".join(lines)
+
+        # 要約・コード生成
+        requirements = processor.summarize_with_gemini(transcript)
+        success = processor.generate_code_with_aicompany(requirements, args.output)
+
+    elif args.input_file:
+        if args.text:
+            # テキストファイルから
+            with open(args.input_file, "r", encoding="utf-8") as f:
+                transcript = f.read()
+
+            requirements = processor.summarize_with_gemini(transcript)
+            success = processor.generate_code_with_aicompany(requirements, args.output)
+        else:
+            # 音声ファイルから
+            success = processor.process_meeting(args.input_file, args.output)
+    else:
+        parser.print_help()
+        return
+
+    exit_code = 0 if success else 1
+    sys.exit(exit_code)
+
+
+if __name__ == "__main__":
+    main()

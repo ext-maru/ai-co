@@ -26,7 +26,6 @@ from ..base.elder_servant_base import (
 from ..registry.servant_registry import ServantRegistry, get_registry
 from ..selection.servant_auto_selector import ServantAutoSelector, get_auto_selector
 
-
 class LoadBalancingStrategy(Enum):
     """負荷分散戦略"""
 
@@ -39,7 +38,6 @@ class LoadBalancingStrategy(Enum):
     RESOURCE_BASED = "resource_based"  # リソースベース
     INTELLIGENT = "intelligent"  # AI選択統合
 
-
 class HealthStatus(Enum):
     """健全性ステータス"""
 
@@ -48,7 +46,6 @@ class HealthStatus(Enum):
     UNHEALTHY = "unhealthy"
     MAINTENANCE = "maintenance"
     OFFLINE = "offline"
-
 
 @dataclass
 class LoadMetrics:
@@ -62,7 +59,6 @@ class LoadMetrics:
     error_rate: float = 0.0  # エラー率
     throughput: float = 0.0  # スループット
     last_updated: datetime = field(default_factory=datetime.now)
-
 
 @dataclass
 class ServantNode:
@@ -79,7 +75,6 @@ class ServantNode:
     failed_requests: int = 0  # 失敗リクエスト数
     last_health_check: datetime = field(default_factory=datetime.now)
 
-
 @dataclass
 class LoadBalancingResult:
     """負荷分散結果"""
@@ -90,7 +85,6 @@ class LoadBalancingResult:
     alternative_servants: List[ElderServantBase]
     balancing_strategy: LoadBalancingStrategy
     selection_time: float
-
 
 class LoadBalancer:
     """
@@ -208,7 +202,6 @@ class LoadBalancer:
         start_time = time.time()
         strategy = strategy or self.default_strategy
 
-        self.logger.debug(
             f"Routing request {request.task_id} with strategy {strategy.value}"
         )
 
@@ -291,8 +284,6 @@ class LoadBalancer:
                 await self._update_load_metrics(node)
 
                 self.servant_nodes[servant.name] = node
-
-                self.logger.debug(f"Initialized servant node: {servant.name}")
 
     def _calculate_initial_weight(self, servant: ElderServantBase) -> float:
         """初期重み計算"""
@@ -621,7 +612,6 @@ class LoadBalancer:
         # 統計更新
         self._update_completion_stats(response_time)
 
-        self.logger.debug(
             f"Recorded completion for {servant_name}: success={success}, time={response_time:0.2f}ms"
         )
 
@@ -847,10 +837,8 @@ class LoadBalancer:
 
         self.logger.info("Load balancer statistics reset")
 
-
 # グローバル負荷分散インスタンス
 _global_load_balancer = None
-
 
 def get_load_balancer() -> LoadBalancer:
     """グローバル負荷分散インスタンスを取得"""

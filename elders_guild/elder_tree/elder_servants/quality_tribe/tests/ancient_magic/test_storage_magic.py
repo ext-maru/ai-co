@@ -12,7 +12,7 @@ Created: 2025-07-23
 
 import pytest
 import asyncio
-import tempfile
+
 import os
 import json
 import shutil
@@ -29,7 +29,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from ancient_magic.storage_magic.storage_magic import StorageMagic
 
-
 class TestStorageMagic:
     """Storage Magic テストクラス"""
     
@@ -39,14 +38,11 @@ class TestStorageMagic:
         return StorageMagic()
         
     @pytest.fixture
-    def temp_storage_dir(self):
+
         """テスト用一時ディレクトリ"""
-        temp_dir = tempfile.mkdtemp(prefix="storage_magic_test_")
-        yield temp_dir
+
         # クリーンアップ
-        if os.path.exists(temp_dir):
-            shutil.rmtree(temp_dir)
-            
+
     @pytest.fixture
     def sample_knowledge_data(self):
         """テスト用知識データ"""
@@ -113,12 +109,12 @@ class TestStorageMagic:
         }
     
     # Phase 1: データ永続化（Data Persistence）
-    async def test_persist_knowledge_data_json(self, storage_magic, sample_knowledge_data, temp_storage_dir):
+
         """JSON形式での知識データ永続化テスト"""
         persistence_params = {
             "data": sample_knowledge_data,
             "format": "json",
-            "storage_path": temp_storage_dir,
+
             "collection_name": "knowledge_base"
         }
         
@@ -142,13 +138,12 @@ class TestStorageMagic:
         
         assert stored_data["documents"][0]["title"] == "Python TDD Best Practices"
         assert stored_data["metadata"]["total_documents"] == 2
-        
-    async def test_persist_knowledge_data_sqlite(self, storage_magic, sample_knowledge_data, temp_storage_dir):
+
         """SQLite形式での知識データ永続化テスト"""
         persistence_params = {
             "data": sample_knowledge_data,
             "format": "sqlite",
-            "storage_path": temp_storage_dir,
+
             "collection_name": "knowledge_documents",
             "schema": {
                 "id": "TEXT PRIMARY KEY",
@@ -176,14 +171,13 @@ class TestStorageMagic:
         conn.close()
         
         assert count == 2
-        
-    async def test_retrieve_persisted_data(self, storage_magic, sample_knowledge_data, temp_storage_dir):
+
         """永続化データの取得テスト"""
         # 先にデータを永続化
         persistence_params = {
             "data": sample_knowledge_data,
             "format": "json",
-            "storage_path": temp_storage_dir,
+
             "collection_name": "test_knowledge"
         }
         
@@ -204,14 +198,13 @@ class TestStorageMagic:
         # データ整合性確認
         assert retrieved_data["documents"][0]["title"] == "Python TDD Best Practices"
         assert retrieved_data["metadata"]["total_documents"] == 2
-        
-    async def test_update_persisted_data(self, storage_magic, sample_knowledge_data, temp_storage_dir):
+
         """永続化データの更新テスト"""
         # データ永続化
         persistence_params = {
             "data": sample_knowledge_data,
             "format": "json",
-            "storage_path": temp_storage_dir,
+
             "collection_name": "updateable_knowledge"
         }
         
@@ -245,14 +238,13 @@ class TestStorageMagic:
         # 更新確認
         assert update_result["updated_records"] == 1
         assert update_result["new_size"] > update_result["previous_size"]
-        
-    async def test_delete_persisted_data(self, storage_magic, sample_knowledge_data, temp_storage_dir):
+
         """永続化データの削除テスト"""
         # データ永続化
         persistence_params = {
             "data": sample_knowledge_data,
             "format": "json",
-            "storage_path": temp_storage_dir,
+
             "collection_name": "deletable_knowledge"
         }
         
@@ -278,7 +270,7 @@ class TestStorageMagic:
         assert not os.path.exists(persist_result["persistence_result"]["file_path"])
         
     # Phase 2: 知識アーカイブ（Knowledge Archiving）
-    async def test_create_knowledge_archive(self, storage_magic, temp_storage_dir):
+
         """知識アーカイブ作成テスト"""
         # テスト用知識データを複数作成
         knowledge_collection = {
@@ -298,7 +290,7 @@ class TestStorageMagic:
         archive_params = {
             "data": knowledge_collection,
             "archive_name": "elders_guild_knowledge_v1",
-            "storage_path": temp_storage_dir,
+
             "compression": "gzip",
             "metadata": {
                 "version": "1.0.0",
@@ -317,8 +309,7 @@ class TestStorageMagic:
         assert "archive_path" in archive_result
         assert archive_result["compression_ratio"] > 0
         assert os.path.exists(archive_result["archive_path"])
-        
-    async def test_extract_knowledge_archive(self, storage_magic, temp_storage_dir):
+
         """知識アーカイブ展開テスト"""
         # 先にアーカイブを作成
         test_data = {
@@ -331,7 +322,7 @@ class TestStorageMagic:
         archive_params = {
             "data": test_data,
             "archive_name": "test_archive",
-            "storage_path": temp_storage_dir,
+
             "compression": "gzip"
         }
         
@@ -341,7 +332,7 @@ class TestStorageMagic:
         # アーカイブ展開
         extract_params = {
             "archive_id": archive_id,
-            "extract_path": os.path.join(temp_storage_dir, "extracted"),
+
             "verify_integrity": True
         }
         
@@ -353,8 +344,7 @@ class TestStorageMagic:
         # 展開確認
         assert extract_result["integrity_verified"] is True
         assert extract_result["extracted_files"] > 0
-        
-    async def test_search_archived_knowledge(self, storage_magic, temp_storage_dir):
+
         """アーカイブ内知識検索テスト"""
         # 検索可能なアーカイブを作成
         searchable_data = {
@@ -368,7 +358,7 @@ class TestStorageMagic:
         archive_params = {
             "data": searchable_data,
             "archive_name": "searchable_knowledge",
-            "storage_path": temp_storage_dir,
+
             "index_for_search": True
         }
         
@@ -393,13 +383,13 @@ class TestStorageMagic:
         assert search_result["matches"][0]["relevance_score"] > 0.5
         
     # Phase 3: 状態管理（State Management）
-    async def test_persist_system_state(self, storage_magic, sample_state_data, temp_storage_dir):
+
         """システム状態永続化テスト"""
         state_params = {
             "state_data": sample_state_data,
             "state_name": "four_sages_state",
             "storage_backend": "file",  # Redis not available in test
-            "storage_path": temp_storage_dir
+
         }
         
         result = await storage_magic.persist_state(state_params)
@@ -411,15 +401,14 @@ class TestStorageMagic:
         assert "state_id" in state_result
         assert state_result["persistence_type"] == "file"
         assert state_result["size_bytes"] > 0
-        
-    async def test_retrieve_system_state(self, storage_magic, sample_state_data, temp_storage_dir):
+
         """システム状態取得テスト"""
         # 先に状態を永続化
         state_params = {
             "state_data": sample_state_data,
             "state_name": "retrievable_state",
             "storage_backend": "file",
-            "storage_path": temp_storage_dir
+
         }
         
         persist_result = await storage_magic.persist_state(state_params)
@@ -439,8 +428,7 @@ class TestStorageMagic:
         # 状態整合性確認
         assert retrieved_state["four_sages_status"]["knowledge_sage"]["query_count"] == 127
         assert retrieved_state["system_metrics"]["cpu_usage"] == 0.65
-        
-    async def test_synchronize_states(self, storage_magic, temp_storage_dir):
+
         """状態同期テスト"""
         # 複数の状態を作成
         state1 = {"component": "sage1", "status": "active", "last_update": "2025-07-23T10:00:00"}
@@ -453,7 +441,7 @@ class TestStorageMagic:
             ],
             "sync_strategy": "merge",
             "storage_backend": "file",
-            "storage_path": temp_storage_dir
+
         }
         
         result = await storage_magic.synchronize_states(sync_params)
@@ -464,8 +452,7 @@ class TestStorageMagic:
         # 同期確認
         assert sync_result["synchronized_states"] == 2
         assert sync_result["conflicts_resolved"] >= 0
-        
-    async def test_state_versioning(self, storage_magic, temp_storage_dir):
+
         """状態バージョニングテスト"""
         # 初期状態
         initial_state = {"version": 1, "data": "initial"}
@@ -475,7 +462,7 @@ class TestStorageMagic:
             "state_name": "versioned_state",
             "enable_versioning": True,
             "max_versions": 5,
-            "storage_path": temp_storage_dir
+
         }
         
         result = await storage_magic.persist_state(version_params)
@@ -501,12 +488,12 @@ class TestStorageMagic:
         assert len(history_result["version_history"]) == 2
         
     # Phase 4: バックアップ・復元（Backup Restoration）
-    async def test_create_full_backup(self, storage_magic, temp_storage_dir):
+
         """完全バックアップ作成テスト"""
         # テスト用データを複数作成
         test_files = {}
         for i in range(3):
-            file_path = os.path.join(temp_storage_dir, f"test_file_{i}.json")
+
             test_data = {"file_id": i, "content": f"Test content {i}"}
             with open(file_path, 'w') as f:
                 json.dump(test_data, f)
@@ -514,7 +501,7 @@ class TestStorageMagic:
         
         backup_params = {
             "backup_name": "full_system_backup",
-            "source_paths": [temp_storage_dir],
+
             "compression": "gzip",
             "backup_type": "full",
             "include_metadata": True
@@ -531,18 +518,17 @@ class TestStorageMagic:
         assert backup_result["backup_type"] == "full"
         assert backup_result["compressed_size"] > 0
         assert os.path.exists(backup_result["backup_path"])
-        
-    async def test_create_incremental_backup(self, storage_magic, temp_storage_dir):
+
         """増分バックアップ作成テスト"""
         # ベースファイル作成
-        base_file = os.path.join(temp_storage_dir, "base_file.json")
+
         with open(base_file, 'w') as f:
             json.dump({"version": 1, "data": "base"}, f)
         
         # フルバックアップ作成
         full_backup_params = {
             "backup_name": "base_backup",
-            "source_paths": [temp_storage_dir],
+
             "backup_type": "full"
         }
         
@@ -554,14 +540,14 @@ class TestStorageMagic:
             json.dump({"version": 2, "data": "modified"}, f)
         
         # 新ファイル追加
-        new_file = os.path.join(temp_storage_dir, "new_file.json")
+
         with open(new_file, 'w') as f:
             json.dump({"new": True}, f)
         
         # 増分バックアップ作成
         incremental_params = {
             "backup_name": "incremental_backup",
-            "source_paths": [temp_storage_dir],
+
             "backup_type": "incremental",
             "base_backup_id": base_backup_id
         }
@@ -574,11 +560,10 @@ class TestStorageMagic:
         # 増分バックアップ確認
         assert backup_result["backup_type"] == "incremental"
         assert backup_result["changed_files"] >= 1
-        
-    async def test_restore_from_backup(self, storage_magic, temp_storage_dir):
+
         """バックアップからの復元テスト"""
         # テストデータでバックアップ作成
-        source_dir = os.path.join(temp_storage_dir, "source")
+
         os.makedirs(source_dir)
         
         test_file = os.path.join(source_dir, "important_data.json")
@@ -602,7 +587,7 @@ class TestStorageMagic:
         # 復元実行
         restore_params = {
             "backup_id": backup_id,
-            "restore_path": temp_storage_dir,
+
             "verify_integrity": True,
             "restore_type": "full"
         }
@@ -617,18 +602,16 @@ class TestStorageMagic:
         assert restore_result["restored_files"] > 0
         
         # データ整合性確認
-        restored_file = os.path.join(temp_storage_dir, "source", "important_data.json")
+
         assert os.path.exists(restored_file)
         
         with open(restored_file, 'r') as f:
             restored_data = json.load(f)
         assert restored_data["value"] == 12345
-        
-    async def test_point_in_time_recovery(self, storage_magic, temp_storage_dir):
+
         """ポイント・イン・タイム復旧テスト"""
         # 時系列でバックアップを複数作成
-        data_file = os.path.join(temp_storage_dir, "timestamped_data.json")
-        
+
         backups = []
         for i in range(3):
             # データ更新
@@ -644,7 +627,7 @@ class TestStorageMagic:
             # バックアップ作成
             backup_params = {
                 "backup_name": f"pit_backup_v{i+1}",
-                "source_paths": [temp_storage_dir],
+
                 "backup_type": "full",
                 "timestamp": timestamp_data["timestamp"]
             }
@@ -655,7 +638,7 @@ class TestStorageMagic:
         # 特定時点への復旧（Version 2）
         recovery_params = {
             "target_timestamp": "2025-07-23T10:10:00",
-            "restore_path": os.path.join(temp_storage_dir, "recovered"),
+
             "recovery_type": "point_in_time"
         }
         
@@ -665,24 +648,23 @@ class TestStorageMagic:
         recovery_result = result["recovery_result"]
         
         # 復旧確認（Version 2 になっているはず）
-        recovered_file = os.path.join(temp_storage_dir, "recovered", "timestamped_data.json")
+
         assert os.path.exists(recovered_file)
         
         with open(recovered_file, 'r') as f:
             recovered_data = json.load(f)
         assert recovered_data["version"] == 2
-        
-    async def test_backup_verification(self, storage_magic, temp_storage_dir):
+
         """バックアップ整合性検証テスト"""
         # テストバックアップ作成
-        test_file = os.path.join(temp_storage_dir, "verify_test.json")
+
         test_data = {"checksum_test": True, "data": "integrity verification"}
         with open(test_file, 'w') as f:
             json.dump(test_data, f)
         
         backup_params = {
             "backup_name": "verification_test",
-            "source_paths": [temp_storage_dir],
+
             "backup_type": "full",
             "calculate_checksums": True
         }
@@ -714,13 +696,12 @@ class TestStorageMagic:
         
         assert result["success"] is False
         assert "Unknown storage intent" in result["error"]
-        
-    async def test_persist_empty_data(self, storage_magic, temp_storage_dir):
+
         """空データの永続化テスト"""
         persistence_params = {
             "data": {},
             "format": "json",
-            "storage_path": temp_storage_dir,
+
             "collection_name": "empty_data"
         }
         
@@ -754,8 +735,7 @@ class TestStorageMagic:
         
         assert result["success"] is False
         assert "not found" in result["error"].lower() or "not exist" in result["error"].lower()
-        
-    async def test_large_data_handling(self, storage_magic, temp_storage_dir):
+
         """大容量データ処理テスト"""
         # 大容量テストデータ生成（1MB程度）
         large_data = {
@@ -770,7 +750,7 @@ class TestStorageMagic:
         persistence_params = {
             "data": large_data,
             "format": "json",
-            "storage_path": temp_storage_dir,
+
             "collection_name": "large_dataset"
         }
         
@@ -781,8 +761,7 @@ class TestStorageMagic:
         
         # 大容量データでも処理可能
         assert persistence_result["size_bytes"] > 100000  # 100KB以上
-        
-    async def test_concurrent_storage_operations(self, storage_magic, temp_storage_dir):
+
         """並行ストレージ操作テスト"""
         # 複数の並行操作を実行
         tasks = []
@@ -792,7 +771,7 @@ class TestStorageMagic:
             params = {
                 "data": data,
                 "format": "json",
-                "storage_path": temp_storage_dir,
+
                 "collection_name": f"concurrent_{i}"
             }
             task = storage_magic.persist_data(params)
@@ -807,7 +786,6 @@ class TestStorageMagic:
             assert result["success"] is True
             assert "storage_id" in result["persistence_result"]
 
-
 @pytest.mark.asyncio
 class TestStorageMagicIntegration:
     """Storage Magic統合テスト"""
@@ -815,8 +793,7 @@ class TestStorageMagicIntegration:
     async def test_comprehensive_storage_workflow(self):
         """包括的なストレージワークフローテスト"""
         storage_magic = StorageMagic()
-        temp_dir = tempfile.mkdtemp(prefix="storage_integration_")
-        
+
         try:
             # Step 1: データ永続化
             test_data = {
@@ -827,7 +804,7 @@ class TestStorageMagicIntegration:
             persist_params = {
                 "data": test_data,
                 "format": "json",
-                "storage_path": temp_dir,
+
                 "collection_name": "workflow_test"
             }
             
@@ -849,7 +826,7 @@ class TestStorageMagicIntegration:
             # Step 3: バックアップ作成
             backup_params = {
                 "backup_name": "workflow_backup",
-                "source_paths": [temp_dir],
+
                 "backup_type": "full"
             }
             
@@ -870,7 +847,7 @@ class TestStorageMagicIntegration:
             # Step 5: バックアップから復元
             restore_params = {
                 "backup_id": backup_id,
-                "restore_path": os.path.join(temp_dir, "restored"),
+
                 "verify_integrity": True
             }
             
@@ -879,14 +856,11 @@ class TestStorageMagicIntegration:
             
         finally:
             # クリーンアップ
-            if os.path.exists(temp_dir):
-                shutil.rmtree(temp_dir)
-    
+
     async def test_four_sages_storage_integration(self):
         """4賢者ストレージ統合テスト"""
         storage_magic = StorageMagic()
-        temp_dir = tempfile.mkdtemp(prefix="four_sages_storage_")
-        
+
         try:
             # 4賢者の状態データ
             sages_data = {
@@ -917,7 +891,7 @@ class TestStorageMagicIntegration:
                 persist_params = {
                     "data": sage_data,
                     "format": "json",
-                    "storage_path": temp_dir,
+
                     "collection_name": f"{sage_name}_state"
                 }
                 
@@ -927,7 +901,7 @@ class TestStorageMagicIntegration:
             # 統合バックアップ作成
             backup_params = {
                 "backup_name": "four_sages_backup",
-                "source_paths": [temp_dir],
+
                 "backup_type": "full",
                 "include_metadata": True
             }
@@ -946,9 +920,6 @@ class TestStorageMagicIntegration:
             assert verify_result["verification_result"]["integrity_ok"] is True
             
         finally:
-            if os.path.exists(temp_dir):
-                shutil.rmtree(temp_dir)
-
 
 if __name__ == "__main__":
     pytest.main(["-v", __file__])

@@ -506,8 +506,8 @@ async def websocket_endpoint(websocket):
 # エラーハンドラー
 @app.exception_handler(404)
 async def not_found_handler(request, exc):
-    return JSONResponse(
     """not_found_handlerを処理"""
+    return JSONResponse(
         status_code=404,
         content={
             "error": "Not Found",
@@ -532,8 +532,9 @@ async def internal_error_handler(request, exc):
 
 # 起動時イベント
 @app.on_event("startup")
-async def startup_event()logger.info("🚀 Project Web Portal API 起動中...")
-"""起動時初期化"""
+async def startup_event():
+    """起動時初期化"""
+    logger.info("🚀 Project Web Portal API 起動中...")
 
     # データベース初期化確認
     try:
@@ -547,8 +548,9 @@ async def startup_event()logger.info("🚀 Project Web Portal API 起動中...")
 
 # 終了時イベント
 @app.on_event("shutdown")
-async def shutdown_event()logger.info("🔽 Project Web Portal API 終了中...")
-"""終了時クリーンアップ"""
+async def shutdown_event():
+    """シャットダウン時処理"""
+    logger.info("🔽 Project Web Portal API 終了中...")
     # クリーンアップ処理
     logger.info("✅ Project Web Portal API 終了完了")
 

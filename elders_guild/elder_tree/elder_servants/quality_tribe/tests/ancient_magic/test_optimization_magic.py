@@ -15,7 +15,7 @@ import asyncio
 import time
 import threading
 import json
-import tempfile
+
 import os
 import gc
 from typing import Dict, Any, List, Optional, Union
@@ -29,7 +29,6 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from ancient_magic.optimization_magic.optimization_magic import OptimizationMagic
-
 
 class TestOptimizationMagic:
     """Optimization Magic テストクラス"""
@@ -618,7 +617,7 @@ class TestOptimizationMagic:
                 {"level": 4, "type": "network_cache", "size_gb": 100, "latency_ms": 10}
             ],
             "workload_characteristics": {
-                "temporal_locality": 0.8,
+
                 "spatial_locality": 0.6,
                 "working_set_size_mb": 500,
                 "access_frequency_distribution": "power_law"
@@ -770,7 +769,6 @@ class TestOptimizationMagic:
             # 最適化結果が論理的に妥当であることを確認
             assert "optimal_cache_config" in cache_result
 
-
 @pytest.mark.asyncio  
 class TestOptimizationMagicIntegration:
     """Optimization Magic統合テスト"""
@@ -902,7 +900,6 @@ class TestOptimizationMagicIntegration:
         # パイプライン全体の効果確認
         overall_improvement = pipeline_result["overall_improvement"]
         assert overall_improvement >= 2.0  # 2倍以上の総合改善
-
 
 if __name__ == "__main__":
     pytest.main(["-v", __file__])

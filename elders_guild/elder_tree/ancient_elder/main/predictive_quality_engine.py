@@ -36,7 +36,7 @@ except ImportError:
 @dataclass
 class PredictionResult:
     """予測結果データクラス"""
-    bug_probability: float  # バグ発生確率 0-1
+
     performance_risk: float  # 性能劣化リスク 0-1
     security_risk: float  # セキュリティリスク 0-1
     technical_debt_score: float  # 技術負債スコア 0-100
@@ -62,13 +62,13 @@ class PredictiveQualityEngine(AncientMagicBase):
         super().__init__()
         
         # 予測モデルの初期化
-        self.bug_prediction_model = self._initialize_bug_model()
+
         self.performance_model = self._initialize_performance_model()
         self.security_model = self._initialize_security_model()
         
         # 学習データとパターン
         self.historical_data = self._load_historical_data()
-        self.bug_patterns = self._load_bug_patterns()
+
         self.performance_patterns = self._load_performance_patterns()
         self.security_patterns = self._load_security_patterns()
         
@@ -96,7 +96,7 @@ class PredictiveQualityEngine(AncientMagicBase):
             features = self._extract_code_features(code)
             
             # 各種予測の実行
-            bug_prob = self._predict_bug_probability(features, code)
+
             perf_risk = self._predict_performance_risk(features, code)
             sec_risk = self._predict_security_risk(features, code)
             debt_score = self._predict_technical_debt(features, code)
@@ -110,11 +110,11 @@ class PredictiveQualityEngine(AncientMagicBase):
             
             # 推奨アクションの生成
             recommendations = self._generate_recommendations(
-                bug_prob, perf_risk, sec_risk, debt_score, maintain_pred
+
             )
             
             result = PredictionResult(
-                bug_probability=bug_prob,
+
                 performance_risk=perf_risk,
                 security_risk=sec_risk,
                 technical_debt_score=debt_score,
@@ -133,7 +133,7 @@ class PredictiveQualityEngine(AncientMagicBase):
         except Exception as e:
             logging.error(f"Prediction error: {e}")
             return PredictionResult(
-                bug_probability=0.5,  # デフォルト中程度
+
                 performance_risk=0.5,
                 security_risk=0.5,
                 technical_debt_score=50.0,
@@ -194,43 +194,32 @@ class PredictiveQualityEngine(AncientMagicBase):
         except Exception as e:
             logging.warning(f"Feature extraction error: {e}")
             return self._get_default_features()
-    
-    def _predict_bug_probability(self, features: Dict[str, Any], code: str) -> float:
+
         """バグ発生確率の予測"""
         try:
             # 簡単な重み付きスコアリングモデル
-            bug_score = 0.0
-            
+
             # 複雑度による影響
             complexity = features.get("cyclomatic_complexity", 0)
-            bug_score += min(complexity * 0.05, 0.3)  # 最大0.3
-            
+
             # ネスト深度による影響
             nesting = features.get("nesting_depth", 0)
-            bug_score += min(nesting * 0.08, 0.2)  # 最大0.2
-            
+
             # 長い関数による影響
             long_funcs = features.get("long_functions", 0)
-            bug_score += min(long_funcs * 0.1, 0.2)  # 最大0.2
-            
+
             # 例外処理の不足による影響
             exception_handling = features.get("exception_handling", 0)
             total_functions = features.get("functions", 1)
             if total_functions > 0 and exception_handling / total_functions < 0.3:
-                bug_score += 0.15
-            
+
             # マジックナンバーによる影響
             magic_numbers = features.get("magic_numbers", 0)
-            bug_score += min(magic_numbers * 0.02, 0.1)
-            
+
             # 過去のパターンマッチング
-            pattern_score = self._match_bug_patterns(code)
-            bug_score += pattern_score
-            
-            return min(bug_score, 1.0)  # 最大1.0に制限
-            
+
         except Exception as e:
-            logging.warning(f"Bug prediction error: {e}")
+
             return 0.5  # デフォルト値
     
     def _predict_performance_risk(self, features: Dict[str, Any], code: str) -> float:
@@ -312,11 +301,7 @@ class PredictiveQualityEngine(AncientMagicBase):
         """技術負債の予測（0-100スコア）"""
         try:
             debt_score = 0.0
-            
-            # TODOコメントによる負債
-            todo_count = len(re.findall(r'#.*TODO|#.*FIXME|#.*HACK', code, re.IGNORECASE))
-            debt_score += min(todo_count * 5, 30)
-            
+
             # コメント不足による負債
             comments_ratio = features.get("comments_ratio", 0)
             if comments_ratio < 0.1:  # コメント率10%未満
@@ -445,16 +430,14 @@ class PredictiveQualityEngine(AncientMagicBase):
         except Exception as e:
             logging.warning(f"Risk factor identification error: {e}")
             return [{"type": "analysis_error", "description": str(e)}]
-    
-    def _generate_recommendations(self, bug_prob: float, perf_risk: float, 
+
                                  sec_risk: float, debt_score: float, maintain_pred: float) -> List[str]:
         """推奨アクションの生成"""
         recommendations = []
-        
-        if bug_prob > 0.7:
+
             recommendations.append("HIGH: Implement comprehensive unit tests")
             recommendations.append("HIGH: Add extensive error handling")
-        elif bug_prob > 0.4:
+
             recommendations.append("MEDIUM: Review function complexity")
             recommendations.append("MEDIUM: Add input validation")
         
@@ -580,21 +563,19 @@ class PredictiveQualityEngine(AncientMagicBase):
         
         count_depth(tree)
         return max_depth
-    
-    def _match_bug_patterns(self, code: str) -> float:
+
         """過去のバグパターンとのマッチング"""
         # 簡単なパターンマッチング例
         pattern_score = 0.0
         
         # 一般的なバグパターン
-        bug_patterns = [
+
             r'==\s*True',  # == True instead of is True
             r'==\s*False',  # == False instead of is False
             r'except:',  # bare except
             r'\.close\(\)',  # resource without try-finally
         ]
-        
-        for pattern in bug_patterns:
+
             matches = len(re.findall(pattern, code))
             pattern_score += matches * 0.05  # 各パターン5%のリスク
         
@@ -612,7 +593,7 @@ class PredictiveQualityEngine(AncientMagicBase):
         }
     
     # モデル初期化メソッド（将来の機械学習モデル用）
-    def _initialize_bug_model(self):
+
         """バグ予測モデル初期化"""
         return None  # 現在は重み付きスコアリング
     
@@ -627,8 +608,7 @@ class PredictiveQualityEngine(AncientMagicBase):
     def _load_historical_data(self) -> Dict[str, Any]:
         """履歴データ読み込み"""
         return {}  # 将来実装
-    
-    def _load_bug_patterns(self) -> List[str]:
+
         """バグパターン読み込み"""
         return []  # 将来実装
     
@@ -644,15 +624,14 @@ class PredictiveQualityEngine(AncientMagicBase):
         """予測統計情報取得"""
         if not self.prediction_history:
             return {"message": "No prediction history available"}
-        
-        bug_probs = [p.bug_probability for p in self.prediction_history]
+
         confidences = [p.confidence for p in self.prediction_history]
         
         return {
             "total_predictions": len(self.prediction_history),
-            "average_bug_probability": statistics.mean(bug_probs),
+
             "average_confidence": statistics.mean(confidences),
-            "high_risk_count": len([p for p in self.prediction_history if p.bug_probability > 0.7])
+
         }
 
 # 便利関数
@@ -675,8 +654,7 @@ def risky_function(data):
     
     engine = PredictiveQualityEngine()
     result = engine.predict_quality_issues(sample_code)
-    
-    print(f"Bug Probability: {result.bug_probability:0.2f}")
+
     print(f"Performance Risk: {result.performance_risk:0.2f}")
     print(f"Security Risk: {result.security_risk:0.2f}")
     print(f"Technical Debt: {result.technical_debt_score:0.2f}")

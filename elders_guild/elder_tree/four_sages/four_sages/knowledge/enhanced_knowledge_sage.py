@@ -18,7 +18,6 @@ import numpy as np
 # Import base implementation
 from elders_guild.elder_tree.four_sages.knowledge.knowledge_sage import KnowledgeSage
 
-
 class EnhancedKnowledgeSage(KnowledgeSage):
     """Enhanced Knowledge Sage with advanced features"""
 
@@ -109,7 +108,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
                 "recommendation",
                 "guideline",
             ],
-            "troubleshooting": ["fix", "error", "bug", "issue", "problem", "debug"],
+
             "documentation": ["document", "guide", "tutorial", "reference", "manual"],
             "tools": ["tool", "utility", "software", "application", "framework"],
             "processes": [
@@ -239,7 +238,7 @@ class EnhancedKnowledgeSage(KnowledgeSage):
         scores["title_quality"] = min(title_words / 5, 1.0) if title_words > 1 else 0.2
 
         # Uniqueness score (simplified - check if not too generic)
-        generic_terms = ["bug", "fix", "update", "change"]
+
         is_generic = any(term == title.lower() for term in generic_terms)
         scores["uniqueness"] = 0.3 if is_generic else 1.0
 

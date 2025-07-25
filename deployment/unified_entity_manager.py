@@ -158,8 +158,9 @@ class UnifiedEntityManager:
             logger.error(f"Database initialization failed: {e}")
             raise
 
-    def _create_basic_schema(self)with self._get_connection() as conn:
-    """基本スキーマ作成（スキーマファイルが無い場合）"""
+    def _create_basic_schema(self):
+        """基本スキーマ作成（スキーマファイルが無い場合）"""
+        with self._get_connection() as conn:
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS unified_entities (
@@ -182,8 +183,9 @@ class UnifiedEntityManager:
             conn.commit()
 
     @contextmanager
-    def _get_connection(self)conn = sqlite3connect(self.db_path, timeout=30.0)
-    """データベース接続コンテキストマネージャー"""
+    def _get_connection(self):
+        """データベース接続コンテキストマネージャー"""
+        conn = sqlite3.connect(self.db_path, timeout=30.0)
         conn.row_factory = sqlite3Row
         try:
             yield conn
@@ -198,7 +200,7 @@ class UnifiedEntityManager:
     # エンティティCRUD操作
     # ============================================
 
-    def create_entity(self, entity: BaseEntity) -> str:
+    def create_entity(self, entity: BaseEntity):    -> str:
         """エンティティ作成"""
         try:
             if not entity.id:
@@ -257,7 +259,9 @@ class UnifiedEntityManager:
             logger.error(f"Failed to create entity: {e}")
             raise
 
-    def get_entity(self, entity_id: str) -> Optional[BaseEntity]:
+    def get_entity(self, entity_id: str):
+    """ メソッド"""
+    -> Optional[BaseEntity]:
         """エンティティ取得"""
         try:
             with self._get_connection() as conn:
@@ -275,7 +279,9 @@ class UnifiedEntityManager:
             logger.error(f"Failed to get entity {entity_id}: {e}")
             return None
 
-    def update_entity(self, entity: BaseEntity) -> bool:
+    def update_entity(self, entity: BaseEntity):
+    """ メソッド"""
+    -> bool:
         """エンティティ更新"""
         try:
             entity.updated_at = datetime.now()
@@ -336,7 +342,9 @@ class UnifiedEntityManager:
             logger.error(f"Failed to update entity {entity.id}: {e}")
             return False
 
-    def delete_entity(self, entity_id: str) -> bool:
+    def delete_entity(self, entity_id: str):
+    """ メソッド"""
+    -> bool:
         """エンティティ削除"""
         try:
             with self._get_connection() as conn:
@@ -360,7 +368,9 @@ class UnifiedEntityManager:
         limit: int = 100,
         offset: int = 0,
         filters: Dict[str, Any] = None,
-    ) -> List[BaseEntity]:
+    ):
+    """ メソッド"""
+    -> List[BaseEntity]:
         """エンティティ一覧取得"""
         try:
             with self._get_connection() as conn:
@@ -410,7 +420,9 @@ class UnifiedEntityManager:
     # 関係性管理
     # ============================================
 
-    def create_relationship(self, relationship: EntityRelationship) -> bool:
+    def create_relationship(self, relationship: EntityRelationship):
+    """ メソッド"""
+    -> bool:
         """関係性作成"""
         try:
             with self._get_connection() as conn:
@@ -442,7 +454,9 @@ class UnifiedEntityManager:
 
     def get_relationships(
         self, entity_id: str, direction: str = "both"
-    ) -> List[EntityRelationship]:
+    ):
+    """ メソッド"""
+    -> List[EntityRelationship]:
         """エンティティの関係性取得"""
         try:
             with self._get_connection() as conn:
@@ -480,7 +494,9 @@ class UnifiedEntityManager:
 
     def find_related_entities(
         self, entity_id: str, relationship_types: List[str] = None, max_depth: int = 2
-    ) -> List[BaseEntity]:
+    ):
+    """ メソッド"""
+    -> List[BaseEntity]:
         """関連エンティティ検索"""
         try:
             related_ids = set()
@@ -558,7 +574,9 @@ class UnifiedEntityManager:
 
     def search_entities(
         self, query: str, entity_types: List[str] = None, limit: int = 50
-    ) -> List[BaseEntity]:
+    ):
+    """ メソッド"""
+    -> List[BaseEntity]:
         """エンティティ検索"""
         try:
             with self._get_connection() as conn:
@@ -599,7 +617,9 @@ class UnifiedEntityManager:
     # ユーティリティメソッド
     # ============================================
 
-    def _row_to_entity(self, row: sqlite3Row) -> BaseEntity:
+    def _row_to_entity(self, row: sqlite3Row):
+    """ メソッド"""
+    -> BaseEntity:
         """データベース行をエンティティオブジェクトに変換"""
         # 基本データの解析
         metadata = json.loads(row["metadata"]) if row["metadata"] else {}
@@ -677,7 +697,9 @@ class UnifiedEntityManager:
                 updated_at=updated_at,
             )
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self):
+    """ メソッド"""
+    -> Dict[str, Any]:
         """システム統計取得"""
         try:
             with self._get_connection() as conn:
@@ -717,7 +739,9 @@ class UnifiedEntityManager:
 
 def create_knowledge_entity(
     title: str, content: str, confidence_score: float = 0.8, domain: str = "general"
-) -> KnowledgeEntity:
+):
+    """ メソッド"""
+    -> KnowledgeEntity:
     """知識エンティティ作成ヘルパー"""
     entity = KnowledgeEntity(id=str(uuid.uuid4()), title=title, content=content)
     entity.knowledge_data.update(
@@ -731,7 +755,9 @@ def create_incident_entity(
     content: str,
     severity: str = "medium",
     affected_systems: List[str] = None,
-) -> IncidentEntity:
+):
+    """ メソッド"""
+    -> IncidentEntity:
     """インシデントエンティティ作成ヘルパー"""
     entity = IncidentEntity(id=str(uuid.uuid4()), title=title, content=content)
     entity.incident_data.update(
@@ -742,7 +768,9 @@ def create_incident_entity(
 
 def create_task_entity(
     title: str, content: str, task_type: str = "general", assigned_worker: str = None
-) -> TaskEntity:
+):
+    """ メソッド"""
+    -> TaskEntity:
     """タスクエンティティ作成ヘルパー"""
     entity = TaskEntity(id=str(uuid.uuid4()), title=title, content=content)
     entity.task_data.update(

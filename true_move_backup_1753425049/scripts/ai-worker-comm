@@ -1,0 +1,5 @@
+#!/bin/bash
+# AI Worker Communication Management
+# ワーカー間通信管理
+
+python3 "/home/aicompany/ai_co/bin/ai_launcher.py" "worker-comm" "$@"

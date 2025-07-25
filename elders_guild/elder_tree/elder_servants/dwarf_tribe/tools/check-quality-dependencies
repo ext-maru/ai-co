@@ -1,0 +1,431 @@
+#!/bin/bash
+# 🔧 Elder Guild Quality Dependencies Checker
+# エルダーズギルド品質システム依存関係チェッカー
+#
+# Features:
+# - 必須依存関係の自動検出
+# - 不足パッケージの自動インストール
+# - セキュリティ設定の検証
+# - 権限・環境の確認
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# セキュリティ設定
+export PATH="/usr/local/bin:/usr/bin:/bin"
+umask 077
+
+# Root実行防止
+if [[ $(id -u) -eq 0 ]]; then
+    echo "❌ ERROR: Dependency checker cannot run as root"
+    exit 1
+fi
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+print_header() {
+    echo -e "${PURPLE}${BOLD}"
+    echo "🔧 ELDER GUILD QUALITY DEPENDENCIES CHECKER"
+    echo "    エルダーズギルド品質システム依存関係チェッカー"
+    echo "    Version: 1.0 - Secure Dependency Management"
+    echo -e "${NC}"
+}
+
+print_status() {
+    echo -e "${CYAN}🔧 $1${NC}"
+}
+
+print_success() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+# 必須コマンドの定義
+REQUIRED_COMMANDS=(
+    "python3:Python 3 interpreter"
+    "pip3:Python package installer"
+    "git:Git version control"
+    "bc:Basic calculator for numeric operations"
+    "jq:JSON processor"
+    "psql:PostgreSQL client"
+)
+
+# 必須Pythonモジュールの定義
+REQUIRED_PYTHON_MODULES=(
+    "psutil:System and process utilities"
+    "psycopg2:PostgreSQL adapter"
+    "requests:HTTP library"
+    "numpy:Numerical computing"
+    "configparser:Configuration file parser"
+)
+
+# オプションPythonモジュールの定義
+OPTIONAL_PYTHON_MODULES=(
+    "radon:Code complexity analysis"
+    "bandit:Security analysis"
+    "pylint:Code analysis"
+    "mypy:Static type checker"
+    "openai:OpenAI API client"
+)
+
+check_command_availability() {
+    local missing_commands=()
+    
+    print_status "Checking required system commands..."
+    
+    for cmd_info in "${REQUIRED_COMMANDS[@]}"; do
+        local cmd=$(echo "$cmd_info" | cut -d: -f1)
+        local desc=$(echo "$cmd_info" | cut -d: -f2)
+        
+        if command -v "$cmd" &> /dev/null; then
+            print_success "$cmd ($desc) - available"
+        else
+            print_error "$cmd ($desc) - MISSING"
+            missing_commands+=("$cmd")
+        fi
+    done
+    
+    if [[ ${#missing_commands[@]} -gt 0 ]]; then
+        print_warning "Missing commands: ${missing_commands[*]}"
+        return 1
+    fi
+    
+    return 0
+}
+
+check_python_modules() {
+    local missing_required=()
+    local missing_optional=()
+    
+    print_status "Checking required Python modules..."
+    
+    # 必須モジュール
+    for module_info in "${REQUIRED_PYTHON_MODULES[@]}"; do
+        local module=$(echo "$module_info" | cut -d: -f1)
+        local desc=$(echo "$module_info" | cut -d: -f2)
+        
+        if python3 -c "import $module" &> /dev/null; then
+            print_success "$module ($desc) - available"
+        else
+            print_error "$module ($desc) - MISSING"
+            missing_required+=("$module")
+        fi
+    done
+    
+    print_status "Checking optional Python modules..."
+    
+    # オプションモジュール
+    for module_info in "${OPTIONAL_PYTHON_MODULES[@]}"; do
+        local module=$(echo "$module_info" | cut -d: -f1)
+        local desc=$(echo "$module_info" | cut -d: -f2)
+        
+        if python3 -c "import $module" &> /dev/null; then
+            print_success "$module ($desc) - available"
+        else
+            print_warning "$module ($desc) - missing (optional)"
+            missing_optional+=("$module")
+        fi
+    done
+    
+    # 結果表示
+    if [[ ${#missing_required[@]} -gt 0 ]]; then
+        print_error "Missing required modules: ${missing_required[*]}"
+    fi
+    
+    if [[ ${#missing_optional[@]} -gt 0 ]]; then
+        print_warning "Missing optional modules: ${missing_optional[*]}"
+    fi
+    
+    # 必須モジュールが不足している場合は失敗
+    [[ ${#missing_required[@]} -eq 0 ]]
+}
+
+install_system_dependencies() {
+    print_status "Installing missing system dependencies..."
+    
+    # Ubuntu/Debianパッケージマネージャーの確認
+    if command -v apt-get &> /dev/null; then
+        print_status "Using apt-get package manager"
+        
+        # パッケージリストの更新
+        sudo apt-get update || {
+            print_error "Failed to update package list"
+            return 1
+        }
+        
+        # 必須パッケージのインストール
+        local packages=(
+            "bc"
+            "jq" 
+            "postgresql-client"
+            "python3-pip"
+            "python3-dev"
+            "build-essential"
+        )
+        
+        for package in "${packages[@]}"; do
+            if ! dpkg -l "$package" &> /dev/null; then
+                print_status "Installing $package..."
+                sudo apt-get install -y "$package" || {
+                    print_error "Failed to install $package"
+                    return 1
+                }
+                print_success "$package installed"
+            else
+                print_success "$package already installed"
+            fi
+        done
+        
+    else
+        print_error "Unsupported package manager. Please install dependencies manually:"
+        echo "  - bc (basic calculator)"
+        echo "  - jq (JSON processor)"
+        echo "  - postgresql-client"
+        echo "  - python3-pip"
+        return 1
+    fi
+}
+
+install_python_dependencies() {
+    print_status "Installing Python dependencies..."
+    
+    # 必須モジュールのインストール
+    local required_pip_packages=(
+        "psutil"
+        "psycopg2-binary"
+        "requests" 
+        "numpy"
+    )
+    
+    for package in "${required_pip_packages[@]}"; do
+        print_status "Installing Python package: $package"
+        pip3 install --user "$package" || {
+            print_error "Failed to install $package"
+            return 1
+        }
+        print_success "$package installed"
+    done
+    
+    # オプションモジュールのインストール（失敗しても続行）
+    local optional_pip_packages=(
+        "radon"
+        "bandit"
+        "pylint"
+        "mypy"
+    )
+    
+    print_status "Installing optional Python packages..."
+    for package in "${optional_pip_packages[@]}"; do
+        print_status "Installing optional package: $package"
+        if pip3 install --user "$package"; then
+            print_success "$package installed"
+        else
+            print_warning "$package installation failed (optional)"
+        fi
+    done
+}
+
+check_postgresql_connectivity() {
+    print_status "Testing PostgreSQL connectivity..."
+    
+    local test_db="elders_guild_pgvector"
+    local test_user="postgres"
+    local test_host="localhost"
+    
+    if psql -h "$test_host" -U "$test_user" -d "$test_db" -c "SELECT 1;" &>/dev/null; then
+        print_success "PostgreSQL connection successful"
+        
+        # pgvector拡張の確認
+        if psql -h "$test_host" -U "$test_user" -d "$test_db" -c "SELECT * FROM pg_extension WHERE extname='vector';" | grep -q vector; then
+            print_success "pgvector extension available"
+        else
+            print_warning "pgvector extension not found (may need installation)"
+        fi
+        
+    else
+        print_warning "PostgreSQL connection failed"
+        print_status "Database features may not work properly"
+        print_status "To fix: ensure PostgreSQL is running and database exists"
+    fi
+}
+
+check_file_permissions() {
+    print_status "Checking file permissions..."
+    
+    local project_root="/home/aicompany/ai_co"
+    
+    # プロジェクトディレクトリの確認
+    if [[ ! -d "$project_root" ]]; then
+        print_error "Project root not found: $project_root"
+        return 1
+    fi
+    
+    # 書き込み権限の確認
+    if [[ ! -w "$project_root" ]]; then
+        print_error "No write permission to project root: $project_root"
+        return 1
+    fi
+    
+    # 必要ディレクトリの作成・権限設定
+    local required_dirs=(
+        "$project_root/data"
+        "$project_root/logs"
+        "$project_root/data/merge_quality_reports"
+        "$project_root/data/merge_approvals"
+        "$project_root/data/quality_cache"
+    )
+    
+    for dir in "${required_dirs[@]}"; do
+        if [[ ! -d "$dir" ]]; then
+            mkdir -p "$dir" || {
+                print_error "Failed to create directory: $dir"
+                return 1
+            }
+            print_success "Created directory: $dir"
+        fi
+        
+        # セキュアな権限設定
+        chmod 700 "$dir" || {
+            print_error "Failed to set permissions for: $dir"
+            return 1
+        }
+    done
+    
+    print_success "File permissions verified"
+}
+
+generate_dependency_report() {
+    print_status "Generating dependency report..."
+    
+    local report_file="/home/aicompany/ai_co/data/dependency_check_$(date +%Y%m%d_%H%M%S).json"
+    
+    cat > "$report_file" << EOF
+{
+    "timestamp": "$(date -Iseconds)",
+    "check_version": "1.0",
+    "system_info": {
+        "os": "$(uname -s)",
+        "kernel": "$(uname -r)",
+        "architecture": "$(uname -m)",
+        "user": "$(whoami)",
+        "python_version": "$(python3 --version 2>&1)",
+        "pip_version": "$(pip3 --version 2>&1)"
+    },
+    "commands_check": {
+        "total_required": ${#REQUIRED_COMMANDS[@]},
+        "available": $(check_command_availability && echo "true" || echo "false")
+    },
+    "python_modules_check": {
+        "required_modules": ${#REQUIRED_PYTHON_MODULES[@]},
+        "optional_modules": ${#OPTIONAL_PYTHON_MODULES[@]},
+        "all_available": $(check_python_modules && echo "true" || echo "false")
+    },
+    "postgresql_check": {
+        "connectivity": $(check_postgresql_connectivity &>/dev/null && echo "true" || echo "false")
+    },
+    "permissions_check": {
+        "verified": $(check_file_permissions &>/dev/null && echo "true" || echo "false")
+    },
+    "elder_guild_compliance": {
+        "ready_for_production": false,
+        "requires_attention": true
+    }
+}
+EOF
+    
+    print_success "Dependency report saved: $report_file"
+}
+
+run_full_dependency_check() {
+    print_header
+    
+    local overall_success=true
+    
+    # 1. システムコマンドチェック
+    if ! check_command_availability; then
+        print_status "Attempting to install missing system dependencies..."
+        if ! install_system_dependencies; then
+            overall_success=false
+        fi
+    fi
+    
+    # 2. Pythonモジュールチェック
+    if ! check_python_modules; then
+        print_status "Attempting to install missing Python dependencies..."
+        if ! install_python_dependencies; then
+            overall_success=false
+        fi
+    fi
+    
+    # 3. PostgreSQL接続チェック
+    check_postgresql_connectivity
+    
+    # 4. ファイル権限チェック
+    if ! check_file_permissions; then
+        overall_success=false
+    fi
+    
+    # 5. レポート生成
+    generate_dependency_report
+    
+    # 結果表示
+    echo ""
+    if [[ "$overall_success" == "true" ]]; then
+        print_success "🎉 All dependency checks passed!"
+        print_success "Elder Guild Quality System is ready for operation"
+    else
+        print_error "⚠️ Some dependency issues remain"
+        print_error "Please resolve the above issues before using the quality system"
+        echo ""
+        echo -e "${YELLOW}For help with dependency issues:${NC}"
+        echo "  1. Check the dependency report in data/ directory"
+        echo "  2. Ensure you have sudo privileges for system packages"
+        echo "  3. Check internet connectivity for package downloads"
+        echo "  4. Verify PostgreSQL is installed and running"
+    fi
+    
+    return $([ "$overall_success" == "true" ] && echo 0 || echo 1)
+}
+
+# メイン実行
+main() {
+    # 引数処理
+    case "${1:-full}" in
+        "commands")
+            check_command_availability
+            ;;
+        "python")
+            check_python_modules
+            ;;
+        "install")
+            install_system_dependencies && install_python_dependencies
+            ;;
+        "permissions")
+            check_file_permissions
+            ;;
+        "postgres")
+            check_postgresql_connectivity
+            ;;
+        "full"|*)
+            run_full_dependency_check
+            ;;
+    esac
+}
+
+# スクリプト実行
+main "$@"

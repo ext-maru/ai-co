@@ -8,7 +8,6 @@ TaskWorkerの Before/After 比較
 # BEFORE: 既存のログスタイル
 # ========================================
 
-
 class TaskWorkerOld:
     def process_message(self, ch, method, properties, body):
         """既存のログスタイル（誇張的）"""
@@ -38,7 +37,6 @@ class TaskWorkerOld:
             self.logger.error(f"😱 大変！エラーが発生！💥")
             self.logger.error(f"🔥 {task_id} で問題発生: {str(e)}")
 
-
 # ========================================
 # AFTER: 改善されたログスタイル
 # ========================================
@@ -46,7 +44,6 @@ class TaskWorkerOld:
 from core import BaseWorker
 from core.improved_logging_mixin import ImprovedLoggingMixin
 from elders_guild.elder_tree.improved_slack_notifier import ImprovedSlackNotifier
-
 
 class TaskWorkerNew(BaseWorker, ImprovedLoggingMixin):
     """TaskWorkerNewワーカークラス"""
@@ -123,7 +120,6 @@ class TaskWorkerNew(BaseWorker, ImprovedLoggingMixin):
 
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
-
 # ========================================
 # ログ出力の比較例
 # ========================================
@@ -139,8 +135,6 @@ LOG_COMPARISON = """
 
 ### After:
 2025-07-02 10:00:00 INFO: Task started: code_20250702_100000 (type: code)
-2025-07-02 10:00:00 DEBUG: Metric - code_20250702_100000: queue_delay_ms=123
-
 
 ## 処理中
 
@@ -151,7 +145,6 @@ LOG_COMPARISON = """
 2025-07-02 10:00:01 INFO: Processing: executing code task
 2025-07-02 10:00:03 INFO: Performance: task execution took 2.341s
 
-
 ## タスク完了時
 
 ### Before:
@@ -161,7 +154,6 @@ LOG_COMPARISON = """
 ### After:
 2025-07-02 10:00:03 INFO: Task completed: code_20250702_100000 (duration: 2.34s) - Type: code, Duration: 2.34s, Files: 3
 
-
 ## Slack通知
 
 ### Before:
@@ -170,7 +162,6 @@ LOG_COMPARISON = """
 
 ### After:
 Task completed: code_20250702_100000 | Duration: 2.34s | Worker: task-1 | Files: 3
-
 
 ## エラー時
 
@@ -183,7 +174,6 @@ Task completed: code_20250702_100000 | Duration: 2.34s | Worker: task-1 | Files:
     ConnectionTimeout: Connection timeout (will retry)
 2025-07-02 10:05:00 INFO: [ERROR] task_failure: Task code_20250702_100500 failed: ConnectionTimeout: Connection timeout
 """
-
 
 # 移行チェックリスト
 MIGRATION_CHECKLIST = """

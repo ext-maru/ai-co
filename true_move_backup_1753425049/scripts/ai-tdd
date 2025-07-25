@@ -1,0 +1,271 @@
+#!/bin/bash
+# AI Company - Claude CLIでTDD開発を行うためのヘルパースクリプト
+
+set -e
+
+# カラー定義
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# 使用方法を表示
+usage() {
+    cat << EOF
+AI Company TDD Helper for Claude CLI
+
+使用方法:
+    ai-tdd new <feature_name> <requirements>    新機能をTDDで開発
+    ai-tdd test <file_path>                     既存コードにテストを追加
+    ai-tdd improve <test_file>                  テストを改善
+    ai-tdd coverage <module>                    カバレッジを分析・改善
+    ai-tdd session <topic>                      対話型TDDセッション開始
+
+例:
+    ai-tdd new EmailValidator "メールアドレスの検証機能"
+    ai-tdd test libs/data_processor.py
+    ai-tdd coverage workers
+
+オプション:
+    -v, --verbose    詳細な出力
+    -h, --help       このヘルプを表示
+
+EOF
+}
+
+# 新機能のTDD開発
+new_feature() {
+    local feature_name=$1
+    local requirements=$2
+
+    if [ -z "$feature_name" ] || [ -z "$requirements" ]; then
+        echo -e "${RED}エラー: 機能名と要件を指定してください${NC}"
+        exit 1
+    fi
+
+    echo -e "${BLUE}🎯 TDD: ${feature_name}の開発を開始します${NC}"
+
+    cat << EOF | ai-send --stdin
+以下の機能をTDDで開発してください：
+
+機能名: ${feature_name}
+要件: ${requirements}
+
+重要な指示:
+1. 必ずテストファーストで開発すること
+2. tests/unit/test_${feature_name,,}.py にテストを作成
+3. Red → Green → Refactor のサイクルを守る
+
+手順:
+📝 Step 1 - Red Phase:
+- 失敗するテストを最初に書く
+- テストケース:
+  * 正常系の基本的な動作
+  * 異常系（エラーハンドリング）
+  * 境界値テスト
+  * エッジケース
+
+📝 Step 2 - 実際にテストを実行:
+- pytest tests/unit/test_${feature_name,,}.py -v
+- 失敗することを確認（これが重要！）
+
+📝 Step 3 - Green Phase:
+- 最小限のコードでテストを通す
+- この段階では美しさは求めない
+
+📝 Step 4 - Refactor Phase:
+- コードの品質を向上
+- DRY原則の適用
+- 可読性の改善
+
+必須要件:
+- pytestとpytest-mockを使用
+- カバレッジ90%以上
+- AAAパターン（Arrange-Act-Assert）を使用
+- 各テストメソッドに日本語のdocstring
+
+実装場所:
+- ワーカーの場合: workers/${feature_name,,}_worker.py
+- ライブラリの場合: libs/${feature_name,,}.py
+EOF
+}
+
+# 既存コードへのテスト追加
+add_tests() {
+    local file_path=$1
+
+    if [ -z "$file_path" ]; then
+        echo -e "${RED}エラー: ファイルパスを指定してください${NC}"
+        exit 1
+    fi
+
+    if [ ! -f "$file_path" ]; then
+        echo -e "${RED}エラー: ファイルが存在しません: $file_path${NC}"
+        exit 1
+    fi
+
+    echo -e "${BLUE}📝 ${file_path}のテストを生成します${NC}"
+
+    ai-send "
+${file_path} のテストを作成/改善してください:
+
+1. 現在のコードを詳細に分析
+2. 既存のテストファイルがあれば確認
+3. 以下の観点で網羅的なテストを作成:
+   - すべての公開メソッド/関数
+   - すべてのエラーパス
+   - 境界値と特殊な入力
+   - 外部依存のモック化
+
+4. テスト作成の優先順位:
+   - クリティカルな機能から
+   - 複雑なロジックを含む部分
+   - エラーが起きやすい部分
+
+5. pytest のベストプラクティスに従う:
+   - parametrizeを活用
+   - fixtureで共通setup
+   - 明確なテスト名
+
+目標カバレッジ: 95%以上
+"
+}
+
+# テストの改善
+improve_tests() {
+    local test_file=$1
+
+    if [ -z "$test_file" ]; then
+        echo -e "${RED}エラー: テストファイルを指定してください${NC}"
+        exit 1
+    fi
+
+    echo -e "${BLUE}🔧 ${test_file}を改善します${NC}"
+
+    ai-send "
+${test_file} のテストを分析して改善してください:
+
+1. テストの品質チェック:
+   - 重複したテストの削除
+   - 不足しているアサーションの追加
+   - テスト名の改善（what/when/then形式）
+   - 不要なセットアップの削除
+
+2. カバレッジの向上:
+   - pytest --cov でカバレッジ確認
+   - 未カバーのコードパスを特定
+   - 必要なテストケースを追加
+
+3. パフォーマンス最適化:
+   - 遅いテストの特定と改善
+   - 不要なI/O操作の削除
+   - 適切なモックの使用
+
+4. 可読性の向上:
+   - AAAパターンの徹底
+   - 適切なコメントとdocstring
+   - ヘルパーメソッドの抽出
+"
+}
+
+# カバレッジ分析と改善
+analyze_coverage() {
+    local module=$1
+
+    if [ -z "$module" ]; then
+        echo -e "${YELLOW}モジュールが指定されていません。全体を分析します${NC}"
+        module="."
+    fi
+
+    echo -e "${BLUE}📊 カバレッジを分析します: ${module}${NC}"
+
+    # 現在のカバレッジを測定
+    echo -e "${GREEN}現在のカバレッジを測定中...${NC}"
+    coverage run -m pytest tests/unit/ -v
+    coverage report --include="${module}/*" > /tmp/coverage_report.txt
+
+    ai-send "
+以下のカバレッジレポートを分析して改善提案をしてください:
+
+$(cat /tmp/coverage_report.txt)
+
+改善タスク:
+1. カバレッジが低いファイルを特定（80%未満）
+2. 各ファイルの未カバー部分を分析
+3. 優先順位付けした改善計画:
+   - Critical: コアロジックの未テスト部分
+   - High: エラーハンドリングの未テスト
+   - Medium: エッジケースの未テスト
+   - Low: ユーティリティ関数
+
+4. 具体的なテストケースの提案
+5. 実装の順序とタイムライン
+
+目標: 全体カバレッジ90%以上
+"
+}
+
+# 対話型TDDセッション
+start_session() {
+    local topic=$1
+
+    if [ -z "$topic" ]; then
+        echo -e "${RED}エラー: トピックを指定してください${NC}"
+        exit 1
+    fi
+
+    echo -e "${BLUE}🎯 TDDセッションを開始: ${topic}${NC}"
+    echo -e "${YELLOW}ヒント: 'exit'または'quit'で終了${NC}"
+
+    ai-dialog "
+TDDペアプログラミングセッションを始めましょう。
+
+トピック: ${topic}
+
+私はあなたのTDDパートナーとして以下をサポートします:
+- テストケースの設計支援
+- Red/Green/Refactorサイクルのガイド
+- ベストプラクティスの提案
+- コードレビューとフィードバック
+
+まず、何から始めましょうか？要件を教えてください。
+"
+}
+
+# メイン処理
+main() {
+    case "$1" in
+        new)
+            shift
+            new_feature "$@"
+            ;;
+        test)
+            shift
+            add_tests "$@"
+            ;;
+        improve)
+            shift
+            improve_tests "$@"
+            ;;
+        coverage)
+            shift
+            analyze_coverage "$@"
+            ;;
+        session)
+            shift
+            start_session "$@"
+            ;;
+        -h|--help|help)
+            usage
+            ;;
+        *)
+            echo -e "${RED}不明なコマンド: $1${NC}"
+            usage
+            exit 1
+            ;;
+    esac
+}
+
+# スクリプト実行
+main "$@"

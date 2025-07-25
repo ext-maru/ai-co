@@ -13,7 +13,7 @@ Created: 2025-07-23
 import asyncio
 import json
 import time
-import tempfile
+
 from pathlib import Path
 from typing import Dict, Any, List
 import subprocess
@@ -544,7 +544,6 @@ class TestFourSagesIntegrationSimple:
             "details": self.test_results
         }
 
-
 async def main():
     """メイン実行"""
     tester = TestFourSagesIntegrationSimple()
@@ -553,7 +552,6 @@ async def main():
     # Exit code設定
     exit_code = 0 if results["success_rate"] >= 80 else 1
     return exit_code
-
 
 if __name__ == "__main__":
     exit_code = asyncio.run(main())

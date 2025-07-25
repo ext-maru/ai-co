@@ -1,0 +1,35 @@
+# 🤖 エルダーズギルド自動品質進化システム設定
+
+auto_evolution:
+  enabled: true
+  monitoring_interval: 3600  # 1時間 (秒)
+  upgrade_time: "02:00"     # 深夜2時
+
+stability_requirements:
+  minimum_days: 7           # 最低安定期間
+  max_error_rate: 0.05      # 最大エラー率 (5%)
+  max_complaints: 0         # 最大苦情数
+
+notifications:
+  slack_webhook: "${SLACK_WEBHOOK_URL}"
+  email_enabled: true
+  daily_progress: true
+  achievement_alerts: true
+
+phases:
+  phase_1:
+    stability_threshold: 0.95
+    required_metrics: ["commit_success_rate", "precommit_time"]
+
+  phase_2:
+    stability_threshold: 0.98
+    required_metrics: ["format_compliance", "import_order"]
+
+  phase_3:
+    stability_threshold: 0.99
+    required_metrics: ["code_quality", "test_coverage"]
+
+rollback:
+  auto_rollback: true
+  threshold_error_rate: 0.1  # 10%エラー率でロールバック
+  monitoring_hours: 72       # 72時間監視

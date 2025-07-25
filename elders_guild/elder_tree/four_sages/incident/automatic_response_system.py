@@ -30,7 +30,6 @@ from elders_guild.elder_tree.four_sages.incident.incident_sage import (
 
 logger = logging.getLogger("automatic_response_system")
 
-
 class ResponseStatus(Enum):
     """対応ステータス"""
 
@@ -40,7 +39,6 @@ class ResponseStatus(Enum):
     FAILED = "failed"
     PARTIAL = "partial"
     SKIPPED = "skipped"
-
 
 @dataclass
 class ResponseRule:
@@ -57,7 +55,6 @@ class ResponseRule:
     enabled: bool = True
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-
 @dataclass
 class ResponseExecution:
     """対応実行記録"""
@@ -72,7 +69,6 @@ class ResponseExecution:
     error_messages: List[str] = field(default_factory=list)
     rollback_performed: bool = False
     effectiveness_score: float = 0.0
-
 
 class AutomaticResponseSystem(EldersServiceLegacy):
     """自動対応システム"""
@@ -413,21 +409,19 @@ class AutomaticResponseSystem(EldersServiceLegacy):
         self, action_func: Callable, incident: IncidentEntry, max_retries: int
     ) -> Dict[str, Any]:
         """リトライ付きアクション実行"""
-        for attempt in range(max_retries):
+
             try:
                 result = await action_func(incident)
                 if result["success"]:
                     return result
 
-                if attempt < max_retries - 1:
                     logger.info(
-                        f"🔄 Retrying action (attempt {attempt + 2}/{max_retries})"
+
                     )
-                    await asyncio.sleep(2**attempt)  # 指数バックオフ
 
             except Exception as e:
                 logger.error(f"❌ Action execution error: {e}")
-                if attempt == max_retries - 1:
+
                     return {"success": False, "error": str(e)}
 
         return {"success": False, "error": "Max retries exceeded"}
@@ -907,7 +901,6 @@ class AutomaticResponseSystem(EldersServiceLegacy):
             "backup_restoration",
             "effectiveness_measurement",
         ]
-
 
 # エクスポート
 __all__ = [

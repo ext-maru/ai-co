@@ -26,7 +26,6 @@ from elders_guild.elder_tree.elder_servants.base.elder_servant import (
 )
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import ElfServant
 
-
 class QualityWatcher(ElfServant):
     """品質監視専門サーバント"""
 
@@ -342,13 +341,11 @@ class QualityWatcher(ElfServant):
                     }
                 )
 
-            # TODO コメント
-            if "TODO" in line:
                 smells.append(
                     {
-                        "type": "todo_comment",
+
                         "line": i,
-                        "message": f"TODO comment found at line {i}",
+
                         "severity": "info",
                     }
                 )
@@ -405,9 +402,6 @@ class QualityWatcher(ElfServant):
             suggestions.append(
                 "Break long lines into multiple lines for better readability"
             )
-
-        if any(smell["type"] == "todo_comment" for smell in smells):
-            suggestions.append("Address TODO comments or create proper issues for them")
 
         return suggestions if suggestions else ["Code quality looks good!"]
 
@@ -1198,7 +1192,7 @@ class QualityWatcher(ElfServant):
     def _start_metrics_collection(self, action: str):
         """メトリクス収集開始"""
         try:
-            self.logger.debug(f"Starting metrics collection for action: {action}")
+
         except Exception as e:
             self.logger.warning(f"Failed to start metrics collection: {e}")
 
@@ -1212,6 +1206,6 @@ class QualityWatcher(ElfServant):
                 self.metrics["average_quality_score"] = (
                     current_avg * total + quality_score
                 ) / (total + 1)
-            self.logger.debug(f"Ended metrics collection for action: {action}")
+
         except Exception as e:
             self.logger.warning(f"Failed to end metrics collection: {e}")

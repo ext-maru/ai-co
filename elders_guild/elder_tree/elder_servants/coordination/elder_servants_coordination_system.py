@@ -41,7 +41,6 @@ from elders_guild.elder_tree.test_guardian_knight import TestGuardianKnight
 
 logger = logging.getLogger(__name__)
 
-
 @dataclass
 class ServantTask:
     """サーバントタスク"""
@@ -55,7 +54,6 @@ class ServantTask:
     created_at: datetime
     completed_at: Optional[datetime] = None
     result: Optional[Dict[str, Any]] = None
-
 
 @dataclass
 class CoordinationReport:
@@ -72,7 +70,6 @@ class CoordinationReport:
     issues_found: int
     auto_fixes_applied: int
     council_reported: bool
-
 
 class ElderServantsCoordinationSystem:
     """エルダーサーバント協調システム"""
@@ -281,8 +278,6 @@ class ElderServantsCoordinationSystem:
                 f.write(coordinated_version)
 
             # 元ファイルを非推奨として印をつける
-            deprecated_file = legacy_file.with_suffix(".deprecated.py")
-            legacy_file.rename(deprecated_file)
 
             self.stats["hierarchy_violations_prevented"] += 1
             self.logger.info("✅ Legacy work converted to coordinated system")
@@ -480,7 +475,6 @@ class CoordinatedCoverageEnhancement:
             "elder_approval_rate": "100%",
         }
 
-
 async def main():
     """メイン関数 - 協調システムのデモ実行"""
     coordination_system = ElderServantsCoordinationSystem()
@@ -509,7 +503,6 @@ async def main():
 
     else:
         print("❌ Elder approval denied")
-
 
 async def run_coordination_demo():
     """協調システムのデモ実行"""
@@ -541,7 +534,6 @@ async def run_coordination_demo():
     else:
         print("❌ Elder approval denied")
         return False
-
 
 if __name__ == "__main__":
     # Run demo without asyncio complications - simulate the coordination

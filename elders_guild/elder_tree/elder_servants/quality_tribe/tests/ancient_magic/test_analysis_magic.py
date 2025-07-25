@@ -14,7 +14,7 @@ import pytest
 import asyncio
 import time
 import json
-import tempfile
+
 import os
 import gc
 from typing import Dict, Any, List, Optional, Union
@@ -33,7 +33,6 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from ancient_magic.analysis_magic.analysis_magic import AnalysisMagic
-
 
 class TestAnalysisMagic:
     """Analysis Magic テストクラス"""
@@ -742,7 +741,6 @@ class TestAnalysisMagic:
         assert 0 <= health_status["success_rate"] <= 1
         assert health_status["average_response_time"] >= 0
 
-
 # テスト実行用のメイン関数
 async def main():
     """テスト実行のメイン関数"""
@@ -764,7 +762,6 @@ async def main():
         print(result.stderr)
     
     return result.returncode == 0
-
 
 if __name__ == "__main__":
     asyncio.run(main())

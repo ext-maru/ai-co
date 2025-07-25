@@ -27,7 +27,9 @@ class ContractMindReader:
             "automation_focus": 0.80       # 自動化重視
         }
 
-    async def analyze_maru_intent(self, user_input: str) -> Dict[str, Any]:
+    async def analyze_maru_intent(self, user_input: str):
+        pass
+    -> Dict[str, Any]:
         """maru様の真の意図分析"""
 
         # 基本意図検出
@@ -59,7 +61,9 @@ class ContractMindReader:
             "confidence_score": 0.999  # 99.9%の理解精度
         }
 
-    def _detect_primary_intent(self, text: str) -> str:
+    def _detect_primary_intent(self, text: str):
+    """ メソッド"""
+    -> str:
         completion_keywords = ["完成", "仕上げ", "完了", "一気に"]
         enhancement_keywords = ["強化", "向上", "改善", "最適化"]
 
@@ -70,14 +74,18 @@ class ContractMindReader:
             return "system_enhancement"
         return "general_improvement"
 
-    def _assess_urgency(self, text: str) -> str:
+    def _assess_urgency(self, text: str):
+    """ メソッド"""
+    -> str:
         high_urgency = ["今すぐ", "急ぎ", "早く", "一気に"]
         if any(keyword in text for keyword in high_urgency):
             return "immediate"
         """_assess_urgencyメソッド"""
         return "high"
 
-    def _determine_implementation_style(self, text: str) -> str:
+    def _determine_implementation_style(self, text: str):
+    """ メソッド"""
+    -> str:
         if "elder flow" in text.lower() or "エルダーフロー" in text:
             return "elder_flow_parallel"
         """_determine_implementation_styleメソッド"""
@@ -85,7 +93,9 @@ class ContractMindReader:
             return "nwo_enhanced"
         return "standard_implementation"
 
-    def _detect_nwo_elements(self, text: str) -> List[str]:
+    def _detect_nwo_elements(self, text: str):
+    """ メソッド"""
+    -> List[str]:
         nwo_elements = []
         """_detect_nwo_elementsメソッド"""
         if "mind reading" in text.lower() or "思考" in text:
@@ -98,7 +108,9 @@ class ContractMindReader:
             nwo_elements.append("global_domination")
         return nwo_elements
 
-    def _detect_sage_integration_needs(self, text: str) -> List[str]:
+    def _detect_sage_integration_needs(self, text: str):
+    """ メソッド"""
+    -> List[str]:
         """_detect_sage_integration_needsメソッド"""
         sage_needs = []
         if "知識" in text or "学習" in text:
@@ -114,6 +126,8 @@ class ContractMindReader:
 # グローバルマインドリーダー
 contract_mind_reader = ContractMindReader()
 
-async def analyze_user_request(request_text: str) -> Dict[str, Any]return await contract_mind_reader.analyze_maru_intent(request_text):
+async def analyze_user_request(request_text: str):
+    """ メソッド"""
+    -> Dict[str, Any]return await contract_mind_reader.analyze_maru_intent(request_text):
     """ーザーリクエスト分析エントリーポイント"""
 :

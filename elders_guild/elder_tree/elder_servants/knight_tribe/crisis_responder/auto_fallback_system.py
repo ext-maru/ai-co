@@ -30,7 +30,6 @@ from ..coordination.four_organizations_coordinator import (
 from ..load_balancing.load_balancer import LoadBalancer, get_load_balancer
 from ..registry.servant_registry import ServantRegistry, get_registry
 
-
 class FailureType(Enum):
     """失敗タイプ"""
 
@@ -44,7 +43,6 @@ class FailureType(Enum):
     QUALITY_GATE_FAILURE = "quality_gate_failure"  # 品質ゲート失敗
     DEPENDENCY_FAILURE = "dependency_failure"  # 依存関係失敗
 
-
 class FallbackStrategy(Enum):
     """フォールバック戦略"""
 
@@ -57,7 +55,6 @@ class FallbackStrategy(Enum):
     ROLLBACK = "rollback"  # ロールバック
     ESCALATION = "escalation"  # エスカレーション
 
-
 class RecoveryAction(Enum):
     """復旧アクション"""
 
@@ -67,7 +64,6 @@ class RecoveryAction(Enum):
     SKIP_NON_CRITICAL = "skip_non_critical"  # 非重要処理スキップ
     NOTIFY_ADMIN = "notify_admin"  # 管理者通知
     EMERGENCY_STOP = "emergency_stop"  # 緊急停止
-
 
 @dataclass
 class FailureContext:
@@ -80,8 +76,6 @@ class FailureContext:
     error_details: Dict[str, Any]
     timestamp: datetime
     retry_count: int = 0
-    previous_attempts: List[Dict[str, Any]] = field(default_factory=list)
-
 
 @dataclass
 class FallbackPlan:
@@ -96,7 +90,6 @@ class FallbackPlan:
     success_probability: float
     created_at: datetime = field(default_factory=datetime.now)
 
-
 @dataclass
 class FallbackResult:
     """フォールバック結果"""
@@ -109,7 +102,6 @@ class FallbackResult:
     alternative_used: Optional[str]
     lessons_learned: List[str]
     completed_at: datetime = field(default_factory=datetime.now)
-
 
 class AutoFallbackSystem:
     """
@@ -137,7 +129,7 @@ class AutoFallbackSystem:
 
         # フォールバック設定
         self.fallback_config = {
-            "max_retry_attempts": 3,
+
             "retry_delays": [1.0, 2.0, 5.0],  # 指数バックオフ
             "circuit_breaker_threshold": 5,
             "circuit_breaker_timeout": 60.0,
@@ -246,7 +238,7 @@ class AutoFallbackSystem:
         retry_count = failure_context.retry_count
 
         # 失敗タイプとリトライ回数に基づく戦略選択
-        if retry_count < self.fallback_config["max_retry_attempts"]:
+
             if failure_type in [FailureType.SERVANT_TIMEOUT, FailureType.NETWORK_ERROR]:
                 return FallbackStrategy.RETRY
             elif failure_type == FailureType.SERVANT_UNAVAILABLE:
@@ -559,7 +551,7 @@ class AutoFallbackSystem:
         ]
 
         self.logger.info(
-            f"Retrying after {retry_delay}s delay (attempt {failure_context.retry_count + 1})"
+
         )
 
         # 指数バックオフ待機
@@ -703,7 +695,7 @@ class AutoFallbackSystem:
             # Process each item in collection
             try:
                 self.logger.info(
-                    f"Attempting graceful degradation with quality level {quality_level}"
+
                 )
 
                 # 品質要求を下げた実行
@@ -1100,7 +1092,6 @@ class AutoFallbackSystem:
             ],
         }
 
-
 class PerformanceMonitor:
     """パフォーマンス監視"""
 
@@ -1114,10 +1105,8 @@ class PerformanceMonitor:
         if len(self.metrics[metric_name]) > 1000:
             self.metrics[metric_name] = self.metrics[metric_name][-800:]
 
-
 # グローバルフォールバックシステムインスタンス
 _global_fallback_system = None
-
 
 def get_auto_fallback_system() -> AutoFallbackSystem:
     """グローバル自動フォールバックシステムを取得"""
@@ -1125,7 +1114,6 @@ def get_auto_fallback_system() -> AutoFallbackSystem:
     if _global_fallback_system is None:
         _global_fallback_system = AutoFallbackSystem()
     return _global_fallback_system
-
 
 # 便利な失敗検知デコレータ
 def with_auto_fallback(failure_type: FailureType = FailureType.SERVANT_ERROR):

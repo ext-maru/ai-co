@@ -1,0 +1,40 @@
+[Unit]
+Description=AI Company System (Workers + Web)
+After=network.target rabbitmq-server.service
+Wants=network.target
+Requires=rabbitmq-server.service
+
+[Service]
+Type=forking
+User=aicompany
+Group=aicompany
+WorkingDirectory=/home/aicompany/ai_co
+Environment=PYTHONPATH=/home/aicompany/ai_co
+Environment=AI_VENV_ACTIVE=1
+
+# システム起動（ワーカー + Web）
+ExecStart=/home/aicompany/ai_co/bin/ai-start --web
+ExecStop=/home/aicompany/ai_co/bin/ai-stop
+ExecReload=/bin/bash -c '/home/aicompany/ai_co/bin/ai-restart --web'
+
+# プロセス管理
+PIDFile=/home/aicompany/ai_co/run/aicompany.pid
+Restart=always
+RestartSec=15
+TimeoutStartSec=60
+TimeoutStopSec=30
+
+# ログ設定
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aicompany
+
+# セキュリティ設定
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/home/aicompany/ai_co
+ReadWritePaths=/tmp
+
+[Install]
+WantedBy=multi-user.target

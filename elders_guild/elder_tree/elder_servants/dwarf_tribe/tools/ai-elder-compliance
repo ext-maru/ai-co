@@ -1,0 +1,12 @@
+#!/bin/bash
+# AI Elder Compliance Management Script
+# Wrapper for Elder Servant coordination protocol enforcement
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Set Python path
+export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
+
+# Execute the compliance manager
+python3 "$PROJECT_ROOT/commands/ai_elder_compliance.py" "$@"

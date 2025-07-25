@@ -1,0 +1,9 @@
+#!/bin/bash
+# Validate files against Elder Guild enhanced quality standards
+if [[ $# -eq 0 ]]; then
+    echo "Usage: validate-quality-standards <file_or_directory>"
+    exit 1
+fi
+
+echo "🏛️ Elder Guild Quality Standards Validation..."
+python3 libs/enhanced_quality_standards.py "$1"

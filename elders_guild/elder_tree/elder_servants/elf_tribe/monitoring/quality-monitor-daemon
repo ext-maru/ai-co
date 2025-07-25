@@ -1,0 +1,533 @@
+#!/usr/bin/env python3
+"""
+📊 Elder Guild Quality Monitor Daemon
+エルダーズギルド品質監視デーモン
+
+Features:
+- 継続的コード品質監視
+- 日次品質レポート生成  
+- 品質トレンド分析
+- nWo評議会への自動報告
+- 4賢者連携アラートシステム
+"""
+
+import asyncio
+import logging
+import json
+import sys
+import signal
+import os
+from pathlib import Path
+from typing import Dict, List, Any
+from datetime import datetime, timedelta
+from dataclasses import dataclass, asdict
+import time
+
+# Add project root to path
+sys.path.insert(0, '/home/aicompany/ai_co')
+
+from libs.elders_code_quality_engine import EldersCodeQualityEngine
+from libs.four_sages_quality_bridge import get_four_sages_quality_orchestrator
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/home/aicompany/ai_co/logs/quality_monitor.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+@dataclass
+class QualityMetrics:
+    """品質メトリクス"""
+    timestamp: datetime
+    total_files: int
+    analyzed_files: int
+    average_quality_score: float
+    iron_will_compliance_rate: float
+    tdd_compatibility_rate: float
+    security_issues_count: int
+    critical_incidents: int
+    improvement_tasks_pending: int
+    quality_trend: str  # improving, stable, declining
+
+@dataclass
+class QualityAlert:
+    """品質アラート"""
+    alert_id: str
+    severity: str  # critical, warning, info
+    message: str
+    affected_files: List[str]
+    recommended_actions: List[str]
+    timestamp: datetime
+    auto_escalated: bool
+
+class QualityTrendAnalyzer:
+    """品質トレンド分析器"""
+    
+    def __init__(self):
+        self.history_file = "/home/aicompany/ai_co/data/quality_metrics_history.json"
+        self.metrics_history = []
+        self.load_history()
+        
+    def load_history(self):
+        """履歴読み込み"""
+        try:
+            if os.path.exists(self.history_file):
+                with open(self.history_file, 'r') as f:
+                    data = json.load(f)
+                    self.metrics_history = [
+                        QualityMetrics(**item) for item in data
+                    ]
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to load metrics history: {e}")
+            self.metrics_history = []
+            
+    def save_history(self):
+        """履歴保存"""
+        try:
+            os.makedirs(os.path.dirname(self.history_file), exist_ok=True)
+            with open(self.history_file, 'w') as f:
+                json.dump([
+                    asdict(metric) for metric in self.metrics_history
+                ], f, indent=2, default=str)
+        except Exception as e:
+            logger.error(f"❌ Failed to save metrics history: {e}")
+            
+    def add_metrics(self, metrics: QualityMetrics):
+        """メトリクス追加"""
+        self.metrics_history.append(metrics)
+        
+        # 最大100件まで保持
+        if len(self.metrics_history) > 100:
+            self.metrics_history = self.metrics_history[-100:]
+            
+        self.save_history()
+        
+    def analyze_trend(self, window_days: int = 7) -> str:
+        """トレンド分析"""
+        if len(self.metrics_history) < 2:
+            return "insufficient_data"
+            
+        # 指定期間のメトリクス取得
+        cutoff_date = datetime.now() - timedelta(days=window_days)
+        recent_metrics = [
+            m for m in self.metrics_history 
+            if m.timestamp >= cutoff_date
+        ]
+        
+        if len(recent_metrics) < 2:
+            return "insufficient_data"
+            
+        # 品質スコアの変化を分析
+        scores = [m.average_quality_score for m in recent_metrics]
+        
+        # 線形回帰で傾向判定
+        x_values = list(range(len(scores)))
+        if len(x_values) > 1:
+            # 簡単な傾き計算
+            n = len(scores)
+            sum_x = sum(x_values)
+            sum_y = sum(scores)
+            sum_xy = sum(x * y for x, y in zip(x_values, scores))
+            sum_x2 = sum(x * x for x in x_values)
+            
+            slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x)
+            
+            if slope > 1.0:
+                return "improving"
+            elif slope < -1.0:
+                return "declining"
+            else:
+                return "stable"
+        
+        return "stable"
+        
+    def get_quality_insights(self) -> Dict:
+        """品質インサイト取得"""
+        if not self.metrics_history:
+            return {'insights': [], 'recommendations': []}
+            
+        latest = self.metrics_history[-1]
+        insights = []
+        recommendations = []
+        
+        # 品質スコア分析
+        if latest.average_quality_score < 60:
+            insights.append("Critical: Average quality score is below acceptable threshold")
+            recommendations.append("Immediate code review and refactoring required")
+        elif latest.average_quality_score < 75:
+            insights.append("Warning: Quality score needs improvement")
+            recommendations.append("Schedule quality improvement sprint")
+            
+        # Iron Will遵守率分析
+        if latest.iron_will_compliance_rate < 0.9:
+            insights.append("Iron Will compliance rate is concerning")
+            recommendations.append("Review and remove all workaround code")
+            
+        # セキュリティ問題分析
+        if latest.security_issues_count > 0:
+            insights.append(f"Security issues detected: {latest.security_issues_count}")
+            recommendations.append("Priority security review required")
+            
+        return {
+            'insights': insights,
+            'recommendations': recommendations,
+            'trend': self.analyze_trend()
+        }
+
+class QualityMonitorDaemon:
+    """品質監視デーモン"""
+    
+    def __init__(self):
+        self.running = False
+        self.quality_engine = None
+        self.four_sages = None
+        self.trend_analyzer = QualityTrendAnalyzer()
+        self.alerts = []
+        
+        # 設定
+        self.scan_interval = 3600  # 1 hour
+        self.project_paths = [
+            "/home/aicompany/ai_co/libs",
+            "/home/aicompany/ai_co/scripts"
+        ]
+        self.quality_thresholds = {
+            'minimum_score': 70.0,
+            'iron_will_rate': 0.95,
+            'security_issues': 0,
+            'critical_incidents': 3
+        }
+        
+    async def initialize(self):
+        """初期化"""
+        # 品質エンジン初期化
+        db_params = {
+            'host': 'localhost',
+            'database': 'elders_guild_pgvector',
+            'user': 'postgres',
+            'password': ''
+        }
+        
+        self.quality_engine = EldersCodeQualityEngine(db_params)
+        await self.quality_engine.initialize()
+        
+        # 4賢者システム初期化
+        self.four_sages = await get_four_sages_quality_orchestrator()
+        
+        logger.info("📊 Quality Monitor Daemon initialized")
+        
+    async def shutdown(self):
+        """終了処理"""
+        self.running = False
+        
+        if self.quality_engine:
+            await self.quality_engine.shutdown()
+            
+        logger.info("🔒 Quality Monitor Daemon shutdown")
+        
+    def find_python_files(self) -> List[str]:
+        """Pythonファイル検索"""
+        python_files = []
+        
+        for base_path in self.project_paths:
+            path = Path(base_path)
+            if path.exists():
+                for py_file in path.rglob('*.py'):
+                    # キャッシュファイルやテストファイルをスキップ
+                    if '__pycache__' not in str(py_file) and not py_file.name.startswith('test_'):
+                        python_files.append(str(py_file))
+                        
+        return python_files[:50]  # 最大50ファイル
+        
+    async def scan_project_quality(self) -> QualityMetrics:
+        """プロジェクト品質スキャン"""
+        logger.info("🔍 Starting project quality scan...")
+        
+        python_files = self.find_python_files()
+        
+        if not python_files:
+            logger.warning("⚠️ No Python files found for scanning")
+            return QualityMetrics(
+                timestamp=datetime.now(),
+                total_files=0,
+                analyzed_files=0,
+                average_quality_score=0.0,
+                iron_will_compliance_rate=0.0,
+                tdd_compatibility_rate=0.0,
+                security_issues_count=0,
+                critical_incidents=0,
+                improvement_tasks_pending=0,
+                quality_trend="unknown"
+            )
+            
+        # 品質分析実行
+        total_quality_score = 0.0
+        iron_will_compliant = 0
+        tdd_compatible = 0
+        security_issues = 0
+        analyzed_count = 0
+        
+        for file_path in python_files:
+            try:
+                result = await self.quality_engine.analyze_file(file_path)
+                
+                if 'error' not in result:
+                    analysis = result.get('analysis', {})
+                    
+                    total_quality_score += analysis.get('quality_score', 0)
+                    
+                    if analysis.get('iron_will_compliance', False):
+                        iron_will_compliant += 1
+                        
+                    if analysis.get('tdd_compatibility', False):
+                        tdd_compatible += 1
+                        
+                    # セキュリティ問題カウント
+                    bug_risks = analysis.get('bug_risks', [])
+                    security_issues += len([risk for risk in bug_risks if risk.get('risk_level', 0) > 7])
+                    
+                    analyzed_count += 1
+                    
+            except Exception as e:
+                logger.warning(f"⚠️ Failed to analyze {file_path}: {e}")
+                
+        # メトリクス計算
+        avg_quality = total_quality_score / analyzed_count if analyzed_count > 0 else 0.0
+        iron_will_rate = iron_will_compliant / analyzed_count if analyzed_count > 0 else 0.0
+        tdd_rate = tdd_compatible / analyzed_count if analyzed_count > 0 else 0.0
+        
+        # トレンド分析
+        trend = self.trend_analyzer.analyze_trend()
+        
+        metrics = QualityMetrics(
+            timestamp=datetime.now(),
+            total_files=len(python_files),
+            analyzed_files=analyzed_count,
+            average_quality_score=avg_quality,
+            iron_will_compliance_rate=iron_will_rate,
+            tdd_compatibility_rate=tdd_rate,
+            security_issues_count=security_issues,
+            critical_incidents=0,  # Will be updated by incident sage
+            improvement_tasks_pending=0,  # Will be updated by task sage
+            quality_trend=trend
+        )
+        
+        logger.info(f"✅ Quality scan completed: {analyzed_count} files, avg score: {avg_quality:.1f}")
+        return metrics
+        
+    async def check_quality_thresholds(self, metrics: QualityMetrics) -> List[QualityAlert]:
+        """品質閾値チェック"""
+        alerts = []
+        
+        # 品質スコアアラート
+        if metrics.average_quality_score < self.quality_thresholds['minimum_score']:
+            alerts.append(QualityAlert(
+                alert_id=f"QA_{datetime.now().strftime('%Y%m%d_%H%M%S')}_SCORE",
+                severity='critical' if metrics.average_quality_score < 50 else 'warning',
+                message=f"Average quality score ({metrics.average_quality_score:.1f}) below threshold ({self.quality_thresholds['minimum_score']})",
+                affected_files=[],
+                recommended_actions=[
+                    "Review code quality standards",
+                    "Schedule refactoring sprint",
+                    "Increase code review rigor"
+                ],
+                timestamp=datetime.now(),
+                auto_escalated=metrics.average_quality_score < 50
+            ))
+            
+        # Iron Will遵守率アラート
+        if metrics.iron_will_compliance_rate < self.quality_thresholds['iron_will_rate']:
+            alerts.append(QualityAlert(
+                alert_id=f"QA_{datetime.now().strftime('%Y%m%d_%H%M%S')}_IRON_WILL",
+                severity='critical',
+                message=f"Iron Will compliance rate ({metrics.iron_will_compliance_rate:.1%}) below threshold",
+                affected_files=[],
+                recommended_actions=[
+                    "Remove all TODO/FIXME comments",
+                    "Complete temporary implementations",
+                    "Enforce Iron Will policy"
+                ],
+                timestamp=datetime.now(),
+                auto_escalated=True
+            ))
+            
+        # セキュリティ問題アラート
+        if metrics.security_issues_count > self.quality_thresholds['security_issues']:
+            alerts.append(QualityAlert(
+                alert_id=f"QA_{datetime.now().strftime('%Y%m%d_%H%M%S')}_SECURITY",
+                severity='critical',
+                message=f"Security issues detected: {metrics.security_issues_count}",
+                affected_files=[],
+                recommended_actions=[
+                    "Immediate security review",
+                    "Fix high-risk vulnerabilities",
+                    "Update security guidelines"
+                ],
+                timestamp=datetime.now(),
+                auto_escalated=True
+            ))
+            
+        return alerts
+        
+    async def generate_daily_report(self, metrics: QualityMetrics, alerts: List[QualityAlert]):
+        """日次レポート生成"""
+        report = {
+            'date': datetime.now().isoformat(),
+            'metrics': asdict(metrics),
+            'alerts': [asdict(alert) for alert in alerts],
+            'insights': self.trend_analyzer.get_quality_insights(),
+            'summary': {
+                'overall_status': self._determine_overall_status(metrics, alerts),
+                'priority_actions': self._generate_priority_actions(metrics, alerts),
+                'trend_analysis': metrics.quality_trend
+            }
+        }
+        
+        # レポート保存
+        report_file = f"/home/aicompany/ai_co/daily_reports/quality_report_{datetime.now().strftime('%Y%m%d')}.json"
+        os.makedirs(os.path.dirname(report_file), exist_ok=True)
+        
+        with open(report_file, 'w') as f:
+            json.dump(report, f, indent=2, default=str)
+            
+        logger.info(f"📄 Daily quality report saved: {report_file}")
+        
+        # nWo評議会報告（重要なアラートがある場合）
+        critical_alerts = [alert for alert in alerts if alert.severity == 'critical']
+        if critical_alerts:
+            await self._report_to_nwo_council(report)
+            
+    def _determine_overall_status(self, metrics: QualityMetrics, alerts: List[QualityAlert]) -> str:
+        """全体ステータス判定"""
+        critical_alerts = [alert for alert in alerts if alert.severity == 'critical']
+        
+        if critical_alerts:
+            return 'critical'
+        elif metrics.average_quality_score < 60:
+            return 'warning'
+        elif metrics.quality_trend == 'declining':
+            return 'caution'
+        else:
+            return 'healthy'
+            
+    def _generate_priority_actions(self, metrics: QualityMetrics, alerts: List[QualityAlert]) -> List[str]:
+        """優先アクション生成"""
+        actions = []
+        
+        # アラートベースのアクション
+        for alert in alerts:
+            if alert.severity == 'critical':
+                actions.extend(alert.recommended_actions)
+                
+        # メトリクスベースのアクション
+        if metrics.average_quality_score < 70:
+            actions.append("Schedule immediate code quality improvement")
+            
+        if metrics.iron_will_compliance_rate < 0.9:
+            actions.append("Enforce Iron Will compliance")
+            
+        if metrics.tdd_compatibility_rate < 0.5:
+            actions.append("Increase test coverage and TDD adoption")
+            
+        return list(set(actions))  # 重複削除
+        
+    async def _report_to_nwo_council(self, report: Dict):
+        """nWo評議会報告"""
+        try:
+            # nWo評議会レポートファイル作成
+            nwo_report_file = f"/home/aicompany/ai_co/data/nwo_quality_alerts_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            
+            nwo_report = {
+                'alert_type': 'quality_concern',
+                'priority': 'high',
+                'summary': report['summary'],
+                'critical_alerts': [
+                    alert for alert in report['alerts'] 
+                    if alert['severity'] == 'critical'
+                ],
+                'recommended_council_actions': [
+                    "Review quality standards enforcement",
+                    "Consider emergency quality improvement sprint",
+                    "Evaluate development process adherence"
+                ]
+            }
+            
+            with open(nwo_report_file, 'w') as f:
+                json.dump(nwo_report, f, indent=2, default=str)
+                
+            logger.warning(f"🏛️ Critical quality issues reported to nWo Council: {nwo_report_file}")
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to report to nWo Council: {e}")
+            
+    async def monitoring_loop(self):
+        """監視ループ"""
+        logger.info("🔄 Quality monitoring loop started")
+        
+        while self.running:
+            try:
+                # 品質スキャン実行
+                metrics = await self.scan_project_quality()
+                
+                # トレンド分析に追加
+                self.trend_analyzer.add_metrics(metrics)
+                
+                # 閾値チェック
+                alerts = await self.check_quality_thresholds(metrics)
+                
+                # アラート保存
+                self.alerts.extend(alerts)
+                
+                # 重要なアラートはログに記録
+                for alert in alerts:
+                    if alert.severity == 'critical':
+                        logger.critical(f"🚨 Critical quality alert: {alert.message}")
+                    elif alert.severity == 'warning':
+                        logger.warning(f"⚠️ Quality warning: {alert.message}")
+                        
+                # 日次レポート生成（1日1回）
+                current_hour = datetime.now().hour
+                if current_hour == 9:  # 朝9時に実行
+                    await self.generate_daily_report(metrics, alerts)
+                    
+                # 次回実行まで待機
+                await asyncio.sleep(self.scan_interval)
+                
+            except Exception as e:
+                logger.error(f"❌ Monitoring loop error: {e}")
+                await asyncio.sleep(60)  # エラー時は1分後にリトライ
+                
+    async def start(self):
+        """デーモン開始"""
+        await self.initialize()
+        self.running = True
+        
+        # シグナルハンドラ設定
+        def signal_handler(signum, frame):
+            logger.info(f"🛑 Received signal {signum}, shutting down...")
+            self.running = False
+            
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+        
+        logger.info("🚀 Quality Monitor Daemon started")
+        await self.monitoring_loop()
+        await self.shutdown()
+
+async def main():
+    """メイン実行"""
+    daemon = QualityMonitorDaemon()
+    await daemon.start()
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("🛑 Quality monitoring interrupted")
+    except Exception as e:
+        logger.error(f"❌ Quality monitoring failed: {e}")
+        sys.exit(1)

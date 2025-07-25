@@ -26,7 +26,6 @@ from elders_guild.elder_tree.tracking.unified_tracking_db import UnifiedTracking
 
 logger = get_logger("search_quality_enhancer")
 
-
 @dataclass
 class QueryExpansion:
     """クエリ拡張データ"""
@@ -36,7 +35,6 @@ class QueryExpansion:
     synonyms: List[str] = field(default_factory=list)
     related_concepts: List[str] = field(default_factory=list)
     expansion_score: float = 0.0
-
 
 @dataclass
 class RelevanceScore:
@@ -48,7 +46,6 @@ class RelevanceScore:
     boost_factors: Dict[str, float] = field(default_factory=dict)
     feedback_weight: float = 0.0
 
-
 @dataclass
 class SearchQualityMetrics:
     """検索品質メトリクス"""
@@ -59,7 +56,6 @@ class SearchQualityMetrics:
     click_through_rate: float = 0.0
     dwell_time: float = 0.0
     feedback_score: float = 0.0
-
 
 class SearchQualityEnhancer(EldersServiceLegacy):
     """検索品質向上システム"""
@@ -383,7 +379,7 @@ class SearchQualityEnhancer(EldersServiceLegacy):
         # 基本的なシノニム辞書
         return {
             "implement": ["develop", "create", "build", "code"],
-            "error": ["bug", "issue", "problem", "fault"],
+
             "optimize": ["improve", "enhance", "refine", "upgrade"],
             "analyze": ["examine", "study", "review", "investigate"],
             "design": ["architect", "plan", "structure", "blueprint"],
@@ -469,12 +465,10 @@ class SearchQualityEnhancer(EldersServiceLegacy):
             "performance_analysis",
         ]
 
-
 # エクスポート用のファクトリ関数
 def create_search_quality_enhancer() -> SearchQualityEnhancer:
     """Search Quality Enhancer作成"""
     return SearchQualityEnhancer()
-
 
 if __name__ == "__main__":
     # テスト実行

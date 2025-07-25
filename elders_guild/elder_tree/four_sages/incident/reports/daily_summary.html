@@ -1,0 +1,56 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section">
+    <h2>概要</h2>
+    <div class="metric">
+        <h3>システムヘルススコア: {{ health_score }}%</h3>
+        <p>前日比: {% if health_change > 0 %}+{% endif %}{{ health_change }}%</p>
+    </div>
+</div>
+
+<div class="section">
+    <h2>4賢者パフォーマンス</h2>
+    <table>
+        <tr>
+            <th>賢者</th>
+            <th>応答時間 (ms)</th>
+            <th>精度 (%)</th>
+            <th>可用性 (%)</th>
+        </tr>
+        {% for sage in sages %}
+        <tr>
+            <td>{{ sage.name }}</td>
+            <td>{{ sage.response_time }}</td>
+            <td>{{ sage.accuracy }}</td>
+            <td>{{ sage.availability }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="section">
+    <h2>インシデント</h2>
+    {% if incidents %}
+        {% for incident in incidents %}
+        <div class="alert alert-{{ incident.severity }}">
+            <strong>{{ incident.title }}</strong><br>
+            発生時刻: {{ incident.time }}<br>
+            ステータス: {{ incident.status }}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>本日のインシデントはありません。</p>
+    {% endif %}
+</div>
+
+<div class="section">
+    <h2>タスク完了状況</h2>
+    <div class="metric">
+        <p>完了タスク: {{ tasks.completed }}</p>
+        <p>進行中タスク: {{ tasks.in_progress }}</p>
+        <p>完了率: {{ tasks.completion_rate }}%</p>
+    </div>
+</div>
+{% endblock %}

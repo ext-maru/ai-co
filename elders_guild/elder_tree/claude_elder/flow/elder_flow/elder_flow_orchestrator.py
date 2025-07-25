@@ -27,7 +27,6 @@ from elders_guild.elder_tree.elder_flow_error_handler import (
     with_error_handling,
 )
 
-
 # Elder Flow Status
 class FlowStatus(Enum):
     """FlowStatusクラス"""
@@ -40,7 +39,6 @@ class FlowStatus(Enum):
     COMPLETED = "completed"
     FAILED = "failed"
     ABORTED = "aborted"
-
 
 # Elder Flow Task
 class ElderFlowTask:
@@ -85,7 +83,6 @@ class ElderFlowTask:
             "git_commit_id": self.git_commit_id,
             "logs": self.logs,
         }
-
 
 # Sage Council Interface
 class SageCouncilSystem:
@@ -214,7 +211,6 @@ class SageCouncilSystem:
                 "Comprehensive testing",
             ],
         }
-
 
 # Elder Flow Orchestrator
 class ElderFlowOrchestrator:
@@ -532,7 +528,6 @@ class ElderFlowOrchestrator:
         task.add_log("🏛️ Starting Sage Council Meeting")
 
         # リトライメカニズム付きで賢者会議を開催
-        retry_config = RetryConfig(max_attempts=3, base_delay=2.0)
 
         @self.error_handler.retry_async(retry_config)
         async def council_with_retry():
@@ -990,7 +985,6 @@ class ElderFlowOrchestrator:
         # タスクの説明から適切なプレフィックスを選択
         description_lower = task.description.lower()
 
-        if "fix" in description_lower or "bug" in description_lower:
             prefix = "fix"
         elif (
             "feat" in description_lower
@@ -1525,16 +1519,13 @@ class ElderFlowOrchestrator:
         else:
             task.add_log("ℹ️ No changes to commit")
 
-
 # Global orchestrator instance
 orchestrator = ElderFlowOrchestrator()
-
 
 # CLI Interface Functions
 async def elder_flow_execute(description: str, priority: str = "medium") -> str:
     """Elder Flow実行"""
     return await orchestrator.execute_task(description, priority)
-
 
 async def elder_flow_status(task_id: str = None) -> Dict:
     """Elder Flow状態確認"""
@@ -1543,16 +1534,13 @@ async def elder_flow_status(task_id: str = None) -> Dict:
     else:
         return {"active_tasks": orchestrator.list_active_tasks()}
 
-
 async def elder_flow_abort(task_id: str) -> bool:
     """Elder Flow中止"""
     return await orchestrator.abort_task(task_id)
 
-
 async def elder_flow_consult(sage_type: str, query: str) -> Dict:
     """賢者相談"""
     return await orchestrator.sage_council.consult_sage(sage_type, query)
-
 
 # Example usage
 if __name__ == "__main__":

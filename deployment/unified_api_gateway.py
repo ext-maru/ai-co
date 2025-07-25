@@ -115,10 +115,12 @@ class UnifiedAPIAuth:
             },
         }
 
-    def authorize_sage(self, sage_type: str, resource: str, action: str) -> boolpermissions = self.sage_permissions.get(sage_type, {})resource_perms = permissions.get(resource, [])
-    """賢者システムの認可チェック"""
+    def authorize_sage(self, sage_type: str, resource: str, action: str) -> bool:
+        """賢者システムの認可チェック"""
+        permissions = self.sage_permissions.get(sage_type, {})
+        resource_perms = permissions.get(resource, [])
         return action in resource_perms
-:
+
     def get_sage_from_request(self, request) -> Optional[str]:
         """リクエストから賢者タイプを取得"""
         # ヘッダーから賢者情報を取得
@@ -150,12 +152,10 @@ auth = UnifiedAPIAuth()
 def require_permission(resource: str, action: str):
     """権限チェックデコレータ"""
 
+        def decorated_function(*args, **kwargs):
     def decorator(f):
         @wraps(f)
-        def decorated_function(*args, **kwargs)sage_type = auth.get_sage_from_request(request)
-    """decoratorメソッド"""
-            """decorated_functionメソッド"""
-
+        def decorated_function(*args, **kwargs):
             if not sage_type:
                 raise APIError("Authentication required", 401)
 
@@ -173,24 +173,22 @@ def require_permission(resource: str, action: str):
 
 def handle_async(f):
     """非同期関数をFlaskで扱うためのデコレータ"""
-
     @wraps(f)
-    def wrapper(*args, **kwargs)loop = asyncio.new_event_loop()
-    """wrapperメソッド"""
+    def wrapper(*args, **kwargs):
+        """wrapperメソッド"""
+        loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
             return loop.run_until_complete(f(*args, **kwargs))
         finally:
             loop.close()
+def entity_to_dict(entity: BaseEntity) -> Dict[str, Any]:
+    """エンティティを辞書に変換"""
 
     return wrapper
 
-
 def entity_to_dict(entity: BaseEntity) -> Dict[str, Any]:
     """エンティティを辞書に変換"""
-    result = {
-        "id": entity.id,
-        "type": entity.type,
         "title": entity.title,
         "content": entity.content,
         "metadata": entity.metadata,
@@ -216,7 +214,7 @@ def entity_to_dict(entity: BaseEntity) -> Dict[str, Any]:
 # ============================================
 
 
-@api_v1.0route("/entities", methods=["POST"])
+@api_v1.route("/entities", methods=["POST"])
 @require_permission("entities", "create")
 def create_entity():
     """エンティティ作成"""
@@ -295,7 +293,7 @@ def create_entity():
         raise APIError("Internal server error", 500)
 
 
-@api_v1.0route("/entities/<entity_id>", methods=["GET"])
+@api_v1.route("/entities/<entity_id>", methods=["GET"])
 @require_permission("entities", "read")
 def get_entity(entity_id: str):
     """エンティティ取得"""
@@ -314,7 +312,7 @@ def get_entity(entity_id: str):
         raise APIError("Internal server error", 500)
 
 
-@api_v1.0route("/entities/<entity_id>", methods=["PUT"])
+@api_v1.route("/entities/<entity_id>", methods=["PUT"])
 @require_permission("entities", "update")
 def update_entity(entity_id: str):
     """エンティティ更新"""
@@ -360,7 +358,7 @@ def update_entity(entity_id: str):
         raise APIError("Internal server error", 500)
 
 
-@api_v1.0route("/entities/<entity_id>", methods=["DELETE"])
+@api_v1.route("/entities/<entity_id>", methods=["DELETE"])
 @require_permission("entities", "delete")
 def delete_entity(entity_id: str):
     """エンティティ削除"""
@@ -379,7 +377,7 @@ def delete_entity(entity_id: str):
         raise APIError("Internal server error", 500)
 
 
-@api_v1.0route("/entities", methods=["GET"])
+@api_v1.route("/entities", methods=["GET"])
 @require_permission("entities", "read")
 def list_entities():
     """エンティティ一覧取得"""
@@ -424,7 +422,7 @@ def list_entities():
 # ============================================
 
 
-@api_v1.0route("/search/unified", methods=["POST"])
+@api_v1.route("/search/unified", methods=["POST"])
 @require_permission("search", "read")
 @handle_async
 async def unified_search():
@@ -480,7 +478,7 @@ async def unified_search():
         raise APIError("Internal server error", 500)
 
 
-@api_v1.0route("/search/knowledge", methods=["POST"])
+@api_v1.route("/search/knowledge", methods=["POST"])
 @require_permission("search", "read")
 @handle_async
 async def search_knowledge():
@@ -514,7 +512,7 @@ async def search_knowledge():
         raise APIError("Internal server error", 500)
 
 
-@api_v1.0route("/search/incidents", methods=["POST"])
+@api_v1.route("/search/incidents", methods=["POST"])
 @require_permission("search", "read")
 @handle_async
 async def search_incidents():
@@ -553,7 +551,7 @@ async def search_incidents():
 # ============================================
 
 
-@api_v1.0route("/relationships", methods=["POST"])
+@api_v1.route("/relationships", methods=["POST"])
 @require_permission("relationships", "create")
 def create_relationship():
     """関係性作成"""
@@ -594,7 +592,7 @@ def create_relationship():
         raise APIError("Internal server error", 500)
 
 
-@api_v1.0route("/relationships/<entity_id>", methods=["GET"])
+@api_v1.route("/relationships/<entity_id>", methods=["GET"])
 @require_permission("relationships", "read")
 def get_relationships(entity_id: str):
     """エンティティの関係性取得"""
@@ -638,7 +636,7 @@ def get_relationships(entity_id: str):
 # ============================================
 
 
-@api_v1.0route("/system/statistics", methods=["GET"])
+@api_v1.route("/system/statistics", methods=["GET"])
 @require_permission("analytics", "read")
 def get_system_statistics():
     """システム統計取得"""
@@ -662,7 +660,7 @@ def get_system_statistics():
         raise APIError("Internal server error", 500)
 
 
-@api_v1.0route("/system/health", methods=["GET"])
+@api_v1.route("/system/health", methods=["GET"])
 def health_check():
     """ヘルスチェック"""
     try:
@@ -702,7 +700,7 @@ def health_check():
 # ============================================
 
 
-@api_v1.0errorhandler(APIError)
+@api_v1.errorhandler(APIError)
 def handle_api_error(error):
     """API例外ハンドラー"""
     return (
@@ -717,7 +715,7 @@ def handle_api_error(error):
     )
 
 
-@api_v1.0errorhandler(404)
+@api_v1.errorhandler(404)
 def handle_not_found(error):
     """404ハンドラー"""
     return (
@@ -732,11 +730,11 @@ def handle_not_found(error):
     )
 
 
-@api_v1.0errorhandler(500)
-def handle_internal_error(error)logger.error(f"Internal server error: {error}")
-"""500ハンドラー"""
-    return (
-        jsonify(
+@api_v1.errorhandler(500)
+def handle_internal_error(error):
+def handle_internal_error(error):
+    """500ハンドラー"""
+    logger.error(f"Internal server error: {error}")
             {
                 "success": False,
                 "error": {"message": "Internal server error"},
@@ -746,12 +744,11 @@ def handle_internal_error(error)logger.error(f"Internal server error: {error}")
         500,
     )
 
-
 # ============================================
 # アプリケーション設定
 # ============================================
-
-# Blueprintを登録
+    return (
+        jsonify(
 app.register_blueprint(api_v1)
 
 

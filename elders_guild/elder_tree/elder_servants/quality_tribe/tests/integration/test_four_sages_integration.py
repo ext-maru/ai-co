@@ -13,7 +13,7 @@ Created: 2025-07-23
 import asyncio
 import json
 import time
-import tempfile
+
 from pathlib import Path
 from typing import Dict, Any, List
 import sys
@@ -45,25 +45,20 @@ TaskProcessor = task_module.TaskProcessor
 IncidentProcessor = incident_module.IncidentProcessor
 RAGProcessor = rag_module.RAGProcessor
 
-
 class TestFourSagesIntegration:
     """4賢者統合テストクラス"""
     
     def __init__(self):
         self.test_results = {}
-        self.temp_dir = None
-        
+
     async def setup(self):
         """テスト環境セットアップ"""
-        self.temp_dir = tempfile.mkdtemp(prefix="sages_integration_")
-        print(f"🔧 テスト環境セットアップ: {self.temp_dir}")
-        
+
         # 各賢者を初期化（テストモード）
         self.knowledge_sage = KnowledgeProcessor(test_mode=True)
         self.task_sage = TaskProcessor(test_mode=True) 
         self.incident_sage = IncidentProcessor(test_mode=True)
-        self.rag_sage = RAGProcessor(f"{self.temp_dir}/rag.db")
-        
+
         # テストデータリセット
         self.knowledge_sage.reset_for_testing()
         self.task_sage.reset_for_testing()
@@ -72,8 +67,7 @@ class TestFourSagesIntegration:
     async def teardown(self):
         """テスト環境クリーンアップ"""
         import shutil
-        if self.temp_dir:
-            shutil.rmtree(self.temp_dir, ignore_errors=True)
+
         print("🧹 テスト環境クリーンアップ完了")
         
     async def test_knowledge_to_rag_flow(self) -> bool:
@@ -546,7 +540,6 @@ class TestFourSagesIntegration:
             "details": self.test_results
         }
 
-
 async def main():
     """メイン実行"""
     tester = TestFourSagesIntegration()
@@ -555,7 +548,6 @@ async def main():
     # Exit code設定
     exit_code = 0 if results["success_rate"] >= 80 else 1
     sys.exit(exit_code)
-
 
 if __name__ == "__main__":
     asyncio.run(main())

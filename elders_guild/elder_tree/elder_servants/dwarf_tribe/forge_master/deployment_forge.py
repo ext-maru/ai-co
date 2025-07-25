@@ -18,7 +18,7 @@ import logging
 import os
 import shutil
 import subprocess
-import tempfile
+
 import uuid
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
@@ -36,7 +36,6 @@ from elders_guild.elder_tree.elder_servants.base.elder_servant import (
 )
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
-
 @dataclass
 class DeploymentMetrics:
     """デプロイメトリクス"""
@@ -49,7 +48,6 @@ class DeploymentMetrics:
     error_count: int = 0
     rollback_count: int = 0
 
-
 @dataclass
 class DeploymentTarget:
     """デプロイターゲット設定"""
@@ -58,7 +56,6 @@ class DeploymentTarget:
     environment: str
     config: Dict[str, Any]
     credentials: Optional[Dict[str, Any]] = None
-
 
 @dataclass
 class RollbackPoint:
@@ -69,7 +66,6 @@ class RollbackPoint:
     timestamp: datetime
     config_snapshot: Dict[str, Any]
     platform_state: Dict[str, Any]
-
 
 class DeploymentForge(DwarfServant):
     """
@@ -415,11 +411,11 @@ class DeploymentForge(DwarfServant):
             self.stats["failed_deployments"] += 1
 
             # 自動ロールバック（設定されている場合）
-            recovery_attempted = False
+
             if self.safety_config["auto_rollback_on_failure"]:
                 try:
                     await self._emergency_rollback(deployment_id)
-                    recovery_attempted = True
+
                 except Exception as rollback_error:
                     # Handle specific exception case
                     self.logger.error(f"Emergency rollback failed: {rollback_error}")
@@ -428,7 +424,7 @@ class DeploymentForge(DwarfServant):
                 "success": False,
                 "error": {"type": "deployment_failed", "message": str(e)},
                 "metadata": {
-                    "recovery_attempted": recovery_attempted,
+
                     "deployment_id": deployment_id,
                 },
             }
@@ -638,7 +634,7 @@ class DeploymentForge(DwarfServant):
                 else:
                     # 安全なクリーンアップ
                     cleaned_resources += 2
-                    cleanup_summary["temp_files"] = 1
+
                     cleanup_summary["old_configs"] = 1
 
                 # デプロイ履歴から削除
@@ -1070,7 +1066,6 @@ class DeploymentForge(DwarfServant):
             )
             * 100,
         }
-
 
 # 実行時テスト
 if __name__ == "__main__":

@@ -1,0 +1,147 @@
+# 🗄️ Database Configuration
+# 統合設定システム - データベース設定
+# PostgreSQL統合対応
+
+# 基本設定
+basic:
+  driver: "postgresql"
+  host: "localhost"
+  port: 5432
+  database: "ai_company"
+
+# 認証設定
+auth:
+  # username: "ai_company_user"  # 環境変数 DB_USER で設定
+  # password: "ai_company_pass"  # 環境変数 DB_PASSWORD で設定
+
+# 接続プール設定
+connection_pool:
+  size: 5
+  max_overflow: 10
+  timeout: 30
+  recycle: 3600
+
+# 接続オプション
+options:
+  charset: "utf8"
+  timezone: "UTC"
+
+# SSL設定
+ssl:
+  enabled: false
+  cert_path: "/path/to/ssl/cert.pem"
+  key_path: "/path/to/ssl/key.pem"
+  ca_path: "/path/to/ssl/ca.pem"
+
+# バックアップデータベース設定
+backup:
+  enabled: true
+  host: "backup.localhost"
+  port: 5432
+  database: "ai_company_backup"
+  # username: "backup_user"      # 環境変数で設定
+  # password: "backup_password"  # 環境変数で設定
+
+# 読み込み専用レプリカ設定
+read_replica:
+  enabled: false
+  host: "read-replica.localhost"
+  port: 5432
+  database: "ai_company"
+  # username: "readonly_user"     # 環境変数で設定
+  # password: "readonly_password" # 環境変数で設定
+
+# ログ設定
+logging:
+  queries: false
+  slow_queries: true
+  slow_query_threshold: 1.0
+
+# キャッシュ設定
+cache:
+  enabled: true
+  ttl: 300
+  max_size: 1000
+
+# 統合データベース設定
+integrated:
+  # メインデータベース
+  main:
+    url: "postgresql://ai_company_user:ai_company_pass@localhost:5432/ai_company"
+
+  # Grimoireデータベース
+  grimoire:
+    url: "postgresql://aicompany@localhost:5432/ai_company_grimoire"
+
+  # 4賢者システム用データベース
+  four_sages:
+    url: "postgresql://ai_company_user:ai_company_pass@localhost:5432/ai_company"
+
+# テーブル設定
+tables:
+  # タスク関連
+  tasks:
+    table_name: "tasks"
+    auto_create: true
+
+  # 会話関連
+  conversations:
+    table_name: "conversations"
+    auto_create: true
+
+  # 知識ベース
+  knowledge_base:
+    table_name: "knowledge_base"
+    auto_create: true
+
+  # エラーインテリジェンス
+  error_intelligence:
+    table_name: "error_intelligence"
+    auto_create: true
+
+  # 4賢者システム
+  four_sages:
+    table_name: "four_sages"
+    auto_create: true
+
+# マイグレーション設定
+migration:
+  enabled: true
+  auto_migrate: true
+  backup_before_migration: true
+
+# パフォーマンス設定
+performance:
+  # インデックス設定
+  indexes:
+    enabled: true
+    auto_create: true
+
+  # クエリ最適化
+  query_optimization:
+    enabled: true
+    cache_prepared_statements: true
+
+# 監視設定
+monitoring:
+  enabled: true
+  connection_monitoring: true
+  performance_monitoring: true
+
+# セキュリティ設定
+security:
+  connection_encryption: true
+  parameter_validation: true
+  sql_injection_protection: true
+
+# 環境別設定
+environments:
+  development:
+    debug_queries: true
+    auto_create_tables: true
+
+  production:
+    debug_queries: false
+    connection_pool_size: 20
+    backup_enabled: true
+    monitoring_enabled: true

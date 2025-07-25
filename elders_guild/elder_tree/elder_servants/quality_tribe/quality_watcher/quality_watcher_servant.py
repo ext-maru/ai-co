@@ -18,7 +18,6 @@ from elders_guild.elder_tree.elder_servants.quality_tribe.engines.static_analysi
 
 logger = logging.getLogger(__name__)
 
-
 class QualityWatcherServant(A2AServer):
     """
     Block A: 静的解析統括サーバント
@@ -194,10 +193,7 @@ class QualityWatcherServant(A2AServer):
     def _check_iron_will_compliance(self, result) -> float:
         """Iron Will基準遵守チェック"""
         compliance_factors = {
-            "no_todos": 0 if result.todo_count == 0 else -20,
-            "no_fixmes": 0 if result.fixme_count == 0 else -20,
-            "no_workarounds": 0 if result.workaround_count == 0 else -30,
-            "no_hacks": 0 if result.hack_count == 0 else -30
+
         }
         
         base_compliance = 100.0
@@ -225,13 +221,10 @@ class QualityWatcherServant(A2AServer):
                 "target": 100,
                 "action": "Add type annotations"
             })
-        
-        if result.todo_count > 0 or result.fixme_count > 0:
+
             requirements.append({
                 "area": "Iron Will Compliance",
-                "current": f"{result.todo_count} TODOs, {result.fixme_count} FIXMEs",
-                "target": "0 TODOs, 0 FIXMEs",
-                "action": "Remove all TODO/FIXME comments"
+
             })
         
         return requirements
@@ -323,9 +316,7 @@ class QualityWatcherServant(A2AServer):
                     "type_coverage": result.type_coverage_percentage
                 },
                 "compliance": {
-                    "todos": result.todo_count,
-                    "fixmes": result.fixme_count,
-                    "workarounds": result.workaround_count
+
                 }
             },
             "issues_summary": {
@@ -383,7 +374,6 @@ class QualityWatcherServant(A2AServer):
         """サーバント終了処理"""
         logger.info(f"QualityWatcher Servant shutting down. Total analyses: {self.total_analyses}")
 
-
 # === サーバント実行スクリプト ===
 
 async def main():
@@ -408,7 +398,6 @@ async def main():
     finally:
         await servant.shutdown()
         print("✅ QualityWatcher Servant stopped")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

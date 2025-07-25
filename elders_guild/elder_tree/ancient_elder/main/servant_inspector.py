@@ -37,7 +37,6 @@ sys.path.insert(0, str(project_root))
 
 from elders_guild.elder_tree.ancient_elder.base import AncientElderBase, AuditResult, ViolationSeverity
 
-
 class ServantType:
     """エルダーサーバントの種類"""
     CODE_CRAFTSMAN = "code_craftsman"        # コード職人
@@ -46,7 +45,6 @@ class ServantType:
     DEPLOYMENT_MASTER = "deployment_master"  # デプロイメント師匠
     MONITOR_WATCHER = "monitor_watcher"      # 監視番人
     DOC_SCRIBE = "doc_scribe"               # ドキュメント書記
-
 
 class ServantViolationType:
     """サーバント違反の種類"""
@@ -59,7 +57,6 @@ class ServantViolationType:
     INCOMPLETE_TASK = "INCOMPLETE_TASK"                      # 不完全タスク
     SERVANT_ABANDONMENT = "SERVANT_ABANDONMENT"              # サーバント放棄
 
-
 class ServantImplementationAnalyzer:
     """サーバント実装品質分析システム"""
     
@@ -70,7 +67,7 @@ class ServantImplementationAnalyzer:
         # スタブ実装パターン
         self.stub_patterns = {
             "pass_only": re.compile(r'^\s*pass\s*$', re.MULTILINE),
-            "todo_comment": re.compile(r'#\s*TODO|#\s*FIXME|#\s*XXX', re.IGNORECASE),
+
             "not_implemented": re.compile(
                 r'raise\s+NotImplementedError|NotImplemented',
                 re.IGNORECASE
@@ -437,7 +434,6 @@ class ServantImplementationAnalyzer:
         final_score = role_score + expertise_contribution + implementation_score
         return min(final_score, 100.0)
 
-
 class ServantCollaborationAnalyzer:
     """サーバント間協調分析システム"""
     
@@ -582,7 +578,6 @@ class ServantCollaborationAnalyzer:
         
         final_score = max(base_score - violation_penalty, 0.0)
         return final_score
-
 
 class ServantInspector(AncientElderBase):
     """サーバント査察魔法 - 総合サーバント監査システム"""

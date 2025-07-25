@@ -1,0 +1,67 @@
+#!/bin/bash
+# AI Company Git pre-commit hook
+# コミット前に自動的にテストを実行
+
+set -e
+
+# プロジェクトルート
+PROJECT_ROOT="/home/aicompany/ai_co"
+cd "$PROJECT_ROOT"
+
+# 仮想環境をアクティベート
+source venv/bin/activate
+
+echo "🧪 AI Company 自動テスト実行中..."
+
+# 変更されたPythonファイルを取得
+CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$' || true)
+
+if [ -z "$CHANGED_FILES" ]; then
+    echo "✅ Pythonファイルの変更なし - テストをスキップ"
+    exit 0
+fi
+
+echo "📝 変更されたファイル:"
+echo "$CHANGED_FILES" | sed 's/^/  - /'
+
+# 自動テストを実行
+if python3 scripts/auto_test_runner.py $CHANGED_FILES --no-slack; then
+    echo "✅ 全てのテストが成功しました！"
+
+    # カバレッジチェック（オプション）
+    if [ -f "coverage.json" ]; then
+        COVERAGE=$(python3 -c "import json; print(json.load(open('coverage.json'))['totals']['percent_covered'])")
+        echo "📊 カバレッジ: ${COVERAGE}%"
+
+        # カバレッジが閾値未満の場合は警告
+        if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "⚠️  警告: カバレッジが80%未満です"
+            read -p "このままコミットしますか？ (y/n): " -n 1 -r
+            echo
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                exit 1
+            fi
+        fi
+    fi
+else
+    echo "❌ テストが失敗しました！"
+    echo "詳細は test_report_latest.md を確認してください"
+    exit 1
+fi
+
+# コード品質チェック（オプション）
+echo "🔍 コード品質チェック中..."
+
+# flake8チェック（インストールされている場合）
+if command -v flake8 &> /dev/null; then
+    echo "$CHANGED_FILES" | xargs flake8 --config=.flake8 || {
+        echo "⚠️  flake8で問題が検出されました"
+        read -p "このままコミットしますか？ (y/n): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+    }
+fi
+
+echo "✅ 全てのチェックが完了しました！"

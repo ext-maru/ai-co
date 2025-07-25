@@ -14,7 +14,7 @@ import pytest
 import asyncio
 from typing import Dict, Any, List
 import json
-import tempfile
+
 from pathlib import Path
 from datetime import datetime
 
@@ -24,7 +24,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from ancient_magic.healing_magic.healing_magic import HealingMagic
-
 
 class TestHealingMagic:
     """Healing Magic テストクラス"""
@@ -608,7 +607,6 @@ class TestHealingMagic:
         assert result["success"] is False
         assert "not found" in result["error"]
 
-
 @pytest.mark.asyncio
 class TestHealingMagicIntegration:
     """Healing Magic統合テスト"""
@@ -697,7 +695,6 @@ class TestHealingMagicIntegration:
                 }
                 restore_result = await healing_magic.restore_system_component(restore_data)
                 assert restore_result["success"] is True
-
 
 if __name__ == "__main__":
     pytest.main(["-v", __file__])

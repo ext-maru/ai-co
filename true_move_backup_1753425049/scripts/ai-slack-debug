@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+# AI Slack Debug - Slack PM デバッグツール
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+LOG_FILE="$PROJECT_DIR/logs/slack_pm_worker.log"
+
+echo "🔍 Slack PM Debug Information"
+echo "============================="
+
+# 1. プロセス確認
+echo "📋 Process Status:"
+if tmux has-session -t slack_pm_worker 2>/dev/null; then
+    echo "✅ Slack PM Worker is running"
+else
+    echo "❌ Slack PM Worker is NOT running"
+fi
+echo ""
+
+# 2. 最近のメッセージ受信
+echo "📨 Recent Messages Received (last 10):"
+if [[ -f "$LOG_FILE" ]]; then
+    grep "メッセージ受信" "$LOG_FILE" | tail -10
+else
+    echo "❌ Log file not found"
+fi
+echo ""
+
+# 3. エラーログ
+echo "❌ Recent Errors (last 5):"
+if [[ -f "$LOG_FILE" ]]; then
+    grep -i "error\|exception\|failed" "$LOG_FILE" | tail -5
+else
+    echo "No log file"
+fi
+echo ""
+
+# 4. 環境変数確認
+echo "🔐 Environment Check:"
+source "$PROJECT_DIR/.env" 2>/dev/null
+if [[ -n "$SLACK_BOT_TOKEN" ]]; then
+    echo "✅ SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN:0:10}..."
+else
+    echo "❌ SLACK_BOT_TOKEN: Not set"
+fi
+
+if [[ -n "$SLACK_APP_TOKEN" ]]; then
+    echo "✅ SLACK_APP_TOKEN: ${SLACK_APP_TOKEN:0:10}..."
+else
+    echo "❌ SLACK_APP_TOKEN: Not set"
+fi
+
+if [[ -n "$SLACK_CHANNEL" ]]; then
+    echo "✅ SLACK_CHANNEL: $SLACK_CHANNEL"
+else
+    echo "❌ SLACK_CHANNEL: Not set"
+fi
+echo ""
+
+# 5. 接続状態確認
+echo "🔌 Connection Status:"
+tail -20 "$LOG_FILE" 2>/dev/null | grep -E "RTM開始|接続成功|接続失敗" | tail -5
+echo ""
+
+# 6. アクティブセッション
+echo "💬 Active Sessions:"
+cd "$PROJECT_DIR"
+python3 -c "
+import sys
+sys.path.append('.')
+try:
+    from libs.slack_pm_manager import SlackPMManager
+    pm = SlackPMManager()
+    sessions = pm.get_active_sessions()
+    if sessions:
+        for user_id, info in sessions.items():
+            print(f'User: {user_id}')
+            print(f'  State: {info[\"state\"]}')
+            print(f'  Task: {info.get(\"current_task\", \"None\")}')
+    else:
+        print('No active sessions')
+except Exception as e:
+    print(f'Error: {e}')
+" 2>/dev/null
+echo ""
+
+# 7. 推奨事項
+echo "💡 Troubleshooting Tips:"
+echo "1. Check if bot is invited to channel: /invite @ai-pm"
+echo "2. Verify Socket Mode is enabled in Slack App settings"
+echo "3. Check Event Subscriptions are properly configured"
+echo "4. Make sure bot has required OAuth scopes"
+echo ""
+echo "📋 View full logs: tail -f $LOG_FILE"

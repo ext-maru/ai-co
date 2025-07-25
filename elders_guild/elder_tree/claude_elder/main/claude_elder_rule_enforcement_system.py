@@ -40,7 +40,6 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-
 @dataclass
 class RuleViolation:
     """ルール違反記録"""
@@ -52,7 +51,6 @@ class RuleViolation:
     context: Dict[str, Any] = field(default_factory=dict)
     auto_fixable: bool = False
     fix_applied: bool = False
-
 
 @dataclass
 class RuleDefinition:
@@ -66,7 +64,6 @@ class RuleDefinition:
     auto_fix: Optional[Callable] = None
     validator: Optional[Callable] = None
     enabled: bool = True
-
 
 class ClaudeElderRuleEnforcementSystem:
     """クロードエルダー ルール遵守強制システム"""
@@ -230,7 +227,6 @@ class ClaudeElderRuleEnforcementSystem:
 
         # 自動修正の試行
         if rule.auto_fix:
-            await self._attempt_auto_fix(rule, violation)
 
     async def _high_violation_response(
         self, rule: RuleDefinition, violation: RuleViolation
@@ -243,7 +239,6 @@ class ClaudeElderRuleEnforcementSystem:
 
         # 自動修正の試行
         if rule.auto_fix:
-            await self._attempt_auto_fix(rule, violation)
 
     async def _standard_violation_response(
         self, rule: RuleDefinition, violation: RuleViolation
@@ -256,7 +251,6 @@ class ClaudeElderRuleEnforcementSystem:
 
         # 自動修正の試行
         if rule.auto_fix:
-            await self._attempt_auto_fix(rule, violation)
 
     async def _emergency_sage_meeting(
         self, rule: RuleDefinition, violation: RuleViolation
@@ -285,7 +279,7 @@ class ClaudeElderRuleEnforcementSystem:
             "rule_name": rule.name,
             "violation_time": violation.timestamp.isoformat(),
             "severity": violation.severity,
-            "auto_fix_attempted": False,
+
         }
 
         # インシデント統合システムを通じて報告
@@ -308,7 +302,6 @@ class ClaudeElderRuleEnforcementSystem:
         except Exception as e:
             logger.error(f"タスク賢者通知エラー: {e}")
 
-    async def _attempt_auto_fix(self, rule: RuleDefinition, violation: RuleViolation):
         """自動修正の試行"""
         if not rule.auto_fix:
             return
@@ -571,10 +564,8 @@ class ClaudeElderRuleEnforcementSystem:
         """有効なルール一覧を取得"""
         return [rule_id for rule_id, rule in self.rules.items() if rule.enabled]
 
-
 # グローバルインスタンス
 _rule_enforcement_system = None
-
 
 def get_rule_enforcement_system() -> ClaudeElderRuleEnforcementSystem:
     """グローバルルール遵守システムの取得"""
@@ -582,7 +573,6 @@ def get_rule_enforcement_system() -> ClaudeElderRuleEnforcementSystem:
     if _rule_enforcement_system is None:
         _rule_enforcement_system = ClaudeElderRuleEnforcementSystem()
     return _rule_enforcement_system
-
 
 def rule_enforced(func: Callable):
     """ルール遵守デコレータ"""
@@ -610,7 +600,6 @@ def rule_enforced(func: Callable):
         return async_wrapper
     else:
         return sync_wrapper
-
 
 # 使用例とテスト
 if __name__ == "__main__":

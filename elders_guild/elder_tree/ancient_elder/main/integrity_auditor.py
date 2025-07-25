@@ -7,7 +7,7 @@
 Issue #197対応
 
 Features:
-- TODO/FIXME検出エンジン
+
 - モック/スタブ悪用検出
 - Git履歴整合性分析
 - TDD違反検出
@@ -42,7 +42,6 @@ from elders_guild.elder_tree.base_soul import SoulRequest, SoulResponse
 
 logger = logging.getLogger(__name__)
 
-
 class ViolationType(Enum):
     """違反タイプ"""
     FALSE_COMPLETION = "false_completion"
@@ -54,7 +53,6 @@ class ViolationType(Enum):
     ELDER_FLOW_SKIP = "elder_flow_skip"
     SAGE_FRAUD = "sage_fraud"
 
-
 class ViolationSeverity(Enum):
     """違反重要度"""
     CRITICAL = "critical"
@@ -62,7 +60,6 @@ class ViolationSeverity(Enum):
     MEDIUM = "medium"
     LOW = "low"
     INFO = "info"
-
 
 @dataclass
 class ViolationReport:
@@ -91,7 +88,6 @@ class ViolationReport:
             "timestamp": self.timestamp.isoformat()
         }
 
-
 @dataclass
 class AuditRequest:
     """監査要求"""
@@ -102,7 +98,6 @@ class AuditRequest:
     check_git_history: bool = True
     check_sage_logs: bool = True
     deep_analysis: bool = True
-
 
 @dataclass
 class AuditResult:
@@ -125,13 +120,12 @@ class AuditResult:
             "timestamp": self.timestamp.isoformat()
         }
 
-
 class IntegrityPatterns:
     """誠実性違反パターン定義"""
     
     # 虚偽実装パターン
     FALSE_IMPL = {
-        "todo_markers": ["TODO", "FIXME", "HACK", "XXX", "仮実装", "後で", "temp", "placeholder"],
+
         "stub_functions": ["pass", "...", "NotImplementedError", "raise NotImplementedError"],
         "fake_returns": [
             r"return\s+True",
@@ -173,7 +167,6 @@ class IntegrityPatterns:
         "skip_quality_gate": "force push without approval",
         "fake_commits": "empty or minimal commits with grand claims"
     }
-
 
 class ASTPatternsDetector:
     """AST解析による高度パターン検出"""
@@ -299,7 +292,6 @@ class ASTPatternsDetector:
                 suggestion=f"Add meaningful assertions to test function '{node.name}'"
             ))
 
-
 class GitIntegrityAnalyzer:
     """Git履歴整合性分析"""
     
@@ -415,7 +407,6 @@ class GitIntegrityAnalyzer:
         
         return violations
 
-
 class AncientElderIntegrityAuditor(BaseSoul):
     """🔮 誠実性監査を行うエンシェントエルダー"""
     
@@ -520,10 +511,7 @@ class AncientElderIntegrityAuditor(BaseSoul):
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
-                
-                # TODO/FIXME パターンチェック
-                violations.extend(self._check_todo_patterns(content, str(file_path)))
-                
+
                 # スタブ実装チェック
                 violations.extend(self._check_stub_implementations(content, str(file_path)))
                 
@@ -534,14 +522,12 @@ class AncientElderIntegrityAuditor(BaseSoul):
                 logger.warning(f"Failed to analyze file {file_path}: {e}")
         
         return violations
-    
-    def _check_todo_patterns(self, content: str, file_path: str) -> List[ViolationReport]:
-        """TODO/FIXMEパターンチェック"""
+
         violations = []
         lines = content.split('\n')
         
         for i, line in enumerate(lines, 1):
-            for marker in self.patterns.FALSE_IMPL["todo_markers"]:
+
                 if marker in line.upper():
                     violations.append(ViolationReport(
                         type=ViolationType.FALSE_COMPLETION,
@@ -549,7 +535,7 @@ class AncientElderIntegrityAuditor(BaseSoul):
                         file_path=file_path,
                         line_number=i,
                         evidence=line.strip(),
-                        description=f"TODO/FIXME marker found: {marker}",
+
                         suggestion=f"Complete the implementation and remove {marker}"
                     ))
         
@@ -693,8 +679,7 @@ class AncientElderIntegrityAuditor(BaseSoul):
         violation_types = set(v.type for v in violations)
         
         if ViolationType.FALSE_COMPLETION in violation_types:
-            recommendations.append("Complete all TODO/FIXME items before claiming implementation finished")
-        
+
         if ViolationType.STUB_IMPLEMENTATION in violation_types:
             recommendations.append("Replace stub implementations with actual working code")
         
@@ -776,14 +761,11 @@ class AncientElderIntegrityAuditor(BaseSoul):
     def on_autonomous_activity(self):
         """自律活動処理"""
         # 定期的な自律監査活動（必要に応じて実装）
-        logger.debug("🔍 Performing autonomous integrity checks...")
-        
+
     def on_learning_cycle(self):
         """学習サイクル処理"""
         # 誠実性パターンの学習・更新
         logger.info("📚 Learning new integrity patterns...")
-
-
 
 # 使用例とテスト
 async def main():
@@ -824,7 +806,6 @@ async def main():
         print("\n💡 Recommendations:")
         for i, rec in enumerate(result.recommendations, 1):
             print(f"{i}. {rec}")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

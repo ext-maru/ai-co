@@ -1,0 +1,66 @@
+#!/bin/bash
+#
+# AI API Status - APIキーローテーション状況確認
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_DIR"
+
+# 仮想環境チェック
+if [[ ! "$AI_VENV_ACTIVE" == "1" ]]; then
+    if [[ -f "venv/bin/activate" ]]; then
+        source venv/bin/activate
+        export AI_VENV_ACTIVE=1
+    fi
+fi
+
+# Python実行
+python3 -c "
+import sys
+import os
+sys.path.append('$PROJECT_DIR')
+
+try:
+    from libs.claude_client_with_rotation import test_api_keys
+    import json
+
+    print('🔑 API Key Rotation Status Check')
+    print('=' * 50)
+
+    # API キーテスト実行
+    results = test_api_keys('$PROJECT_DIR/config/config.json')
+
+    print(f'Total API Keys: {results[\"total_keys\"]}')
+    print(f'Working Keys: {results[\"summary\"][\"working_keys\"]}')
+    print(f'Failed Keys: {results[\"summary\"][\"failed_keys\"]}')
+    print(f'Rate Limited Keys: {results[\"summary\"][\"rate_limited_keys\"]}')
+    print()
+
+    # 各キーの詳細
+    for key_alias, result in results['test_results'].items():
+        status_emoji = {'working': '✅', 'failed': '❌', 'rate_limited': '⏳'}
+        emoji = status_emoji.get(result['status'], '❓')
+        print(f'{emoji} {key_alias}: {result[\"status\"]}')
+
+        if result['status'] == 'working':
+            print(f'   Tokens Used: {result[\"tokens_used\"]}')
+        elif result['status'] in ['failed', 'rate_limited']:
+            print(f'   Error: {result[\"error\"]}')
+
+    print()
+    print('📊 Health Status Summary:')
+    if results['summary']['working_keys'] > 0:
+        print('✅ System operational with available API keys')
+    elif results['summary']['rate_limited_keys'] > 0:
+        print('⏳ All keys rate limited - system will retry automatically')
+    else:
+        print('❌ No working API keys available')
+
+except ImportError as e:
+    print(f'❌ Import Error: {e}')
+    print('Please ensure all dependencies are installed.')
+except Exception as e:
+    print(f'❌ Error: {e}')
+"

@@ -33,16 +33,13 @@ class ResultWorker:
     def __init__(self):
         """初期化メソッド"""
         # Slack通知の初期化
-    """ResultWorkerワーカークラス"""
         self.slack_notifier = SlackNotifierV2()
         self.slack_notifier_v1 = SlackNotifier()  # フォールバック用
         logger.info(f"Slack通知: {'有効' if self.slack_notifier.enabled else '無効'}")
 
     def connect(self):
         try:
-            self.connection = pika.BlockingConnection(
-        """connectメソッド"""
-                pika.ConnectionParameters("localhost")
+            self.connection = pika.BlockingConnection(                pika.ConnectionParameters("localhost")
             )
             self.channel = self.connection.channel()
             self.channel.queue_declare(queue="result_queue", durable=True)
@@ -115,7 +112,7 @@ class ResultWorker:
                 logger.warning(f"拡張版Slack通知送信失敗: タスク {task_data['task_id']}")
 
                 # V2失敗時にV1フォールバックを実行
-                if self.slack_notifier_v1.0enabled:
+                if self.slack_notifier_v1.enabled:
                     logger.info("V1フォールバック通知を試行中...")
                     fallback_message = (
                         f"タスク {task_data['task_id']} が完了しました\n"
@@ -123,7 +120,7 @@ class ResultWorker:
                         f"ステータス: {task_data['status']}"
                     )
 
-                    if self.slack_notifier_v1.0send_notification(fallback_message):
+                    if self.slack_notifier_v1.send_notification(fallback_message):
                         logger.info("V1フォールバック通知送信成功")
                     else:
                         logger.error("V1フォールバック通知も失敗")
@@ -152,7 +149,9 @@ class ResultWorker:
             logger.error(f"結果処理エラー: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
-    def start(self)if not self.connect():
+    def start(self):
+    """iメソッド"""
+    f not self.connect():
     """startメソッド"""
             return
 

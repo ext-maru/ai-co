@@ -26,7 +26,6 @@ from shared_libs.config import config
 sys.path.insert(0, config.ELDERS_GUILD_HOME)
 from incident_sage.business_logic import IncidentProcessor
 
-
 class TestIncidentSageA2ADirect:
     """Incident Sage A2A Direct Test（A2A依存なし）"""
     
@@ -502,8 +501,7 @@ class TestIncidentSageA2ADirect:
             
             # 自動修復試行
             remediation_data = {"incident_id": incident_id}
-            remediation_result = await processor.process_action("attempt_automated_remediation", remediation_data)
-            
+
             if not remediation_result.get("success"):
                 print(f"     ❌ 自動修復失敗: {remediation_result.get('error')}")
                 return False
@@ -778,7 +776,6 @@ class TestIncidentSageA2ADirect:
             print(f"     💥 パフォーマンステストエラー: {e}")
             return False
 
-
 async def main():
     """メイン実行"""
     print("🚨 Incident Sage A2A Agent - 直接テスト開始")
@@ -802,7 +799,6 @@ async def main():
         print(f"\\n🔧 Incident Sage直接テストで調整が必要")
         print(f"   成功率: {results['success_rate']:0.1f}% (80%未満)")
         return False
-
 
 if __name__ == "__main__":
     success = asyncio.run(main())

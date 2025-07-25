@@ -20,7 +20,7 @@ from typing import Dict, Any, List
 from concurrent.futures import ThreadPoolExecutor
 import threading
 import pytest
-import tempfile
+
 import os
 from statistics import mean
 
@@ -32,7 +32,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from shared_libs.config import config
 sys.path.insert(0, config.ELDERS_GUILD_HOME)
 from incident_sage.business_logic import IncidentProcessor
-
 
 class TestIncidentSageA2AComprehensive:
     """Incident Sage A2A Agent包括的テスト"""
@@ -332,7 +331,7 @@ class TestIncidentSageA2AComprehensive:
         # 4.0 自動修復試行
         remediation_results = []
         for incident_id in incidents[:2]:  # 最初の2つのみ
-            remediation_result = await processor.process_action("attempt_automated_remediation", {
+
                 "incident_id": incident_id
             })
             remediation_results.append(remediation_result)
@@ -441,7 +440,7 @@ class TestIncidentSageA2AComprehensive:
         incident_status_after_response = response_result["data"]["incident_status"]
         
         # 3.0 自動修復試行
-        remediation_result = await processor.process_action("attempt_automated_remediation", {
+
             "incident_id": incident_id
         })
         
@@ -870,13 +869,12 @@ class TestIncidentSageA2AComprehensive:
         
         # 相関品質評価
         high_confidence_correlations = [c for c in correlations if c["confidence"] >= 0.7]
-        temporal_correlations = [c for c in correlations if c["correlation_type"] == "temporal_spatial"]
-        
+
         self.performance_metrics["correlation_analysis"] = {
             "total_incidents_created": total_incidents_created,
             "total_correlations_found": len(correlations),
             "high_confidence_correlations": len(high_confidence_correlations),
-            "temporal_correlations": len(temporal_correlations),
+
             "correlation_discovery_rate": len(correlations) / max(total_incidents_created, 1)
         }
         
@@ -920,7 +918,7 @@ class TestIncidentSageA2AComprehensive:
             incident_id = incident_result["data"]["incident_id"]
             
             # 修復試行
-            remediation_result = await processor.process_action("attempt_automated_remediation", {
+
                 "incident_id": incident_id
             })
             

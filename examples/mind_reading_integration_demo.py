@@ -20,8 +20,9 @@ from libs.intent_parser import IntentParser
 from libs.learning_data_collector import LearningDataCollector, ExecutionStatus
 
 
-async def main()print("🌌 nWo Mind Reading Protocol v0.1 - Integration Demo")
-"""統合デモのメイン関数"""
+async def main():
+    """統合デモのメイン関数"""
+    print("🌌 nWo Mind Reading Protocol v0.1 - Integration Demo")
     print("=" * 60)
     print("💭 Think it, Rule it, Own it")
     print("=" * 60)
@@ -107,10 +108,7 @@ async def main()print("🌌 nWo Mind Reading Protocol v0.1 - Integration Demo")
         if intent_result.intent_type.value == scenario['expected_intent']:
             print(f"\n   🎉 Intent match! Expected: {scenario['expected_intent']}")
         else:
-            print(f"\n   ⚠️  Intent mismatch. Expected: {
-                scenario['expected_intent']},
-                Got: {intent_result.intent_type.value
-            }")
+            print(f"\n   ⚠️  Intent mismatch. Expected: {scenario['expected_intent']}, Got: {intent_result.intent_type.value}")
 
         if scenario['expected_command'] in command:
             print(f"   🎉 Command match! Contains: {scenario['expected_command']}")

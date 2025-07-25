@@ -9,7 +9,6 @@ import json
 from unittest.mock import Mock, patch, AsyncMock, MagicMock
 from datetime import datetime
 
-
 # python-a2aモジュールをモック
 class MockA2AServer:
     def __init__(self):
@@ -35,7 +34,6 @@ def mock_skill(name):
         return func
     return decorator
 
-
 # python-a2aモジュールのモックを設定
 with patch.dict('sys.modules', {
     'python_a2a': MagicMock(
@@ -51,7 +49,6 @@ with patch.dict('sys.modules', {
     from elders_guild.quality_servants.test_forge_servant import TestForgeServant
     from elders_guild.quality_servants.comprehensive_guardian_servant import ComprehensiveGuardianServant
     from elders_guild.quality.quality_pipeline_orchestrator import QualityPipelineOrchestrator
-
 
 class TestQualityServantsMock:
     """品質サーバント統合テスト（モック版）"""
@@ -99,10 +96,7 @@ class TestQualityServantsMock:
         quality_watcher.static_engine.execute_full_pipeline.return_value = Mock(
             quality_score=96.5,
             issues_found=3,
-            todo_count=0,
-            fixme_count=0,
-            workaround_count=0,
-            hack_count=0,
+
             scores={"pylint": 9.7, "mypy": 100, "format": 100, "import": 100},
             syntax_errors=0,
             security_issues=0,
@@ -139,10 +133,7 @@ class TestQualityServantsMock:
         quality_watcher.static_engine.execute_full_pipeline.return_value = Mock(
             quality_score=87.0,
             issues_found=10,
-            todo_count=2,
-            fixme_count=1,
-            workaround_count=0,
-            hack_count=0,
+
             scores={"pylint": 8.5, "mypy": 95, "format": 100, "import": 100},
             syntax_errors=0,
             security_issues=0
@@ -326,7 +317,6 @@ class TestQualityServantsMock:
             assert "overall_status" in result
             assert "duration_seconds" in result
 
-
 class TestServantFeatures:
     """サーバント機能テスト"""
     
@@ -414,7 +404,6 @@ class TestServantFeatures:
         assert "certificate_id" in cert
         assert cert["issuer"] == "ComprehensiveGuardian - Elder Council"
         assert cert["project_info"]["certification_level"] == "GOLD"
-
 
 # テスト実行用
 if __name__ == "__main__":

@@ -29,7 +29,6 @@ from libs.elder_servants.base.elder_servant import (
 )
 from libs.elder_servants.base.specialized_servants import DwarfServant
 
-
 class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
     D07: APIArchitect - API設計・実装専門家サーバント
@@ -95,7 +94,7 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         # APIArchitect固有の設定
         self.api_patterns = self._initialize_api_patterns()
-        self.framework_templates = self._initialize_framework_templates()
+
         self.security_standards = self._initialize_security_standards()
 
         # API設計ツール
@@ -587,7 +586,7 @@ schema {{
                 "examples": self._generate_usage_examples(specification),
                 "error_codes": self._generate_error_documentation(),
                 "sdk_information": self._generate_sdk_documentation(),
-                "changelog": self._generate_changelog_template(),
+
             }
 
             # 複数形式での出力
@@ -681,19 +680,18 @@ schema {{
             },
         }
 
-    def _initialize_framework_templates(self) -> Dict[str, Any]:
         """フレームワークテンプレート初期化"""
         return {
             "fastapi": {
-                "app_template": "FastAPI application with automatic OpenAPI",
+
                 "features": ["async", "type_hints", "automatic_docs", "validation"],
             },
             "flask": {
-                "app_template": "Flask application with blueprints",
+
                 "features": ["flexible", "lightweight", "extensions"],
             },
             "django_rest": {
-                "app_template": "Django REST Framework with ViewSets",
+
                 "features": ["orm", "admin", "serializers", "permissions"],
             },
         }
@@ -706,7 +704,6 @@ schema {{
             "encryption": ["TLS_1_3", "AES_256"],
             "headers": ["CORS", "CSP", "HSTS", "X-Frame-Options"],
         }
-
 
 class RESTAPIDesigner:
     """REST API設計器"""
@@ -761,7 +758,6 @@ class RESTAPIDesigner:
             "relationships": resource.get("relationships", []),
             "validations": resource.get("validations", []),
         }
-
 
 class GraphQLDesigner:
     """GraphQL設計器"""
@@ -830,7 +826,6 @@ class GraphQLDesigner:
             "subscription_resolvers": "# Subscription resolvers implementation",
         }
 
-
 class OpenAPIGenerator:
     """OpenAPI仕様生成器"""
 
@@ -867,7 +862,6 @@ class OpenAPIGenerator:
             schema["required"] = required
 
         return schema
-
 
 class AuthenticationArchitect:
     """認証アーキテクト"""

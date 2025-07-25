@@ -22,7 +22,6 @@ from elders_guild.elder_tree.elder_flow import execute_elder_flow
 # 品質チェックシステム活用
 from elders_guild.elder_tree.elders_code_quality import CodeQualityAnalyzer
 
-
 class ElderTreeTestGenerator:
     """
     Elder Tree v2用のテスト生成器
@@ -180,13 +179,11 @@ class ElderTreeTestGenerator:
             # )
         
         return tasks
-    
-    def generate_test_templates(self):
+
         """テストテンプレートの生成"""
-        templates = {}
-        
+
         # BDDテストテンプレート
-        templates["bdd"] = '''
+
 """
 {component_name} BDDテスト
 pytest-bddを使用したシナリオテスト
@@ -222,7 +219,7 @@ def verify_result(result):
 '''
         
         # パフォーマンステストテンプレート
-        templates["performance"] = '''
+
 """
 {component_name} パフォーマンステスト
 pytest-benchmarkを使用
@@ -244,7 +241,7 @@ def test_{method_name}_performance(benchmark: BenchmarkFixture):
 '''
         
         # プロパティベーステストテンプレート
-        templates["property"] = '''
+
 """
 {component_name} プロパティベーステスト
 hypothesisを使用
@@ -269,9 +266,7 @@ async def test_{method_name}_properties(task_type, priority, requirements):
     # プロパティ: 結果の型が正しい
     assert isinstance(result, dict)
 '''
-        
-        return templates
-    
+
     async def analyze_coverage_gaps(self):
         """カバレッジギャップの分析"""
         # 現在のカバレッジを取得（仮想的に）
@@ -303,7 +298,6 @@ async def test_{method_name}_properties(task_type, priority, requirements):
         
         return sorted(gaps, key=lambda x: x["gap"], reverse=True)
 
-
 async def main():
     """メイン実行関数"""
     print("🧪 Elder Tree v2 テスト生成計画")
@@ -327,17 +321,14 @@ async def main():
         print(f"  - {gap['file']}: {gap['current_coverage']}% → {gap['target_coverage']}% (Gap: {gap['gap']}%)")
     
     # テストテンプレート生成
-    templates = generator.generate_test_templates()
+
     print(f"\n🔧 生成可能なテストテンプレート:")
-    for template_type in templates:
-        print(f"  - {template_type}")
-    
+
     # Elder Flow タスク生成
     tasks = await generator.generate_tests_with_elder_flow()
     print(f"\n🌊 Elder Flow タスク: {len(tasks)}個")
     
     print("\n✅ テスト生成計画完了！")
-
 
 if __name__ == "__main__":
     asyncio.run(main())

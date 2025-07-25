@@ -1,0 +1,151 @@
+# Prometheusアラートルール
+groups:
+  # システムアラート
+  - name: system_alerts
+    interval: 30s
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          sage: incident
+        annotations:
+          summary: "高CPU使用率検出 (instance {{ $labels.instance }})"
+          description: "CPU使用率が {{ $value }}% に達しています"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          sage: incident
+        annotations:
+          summary: "高メモリ使用率検出 (instance {{ $labels.instance }})"
+          description: "メモリ使用率が {{ $value }}% に達しています"
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 15
+        for: 10m
+        labels:
+          severity: critical
+          sage: incident
+        annotations:
+          summary: "ディスク容量不足 (instance {{ $labels.instance }})"
+          description: "残りディスク容量が {{ $value }}% です"
+
+  # アプリケーションアラート
+  - name: application_alerts
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: rate(app_errors_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          sage: incident
+        annotations:
+          summary: "エラー率上昇検出"
+          description: "エラー率が {{ $value }} エラー/秒 に達しています"
+
+      - alert: SlowResponseTime
+        expr: histogram_quantile(0.95, rate(app_response_time_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          sage: incident
+        annotations:
+          summary: "レスポンスタイム遅延検出"
+          description: "95パーセンタイルレスポンスタイムが {{ $value }}秒です"
+
+      - alert: LowActiveUsers
+        expr: app_active_users < 10
+        for: 15m
+        labels:
+          severity: info
+          sage: task
+        annotations:
+          summary: "アクティブユーザー数低下"
+          description: "アクティブユーザー数が {{ $value }}人です"
+
+  # 4賢者システムアラート
+  - name: four_sages_alerts
+    interval: 30s
+    rules:
+      - alert: SageDown
+        expr: up{job="four_sages"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          sage: incident
+        annotations:
+          summary: "{{ $labels.sage }}賢者停止"
+          description: "{{ $labels.sage }}賢者が応答していません"
+
+      - alert: SageHighMemory
+        expr: sage_memory_usage_bytes{job="four_sages"} / 1024 / 1024 > 500
+        for: 5m
+        labels:
+          severity: warning
+          sage: incident
+        annotations:
+          summary: "{{ $labels.sage }}賢者メモリ使用量過多"
+          description: "{{ $labels.sage }}賢者のメモリ使用量が {{ $value }}MBです"
+
+      - alert: SageProcessingBacklog
+        expr: sage_queue_size{job="four_sages"} > 100
+        for: 5m
+        labels:
+          severity: warning
+          sage: task
+        annotations:
+          summary: "{{ $labels.sage }}賢者処理遅延"
+          description: "{{ $labels.sage }}賢者のキューに {{ $value }}件の未処理タスクがあります"
+
+  # Elder Flowアラート
+  - name: elder_flow_alerts
+    interval: 30s
+    rules:
+      - alert: ElderFlowExecutionFailure
+        expr: increase(elder_flow_execution_failures_total[5m]) > 5
+        for: 5m
+        labels:
+          severity: critical
+          sage: incident
+        annotations:
+          summary: "Elder Flow実行エラー多発"
+          description: "過去5分間で {{ $value }}件の実行エラーが発生しました"
+
+      - alert: ElderFlowQualityGateFailure
+        expr: elder_flow_quality_gate_pass_rate < 0.95
+        for: 10m
+        labels:
+          severity: warning
+          sage: incident
+        annotations:
+          summary: "品質ゲート通過率低下"
+          description: "品質ゲート通過率が {{ $value }}% に低下しています"
+
+  # コンテナアラート
+  - name: container_alerts
+    interval: 30s
+    rules:
+      - alert: ContainerDown
+        expr: time() - container_last_seen{name=~"ai_co_.*"} > 300
+        for: 1m
+        labels:
+          severity: critical
+          sage: incident
+        annotations:
+          summary: "コンテナ停止検出: {{ $labels.name }}"
+          description: "コンテナ {{ $labels.name }} が5分以上応答していません"
+
+      - alert: ContainerHighCPU
+        expr: rate(container_cpu_usage_seconds_total{name=~"ai_co_.*"}[5m]) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          sage: incident
+        annotations:
+          summary: "コンテナCPU使用率過多: {{ $labels.name }}"
+          description: "コンテナ {{ $labels.name }} のCPU使用率が {{ $value }}% です"

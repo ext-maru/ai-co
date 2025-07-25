@@ -33,7 +33,6 @@ from ..base.elder_servant_base import (
     ServantResponse,
 )
 
-
 class APIType(Enum):
     """API タイプ"""
 
@@ -42,7 +41,6 @@ class APIType(Enum):
     WEBSOCKET = "websocket"
     GRPC = "grpc"
     OPENAPI = "openapi"
-
 
 class HTTPMethod(Enum):
     """HTTP メソッド"""
@@ -54,7 +52,6 @@ class HTTPMethod(Enum):
     PATCH = "PATCH"
     HEAD = "HEAD"
     OPTIONS = "OPTIONS"
-
 
 @dataclass
 class APIEndpoint:
@@ -70,7 +67,6 @@ class APIEndpoint:
     tags: List[str] = None
     security: List[Dict[str, Any]] = None
 
-
 @dataclass
 class APISpec:
     """API 仕様"""
@@ -83,7 +79,6 @@ class APISpec:
     endpoints: List[APIEndpoint]
     schemas: Dict[str, Dict[str, Any]] = None
     security_schemes: Dict[str, Dict[str, Any]] = None
-
 
 @dataclass
 class APIGenerationConfig:
@@ -98,7 +93,6 @@ class APIGenerationConfig:
     include_documentation: bool = True
     database_integration: bool = False
     async_support: bool = True
-
 
 class APIForge(DwarfServant):
     """
@@ -132,7 +126,7 @@ class APIForge(DwarfServant):
         }
 
         # テンプレート
-        self.code_templates = {
+
             "fastapi_endpoint": """
 @app.{method}("{path}")
 async def {function_name}({parameters}):
@@ -671,7 +665,7 @@ def {function_name}():
             [
                 "",
                 'if __name__ == "__main__":',
-                '    app.run(host="0.0.0.0", port=8000, debug=True)',
+
             ]
         )
 
@@ -738,7 +732,7 @@ def {function_name}():
                 "        try:",
                 "            # Request validation",
                 "            if request_data:",
-                "                logger.debug(f'Request data: {request_data}')",
+
                 "            ",
                 "            # Business logic implementation",
                 f"            response = {{"
@@ -993,7 +987,7 @@ spec:
   selector:
     matchLabels:
       app: {api_spec.title.lower().replace(' ', '-')}-api
-  template:
+
     metadata:
       labels:
         app: {api_spec.title.lower().replace(' ', '-')}-api

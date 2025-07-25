@@ -19,7 +19,6 @@ from pathlib import Path
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import WizardServant
 from elders_guild.elder_tree.elder_servants.base.elder_servant import ServantRequest, ServantResponse
 
-
 class TechScout(WizardServant):
     """技術調査専門サーバント"""
 
@@ -790,8 +789,7 @@ class TechScout(WizardServant):
             "source": "tech_scout",
             "timestamp": datetime.now().isoformat()
         }
-        
-        self.logger.debug(f"Submitting knowledge to Knowledge Sage: {knowledge_item['title']}")
+
         # 実際の実装では await knowledge_sage.handle_a2a_message(sage_submission)
         
     async def _update_search_index(self, knowledge_item: Dict[str, Any]):
@@ -816,9 +814,7 @@ class TechScout(WizardServant):
                 "searchable_content": searchable_content,
                 "last_updated": datetime.now().isoformat()
             }
-            
-            self.logger.debug(f"Updated search index for: {topic_key}")
-            
+
         except Exception as e:
             # Handle specific exception case
             self.logger.warning(f"Failed to update search index: {e}")

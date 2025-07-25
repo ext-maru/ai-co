@@ -17,13 +17,12 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
 # EldersLegacy統合インポート
-from elders_guild.elder_tree.core.elders_legacy import (
+from libs.core.elders_legacy import (
     EldersLegacyDomain,
     EldersServiceLegacy,
     IronWillCriteria,
     enforce_boundary,
 )
-
 
 class ServantCategory(Enum):
     """サーバント分類"""
@@ -31,7 +30,6 @@ class ServantCategory(Enum):
     DWARF = "dwarf"  # ドワーフ工房（開発製作）
     WIZARD = "wizard"  # RAGウィザーズ（調査研究）
     ELF = "elf"  # エルフの森（監視メンテナンス）
-
 
 class TaskStatus(Enum):
     """タスク実行状況"""
@@ -42,7 +40,6 @@ class TaskStatus(Enum):
     FAILED = "failed"
     CANCELLED = "cancelled"
 
-
 class TaskPriority(Enum):
     """タスク優先度"""
 
@@ -50,7 +47,6 @@ class TaskPriority(Enum):
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
-
 
 class ServantCapability:
     """サーバント能力定義"""
@@ -78,7 +74,6 @@ class ServantCapability:
             "output_types": self.output_types,
             "complexity": self.complexity,
         }
-
 
 class TaskResult:
     """タスク実行結果"""
@@ -115,7 +110,6 @@ class TaskResult:
             "completed_at": self.completed_at.isoformat(),
         }
 
-
 class ServantRequest:
     """エルダーサーバント統一リクエスト形式"""
 
@@ -133,7 +127,6 @@ class ServantRequest:
         self.payload = payload
         self.context = context or {}
         self.created_at = datetime.now()
-
 
 class ServantResponse:
     """エルダーサーバント統一レスポンス形式"""
@@ -156,7 +149,6 @@ class ServantResponse:
         self.execution_time_ms = execution_time_ms
         self.quality_score = quality_score
         self.completed_at = datetime.now()
-
 
 class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
     """
@@ -455,7 +447,6 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         # Iron Will基準判定
         meets_iron_will = final_score >= 95.0
 
-        self.logger.debug(
             f"Quality validation score: {final_score:0.2f}, Iron Will compliant: {meets_iron_will}"
         )
         return final_score
@@ -505,7 +496,6 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
     def __repr__(self) -> str:
         """オブジェクト表現取得"""
         return f"<ElderServant {self.servant_name} category={self.category.value} tasks={self.stats['tasks_executed']}>"
-
 
 class ServantRegistry:
     """エルダーサーバント管理レジストリ"""
@@ -659,7 +649,6 @@ class ServantRegistry:
             "health_rate": round((healthy_servants / max(total_servants, 1)) * 100, 2),
             "servants": health_results,
         }
-
 
 # グローバルレジストリインスタンス
 servant_registry = ServantRegistry()

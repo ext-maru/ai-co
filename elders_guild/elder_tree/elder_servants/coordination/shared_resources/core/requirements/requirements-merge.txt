@@ -1,0 +1,8 @@
+# マージ・コンフリクト解決用ライブラリ
+unidiff>=0.7.0          # unified diff形式の解析
+three-merge>=0.1.1      # 3-wayマージ処理
+merge3>=0.0.13          # Python標準の3-wayマージアルゴリズム
+
+# 既存依存関係（参考）
+# GitPython>=3.1.0      # 既にインストール済み
+# PyGithub>=1.55        # 既にインストール済み

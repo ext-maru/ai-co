@@ -24,7 +24,6 @@ from ..base.elder_servant_base import (
 )
 from ..registry.servant_registry import ServantRegistry, get_registry
 
-
 class SelectionCriteria(Enum):
     """選択基準"""
 
@@ -34,7 +33,6 @@ class SelectionCriteria(Enum):
     EXPERTISE = "expertise"  # 専門性重視
     LOAD_BALANCE = "load_balance"  # 負荷分散重視
     COST_EFFICIENCY = "cost_efficiency"  # コスト効率重視
-
 
 class TaskType(Enum):
     """タスクタイプ分類"""
@@ -47,7 +45,6 @@ class TaskType(Enum):
     MAINTENANCE = "maintenance"  # 保守タスク
     TESTING = "testing"  # テストタスク
     SECURITY = "security"  # セキュリティタスク
-
 
 @dataclass
 class TaskProfile:
@@ -64,7 +61,6 @@ class TaskProfile:
     quality_requirement: float  # 0.0-1.0
     constraints: Dict[str, Any] = field(default_factory=dict)
 
-
 @dataclass
 class ServantProfile:
     """サーバントプロファイル"""
@@ -79,7 +75,6 @@ class ServantProfile:
     availability_score: float  # 0.0-1.0
     cost_factor: float  # 相対的コスト (1.0が基準)
 
-
 @dataclass
 class SelectionResult:
     """選択結果"""
@@ -91,7 +86,6 @@ class SelectionResult:
     confidence: float  # 0.0-1.0
     estimated_execution_time: float
     selection_criteria_used: SelectionCriteria
-
 
 class ServantAutoSelector:
     """
@@ -252,7 +246,7 @@ class ServantAutoSelector:
             self.servant_profiles_cache[servant_info["name"]] = profile
 
         self.last_cache_update = current_time
-        self.logger.debug(
+
             f"Updated {len(self.servant_profiles_cache)} servant profiles"
         )
 
@@ -888,10 +882,8 @@ class ServantAutoSelector:
         result = await self.select_optimal_servant(task_profile)
         return result.selected_servant
 
-
 # グローバルセレクターインスタンス
 _global_selector = None
-
 
 def get_auto_selector() -> ServantAutoSelector:
     """グローバル自動選択インスタンスを取得"""

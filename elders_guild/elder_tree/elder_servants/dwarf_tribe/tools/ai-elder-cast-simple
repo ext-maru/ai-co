@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""
+AI Elder Cast Simple - 最小版知識注入起動スクリプト（タスク統合版）
+中間版知識（8KB）を使用してClaude Codeを起動
+"""
+
+import asyncio
+import os
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+# 色付き出力用のANSIコード
+COLORS = {
+    "cyan": "\033[0;36m",
+    "green": "\033[0;32m",
+    "yellow": "\033[1;33m",
+    "purple": "\033[0;35m",
+    "reset": "\033[0m"
+}
+
+
+def print_colored(text, color="cyan"):
+    """色付きテキストを出力"""
+    print(f"{COLORS.get(color, '')}{text}{COLORS['reset']}")
+
+
+async def quick_task_sync():
+    """タスク同期処理 - 完全無効化"""
+    # 同期処理を完全無効化 - 起動時の遅延とエラー回避のため
+    print_colored("🚫 タスク同期は無効化されています", "yellow")
+    return
+
+
+def main():
+    """メイン処理"""
+    
+    print_colored("🔮 AI Elder Cast Simple (Task Integration) 起動", "purple")
+    print()
+    
+    # 知識ファイルパス（中間版）
+    knowledge_file = project_root / "docs" / "technical" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
+    
+    if not knowledge_file.exists():
+        print_colored(f"❌ 知識ファイルが見つかりません: {knowledge_file}", "red")
+        sys.exit(1)
+    
+    # 日本語環境設定
+    os.environ["LANG"] = "ja_JP.UTF-8"
+    os.environ["LC_ALL"] = "ja_JP.UTF-8"
+    
+    # タスク同期は明示的にtodoオプションを指定した場合のみ実行
+    # （デフォルトでは同期しない）
+    
+    # Claude Code起動
+    try:
+        print_colored("🏛️ クロードエルダー召喚中...", "green")
+        print()
+        
+        subprocess.run([
+            "claude", 
+            "--dangerously-skip-permissions", 
+            str(knowledge_file)
+        ])
+        
+    except KeyboardInterrupt:
+        print()
+        print_colored("⚡ セッション中断", "yellow")
+    except Exception as e:
+        print_colored(f"❌ エラー: {e}", "red")
+        sys.exit(1)
+    
+    print()
+    print_colored("🏛️ Elder Cast セッション完了", "green")
+
+
+if __name__ == "__main__":
+    main()

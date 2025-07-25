@@ -37,7 +37,6 @@ class PMWorker:
         self.model = "claude-opus-4-20250514"
         # 動的管理関連
         self.monitor = WorkerMonitor()
-    """PMWorkerワーカークラス"""
         self.controller = WorkerController()
         self.policy = ScalingPolicy()
         self.health_checker = HealthChecker()
@@ -50,7 +49,6 @@ class PMWorker:
             self.connection = pika.BlockingConnection(
                 pika.ConnectionParameters("localhost")
             )
-        """connectメソッド"""
             self.channel = self.connection.channel()
             self.channel.queue_declare(queue="pm_task_queue", durable=True)
             self.channel.queue_declare(queue="result_queue", durable=True)
@@ -254,7 +252,6 @@ class PMWorker:
         def monitor_and_scale():
             logger.info("🚀 スケーリング監視開始")
             while self.scaling_enabled:
-            """monitor_and_scaleメソッド"""
                 try:
                     # メトリクス取得
                     metrics = self.monitor.get_all_metrics()
@@ -363,8 +360,9 @@ class PMWorker:
         health_thread.start()
         logger.info(f"🏥 ヘルスチェック監視スレッド開始 (間隔: {self.health_check_interval}秒)")
 
-    def start(self)self.start_scaling_monitor()
-    """startメソッド"""
+    def start(self):
+        """startメソッド"""
+        self.start_scaling_monitor()
         self.start_health_monitor()
         if not self.connect():
             return

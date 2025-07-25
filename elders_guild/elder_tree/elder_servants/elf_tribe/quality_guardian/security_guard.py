@@ -32,7 +32,6 @@ from ..base.elder_servant_base import (
     ServantResponse,
 )
 
-
 class SecuritySeverity(Enum):
     """セキュリティ問題の重要度"""
 
@@ -41,7 +40,6 @@ class SecuritySeverity(Enum):
     MEDIUM = "medium"
     LOW = "low"
     INFO = "info"
-
 
 class SecurityCategory(Enum):
     """セキュリティカテゴリ"""
@@ -54,7 +52,6 @@ class SecurityCategory(Enum):
     INPUT_VALIDATION = "input_validation"
     CONFIGURATION = "configuration"
     DEPENDENCY = "dependency"
-
 
 @dataclass
 class SecurityIssue:
@@ -70,7 +67,6 @@ class SecurityIssue:
     cwe_id: Optional[str] = None
     owasp_category: Optional[str] = None
 
-
 @dataclass
 class SecurityScanConfig:
     """セキュリティスキャン設定"""
@@ -81,7 +77,6 @@ class SecurityScanConfig:
     check_configurations: bool = True
     deep_scan: bool = False
     compliance_standards: List[str] = None
-
 
 class SecurityGuard(ElfServant):
     """
@@ -116,7 +111,7 @@ class SecurityGuard(ElfServant):
             SecurityCategory.DATA_EXPOSURE: [
                 r"(?i)(print|echo|console\.log|logger\.).*(password|secret|token|key)",
                 r"(?i)(error_reporting|display_errors|log_errors).*?true",
-                r"(?i)(debug|verbose|trace).*?true",
+
             ],
             SecurityCategory.INPUT_VALIDATION: [
                 r"(?i)(\$_GET|\$_POST|\$_REQUEST|\$_COOKIE)(?!.*?" \
@@ -473,7 +468,7 @@ class SecurityGuard(ElfServant):
 
         # 設定項目のセキュリティチェック
         security_checks = {
-            "debug_mode": {
+
                 "severity": SecuritySeverity.MEDIUM,
                 "category": SecurityCategory.CONFIGURATION,
             },
@@ -828,8 +823,7 @@ class SecurityGuard(ElfServant):
                 "Implement strong authentication with secure password policies",
             SecurityCategory.CRYPTOGRAPHY: "Use strong cryptographic algorithms and proper key management" \
                 "Use strong cryptographic algorithms and proper key management",
-            SecurityCategory.DATA_EXPOSURE: "Remove debug output and implement proper error handling" \
-                "Remove debug output and implement proper error handling",
+
             SecurityCategory.INPUT_VALIDATION: "Implement comprehensive input validation and sanitization" \
                 "Implement comprehensive input validation and sanitization",
         }
@@ -862,7 +856,7 @@ class SecurityGuard(ElfServant):
     def _is_insecure_setting(self, setting: str, value: Any) -> bool:
         """設定が安全でないかチェック"""
         insecure_settings = {
-            "debug_mode": [True, "true", "1", "on"],
+
             "ssl_verify": [False, "false", "0", "off"],
             "password_policy": ["weak", "none", False],
             "access_logs": [False, "false", "0", "off", "disabled"],
@@ -875,7 +869,7 @@ class SecurityGuard(ElfServant):
     def _get_configuration_recommendation(self, setting: str) -> str:
         """設定項目の推奨対策を取得"""
         recommendations = {
-            "debug_mode": "Disable debug mode in production environments",
+
             "ssl_verify": "Enable SSL certificate verification",
             "password_policy": "Implement strong password policies",
             "access_logs": "Enable comprehensive access logging",

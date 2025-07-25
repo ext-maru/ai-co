@@ -16,7 +16,6 @@ from sqlmodel import Session, select
 from faker import Faker
 import factory
 
-
 # Test Fixtures with Factory Boy
 class TaskFactory(factory.Factory):
     """タスクファクトリー（Factory Boy使用）"""
@@ -29,7 +28,6 @@ class TaskFactory(factory.Factory):
     priority = factory.fuzzy.FuzzyChoice(['low', 'medium', 'high', 'critical'])
     assignee = factory.Faker('user_name')
     tags = factory.List([factory.Faker('word') for _ in range(3)])
-
 
 class TestTaskSage:
     """Task Sage テストスイート"""
@@ -226,8 +224,7 @@ class TestTaskSage:
     async def test_search_tasks(self, task_sage):
         """タスク検索テスト"""
         # 検索対象のタスクを作成
-        search_terms = ["OAuth implementation", "Bug fix", "Documentation update"]
-        
+
         create_handler = None
         for h in task_sage._message_handlers.get("create_task", []):
             create_handler = h["handler"]
@@ -595,7 +592,6 @@ class TestTaskSage:
         # 少なくとも1つは成功することを確認
         successful_results = [r for r in results if isinstance(r, dict) and r.get("status") == "success"]
         assert len(successful_results) > 0
-
 
 # Hypothesisを使ったプロパティベーステスト
 from hypothesis import given, strategies as st

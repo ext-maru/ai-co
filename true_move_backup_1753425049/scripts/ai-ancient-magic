@@ -1,0 +1,9 @@
+#!/bin/bash
+# 🏛️ Ancient Magic System CLI wrapper
+
+# プロジェクトルートを設定
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+# Python環境を使用してコマンドを実行
+cd "$PROJECT_ROOT"
+python3 commands/ai_ancient_magic.py "$@"

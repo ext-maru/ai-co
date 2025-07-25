@@ -1,0 +1,284 @@
+"""
+TDD Test for {{ class_name }}
+{{ description }}
+
+AWS boto3統合のテストケース
+"""
+
+import pytest
+import boto3
+from unittest.mock import Mock, patch, MagicMock
+from moto import mock_s3, mock_dynamodb, mock_cloudwatch
+import json
+from typing import Dict, Any
+
+# テスト対象のインポート
+from auto_implementations.{{ module_name }} import {{ class_name }}, AWSConfig
+
+
+class Test{{ class_name }}:
+    """{{ class_name }} のテストクラス"""
+    
+    def setup_method(self):
+        """テストセットアップ"""
+        self.config = AWSConfig(
+            region_name="us-east-1",
+            aws_access_key_id="test_key_id",
+            aws_secret_access_key="test_secret_key"
+        )
+        self.implementation = {{ class_name }}(self.config)
+    
+    def teardown_method(self):
+        """テストクリーンアップ"""
+        self.implementation = None
+    
+    def test_initialization(self):
+        """初期化テスト"""
+        assert self.implementation is not None
+        assert self.implementation.config.region_name == "us-east-1"
+        assert hasattr(self.implementation, 'session')
+        
+        # サービスクライアントの確認
+        {% for service in aws_services %}
+        assert hasattr(self.implementation, '{{ service }}_client')
+        {% endfor %}
+    
+    def test_session_creation(self):
+        """AWS セッション作成テスト"""
+        session = self.implementation._create_session()
+        assert isinstance(session, boto3.Session)
+        assert session.region_name == "us-east-1"
+    
+    def test_session_creation_with_profile(self):
+        """プロファイル指定でのセッション作成テスト"""
+        config_with_profile = AWSConfig(
+            region_name="us-west-2",
+            profile_name="test_profile"
+        )
+        impl_with_profile = {{ class_name }}(config_with_profile)
+        session = impl_with_profile._create_session()
+        assert isinstance(session, boto3.Session)
+    
+    {% if 's3' in aws_services %}
+    @mock_s3
+    def test_create_s3_bucket_success(self):
+        """S3バケット作成成功テスト"""
+        bucket_name = "test-bucket-12345"
+        
+        result = self.implementation.create_s3_bucket(bucket_name)
+        
+        assert result["status"] == "success"
+        assert result["bucket_name"] == bucket_name
+        assert "location" in result
+    
+    @mock_s3
+    def test_create_s3_bucket_already_exists(self):
+        """S3バケット既存エラーテスト"""
+        bucket_name = "existing-bucket-12345"
+        
+        # バケットを先に作成
+        self.implementation.s3_client.create_bucket(Bucket=bucket_name)
+        
+        # 同じ名前でもう一度作成を試みる
+        result = self.implementation.create_s3_bucket(bucket_name)
+        
+        # 実装によってはエラーになるか、already_existsステータスが返る
+        assert result["status"] in ["already_exists", "success"]
+    
+    @mock_s3
+    def test_upload_to_s3_success(self):
+        """S3アップロード成功テスト"""
+        bucket_name = "test-upload-bucket"
+        key = "test-file.txt"
+        
+        # バケット作成
+        self.implementation.s3_client.create_bucket(Bucket=bucket_name)
+        
+        # テストファイル作成
+        import tempfile
+        import os
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+            f.write("test content")
+            temp_file_path = f.name
+        
+        try:
+            result = self.implementation.upload_to_s3(bucket_name, key, temp_file_path)
+            
+            assert result["status"] == "success"
+            assert result["bucket_name"] == bucket_name
+            assert result["key"] == key
+            assert result["file_path"] == temp_file_path
+        finally:
+            os.unlink(temp_file_path)
+    
+    @mock_s3
+    def test_upload_to_s3_file_not_found(self):
+        """S3アップロードファイル不存在テスト"""
+        bucket_name = "test-upload-bucket"
+        key = "test-file.txt"
+        non_existent_file = "/path/to/non/existent/file.txt"
+        
+        # バケット作成
+        self.implementation.s3_client.create_bucket(Bucket=bucket_name)
+        
+        with pytest.raises(FileNotFoundError):
+            self.implementation.upload_to_s3(bucket_name, key, non_existent_file)
+    {% endif %}
+    
+    {% if 'dynamodb' in aws_services %}
+    @mock_dynamodb
+    def test_create_dynamodb_table_success(self):
+        """DynamoDBテーブル作成成功テスト"""
+        table_name = "test-table"
+        key_schema = [
+            {"AttributeName": "id", "KeyType": "HASH"}
+        ]
+        attribute_definitions = [
+            {"AttributeName": "id", "AttributeType": "S"}
+        ]
+        
+        result = self.implementation.create_dynamodb_table(
+            table_name, key_schema, attribute_definitions
+        )
+        
+        assert result["status"] == "success"
+        assert result["table_name"] == table_name
+        assert "table_arn" in result
+    
+    @mock_dynamodb
+    def test_put_dynamodb_item_success(self):
+        """DynamoDBアイテム挿入成功テスト"""
+        table_name = "test-table"
+        
+        # テーブル作成
+        key_schema = [{"AttributeName": "id", "KeyType": "HASH"}]
+        attribute_definitions = [{"AttributeName": "id", "AttributeType": "S"}]
+        self.implementation.create_dynamodb_table(table_name, key_schema, attribute_definitions)
+        
+        # アイテム挿入
+        item = {"id": "test-id", "name": "test-name", "value": 123}
+        result = self.implementation.put_dynamodb_item(table_name, item)
+        
+        assert result["status"] == "success"
+        assert result["table_name"] == table_name
+    {% endif %}
+    
+    {% if 'cloudwatch' in aws_services %}
+    @mock_cloudwatch
+    def test_put_cloudwatch_metric_success(self):
+        """CloudWatchメトリクス送信成功テスト"""
+        namespace = "TestApp/Metrics"
+        metric_data = [
+            {
+                "MetricName": "TestMetric",
+                "Value": 123.45,
+                "Unit": "Count",
+                "Timestamp": "2025-01-01T00:00:00Z"
+            }
+        ]
+        
+        result = self.implementation.put_cloudwatch_metric(namespace, metric_data)
+        
+        assert result["status"] == "success"
+        assert result["namespace"] == namespace
+        assert result["metric_count"] == 1
+    {% endif %}
+    
+    def test_execute_success(self):
+        """メイン実行メソッド成功テスト"""
+        with patch.object(self.implementation, '_perform_aws_integration') as mock_perform:
+            mock_perform.return_value = {"integration": "success"}
+            
+            result = self.implementation.execute()
+            
+            assert result["status"] == "success"
+            assert result["integration_type"] == "aws_boto3"
+            assert "services" in result
+            assert "results" in result
+            assert "config" in result
+            
+            mock_perform.assert_called_once()
+    
+    def test_execute_with_invalid_input(self):
+        """メイン実行メソッドエラーハンドリングテスト"""
+        with pytest.raises(ValueError, match="Invalid input provided"):
+            self.implementation.execute(invalid_input=True)
+    
+    def test_execute_aws_integration_failure(self):
+        """AWS統合処理失敗テスト"""
+        with patch.object(self.implementation, '_perform_aws_integration') as mock_perform:
+            mock_perform.side_effect = Exception("AWS integration failed")
+            
+            with pytest.raises(Exception, match="AWS integration failed"):
+                self.implementation.execute()
+    
+    def test_perform_aws_integration(self):
+        """AWS統合処理テスト"""
+        {% for service in aws_services %}
+        with patch.object(self.implementation, '_integrate_{{ service }}') as mock_{{ service }}:
+            mock_{{ service }}.return_value = {"status": "success", "service": "{{ service }}"}
+        {% endfor %}
+            
+            result = self.implementation._perform_aws_integration()
+            
+            assert isinstance(result, dict)
+            {% for service in aws_services %}
+            assert "{{ service }}" in result
+            assert result["{{ service }}"]["status"] == "success"
+            {% endfor %}
+    
+    {% for service in aws_services %}
+    def test_integrate_{{ service }}(self):
+        """{{ service }} 統合処理テスト"""
+        result = self.implementation._integrate_{{ service }}()
+        
+        assert result["status"] == "success"
+        assert result["service"] == "{{ service }}"
+        assert "message" in result
+    
+    {% endfor %}
+    
+    def test_string_representation(self):
+        """文字列表現テスト"""
+        str_repr = str(self.implementation)
+        assert "{{ class_name }}" in str_repr
+        assert "region=us-east-1" in str_repr
+        
+        repr_str = repr(self.implementation)
+        assert "{{ class_name }}" in repr_str
+        assert "AWSConfig" in repr_str
+    
+    @pytest.mark.parametrize("region,expected", [
+        ("us-east-1", "us-east-1"),
+        ("eu-west-1", "eu-west-1"),
+        ("ap-northeast-1", "ap-northeast-1"),
+    ])
+    def test_different_regions(self, region, expected):
+        """異なるリージョンでの初期化テスト"""
+        config = AWSConfig(region_name=region)
+        impl = {{ class_name }}(config)
+        assert impl.config.region_name == expected
+    
+    {% if aws_services|length > 1 %}
+    def test_all_service_clients_initialized(self):
+        """全サービスクライアント初期化確認テスト"""
+        expected_services = [{% for service in aws_services %}"{{ service }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+        
+        for service in expected_services:
+            client_attr = f"{service}_client"
+            assert hasattr(self.implementation, client_attr), f"Missing {client_attr}"
+            assert getattr(self.implementation, client_attr) is not None
+    {% endif %}
+    
+    def test_config_default_values(self):
+        """設定デフォルト値テスト"""
+        default_impl = {{ class_name }}()
+        assert default_impl.config.region_name == "us-east-1"
+        assert default_impl.config.profile_name is None
+        assert default_impl.config.aws_access_key_id is None
+        assert default_impl.config.aws_secret_access_key is None
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

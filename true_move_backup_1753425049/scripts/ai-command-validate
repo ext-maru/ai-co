@@ -1,0 +1,616 @@
+#!/bin/bash
+#
+# AI Company Command Validation Tool
+# 命名規則の検証とコマンド品質チェック
+#
+# Usage:
+#   ai-command-validate check           # 全コマンドの命名規則チェック
+#   ai-command-validate duplicates      # 重複機能の検出
+#   ai-command-validate missing         # 不足コマンドの検出
+#   ai-command-validate quality         # コマンド品質チェック
+#   ai-command-validate report          # 包括的レポート生成
+#
+
+set -e
+
+PROJECT_ROOT="/home/aicompany/ai_co"
+VALIDATION_LOG="$PROJECT_ROOT/logs/command_validation.log"
+
+# Color codes
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[1;33m'
+blue='\033[0;34m'
+purple='\033[0;35m'
+cyan='\033[0;36m'
+nc='\033[0m' # No Color
+
+log_info() {
+    echo -e "${green}[INFO]${nc} $1" | tee -a "$VALIDATION_LOG"
+}
+
+log_warning() {
+    echo -e "${yellow}[WARNING]${nc} $1" | tee -a "$VALIDATION_LOG"
+}
+
+log_error() {
+    echo -e "${red}[ERROR]${nc} $1" | tee -a "$VALIDATION_LOG"
+}
+
+log_debug() {
+    echo -e "${blue}[DEBUG]${nc} $1" | tee -a "$VALIDATION_LOG"
+}
+
+# Initialize validation environment
+init_validation() {
+    mkdir -p "$(dirname "$VALIDATION_LOG")"
+    echo "$(date -Iseconds): Starting validation" > "$VALIDATION_LOG"
+}
+
+# Check naming convention compliance
+check_naming_convention() {
+    echo -e "${cyan}🔍 AI Company Command Naming Convention Check${nc}"
+    echo "=============================================="
+    echo ""
+
+    local violations=0
+    local total_commands=0
+
+    # Define valid naming patterns
+    local valid_domains="system|task|worker|knowledge|rag|elder|incident|dev|api|integration|ui|docs|analytics|evolution"
+    local valid_pattern="^ai-(${valid_domains})-[a-z]+(-[a-z]+)*$"
+
+    echo -e "${blue}📋 Checking commands/ directory (Python files)${nc}"
+    echo "Expected pattern: ai_command_name.py"
+    echo ""
+
+    # Check commands directory
+    if [ -d "$PROJECT_ROOT/commands" ]; then
+        while IFS= read -r -d '' file; do
+            total_commands=$((total_commands + 1))
+            local basename=$(basename "$file")
+
+            # Check if follows ai_*.py pattern
+            if [[ ! "$basename" =~ ^ai_.*\.py$ ]]; then
+                violations=$((violations + 1))
+                log_warning "❌ Invalid naming: $basename (should be ai_*.py)"
+            else
+                log_debug "✅ Valid: $basename"
+            fi
+        done < <(find "$PROJECT_ROOT/commands" -name "*.py" -print0)
+    fi
+
+    echo ""
+    echo -e "${blue}📋 Checking scripts/ directory (Shell scripts)${nc}"
+    echo "Expected pattern: ai-domain-action-object"
+    echo ""
+
+    # Check scripts directory
+    if [ -d "$PROJECT_ROOT/scripts" ]; then
+        while IFS= read -r -d '' file; do
+            total_commands=$((total_commands + 1))
+            local basename=$(basename "$file")
+
+            # Skip non-ai commands
+            if [[ ! "$basename" =~ ^ai- ]]; then
+                continue
+            fi
+
+            # Check if follows new naming convention
+            if [[ ! "$basename" =~ $valid_pattern ]]; then
+                violations=$((violations + 1))
+                log_warning "❌ Invalid naming: $basename"
+                log_debug "   Expected: ai-domain-action[-object]"
+                log_debug "   Valid domains: system, task, worker, knowledge, rag, elder, incident, dev, api, integration, ui, docs, analytics, evolution"
+            else
+                log_debug "✅ Valid: $basename"
+            fi
+        done < <(find "$PROJECT_ROOT/scripts" -name "ai-*" -print0)
+    fi
+
+    echo ""
+    echo -e "${purple}📊 Naming Convention Summary${nc}"
+    echo "=============================="
+    echo "Total Commands: $total_commands"
+    echo "Violations: $violations"
+    echo "Compliance Rate: $(( (total_commands - violations) * 100 / total_commands ))%"
+
+    if [ $violations -eq 0 ]; then
+        echo -e "${green}✅ All commands follow naming convention!${nc}"
+    else
+        echo -e "${yellow}⚠️ $violations commands need attention${nc}"
+    fi
+
+    echo ""
+    return $violations
+}
+
+# Detect duplicate functionality
+detect_duplicates() {
+    echo -e "${cyan}🔍 Duplicate Functionality Detection${nc}"
+    echo "===================================="
+    echo ""
+
+    local duplicates_found=0
+
+    # Known duplicates to check
+    declare -A potential_duplicates=(
+        ["send"]="commands/ai_send.py scripts/ai-send"
+        ["start"]="commands/ai_start.py scripts/ai-start"
+        ["stop"]="commands/ai_stop.py scripts/ai-stop"
+        ["status"]="commands/ai_status.py scripts/ai-status"
+        ["logs"]="commands/ai_logs.py scripts/ai-logs"
+        ["test"]="commands/ai_test.py scripts/ai-test"
+        ["workers"]="commands/ai_workers.py scripts/ai-worker-list"
+    )
+
+    for func in "${!potential_duplicates[@]}"; do
+        local files="${potential_duplicates[$func]}"
+        local existing_files=()
+
+        # Check which files actually exist
+        for file_path in $files; do
+            if [ -f "$PROJECT_ROOT/$file_path" ]; then
+                existing_files+=("$PROJECT_ROOT/$file_path")
+            fi
+        done
+
+        # Report duplicates
+        if [ ${#existing_files[@]} -gt 1 ]; then
+            duplicates_found=$((duplicates_found + 1))
+            log_warning "🔄 Duplicate functionality detected: $func"
+            for file in "${existing_files[@]}"; do
+                log_debug "   - $file"
+            done
+            echo ""
+        fi
+    done
+
+    # Look for similar command names
+    echo -e "${blue}📋 Searching for similar command names...${nc}"
+    echo ""
+
+    # Extract command base names and look for patterns
+    local command_bases=()
+
+    # Get base names from commands/
+    if [ -d "$PROJECT_ROOT/commands" ]; then
+        while IFS= read -r file; do
+            local basename=$(basename "$file" .py)
+            basename=${basename#ai_}  # Remove ai_ prefix
+            command_bases+=("$basename")
+        done < <(find "$PROJECT_ROOT/commands" -name "ai_*.py")
+    fi
+
+    # Get base names from scripts/
+    if [ -d "$PROJECT_ROOT/scripts" ]; then
+        while IFS= read -r file; do
+            local basename=$(basename "$file")
+            if [[ "$basename" =~ ^ai- ]]; then
+                basename=${basename#ai-}  # Remove ai- prefix
+                command_bases+=("$basename")
+            fi
+        done < <(find "$PROJECT_ROOT/scripts" -name "ai-*")
+    fi
+
+    # Sort and find similar names
+    printf '%s\n' "${command_bases[@]}" | sort | uniq -c | while read count name; do
+        if [ "$count" -gt 1 ]; then
+            log_warning "🔄 Similar command name: $name (appears $count times)"
+            duplicates_found=$((duplicates_found + 1))
+        fi
+    done
+
+    echo ""
+    echo -e "${purple}📊 Duplicate Detection Summary${nc}"
+    echo "==============================="
+    echo "Duplicate Functions Found: $duplicates_found"
+
+    if [ $duplicates_found -eq 0 ]; then
+        echo -e "${green}✅ No duplicates detected!${nc}"
+    else
+        echo -e "${yellow}⚠️ $duplicates_found duplicates need consolidation${nc}"
+        echo ""
+        echo -e "${blue}💡 Recommendations:${nc}"
+        echo "   1. Use ai-command-migrate to consolidate duplicates"
+        echo "   2. Choose the more complete implementation"
+        echo "   3. Create aliases for backward compatibility"
+    fi
+
+    echo ""
+    return $duplicates_found
+}
+
+# Detect missing commands based on standard structure
+detect_missing_commands() {
+    echo -e "${cyan}🔍 Missing Command Detection${nc}"
+    echo "============================"
+    echo ""
+
+    # Define expected commands by domain
+    declare -A expected_commands=(
+        ["system"]="start stop status health monitor backup update config restart reset"
+        ["task"]="send list info retry cancel queue simulate priority schedule"
+        ["worker"]="list add remove restart scale recover monitor comm health stats"
+        ["knowledge"]="search update export import clean backup stats"
+        ["rag"]="search index manage update wizard test optimize"
+        ["elder"]="council pm compliance proactive summon consult decision"
+        ["incident"]="knights auto report analyze recover prevent"
+        ["dev"]="test tdd coverage codegen debug logs clean lint format"
+        ["api"]="status health reset docs test monitor"
+        ["integration"]="slack git docker mcp test"
+        ["ui"]="web dashboard cli help config"
+        ["docs"]="generate export update serve validate"
+        ["analytics"]="report metrics stats trend export"
+        ["evolution"]="manage daily test wizard plan"
+    )
+
+    local missing_count=0
+    local total_expected=0
+
+    for domain in "${!expected_commands[@]}"; do
+        local actions="${expected_commands[$domain]}"
+        echo -e "${blue}📋 Checking $domain domain...${nc}"
+
+        for action in $actions; do
+            total_expected=$((total_expected + 1))
+            local expected_name="ai-$domain-$action"
+
+            # Check if command exists in scripts/
+            if [ -f "$PROJECT_ROOT/scripts/$expected_name" ]; then
+                log_debug "✅ Found: $expected_name"
+            else
+                # Check if equivalent exists in commands/
+                local legacy_name="ai_${domain}_${action}.py"
+                if [ -f "$PROJECT_ROOT/commands/$legacy_name" ]; then
+                    log_debug "⚠️ Legacy only: $legacy_name (should migrate to $expected_name)"
+                else
+                    missing_count=$((missing_count + 1))
+                    log_warning "❌ Missing: $expected_name"
+                fi
+            fi
+        done
+        echo ""
+    done
+
+    echo -e "${purple}📊 Missing Commands Summary${nc}"
+    echo "============================"
+    echo "Total Expected: $total_expected"
+    echo "Missing: $missing_count"
+    echo "Coverage: $(( (total_expected - missing_count) * 100 / total_expected ))%"
+
+    if [ $missing_count -eq 0 ]; then
+        echo -e "${green}✅ All expected commands present!${nc}"
+    else
+        echo -e "${yellow}⚠️ $missing_count commands missing${nc}"
+        echo ""
+        echo -e "${blue}💡 Recommendations:${nc}"
+        echo "   1. Create missing core functionality commands"
+        echo "   2. Consider if all expected commands are needed"
+        echo "   3. Prioritize based on user needs"
+    fi
+
+    echo ""
+    return $missing_count
+}
+
+# Check command quality (executable, help, etc.)
+check_command_quality() {
+    echo -e "${cyan}🔍 Command Quality Check${nc}"
+    echo "========================"
+    echo ""
+
+    local quality_issues=0
+    local total_checked=0
+
+    # Check commands/ directory
+    echo -e "${blue}📋 Checking commands/ directory quality...${nc}"
+    echo ""
+
+    if [ -d "$PROJECT_ROOT/commands" ]; then
+        while IFS= read -r -d '' file; do
+            total_checked=$((total_checked + 1))
+            local basename=$(basename "$file")
+            local issues=0
+
+            # Check if executable
+            if [ ! -x "$file" ]; then
+                log_warning "❌ Not executable: $basename"
+                issues=$((issues + 1))
+            fi
+
+            # Check if has proper shebang
+            local first_line=$(head -n 1 "$file")
+            if [[ ! "$first_line" =~ ^#! ]]; then
+                log_warning "❌ Missing shebang: $basename"
+                issues=$((issues + 1))
+            fi
+
+            # Check if has help option
+            if grep -q "\-\-help\|help()" "$file" 2>/dev/null; then
+                log_debug "✅ Has help: $basename"
+            else
+                log_warning "⚠️ No help option: $basename"
+                issues=$((issues + 1))
+            fi
+
+            # Check file size (detect empty files)
+            local size=$(stat -c%s "$file")
+            if [ $size -lt 100 ]; then
+                log_warning "⚠️ Very small file (${size}B): $basename"
+                issues=$((issues + 1))
+            fi
+
+            if [ $issues -eq 0 ]; then
+                log_debug "✅ Quality OK: $basename"
+            else
+                quality_issues=$((quality_issues + issues))
+            fi
+
+        done < <(find "$PROJECT_ROOT/commands" -name "*.py" -print0)
+    fi
+
+    echo ""
+    echo -e "${blue}📋 Checking scripts/ directory quality...${nc}"
+    echo ""
+
+    # Check scripts/ directory
+    if [ -d "$PROJECT_ROOT/scripts" ]; then
+        while IFS= read -r -d '' file; do
+            local basename=$(basename "$file")
+
+            # Skip non-ai commands
+            if [[ ! "$basename" =~ ^ai- ]]; then
+                continue
+            fi
+
+            total_checked=$((total_checked + 1))
+            local issues=0
+
+            # Check if executable
+            if [ ! -x "$file" ]; then
+                log_warning "❌ Not executable: $basename"
+                issues=$((issues + 1))
+            fi
+
+            # Check if has proper shebang
+            local first_line=$(head -n 1 "$file")
+            if [[ ! "$first_line" =~ ^#! ]]; then
+                log_warning "❌ Missing shebang: $basename"
+                issues=$((issues + 1))
+            fi
+
+            # Check if has help option
+            if grep -q "\-\-help\|help\|usage" "$file" 2>/dev/null; then
+                log_debug "✅ Has help: $basename"
+            else
+                log_warning "⚠️ No help option: $basename"
+                issues=$((issues + 1))
+            fi
+
+            if [ $issues -eq 0 ]; then
+                log_debug "✅ Quality OK: $basename"
+            else
+                quality_issues=$((quality_issues + issues))
+            fi
+
+        done < <(find "$PROJECT_ROOT/scripts" -name "ai-*" -print0)
+    fi
+
+    echo ""
+    echo -e "${purple}📊 Quality Check Summary${nc}"
+    echo "========================="
+    echo "Commands Checked: $total_checked"
+    echo "Quality Issues: $quality_issues"
+    echo "Quality Score: $(( (total_checked * 4 - quality_issues) * 100 / (total_checked * 4) ))%"
+
+    if [ $quality_issues -eq 0 ]; then
+        echo -e "${green}✅ All commands pass quality check!${nc}"
+    else
+        echo -e "${yellow}⚠️ $quality_issues quality issues found${nc}"
+        echo ""
+        echo -e "${blue}💡 Quality Improvement Recommendations:${nc}"
+        echo "   1. Make all commands executable (chmod +x)"
+        echo "   2. Add proper shebang lines"
+        echo "   3. Implement --help options"
+        echo "   4. Add command documentation"
+    fi
+
+    echo ""
+    return $quality_issues
+}
+
+# Generate comprehensive validation report
+generate_validation_report() {
+    echo -e "${cyan}📊 Generating Comprehensive Validation Report${nc}"
+    echo "=============================================="
+    echo ""
+
+    local report_file="$PROJECT_ROOT/docs/COMMAND_VALIDATION_REPORT.md"
+    local timestamp=$(date -Iseconds)
+
+    # Run all checks and capture results
+    echo "Running validation checks..."
+
+    # Capture check results
+    local naming_violations=0
+    local duplicate_count=0
+    local missing_count=0
+    local quality_issues=0
+
+    # Create temporary files for output capture
+    local temp_dir=$(mktemp -d)
+
+    check_naming_convention > "$temp_dir/naming.txt" 2>&1
+    naming_violations=$?
+
+    detect_duplicates > "$temp_dir/duplicates.txt" 2>&1
+    duplicate_count=$?
+
+    detect_missing_commands > "$temp_dir/missing.txt" 2>&1
+    missing_count=$?
+
+    check_command_quality > "$temp_dir/quality.txt" 2>&1
+    quality_issues=$?
+
+    # Count commands
+    local commands_count=$(find "$PROJECT_ROOT/commands" -name "*.py" | wc -l)
+    local scripts_count=$(find "$PROJECT_ROOT/scripts" -name "ai-*" | wc -l)
+    local total_commands=$((commands_count + scripts_count))
+
+    # Generate report
+    cat > "$report_file" << EOF
+# AI Company Command Validation Report
+
+**Generated**: $timestamp
+**Validator**: AI Command Validation Tool
+**Status**: $([ $((naming_violations + duplicate_count + missing_count + quality_issues)) -eq 0 ] && echo "✅ PASS" || echo "⚠️ ISSUES FOUND")
+
+## Executive Summary
+
+AI Company currently has **$total_commands** commands across two locations:
+- **commands/**: $commands_count Python commands (legacy)
+- **scripts/**: $scripts_count shell scripts (new standard)
+
+### Validation Results
+
+| Check | Status | Issues |
+|-------|--------|---------|
+| Naming Convention | $([ $naming_violations -eq 0 ] && echo "✅ PASS" || echo "❌ FAIL") | $naming_violations |
+| Duplicate Detection | $([ $duplicate_count -eq 0 ] && echo "✅ PASS" || echo "⚠️ FOUND") | $duplicate_count |
+| Missing Commands | $([ $missing_count -eq 0 ] && echo "✅ PASS" || echo "⚠️ FOUND") | $missing_count |
+| Quality Check | $([ $quality_issues -eq 0 ] && echo "✅ PASS" || echo "⚠️ ISSUES") | $quality_issues |
+
+### Overall Score
+
+**$(( (400 - naming_violations - duplicate_count - missing_count - quality_issues) * 100 / 400 ))/100** - $([ $((naming_violations + duplicate_count + missing_count + quality_issues)) -eq 0 ] && echo "Excellent" || [ $((naming_violations + duplicate_count + missing_count + quality_issues)) -lt 20 ] && echo "Good" || echo "Needs Improvement")
+
+## Detailed Results
+
+### 1. Naming Convention Check
+EOF
+
+    # Append detailed results
+    echo '```' >> "$report_file"
+    cat "$temp_dir/naming.txt" >> "$report_file"
+    echo '```' >> "$report_file"
+    echo "" >> "$report_file"
+
+    echo "### 2. Duplicate Functionality Detection" >> "$report_file"
+    echo '```' >> "$report_file"
+    cat "$temp_dir/duplicates.txt" >> "$report_file"
+    echo '```' >> "$report_file"
+    echo "" >> "$report_file"
+
+    echo "### 3. Missing Commands Analysis" >> "$report_file"
+    echo '```' >> "$report_file"
+    cat "$temp_dir/missing.txt" >> "$report_file"
+    echo '```' >> "$report_file"
+    echo "" >> "$report_file"
+
+    echo "### 4. Command Quality Assessment" >> "$report_file"
+    echo '```' >> "$report_file"
+    cat "$temp_dir/quality.txt" >> "$report_file"
+    echo '```' >> "$report_file"
+    echo "" >> "$report_file"
+
+    cat >> "$report_file" << EOF
+## Recommendations
+
+### High Priority
+1. **Standardize Naming**: Use \`ai-command-migrate\` to consolidate to unified naming
+2. **Remove Duplicates**: Consolidate duplicate functionality
+3. **Fix Quality Issues**: Make commands executable and add help options
+
+### Medium Priority
+1. **Add Missing Commands**: Implement missing core functionality
+2. **Improve Documentation**: Add comprehensive help for all commands
+3. **Create Shell Completion**: Implement tab completion for better UX
+
+### Low Priority
+1. **Optimize Performance**: Review command startup times
+2. **Add Testing**: Create validation tests for all commands
+3. **Monitor Usage**: Track command usage patterns
+
+## Migration Path
+
+1. **Phase 1**: Execute \`ai-command-migrate phase1\` for core commands
+2. **Phase 2**: Consolidate domain-specific commands
+3. **Phase 3**: Add missing functionality
+4. **Phase 4**: Quality improvements and optimization
+
+## Validation Schedule
+
+- **Daily**: Automated validation checks
+- **Weekly**: Quality score tracking
+- **Monthly**: Comprehensive review and improvements
+
+---
+
+*Next validation: $(date -d "+1 day" -Iseconds)*
+*For issues, see: \`ai-command-validate check\`*
+EOF
+
+    # Cleanup
+    rm -rf "$temp_dir"
+
+    echo -e "${green}✅ Validation report generated: $report_file${nc}"
+    echo ""
+    echo "📋 Summary:"
+    echo "  - Total Commands: $total_commands"
+    echo "  - Naming Issues: $naming_violations"
+    echo "  - Duplicates: $duplicate_count"
+    echo "  - Missing: $missing_count"
+    echo "  - Quality Issues: $quality_issues"
+    echo ""
+    echo "Next Steps:"
+    echo "  1. Review detailed report: $report_file"
+    echo "  2. Run: ai-command-migrate plan"
+    echo "  3. Fix quality issues: chmod +x, add help"
+}
+
+# Main execution
+main() {
+    cd "$PROJECT_ROOT"
+    init_validation
+
+    case "${1:-}" in
+        "check")
+            check_naming_convention
+            ;;
+        "duplicates")
+            detect_duplicates
+            ;;
+        "missing")
+            detect_missing_commands
+            ;;
+        "quality")
+            check_command_quality
+            ;;
+        "report")
+            generate_validation_report
+            ;;
+        *)
+            echo "AI Company Command Validation Tool"
+            echo ""
+            echo "Usage: $0 {check|duplicates|missing|quality|report}"
+            echo ""
+            echo "Commands:"
+            echo "  check       Check naming convention compliance"
+            echo "  duplicates  Detect duplicate functionality"
+            echo "  missing     Detect missing expected commands"
+            echo "  quality     Check command quality (executable, help, etc.)"
+            echo "  report      Generate comprehensive validation report"
+            echo ""
+            echo "Examples:"
+            echo "  $0 check                    # Quick naming check"
+            echo "  $0 report                   # Full validation report"
+            echo ""
+            echo "For migration help: ai-command-migrate plan"
+            exit 1
+            ;;
+    esac
+}
+
+# Execute main function
+main "$@"

@@ -12,9 +12,9 @@ from datetime import datetime
 # 監視対象パターン
 ISSUE_PATTERNS = [
     "**/docs/issues/*.md",
-    "**/TODO.md",
+
     "**/TASKS.md", 
-    "**/todo.json",
+
     "**/tasks.json",
     "**/*issue*.md"
 ]
@@ -67,7 +67,6 @@ def report_violations(violations):
 def main():
     pass
 
-    
     """メイン処理""" {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"対象ディレクトリ: {base_path}\n")
     

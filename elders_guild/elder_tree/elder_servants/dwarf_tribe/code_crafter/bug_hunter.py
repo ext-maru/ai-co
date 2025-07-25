@@ -1,5 +1,5 @@
 """
-BugHunter (D05) - バグ退治専門家サーバント
+
 ドワーフ工房のデバッグ・品質保証スペシャリスト
 
 EldersLegacy準拠実装 - Issue #70
@@ -21,10 +21,8 @@ from elders_guild.elder_tree.elder_servants.base.elder_servant import (
 )
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
-
-class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
-    D05: BugHunter - バグ退治専門家サーバント
+
     コードの問題検出・修正・品質向上のスペシャリスト
 
     EldersLegacy準拠: Iron Will品質基準に基づく
@@ -42,16 +40,16 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 complexity=6,
             ),
             ServantCapability(
-                "bug_detection",
+
                 "バグ検出・分類",
                 ["source_code", "test_cases"],
-                ["bug_report"],
+
                 complexity=7,
             ),
             ServantCapability(
                 "auto_fix_suggestion",
                 "自動修正提案",
-                ["source_code", "bug_report"],
+
                 ["fix_suggestions"],
                 complexity=8,
             ),
@@ -80,13 +78,11 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         super().__init__(
             servant_id="D05",
-            servant_name="BugHunter",
+
             specialization="バグ検出・修正",
             capabilities=capabilities,
         )
 
-        # BugHunter固有の設定
-        self.bug_patterns = self._initialize_bug_patterns()
         self.vulnerability_patterns = self._initialize_vulnerability_patterns()
         self.code_smell_patterns = self._initialize_code_smell_patterns()
 
@@ -105,8 +101,6 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         self.security_scanner = SecurityScanner()
         self.pattern_matcher = PatternMatcher()
 
-        self.logger.info("BugHunter ready to hunt down bugs")
-
     def get_specialized_capabilities(self) -> List[ServantCapability]:
         """専門能力の取得"""
         return [
@@ -118,7 +112,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 complexity=7,
             ),
             ServantCapability(
-                "performance_bug_detection",
+
                 "パフォーマンスバグ検出",
                 ["source_code", "profile_data"],
                 ["performance_issues"],
@@ -140,7 +134,6 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         task_type = task.get("task_type", "")
 
         try:
-            self.logger.info(f"Hunting bugs for task {task_id}: {task_type}")
 
             result_data = {}
             payload = task.get("payload", {})
@@ -149,13 +142,12 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 result_data = await self._static_analysis(
                     payload.get("source_code", "")
                 )
-            elif task_type == "bug_detection":
-                result_data = await self._bug_detection(
+
                     payload.get("source_code", ""), payload.get("test_cases", [])
                 )
             elif task_type == "auto_fix_suggestion":
                 result_data = await self._auto_fix_suggestion(
-                    payload.get("source_code", ""), payload.get("bug_report", {})
+
                 )
             elif task_type == "code_smell_detection":
                 result_data = await self._code_smell_detection(
@@ -173,8 +165,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 result_data = await self._regression_analysis(
                     payload.get("original_code", ""), payload.get("modified_code", "")
                 )
-            elif task_type == "performance_bug_detection":
-                result_data = await self._performance_bug_detection(
+
                     payload.get("source_code", ""), payload.get("profile_data", {})
                 )
             elif task_type == "memory_leak_detection":
@@ -183,9 +174,6 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 )
             else:
                 raise ValueError(f"Unknown task type: {task_type}")
-
-            # BugHunter品質検証
-            quality_score = await self._validate_bug_hunting_quality(result_data)
 
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
 
@@ -200,7 +188,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         except Exception as e:
             # Handle specific exception case
-            self.logger.error(f"Bug hunting failed for task {task_id}: {str(e)}")
+
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
 
             return TaskResult(
@@ -213,25 +201,25 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
     async def craft_artifact(self, specification: Dict[str, Any]) -> Dict[str, Any]:
-        """BugHunter専用の製作メソッド"""
+
         analysis_type = specification.get("type", "static_analysis")
         source_code = specification.get("source_code", "")
 
         if analysis_type == "comprehensive":
             # 包括的分析
             static_result = await self._static_analysis(source_code)
-            bug_result = await self._bug_detection(source_code, [])
+
             smell_result = await self._code_smell_detection(source_code)
 
             return {
                 "comprehensive_analysis": {
                     "static_analysis": static_result,
-                    "bug_detection": bug_result,
+
                     "code_smells": smell_result,
                 },
                 "total_issues": (
                     len(static_result.get("issues", []))
-                    + len(bug_result.get("bugs_found", []))
+
                     + len(smell_result.get("smells_detected", []))
                 ),
             }
@@ -303,26 +291,22 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 "code_quality_score": 0.0,
             }
 
-    async def _bug_detection(
         self, source_code: str, test_cases: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
         """バグ検出・分類"""
         if not source_code:
-            raise ValueError("Source code is required for bug detection")
 
         try:
             tree = ast.parse(source_code)
 
-            bugs_found = []
-
             # 一般的なバグパターンの検出
-            for pattern_name, pattern_info in self.bug_patterns.items():
+
                 matches = self.pattern_matcher.find_pattern_matches(tree, pattern_info)
                 for match in matches:
                     # Process each item in collection
-                    bugs_found.append(
+
                         {
-                            "bug_type": pattern_name,
+
                             "severity": pattern_info["severity"],
                             "line": match.get("line", 0),
                             "description": pattern_info["description"],
@@ -332,47 +316,37 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
             # ロジックエラーの検出
             logic_errors = self._detect_logic_errors(tree)
-            bugs_found.extend(logic_errors)
 
             # テストケースベースの検証
             if test_cases:
-                test_bugs = await self._validate_with_test_cases(
+
                     source_code, test_cases
                 )
-                bugs_found.extend(test_bugs)
 
             # バグの分類
-            bug_categories = self._classify_bugs(bugs_found)
 
             return {
-                "bug_report": {
-                    "total_bugs": len(bugs_found),
-                    "bug_categories": bug_categories,
+
                     "severity_distribution": self._get_severity_distribution(
-                        bugs_found
+
                     ),
                 },
-                "bugs_found": bugs_found,
-                "analysis_type": "bug_detection",
-                "risk_level": self._calculate_risk_level(bugs_found),
-                "fix_priority": self._prioritize_fixes(bugs_found),
+
             }
 
         except Exception as e:
             # Handle specific exception case
-            self.logger.error(f"Bug detection failed: {e}")
+
             return {
-                "bug_report": {"error": str(e)},
-                "bugs_found": [],
-                "analysis_type": "bug_detection",
+
                 "risk_level": "unknown",
             }
 
     async def _auto_fix_suggestion(
-        self, source_code: str, bug_report: Dict[str, Any]
+
     ) -> Dict[str, Any]:
         """自動修正提案"""
-        if not source_code or not bug_report:
+
             # Complex condition - consider breaking down
             return {
                 "fix_suggestions": [],
@@ -381,17 +355,13 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         try:
-            bugs = bug_report.get("bugs_found", [])
+
             fix_suggestions = []
 
-            for bug in bugs:
                 # Process each item in collection
-                bug_type = bug.get("bug_type", "")
-                line = bug.get("line", 0)
 
                 # 自動修正可能なバグの処理
-                if bug_type in self._get_auto_fixable_bugs():
-                    fix = self._generate_auto_fix(source_code, bug)
+
                     if fix:
                         fix_suggestions.append(fix)
 
@@ -605,7 +575,6 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 "overall_quality_score": 0.0,
             }
 
-    async def _validate_bug_hunting_quality(self, result_data: Dict[str, Any]) -> float:
         """バグハンティング品質検証"""
         quality_score = await self.validate_crafting_quality(result_data)
 
@@ -613,7 +582,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             # 検出した問題数による加点
             issues_found = (
                 len(result_data.get("issues", []))
-                + len(result_data.get("bugs_found", []))
+
                 + len(result_data.get("vulnerabilities", []))
             )
             quality_score += min(20.0, issues_found * 2.0)
@@ -637,13 +606,13 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         except Exception as e:
             # Handle specific exception case
-            self.logger.error(f"Bug hunting quality validation error: {e}")
+
             quality_score = max(quality_score - 10.0, 0.0)
 
         return min(quality_score, 100.0)
 
     # ヘルパーメソッドとクラス
-    def _initialize_bug_patterns(self) -> Dict[str, Dict[str, Any]]:
+
         """バグパターン初期化"""
         return {
             "null_pointer": {
@@ -711,7 +680,6 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             },
         }
 
-
 class SyntaxAnalyzer:
     """構文分析器"""
 
@@ -733,7 +701,6 @@ class SyntaxAnalyzer:
                 )
 
         return issues
-
 
 class LogicAnalyzer:
     """ロジック分析器"""
@@ -765,7 +732,6 @@ class LogicAnalyzer:
                 return True
         return False
 
-
 class SecurityScanner:
     """セキュリティスキャナー"""
 
@@ -788,7 +754,6 @@ class SecurityScanner:
                     )
 
         return matches
-
 
 class PatternMatcher:
     """パターンマッチャー"""

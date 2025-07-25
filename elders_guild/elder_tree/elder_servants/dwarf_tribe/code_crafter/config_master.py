@@ -21,7 +21,7 @@ import json
 import logging
 import os
 import shutil
-import tempfile
+
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -38,7 +38,6 @@ from elders_guild.elder_tree.elder_servants.base.elder_servant import (
 )
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
-
 @dataclass
 class ConfigurationSpec:
     """設定仕様定義"""
@@ -50,7 +49,6 @@ class ConfigurationSpec:
     encryption_required: bool = False
     backup_enabled: bool = True
 
-
 @dataclass
 class SecretSpec:
     """シークレット仕様定義"""
@@ -61,7 +59,6 @@ class SecretSpec:
     encryption_method: str = "base64"
     expiry_days: Optional[int] = None
     access_level: str = "restricted"
-
 
 class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
@@ -177,10 +174,9 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         """専門能力の取得"""
         return [
             ServantCapability(
-                "template_configuration",
+
                 "設定テンプレート生成",
-                ["template_spec"],
-                ["config_template"],
+
                 complexity=3,
             ),
             ServantCapability(
@@ -248,8 +244,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 result_data = await self._manage_multi_environment(payload)
             elif task_type == "config_backup_restore":
                 result_data = await self._backup_restore_configuration(payload)
-            elif task_type == "template_configuration":
-                result_data = await self._generate_configuration_template(payload)
+
             elif task_type == "configuration_diff":
                 result_data = await self._compare_configurations(payload)
             elif task_type == "security_audit":
@@ -458,14 +453,13 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             environments = spec.get(
                 "environments", ["development", "staging", "production"]
             )
-            config_template = spec.get("config_template", {})
+
             environment_overrides = spec.get("environment_overrides", {})
 
             environment_configs = {}
 
             for env in environments:
                 # ベース設定をコピー
-                env_config = config_template.copy()
 
                 # 環境固有のオーバーライドを適用
                 if env in environment_overrides:
@@ -965,20 +959,17 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 "type": "file_delete_error",
             }
 
-    async def _generate_configuration_template(
         self, spec: Dict[str, Any]
     ) -> Dict[str, Any]:
         """設定テンプレート生成"""
-        template_type = spec.get("template_type", "web_application")
+
         environment = spec.get("environment", "development")
 
-        templates = {
             "web_application": {
                 "app": {
                     "name": "MyWebApp",
                     "port": 8000,
-                    "debug": environment == "development",
-                    "log_level": "DEBUG" if environment == "development" else "INFO",
+
                 },
                 "database": {
                     "host": "localhost",
@@ -1007,14 +998,11 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             },
         }
 
-        template = templates.get(template_type, templates["web_application"])
-
         return {
             "success": True,
-            "template": template,
-            "template_type": template_type,
+
             "environment": environment,
-            "type": "configuration_template",
+
         }
 
     async def _compare_configurations(self, spec: Dict[str, Any]) -> Dict[str, Any]:
@@ -1110,9 +1098,9 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         # 設定値のセキュリティチェック
         security_checks = [
             {
-                "key": "debug",
+
                 "rule": lambda x: x is False,
-                "message": "Debug mode should be disabled in production",
+
             },
             {
                 "key": "ssl_enabled",
@@ -1348,7 +1336,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 "configuration_validation",
                 "multi_environment_management",
                 "config_backup_restore",
-                "template_configuration",
+
                 "configuration_diff",
                 "security_audit",
             ]
@@ -1374,7 +1362,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             "configuration_validation",
             "configuration_backup_restore",
             "security_configuration_audit",
-            "configuration_template_generation",
+
             "configuration_difference_analysis",
         ]
 
@@ -1391,7 +1379,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                         "environment_separation",
                         "secret_encryption",
                     ],
-                    "templates": [
+
                         "web_app_config",
                         "microservice_config",
                         "database_config",
@@ -1449,7 +1437,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     def _start_metrics_collection(self, task_id: str, task_type: str):
         """メトリクス収集開始"""
         try:
-            self.logger.debug(
+
                 f"Started metrics collection for configuration task {task_id} of type {task_type}"
             )
         except Exception as e:
@@ -1459,7 +1447,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     def _end_metrics_collection(self, task_id: str, quality_score: float):
         """メトリクス収集終了"""
         try:
-            self.logger.debug(
+
                 f"Ended metrics collection for configuration task {task_id} with quality " \
                     "score {quality_score}"
             )

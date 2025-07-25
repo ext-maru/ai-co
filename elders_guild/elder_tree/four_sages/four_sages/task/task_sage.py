@@ -19,7 +19,6 @@ from shared_libs.config import config
 
 from ..base_sage import BaseSage
 
-
 class TaskStatus(Enum):
     """タスクステータス"""
 
@@ -29,7 +28,6 @@ class TaskStatus(Enum):
     CANCELLED = "cancelled"
     BLOCKED = "blocked"
 
-
 class TaskPriority(Enum):
     """タスク優先度"""
 
@@ -37,7 +35,6 @@ class TaskPriority(Enum):
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
-
 
 class TaskSage(BaseSage):
     """タスク賢者 - プロジェクト管理とタスク追跡"""
@@ -55,7 +52,7 @@ class TaskSage(BaseSage):
         # タスクカテゴリ
         self.categories = [
             "development",
-            "bug_fix",
+
             "feature",
             "documentation",
             "testing",

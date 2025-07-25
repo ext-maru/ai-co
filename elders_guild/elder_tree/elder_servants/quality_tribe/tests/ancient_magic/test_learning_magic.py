@@ -14,7 +14,7 @@ import pytest
 import asyncio
 from typing import Dict, Any, List
 import json
-import tempfile
+
 from pathlib import Path
 from datetime import datetime
 
@@ -24,7 +24,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from ancient_magic.learning_magic.learning_magic import LearningMagic
-
 
 class TestLearningMagic:
     """Learning Magic テストクラス"""
@@ -512,7 +511,6 @@ class TestLearningMagic:
             assert "target_performance" in improvement
             assert "implementation_plan" in improvement
 
-
 @pytest.mark.asyncio
 class TestLearningMagicIntegration:
     """Learning Magic統合テスト"""
@@ -551,7 +549,6 @@ class TestLearningMagicIntegration:
         assert "learning_synthesis" in result
         assert "cross_sage_insights" in result
         assert result["overall_system_improvement"] > 0
-
 
 if __name__ == "__main__":
     pytest.main(["-v", __file__])

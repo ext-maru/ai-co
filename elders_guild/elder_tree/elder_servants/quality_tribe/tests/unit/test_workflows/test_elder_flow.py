@@ -16,7 +16,6 @@ from elder_tree.workflows.elder_flow import (
 from python_a2a import Message
 from sqlmodel import Session, select
 
-
 class TestElderFlow:
     """Elder Flow テストスイート"""
     
@@ -172,12 +171,11 @@ class TestElderFlow:
             "quality": {"score": 90, "passed": True},
             "files_created": ["/tmp/test_file.py"]
         }
-        
-        # ファイル内容をモック（TODO/FIXMEを含む）
+
         with patch('builtins.open', create=True) as mock_open:
             mock_open.return_value.__enter__.return_value.read.return_value = """
             def test_function():
-                # TODO: Implement this
+
                 pass
             """
             
@@ -394,7 +392,6 @@ class TestElderFlow:
                     elder_flow.active_flows.inc.assert_called_once()
                     elder_flow.active_flows.dec.assert_called_once()
                     mock_counter.assert_called()
-
 
 # エラー処理とエッジケースのテスト
 class TestElderFlowErrorHandling:

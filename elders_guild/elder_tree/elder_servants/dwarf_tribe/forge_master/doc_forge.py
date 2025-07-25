@@ -32,7 +32,6 @@ from elders_guild.elder_tree.elder_servants.base.elder_servant import (
 )
 from elders_guild.elder_tree.elder_servants.base.specialized_servants import DwarfServant
 
-
 @dataclass
 class DocumentationConfig:
     """ドキュメント生成設定"""
@@ -43,7 +42,6 @@ class DocumentationConfig:
     include_examples: bool = True
     include_diagrams: bool = False
     detail_level: str = "comprehensive"  # brief, standard, comprehensive
-
 
 class DocForge(DwarfServant):
     """
@@ -897,7 +895,7 @@ class DocForge(DwarfServant):
                 # ナレッジ賢者: ドキュメントテンプレートとベストプラクティス
                 return {
                     "status": "consulted",
-                    "templates": ["api_documentation_template", "user_guide_template"],
+
                     "best_practices": ["clear_structure", "comprehensive_examples"],
                     "style_guide": "technical_writing_standards",
                 }

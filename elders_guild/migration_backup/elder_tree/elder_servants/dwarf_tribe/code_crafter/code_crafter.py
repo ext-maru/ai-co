@@ -36,7 +36,6 @@ from libs.elder_servants.base.elder_servant import (
 )
 from libs.elder_servants.base.specialized_servants import DwarfServant
 
-
 class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
     D01: CodeCrafter - Python実装専門サーバント
@@ -100,10 +99,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         )
 
         # コード生成テンプレート
-        self.templates = {
-            "function": self._get_function_template(),
-            "class": self._get_class_template(),
-            "module": self._get_module_template(),
+
         }
 
     async def craft_artifact(self, specification: Dict[str, Any]) -> Dict[str, Any]:
@@ -701,7 +697,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                         f"""
 def {test_name}():
     \"\"\"Test for {func.name}\"\"\"
-    # TODO: Implement test
+
     assert True  # Placeholder"""
                     )
 
@@ -716,12 +712,12 @@ class {test_class_name}(unittest.TestCase):
     \"\"\"Test for {cls.name}\"\"\"
 
     def setUp(self):
-        # TODO: Setup test fixtures
+
         pass
 
     def test_init(self):
         \"\"\"Test initialization\"\"\"
-        # TODO: Implement test
+
         pass"""
                 )
 
@@ -827,20 +823,15 @@ class {test_class_name}(unittest.TestCase):
         return min(quality_score, 100.0)
 
     # ヘルパーメソッド
-    def _get_function_template(self) -> str:
-        """get_function_template取得（内部メソッド）"""
+
         return """def {name}({params}) -> {return_type}:
     \"\"\"{docstring}\"\"\"
     {body}"""
 
-    def _get_class_template(self) -> str:
-        """get_class_template取得（内部メソッド）"""
         return """class {name}{bases}:
     \"\"\"{docstring}\"\"\"
     {body}"""
 
-    def _get_module_template(self) -> str:
-        """get_module_template取得（内部メソッド）"""
         return """\"\"\"{docstring}\"\"\"
 
 {imports}
@@ -1289,7 +1280,7 @@ class {test_class_name}(unittest.TestCase):
         """メトリクス収集開始"""
         try:
             # メトリクス収集の実装（将来の拡張用）
-            self.logger.debug(
+
                 f"Started metrics collection for task {task_id} of type {task_type}"
             )
         except Exception as e:
@@ -1300,7 +1291,7 @@ class {test_class_name}(unittest.TestCase):
         """メトリクス収集終了"""
         try:
             # メトリクス収集の実装（将来の拡張用）
-            self.logger.debug(
+
                 f"Ended metrics collection for task {task_id} with quality score {quality_score}"
             )
         except Exception as e:

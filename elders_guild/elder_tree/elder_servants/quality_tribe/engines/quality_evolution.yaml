@@ -1,0 +1,222 @@
+# 🏛️ エルダーズギルド 品質進化予言書
+# 品質を段階的に自動進化させる予言書
+
+prophecy_name: "quality_evolution"
+description: "品質を段階的に自動進化させる予言書"
+category: "quality"
+version: "1.0"
+author: "Claude Elder"
+created_at: "2025-07-11T00:00:00"
+updated_at: "2025-07-11T00:00:00"
+
+phases:
+  - phase_id: 1
+    name: "基本品質フェーズ"
+    description: "基本的な品質チェックとPre-commit設定"
+    features:
+      - "基本的な構文チェック"
+      - "YAMLファイル検証"
+      - "大容量ファイル検出"
+      - "マージコンフリクト検出"
+    requirements:
+      - "Pre-commit設定済み"
+      - "Git設定完了"
+    gates:
+      - gate_id: "quality_gate_1"
+        target_phase: 2
+        description: "基本品質からコードフォーマットへの昇格"
+        criteria:
+          - precommit_success_rate: ">= 95"
+          - precommit_avg_time: "<= 3.0"
+          - python_syntax_errors: "== 0"
+          - team_satisfaction: ">= 80"
+          - tool_understanding_black: ">= 75"
+          - developer_complaints: "<= 3"
+        evolution_actions:
+          - "add_black_formatter"
+          - "add_isort_import_sorter"
+          - "enable_code_formatting"
+          - "update_precommit_config_phase_2"
+        stability_days: 7
+        trigger: "automatic"
+
+  - phase_id: 2
+    name: "コードフォーマットフェーズ"
+    description: "Black + isort による自動コード整形"
+    features:
+      - "自動コード整形 (Black)"
+      - "Import順序自動修正 (isort)"
+      - "統一されたコードスタイル"
+      - "フォーマット違反の自動修正"
+    requirements:
+      - "Black理解とツール習熟"
+      - "isort設定の理解"
+    gates:
+      - gate_id: "quality_gate_2"
+        target_phase: 3
+        description: "コードフォーマットから品質強化への昇格"
+        criteria:
+          - black_compliance_rate: ">= 95"
+          - import_order_compliance: ">= 95"
+          - pr_creation_time_reduction: ">= 30"
+          - code_review_time_reduction: ">= 20"
+          - team_satisfaction: ">= 85"
+          - format_related_issues: "== 0"
+        evolution_actions:
+          - "add_flake8_linter"
+          - "add_bandit_security_scanner"
+          - "enable_code_complexity_checks"
+          - "update_precommit_config_phase_3"
+        stability_days: 14
+        trigger: "automatic"
+
+  - phase_id: 3
+    name: "品質強化フェーズ"
+    description: "Flake8 + Bandit による品質・セキュリティ強化"
+    features:
+      - "コード品質チェック (Flake8)"
+      - "セキュリティ脆弱性検出 (Bandit)"
+      - "複雑度チェック"
+      - "コーディング規約強制"
+    requirements:
+      - "Flake8ルールの理解"
+      - "セキュリティ意識の向上"
+    gates:
+      - gate_id: "quality_gate_3"
+        target_phase: 4
+        description: "品質強化からTDD完全への昇格"
+        criteria:
+          - code_quality_score: ">= 9.0"
+          - security_issues_count: "== 0"
+          - flake8_violations: "<= 5"
+          - test_coverage: ">= 70"
+          - tdd_understanding_score: ">= 80"
+          - bug_reduction_rate: ">= 50"
+        evolution_actions:
+          - "add_mypy_type_checking"
+          - "add_pytest_coverage_enforcement"
+          - "enable_tdd_compliance_checks"
+          - "update_precommit_config_phase_4"
+        stability_days: 21
+        trigger: "elder_council"  # Phase 4は慎重に手動承認
+
+  - phase_id: 4
+    name: "TDD完全フェーズ"
+    description: "完全なTDD準拠とタイプチェック"
+    features:
+      - "完全な型チェック (mypy)"
+      - "テストカバレッジ強制"
+      - "TDD準拠チェック"
+      - "完全品質保証"
+    requirements:
+      - "TDD完全理解"
+      - "型ヒント完全対応"
+      - "テスト設計スキル"
+    gates: []  # 最終フェーズのため昇格ゲートなし
+
+# 📊 メトリクス定義
+metrics:
+  precommit_success_rate:
+    description: "Pre-commit実行成功率"
+    unit: "percentage"
+    collection_method: "git_log_analysis"
+
+  precommit_avg_time:
+    description: "Pre-commit平均実行時間"
+    unit: "seconds"
+    collection_method: "execution_timing"
+
+  python_syntax_errors:
+    description: "Python構文エラー数"
+    unit: "count"
+    collection_method: "syntax_check"
+
+  team_satisfaction:
+    description: "チーム満足度"
+    unit: "percentage"
+    collection_method: "survey"
+
+  tool_understanding_black:
+    description: "Blackツール理解度"
+    unit: "percentage"
+    collection_method: "skill_assessment"
+
+  developer_complaints:
+    description: "開発者苦情数"
+    unit: "count"
+    collection_method: "feedback_tracking"
+
+# 🔧 進化アクション定義
+evolution_actions:
+  add_black_formatter:
+    description: "Black自動フォーマッターを追加"
+    type: "config_update"
+
+  add_isort_import_sorter:
+    description: "isortによるimport順序整理を追加"
+    type: "config_update"
+
+  enable_code_formatting:
+    description: "コードフォーマット機能を有効化"
+    type: "feature_enable"
+
+  update_precommit_config_phase_2:
+    description: "Phase 2用のpre-commit設定に更新"
+    type: "config_replacement"
+
+  add_flake8_linter:
+    description: "Flake8リンターを追加"
+    type: "config_update"
+
+  add_bandit_security_scanner:
+    description: "Banditセキュリティスキャナーを追加"
+    type: "config_update"
+
+  enable_code_complexity_checks:
+    description: "コード複雑度チェックを有効化"
+    type: "feature_enable"
+
+  update_precommit_config_phase_3:
+    description: "Phase 3用のpre-commit設定に更新"
+    type: "config_replacement"
+
+  add_mypy_type_checking:
+    description: "mypy型チェックを追加"
+    type: "config_update"
+
+  add_pytest_coverage_enforcement:
+    description: "pytest カバレッジ強制を追加"
+    type: "config_update"
+
+  enable_tdd_compliance_checks:
+    description: "TDD準拠チェックを有効化"
+    type: "feature_enable"
+
+  update_precommit_config_phase_4:
+    description: "Phase 4用のpre-commit設定に更新"
+    type: "config_replacement"
+
+# 🎯 予言書メタデータ
+metadata:
+  estimated_duration:
+    phase_1_to_2: "1-2週間"
+    phase_2_to_3: "2-3週間"
+    phase_3_to_4: "3-4週間"
+
+  difficulty_level:
+    phase_1: "初級"
+    phase_2: "初級-中級"
+    phase_3: "中級"
+    phase_4: "上級"
+
+  success_factors:
+    - "チーム全体の理解と協力"
+    - "段階的な学習と適応"
+    - "継続的なフィードバック"
+    - "適切な教育とサポート"
+
+  rollback_triggers:
+    - "エラー率が10%を超過"
+    - "チーム満足度が60%を下回る"
+    - "重要な機能の停止"
+    - "開発効率の大幅な低下"

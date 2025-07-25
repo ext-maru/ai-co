@@ -156,8 +156,7 @@ Task to complete:
                                     )
                                     with open(recent_file, "r") as f:
                                         file_content = f.read()
-                                    output_text = f"ファイルを生成しました: {os.path." \
-                                        "basename(recent_file)}\n\n```python\n{file_content}\n```"
+                                    output_text = f"ファイルを生成しました: {os.path.basename(recent_file)}\n\n```python\n{file_content}\n```"
                                     break
                             else:
                                 # ファイルが見つからない場合
@@ -343,8 +342,9 @@ Task to complete:
             traceback.print_exc()
             return None
 
-    def extract_code_blocks(self, text)logger.info(f"🧬 コードブロック抽出開始: テキスト長{len(text)}文字")
-    """Claude出力からコードブロックを抽出（修正版）"""
+    def extract_code_blocks(self, text):
+        """Claude出力からコードブロックを抽出（修正版）"""
+        logger.info(f"🧬 コードブロック抽出開始: テキスト長{len(text)}文字")
 
         # ```language code ``` パターン（修正版）
         pattern = r"```(\w+)?\n(.*?)\n```"
@@ -420,13 +420,13 @@ Task to complete:
         except:
             return False
 
-    def generate_simulated_response(self, prompt, task_type)prompt_lower = prompt.lower()
-    """シミュレーションモードでの応答生成"""
+    def generate_simulated_response(self, prompt, task_type):
+        """シミュレーションモードでの応答生成"""
+        prompt_lower = prompt.lower()
 
         if task_type == "code":
             if "hello" in prompt_lower or "挨拶" in prompt_lower:
                 return """Created hello_ai_company.py with the following content:
-                    pass
 ```python
 print("Hello, Elders Guild!")
 ```"""
@@ -463,15 +463,14 @@ print(f"Prime numbers: {primes}")
                 return f"[シミュレーション] コードタスク処理完了: {prompt[:50]}..."
         else:
             return f"[シミュレーション] 一般タスク処理完了: {prompt[:50]}..."
-
-    def setup_signal_handlers(self)signal.signal(signal.SIGTERM, self.handle_shutdown)
-    """シグナルハンドラーの設定"""
+    def setup_signal_handlers(self):
+        """シグナルハンドラーの設定"""
+        signal.signal(signal.SIGTERM, self.handle_shutdown)
         signal.signal(signal.SIGINT, self.handle_shutdown)
         logger.info("🛡️ Graceful Shutdownハンドラー設定完了")
-
-    def handle_shutdown(self, signum, frame)logger.info(f"📤 シャットダウンシグナル受信: {signum}")
-    """シャットダウンシグナルの処理"""
-        pass
+    def handle_shutdown(self, signum, frame):
+        """シャットダウンシグナルの処理"""
+        logger.info(f"📤 シャットダウンシグナル受信: {signum}")
 
         if self.current_task:
             logger.info("⏳ 現在のタスク完了を待機中...")

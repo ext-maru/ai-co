@@ -31,7 +31,6 @@ from elders_guild.elder_tree.core.elders_legacy import (
     enforce_boundary,
 )
 
-
 class ErrorSeverity(Enum):
     """エラー重要度"""
 
@@ -40,7 +39,6 @@ class ErrorSeverity(Enum):
     HIGH = "high"  # 即座対応必要
     CRITICAL = "critical"  # システム停止レベル
     CATASTROPHIC = "catastrophic"  # 完全障害
-
 
 class ErrorCategory(Enum):
     """エラーカテゴリ"""
@@ -55,7 +53,6 @@ class ErrorCategory(Enum):
     PERFORMANCE = "performance"  # パフォーマンス関連
     CONFIGURATION = "config"  # 設定関連
 
-
 class RecoveryStrategy(Enum):
     """復旧戦略"""
 
@@ -65,7 +62,6 @@ class RecoveryStrategy(Enum):
     GRACEFUL_DEGRADE = "degrade"  # 機能劣化
     FAILOVER = "failover"  # フェイルオーバー
     MANUAL = "manual"  # 手動対応
-
 
 @dataclass
 class ErrorContext:
@@ -82,10 +78,9 @@ class ErrorContext:
     stack_trace: str
     request_data: Dict[str, Any] = field(default_factory=dict)
     system_state: Dict[str, Any] = field(default_factory=dict)
-    recovery_attempts: int = 0
+
     resolved: bool = False
     metadata: Dict[str, Any] = field(default_factory=dict)
-
 
 @dataclass
 class RecoveryAction:
@@ -93,11 +88,10 @@ class RecoveryAction:
 
     strategy: RecoveryStrategy
     handler: Callable
-    max_attempts: int = 3
+
     delay_seconds: float = 1.0
     exponential_backoff: bool = True
     conditions: List[Callable] = field(default_factory=list)
-
 
 class ElderIntegrationError(Exception):
     """Elder統合基盤エラー"""
@@ -119,7 +113,6 @@ class ElderIntegrationError(Exception):
         self.error_id = str(uuid.uuid4())
         self.timestamp = datetime.now()
 
-
 class ElderNetworkError(ElderIntegrationError):
     """ネットワーク関連エラー"""
 
@@ -132,7 +125,6 @@ class ElderNetworkError(ElderIntegrationError):
             recovery_strategy=RecoveryStrategy.RETRY,
             **kwargs,
         )
-
 
 class ElderDatabaseError(ElderIntegrationError):
     """データベース関連エラー"""
@@ -147,7 +139,6 @@ class ElderDatabaseError(ElderIntegrationError):
             **kwargs,
         )
 
-
 class ElderAuthenticationError(ElderIntegrationError):
     """認証関連エラー"""
 
@@ -161,7 +152,6 @@ class ElderAuthenticationError(ElderIntegrationError):
             **kwargs,
         )
 
-
 class ElderPerformanceError(ElderIntegrationError):
     """パフォーマンス関連エラー"""
 
@@ -174,7 +164,6 @@ class ElderPerformanceError(ElderIntegrationError):
             recovery_strategy=RecoveryStrategy.GRACEFUL_DEGRADE,
             **kwargs,
         )
-
 
 class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
     """
@@ -225,7 +214,7 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
         self.recovery_handlers[RecoveryStrategy.RETRY] = RecoveryAction(
             strategy=RecoveryStrategy.RETRY,
             handler=self._retry_handler,
-            max_attempts=3,
+
             delay_seconds=1.0,
             exponential_backoff=True,
         )
@@ -234,21 +223,21 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
         self.recovery_handlers[RecoveryStrategy.FALLBACK] = RecoveryAction(
             strategy=RecoveryStrategy.FALLBACK,
             handler=self._fallback_handler,
-            max_attempts=1,
+
         )
 
         # 機能劣化ハンドラー
         self.recovery_handlers[RecoveryStrategy.GRACEFUL_DEGRADE] = RecoveryAction(
             strategy=RecoveryStrategy.GRACEFUL_DEGRADE,
             handler=self._graceful_degrade_handler,
-            max_attempts=1,
+
         )
 
         # サーキットブレーカーハンドラー
         self.recovery_handlers[RecoveryStrategy.CIRCUIT_BREAK] = RecoveryAction(
             strategy=RecoveryStrategy.CIRCUIT_BREAK,
             handler=self._circuit_break_handler,
-            max_attempts=1,
+
         )
 
     @enforce_boundary("error_handling")
@@ -280,7 +269,6 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
 
             # 自動復旧実行
             if self.auto_recovery_enabled:
-                recovery_success = await self._attempt_auto_recovery(request)
 
                 if recovery_success:
                     self.recovery_statistics["auto_recovered"] += 1
@@ -315,7 +303,6 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
         if error_context.severity == ErrorSeverity.CATASTROPHIC:
             await self._execute_emergency_procedures(error_context)
 
-    async def _attempt_auto_recovery(self, error_context: ErrorContext) -> bool:
         """自動復旧試行"""
         # エラータイプから復旧戦略決定
         recovery_strategy = self._determine_recovery_strategy(error_context)
@@ -329,9 +316,8 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
         recovery_action = self.recovery_handlers[recovery_strategy]
 
         # 復旧試行
-        for attempt in range(recovery_action.max_attempts):
+
             try:
-                error_context.recovery_attempts = attempt + 1
 
                 # 条件チェック
                 if not all(
@@ -344,24 +330,22 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
 
                 if result:
                     self.logger.info(
-                        f"Auto recovery successful: {error_context.error_id} (attempt " \
-                            "{attempt + 1})"
+
                     )
                     return True
 
                 # 遅延（指数バックオフ）
-                if attempt < recovery_action.max_attempts - 1:
+
                     delay = recovery_action.delay_seconds
                     if recovery_action.exponential_backoff:
-                        delay *= 2**attempt
+
                     await asyncio.sleep(delay)
 
             except Exception as e:
                 # Handle specific exception case
-                self.logger.error(f"Recovery attempt failed: {str(e)}")
 
         self.logger.warning(
-            f"Auto recovery failed after {recovery_action.max_attempts} attempts: " \
+
                 "{error_context.error_id}"
         )
         return False
@@ -665,7 +649,6 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
             self.logger.error(f"Health check failed: {str(e)}")
             return {"success": False, "status": "error", "error": str(e)}
 
-
 class CircuitBreaker:
     """サーキットブレーカー実装"""
 
@@ -715,7 +698,6 @@ class CircuitBreaker:
         # half_open状態
         return False
 
-
 # デコレータ関数群
 def error_recovery(
     recovery_strategy: RecoveryStrategy = RecoveryStrategy.RETRY,
@@ -761,7 +743,6 @@ def error_recovery(
 
     return decorator
 
-
 def circuit_breaker_protected(failure_threshold: int = 5, timeout_duration: int = 60):
     """サーキットブレーカー保護デコレータ"""
     circuit_breaker = CircuitBreaker(failure_threshold, timeout_duration)
@@ -791,10 +772,8 @@ def circuit_breaker_protected(failure_threshold: int = 5, timeout_duration: int 
 
     return decorator
 
-
 # グローバルエラーハンドラーインスタンス
 _global_error_handler: Optional[ElderIntegrationErrorHandler] = None
-
 
 async def get_global_error_handler() -> ElderIntegrationErrorHandler:
     """グローバルエラーハンドラー取得"""
@@ -804,7 +783,6 @@ async def get_global_error_handler() -> ElderIntegrationErrorHandler:
         _global_error_handler = ElderIntegrationErrorHandler()
 
     return _global_error_handler
-
 
 # 便利関数群
 async def handle_error(
@@ -830,7 +808,6 @@ async def handle_error(
     handler = await get_global_error_handler()
     return await handler.process_request(error_context)
 
-
 @asynccontextmanager
 async def error_handling_context(service_name: str, method_name: str):
     """エラーハンドリングコンテキストマネージャー"""
@@ -840,7 +817,6 @@ async def error_handling_context(service_name: str, method_name: str):
         # Handle specific exception case
         await handle_error(e, service_name, method_name)
         raise
-
 
 class ErrorAggregator:
     """エラー集約・分析クラス"""

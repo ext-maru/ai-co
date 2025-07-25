@@ -1,0 +1,27 @@
+name: "deployment"
+description: "デプロイ用テンプレート"
+task_type: "deploy"
+template_data:
+  prompt: |
+    以下の環境へのデプロイを実行してください：
+
+    環境: {{environment}}
+    バージョン: {{version}}
+
+    デプロイ手順：
+    1. 現在の状態をバックアップ
+    2. ヘルスチェック（事前）
+    3. デプロイ実行
+    4. ヘルスチェック（事後）
+    5. Slack通知
+    6. ロールバック手順の準備
+
+parameters:
+  - name: environment
+    type: string
+    description: "デプロイ環境（dev/staging/prod）"
+    required: true
+  - name: version
+    type: string
+    description: "デプロイバージョン"
+    required: true

@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""
+Track Unit Progress - 騎士団、ウィザーズ、ドワーフ工房の進捗追跡
+Daily automated progress tracking script
+"""
+
+import argparse
+import sys
+from datetime import datetime, timedelta
+from pathlib import Path
+
+# Add project root to path
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from libs.unit_progress_tracker import UnitProgressTracker
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Track progress of Knights, Wizards, and Dwarf Workshop"
+    )
+    parser.add_argument(
+        "--date", type=str, help="Date to generate report for (YYYY-MM-DD)"
+    )
+    parser.add_argument(
+        "--days", type=int, default=1, help="Number of days to generate reports for"
+    )
+    parser.add_argument(
+        "--analyze", action="store_true", help="Analyze logs without generating report"
+    )
+
+    args = parser.parse_args()
+
+    tracker = UnitProgressTracker()
+
+    # Determine dates to process
+    if args.date:
+        start_date = datetime.strptime(args.date, "%Y-%m-%d")
+    else:
+        start_date = datetime.now()
+
+    # Generate reports
+    for i in range(args.days):
+        current_date = start_date - timedelta(days=i)
+
+        if args.analyze:
+            # Just analyze and print activities
+            start = current_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            end = start + timedelta(days=1)
+            activities = tracker.analyze_logs(start, end)
+
+            print(f"\n📅 Activities for {current_date.strftime('%Y-%m-%d')}:")
+            print(f"Total activities found: {len(activities)}")
+
+            for activity in activities:
+                print(
+                    f"  [{activity.timestamp.strftime('%H:%M:%S')}] "
+                    f"{activity.unit_type}: {activity.details}"
+                )
+        else:
+            # Generate full report
+            report = tracker.generate_daily_report(current_date)
+
+            print(f"\n✅ Report generated for {report.date}")
+            print(f"  📊 Overall health: {report.summary['overall_health']:.1f}%")
+            print(
+                f"  ⚔️ Knights efficiency: {report.summary['knights_efficiency']:.1f}%"
+            )
+            print(
+                f"  🧙‍♂️ Wizards productivity: {report.summary['wizards_productivity']:.1f}"
+            )
+            print(
+                f"  🔨 Dwarf optimization: {report.summary['dwarf_optimization_rate']:.1f}%"
+            )
+
+
+if __name__ == "__main__":
+    main()

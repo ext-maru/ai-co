@@ -116,17 +116,11 @@ def main():
             print(f"Knowledge documents: {len(md_files)}")
 
             consolidated = kb_path / "CONSOLIDATED_KNOWLEDGE"
-            if not (consolidated.exists()):
-                continue  # Early return to reduce nesting
-            # Reduced nesting - original condition satisfied
             if consolidated.exists():
                 reports = list(consolidated.glob("*.md"))
                 print(f"Consolidated reports: {len(reports)}")
 
             evolution = kb_path / "evolution_tracking"
-            if not (evolution.exists()):
-                continue  # Early return to reduce nesting
-            # Reduced nesting - original condition satisfied
             if evolution.exists():
                 snapshots = list(evolution.glob("snapshot_*.json"))
                 print(f"Evolution snapshots: {len(snapshots)}")

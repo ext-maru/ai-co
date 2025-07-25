@@ -123,8 +123,7 @@ class CompleteElderTreeMigrator:
                     filename = Path(file_path).name
                     if "crisis" in filename.lower() or "emergency" in filename.lower():
                         dest = f"elder_servants/knight_tribe/crisis_responder/{filename}"
-                    elif "bug" in filename.lower() or "hunter" in filename.lower():
-                        dest = f"elder_servants/knight_tribe/bug_hunter/{filename}"
+
                     elif "shield" in filename.lower() or "guard" in filename.lower():
                         dest = f"elder_servants/knight_tribe/shield_bearer/{filename}"
                     elif "rapid" in filename.lower() or "quick" in filename.lower():

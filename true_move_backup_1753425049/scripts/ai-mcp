@@ -1,0 +1,297 @@
+#!/usr/bin/env python3
+"""
+AI Company MCP (Model Context Protocol) 管理スクリプト
+MCPサーバーの起動・停止・状態確認を行います
+"""
+
+import json
+import os
+import signal
+import subprocess
+import sys
+import time
+from pathlib import Path
+from typing import Dict, List, Optional
+
+# プロジェクトルートを追加
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+
+class MCPManager:
+    """MCP サーバー管理クラス"""
+
+    def __init__(self):
+        self.project_root = PROJECT_ROOT
+        self.config_path = self.project_root / "config" / "mcp_config.json"
+        self.pid_dir = self.project_root / "tmp" / "mcp_pids"
+        self.pid_dir.mkdir(parents=True, exist_ok=True)
+
+        # MCPサーバー設定
+        self.servers = {
+            "filesystem": {
+                "script": "libs/mcp_servers/filesystem_server.py",
+                "description": "ファイルシステム操作サーバー",
+                "port": 3001,
+            },
+            "executor": {
+                "script": "libs/mcp_servers/executor_server.py",
+                "description": "コマンド実行サーバー",
+                "port": 3002,
+            },
+        }
+
+    def start_server(self, server_name: str) -> bool:
+        """MCPサーバーを起動"""
+        if server_name not in self.servers:
+            print(f"❌ 不明なサーバー: {server_name}")
+            return False
+
+        server = self.servers[server_name]
+        script_path = self.project_root / server["script"]
+
+        if not script_path.exists():
+            print(f"❌ スクリプトが見つかりません: {script_path}")
+            return False
+
+        # 既に起動中かチェック
+        if self.is_server_running(server_name):
+            print(f"⚠️ {server_name} サーバーは既に起動中です")
+            return True
+
+        try:
+            # サーバーを起動
+            print(f"🚀 {server_name} サーバーを起動中...")
+            process = subprocess.Popen(
+                ["python3", str(script_path)],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=str(self.project_root),
+            )
+
+            # PIDを保存
+            pid_file = self.pid_dir / f"{server_name}.pid"
+            pid_file.write_text(str(process.pid))
+
+            # 少し待って起動確認
+            time.sleep(2)
+            if process.poll() is None:
+                print(f"✅ {server_name} サーバーが起動しました (PID: {process.pid})")
+                return True
+            else:
+                print(f"❌ {server_name} サーバーの起動に失敗しました")
+                return False
+
+        except Exception as e:
+            print(f"❌ {server_name} サーバー起動エラー: {str(e)}")
+            return False
+
+    def stop_server(self, server_name: str) -> bool:
+        """MCPサーバーを停止"""
+        if server_name not in self.servers:
+            print(f"❌ 不明なサーバー: {server_name}")
+            return False
+
+        pid_file = self.pid_dir / f"{server_name}.pid"
+
+        if not pid_file.exists():
+            print(f"⚠️ {server_name} サーバーは起動していません")
+            return True
+
+        try:
+            pid = int(pid_file.read_text())
+
+            # プロセスを停止
+            os.kill(pid, signal.SIGTERM)
+            time.sleep(1)
+
+            # 強制停止が必要な場合
+            try:
+                os.kill(pid, 0)  # プロセス存在確認
+                os.kill(pid, signal.SIGKILL)
+                time.sleep(1)
+            except ProcessLookupError:
+                pass  # プロセスは既に終了
+
+            # PIDファイルを削除
+            pid_file.unlink()
+
+            print(f"✅ {server_name} サーバーを停止しました")
+            return True
+
+        except Exception as e:
+            print(f"❌ {server_name} サーバー停止エラー: {str(e)}")
+            # PIDファイルが壊れている場合は削除
+            if pid_file.exists():
+                pid_file.unlink()
+            return False
+
+    def is_server_running(self, server_name: str) -> bool:
+        """サーバーが起動中かチェック"""
+        pid_file = self.pid_dir / f"{server_name}.pid"
+
+        if not pid_file.exists():
+            return False
+
+        try:
+            pid = int(pid_file.read_text())
+            os.kill(pid, 0)  # プロセス存在確認
+            return True
+        except (ProcessLookupError, ValueError):
+            # プロセスが存在しない場合はPIDファイルを削除
+            if pid_file.exists():
+                pid_file.unlink()
+            return False
+
+    def get_server_status(self) -> Dict[str, Dict]:
+        """全サーバーの状態取得"""
+        status = {}
+
+        for server_name, server_config in self.servers.items():
+            is_running = self.is_server_running(server_name)
+            pid = None
+
+            if is_running:
+                pid_file = self.pid_dir / f"{server_name}.pid"
+                try:
+                    pid = int(pid_file.read_text())
+                except:
+                    pid = None
+
+            status[server_name] = {
+                "running": is_running,
+                "pid": pid,
+                "description": server_config["description"],
+                "port": server_config.get("port"),
+                "script": server_config["script"],
+            }
+
+        return status
+
+    def start_all(self) -> bool:
+        """全サーバーを起動"""
+        print("🚀 全MCPサーバーを起動中...")
+        success = True
+
+        for server_name in self.servers:
+            if not self.start_server(server_name):
+                success = False
+
+        return success
+
+    def stop_all(self) -> bool:
+        """全サーバーを停止"""
+        print("🛑 全MCPサーバーを停止中...")
+        success = True
+
+        for server_name in self.servers:
+            if not self.stop_server(server_name):
+                success = False
+
+        return success
+
+    def restart_all(self) -> bool:
+        """全サーバーを再起動"""
+        print("🔄 全MCPサーバーを再起動中...")
+        self.stop_all()
+        time.sleep(2)
+        return self.start_all()
+
+
+def main():
+    """メイン実行関数"""
+    if len(sys.argv) < 2:
+        print("使用方法:")
+        print("  ai-mcp start [server_name]  - サーバー起動")
+        print("  ai-mcp stop [server_name]   - サーバー停止")
+        print("  ai-mcp restart [server_name] - サーバー再起動")
+        print("  ai-mcp status               - 状態確認")
+        print("  ai-mcp list                 - サーバー一覧")
+        print("")
+        print("利用可能なサーバー: filesystem, executor")
+        sys.exit(1)
+
+    manager = MCPManager()
+    command = sys.argv[1]
+
+    if command == "start":
+        if len(sys.argv) > 2:
+            # 特定サーバーを起動
+            server_name = sys.argv[2]
+            success = manager.start_server(server_name)
+        else:
+            # 全サーバーを起動
+            success = manager.start_all()
+
+        sys.exit(0 if success else 1)
+
+    elif command == "stop":
+        if len(sys.argv) > 2:
+            # 特定サーバーを停止
+            server_name = sys.argv[2]
+            success = manager.stop_server(server_name)
+        else:
+            # 全サーバーを停止
+            success = manager.stop_all()
+
+        sys.exit(0 if success else 1)
+
+    elif command == "restart":
+        if len(sys.argv) > 2:
+            # 特定サーバーを再起動
+            server_name = sys.argv[2]
+            manager.stop_server(server_name)
+            time.sleep(1)
+            success = manager.start_server(server_name)
+        else:
+            # 全サーバーを再起動
+            success = manager.restart_all()
+
+        sys.exit(0 if success else 1)
+
+    elif command == "status":
+        # 状態確認
+        print("📊 MCP サーバー状態")
+        print("=" * 50)
+
+        status = manager.get_server_status()
+
+        for server_name, info in status.items():
+            status_icon = "🟢 起動中" if info["running"] else "🔴 停止中"
+            pid_info = f" (PID: {info['pid']})" if info["pid"] else ""
+            port_info = f" Port: {info['port']}" if info.get("port") else ""
+
+            print(f"{status_icon} {server_name}{pid_info}")
+            print(f"  説明: {info['description']}")
+            print(f"  スクリプト: {info['script']}{port_info}")
+            print()
+
+        # 全体状況
+        running_count = sum(1 for info in status.values() if info["running"])
+        total_count = len(status)
+
+        if running_count == total_count:
+            print(f"✅ 全サーバーが稼働中 ({running_count}/{total_count})")
+        elif running_count > 0:
+            print(f"⚠️ 一部サーバーが稼働中 ({running_count}/{total_count})")
+        else:
+            print(f"❌ 全サーバーが停止中 ({running_count}/{total_count})")
+
+    elif command == "list":
+        # サーバー一覧
+        print("📋 利用可能なMCPサーバー")
+        print("=" * 40)
+
+        for server_name, server_config in manager.servers.items():
+            print(f"• {server_name}")
+            print(f"  {server_config['description']}")
+            print(f"  スクリプト: {server_config['script']}")
+            print()
+
+    else:
+        print(f"❌ 不明なコマンド: {command}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
