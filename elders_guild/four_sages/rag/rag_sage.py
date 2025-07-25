@@ -13,6 +13,12 @@ import uuid
 from collections import defaultdict
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
+import sys
+from pathlib import Path
+
+# Add elders_guild to path
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from shared_libs.config import config
 
 from ..base_sage import BaseSage
 
@@ -20,12 +26,12 @@ from ..base_sage import BaseSage
 class RAGSage(BaseSage):
     """RAG賢者 - 情報検索と知識統合"""
 
-    def __init__(self, data_path: str = "data/rag"):
+    def __init__(self, data_path: Optional[str] = None):
         """初期化メソッド"""
         super().__init__("RAG")
 
-        self.data_path = data_path
-        self.db_path = os.path.join(data_path, "rag.db")
+        self.data_path = data_path or str(config.get_db_path("rag"))
+        self.db_path = os.path.join(self.data_path, "rag.db")
 
         # データベース初期化
         self._init_database()

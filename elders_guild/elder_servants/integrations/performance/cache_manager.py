@@ -15,6 +15,13 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
+import os
+import sys
+from pathlib import Path
+
+# Add elders_guild to path
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
+from shared_libs.config import config
 
 try:
     import redis.asyncio as redis
@@ -134,13 +141,13 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
 
     def __init__(
         self,
-        redis_url: str = "redis://localhost:6379",
+        redis_url: Optional[str] = None,
         strategy: CacheStrategy = CacheStrategy.BALANCED,
     ):
         # EldersServiceLegacy初期化 (EXECUTION域)
         super().__init__("elder_cache_manager")
 
-        self.redis_url = redis_url
+        self.redis_url = redis_url or config.REDIS_URL
         self.strategy = strategy
         self.logger = logging.getLogger("elder_servants.cache_manager")
 

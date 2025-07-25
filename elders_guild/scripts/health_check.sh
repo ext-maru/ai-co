@@ -3,6 +3,13 @@
 
 set -e
 
+# Load environment variables
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="${ELDERS_GUILD_HOME:-$(cd "$SCRIPT_DIR/.." && pwd)}"
+if [ -f "$PROJECT_ROOT/.env" ]; then
+    export $(grep -v '^#' "$PROJECT_ROOT/.env" | xargs)
+fi
+
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -75,7 +82,8 @@ check_container "code_crafter"
 
 # Check Consul services
 echo -e "\n${YELLOW}Consul Service Discovery:${NC}"
-if curl -s http://localhost:8500/v1/agent/services | jq -r 'keys[]' 2>/dev/null | grep -q "knowledge-sage"; then
+CONSUL_PORT="${CONSUL_PORT:-8500}"
+if curl -s http://localhost:${CONSUL_PORT}/v1/agent/services | jq -r 'keys[]' 2>/dev/null | grep -q "knowledge-sage"; then
     echo -e "${GREEN}✓ Services registered in Consul${NC}"
 else
     echo -e "${RED}✗ Services not registered in Consul${NC}"

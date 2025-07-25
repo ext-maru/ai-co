@@ -9,6 +9,12 @@ import os
 import sqlite3
 from datetime import datetime
 from typing import Any, Dict, List, Optional
+import sys
+from pathlib import Path
+
+# Add elders_guild to path
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from shared_libs.config import config
 
 from ..base_sage import BaseSage
 
@@ -16,12 +22,12 @@ from ..base_sage import BaseSage
 class KnowledgeSage(BaseSage):
     """ナレッジ賢者 - 知識管理と学習"""
 
-    def __init__(self, knowledge_base_path: str = "knowledge_base"):
+    def __init__(self, knowledge_base_path: Optional[str] = None):
         """初期化メソッド"""
         super().__init__("Knowledge")
 
-        self.knowledge_base_path = knowledge_base_path
-        self.db_path = os.path.join(knowledge_base_path, "knowledge.db")
+        self.knowledge_base_path = knowledge_base_path or str(config.get_db_path("knowledge_base"))
+        self.db_path = os.path.join(self.knowledge_base_path, "knowledge.db")
 
         # データベース初期化
         self._init_database()

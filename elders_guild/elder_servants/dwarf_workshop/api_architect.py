@@ -13,8 +13,14 @@ import os
 import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
+import sys
+from pathlib import Path
 
 import yaml
+
+# Add elders_guild to path
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from shared_libs.config import config
 
 from libs.elder_servants.base.elder_servant import (
     ServantCapability,
@@ -327,7 +333,7 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 "servers": [
                     {
                         "url": api_design.get(
-                            "base_url", "http://localhost:8000/api/v1"
+                            "base_url", f"{config.API_BASE_URL}/api/v1"
                         ),
                         "description": "Development server",
                     }

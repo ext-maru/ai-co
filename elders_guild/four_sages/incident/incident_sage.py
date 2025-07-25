@@ -11,6 +11,12 @@ import uuid
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional
+import sys
+from pathlib import Path
+
+# Add elders_guild to path
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from shared_libs.config import config
 
 from ..base_sage import BaseSage
 
@@ -50,11 +56,12 @@ class IncidentCategory(Enum):
 class IncidentSage(BaseSage):
     """インシデント賢者 - 障害対応とセキュリティ管理"""
 
-    def __init__(self, data_path: str = "data/incidents")super().__init__("Incident")
-    """初期化メソッド"""
+    def __init__(self, data_path: Optional[str] = None):
+        """初期化メソッド"""
+        super().__init__("Incident")
 
-        self.data_path = data_path
-        self.db_path = os.path.join(data_path, "incidents.db")
+        self.data_path = data_path or str(config.get_db_path("incidents"))
+        self.db_path = os.path.join(self.data_path, "incidents.db")
 
         # データベース初期化
         self._init_database()
@@ -82,10 +89,11 @@ class IncidentSage(BaseSage):
 
         self.logger.info("Incident Sage ready for crisis management")
 
-    def _init_database(self)os.makedirs(self.data_path, exist_ok=True)
-    """インシデントデータベースの初期化"""
+    def _init_database(self):
+        """インシデントデータベースの初期化"""
+        os.makedirs(self.data_path, exist_ok=True)
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             # インシデントテーブル
             conn.execute(
                 """
@@ -211,9 +219,9 @@ class IncidentSage(BaseSage):
                 "CREATE INDEX IF NOT EXISTS idx_security_events_type ON security_events(event_type)"
             )
 
-    async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]start_time = datetime.now():
-    """ンシデント賢者のリクエスト処理"""
-:
+    async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """インシデント賢者のリクエスト処理"""
+        start_time = datetime.now()
         try:
             request_type = request.get("type", "unknown")
 
@@ -272,8 +280,10 @@ class IncidentSage(BaseSage):
             await self.log_error(e, {"request": request})
             return {"success": False, "error": str(e), "sage": self.sage_name}
 
-    async def _create_incident(self, request: Dict[str, Any]) -> Dict[str, Any]title = request.get("title", "")description = request.get("description", "")
-    """規インシデント作成"""
+    async def _create_incident(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """新規インシデント作成"""
+        title = request.get("title", "")
+        description = request.get("description", "")
         severity = request.get("severity", IncidentSeverity.MEDIUM.value)
         category = request.get("category", IncidentCategory.SOFTWARE.value)
         affected_systems = request.get("affected_systems", [])
@@ -282,13 +292,13 @@ class IncidentSage(BaseSage):
         assignee = request.get("assignee")
         tags = request.get("tags", [])
         metadata = request.get("metadata", {})
-:
+        
         if not title:
             return {"success": False, "error": "Incident title is required"}
 
         incident_id = str(uuid.uuid4())
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # インシデント作成
@@ -339,10 +349,11 @@ class IncidentSage(BaseSage):
             in [IncidentSeverity.HIGH.value, IncidentSeverity.CRITICAL.value],
         }
 
-    async def _update_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")updates = request.get("updates", {})
-    """ンシデント更新"""
+    async def _update_incident(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ンシデント更新"""
+        incident_id = request.get("incident_id")
+        updates = request.get("updates", {})
         user_id = request.get("user_id", "system")
-:
         if not incident_id:
             return {"success": False, "error": "Incident ID is required"}
 
@@ -365,7 +376,7 @@ class IncidentSage(BaseSage):
         params = []
         logs = []
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 既存データ取得
@@ -422,13 +433,13 @@ class IncidentSage(BaseSage):
             "updated_fields": list(updates.keys()),
         }
 
-    async def _get_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id"):
-    """ンシデント詳細取得"""
-:
+    async def _get_incident(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ンシデント詳細取得"""
+        incident_id = request.get("incident_id")
         if not incident_id:
             return {"success": False, "error": "Incident ID is required"}
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # インシデント詳細取得
@@ -498,13 +509,14 @@ class IncidentSage(BaseSage):
 
         return {"success": True, "incident": incident}
 
-    async def _list_incidents(self, request: Dict[str, Any]) -> Dict[str, Any]filters = request.get("filters", {})sort_by = request.get("sort_by", "created_at")
-    """ンシデント一覧取得"""
+    async def _list_incidents(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ンシデント一覧取得"""
+        filters = request.get("filters", {})
+        sort_by = request.get("sort_by", "created_at")
         sort_order = request.get("sort_order", "DESC")
         limit = request.get("limit", 50)
         offset = request.get("offset", 0)
-:
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # WHERE句構築
@@ -571,17 +583,18 @@ class IncidentSage(BaseSage):
             "offset": offset,
         }
 
-    async def _resolve_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")resolution = request.get("resolution", "")
-    """ンシデント解決"""
+    async def _resolve_incident(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ンシデント解決"""
+        incident_id = request.get("incident_id")
+        resolution = request.get("resolution", "")
         root_cause = request.get("root_cause", "")
         user_id = request.get("user_id", "system")
-:
         if not incident_id:
             return {"success": False, "error": "Incident ID is required"}
 
         resolved_at = datetime.now().isoformat()
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # インシデント存在確認
@@ -652,19 +665,20 @@ class IncidentSage(BaseSage):
             "resolution_time_minutes": resolution_time,
         }
 
-    async def _create_alert(self, request: Dict[str, Any]) -> Dict[str, Any]alert_type = request.get("alert_type", "")severity = request.get("severity", IncidentSeverity.MEDIUM.value)
-    """ラート作成"""
+    async def _create_alert(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ラート作成"""
+        alert_type = request.get("alert_type", "")
+        severity = request.get("severity", IncidentSeverity.MEDIUM.value)
         title = request.get("title", "")
         message = request.get("message", "")
         source_system = request.get("source_system", "unknown")
         metadata = request.get("metadata", {})
-:
         if not alert_type or not title:
             return {"success": False, "error": "Alert type and title are required"}
 
         alert_id = str(uuid.uuid4())
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             cursor.execute(
@@ -705,7 +719,7 @@ class IncidentSage(BaseSage):
                 auto_incident_created = True
 
                 # アラートとインシデントを関連付け
-                with sqlite3connect(self.db_path) as conn:
+                with sqlite3.connect(self.db_path) as conn:
                     cursor = conn.cursor()
                     cursor.execute(
                         "UPDATE alerts SET incident_id = ? WHERE id = ?",
@@ -720,15 +734,16 @@ class IncidentSage(BaseSage):
             "incident_id": incident_id,
         }
 
-    async def _acknowledge_alert(self, request: Dict[str, Any]) -> Dict[str, Any]alert_id = request.get("alert_id")user_id = request.get("user_id", "system")
-    """ラート確認"""
-:
+    async def _acknowledge_alert(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ラート確認"""
+        alert_id = request.get("alert_id")
+        user_id = request.get("user_id", "system")
         if not alert_id:
             return {"success": False, "error": "Alert ID is required"}
 
         acknowledged_at = datetime.now().isoformat()
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             cursor.execute(
@@ -748,16 +763,17 @@ class IncidentSage(BaseSage):
 
         return {"success": True, "message": "Alert acknowledged successfully"}
 
-    async def _record_metric(self, request: Dict[str, Any]) -> Dict[str, Any]metric_name = request.get("metric_name", "")metric_value = request.get("metric_value")
-    """ステムメトリクス記録"""
+    async def _record_metric(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ステムメトリクス記録"""
+        metric_name = request.get("metric_name", "")
+        metric_value = request.get("metric_value")
         unit = request.get("unit", "")
         source_system = request.get("source_system", "unknown")
         tags = request.get("tags", [])
-:
         if not metric_name or metric_value is None:
             return {"success": False, "error": "Metric name and value are required"}
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             cursor.execute(
@@ -801,10 +817,7 @@ class IncidentSage(BaseSage):
                         else IncidentSeverity.MEDIUM.value
                     ),
                     "title": f"High CPU Usage on {source_system}",
-                    "message": f"CPU usage is {
-                        metric_value}%,
-                        exceeding threshold of {self.alert_rules['cpu_usage_threshold']
-                    }%",
+                    "message": f"CPU usage is {metric_value}%, exceeding threshold of {self.alert_rules['cpu_usage_threshold']}%",
                     "source_system": source_system,
                     "metadata": {
                         "metric_value": metric_value,
@@ -828,10 +841,7 @@ class IncidentSage(BaseSage):
                         else IncidentSeverity.MEDIUM.value
                     ),
                     "title": f"High Memory Usage on {source_system}",
-                    "message": f"Memory usage is {
-                        metric_value}%,
-                        exceeding threshold of {self.alert_rules['memory_usage_threshold']
-                    }%",
+                    "message": f"Memory usage is {metric_value}%, exceeding threshold of {self.alert_rules['memory_usage_threshold']}%",
                     "source_system": source_system,
                     "metadata": {
                         "metric_value": metric_value,
@@ -855,10 +865,7 @@ class IncidentSage(BaseSage):
                         else IncidentSeverity.HIGH.value
                     ),
                     "title": f"High Disk Usage on {source_system}",
-                    "message": f"Disk usage is {
-                        metric_value}%,
-                        exceeding threshold of {self.alert_rules['disk_usage_threshold']
-                    }%",
+                    "message": f"Disk usage is {metric_value}%, exceeding threshold of {self.alert_rules['disk_usage_threshold']}%",
                     "source_system": source_system,
                     "metadata": {
                         "metric_value": metric_value,
@@ -870,13 +877,14 @@ class IncidentSage(BaseSage):
 
         return alert_id
 
-    async def _analyze_metrics(self, request: Dict[str, Any]) -> Dict[str, Any]metric_name = request.get("metric_name")period_hours = request.get("period_hours", 24)
-    """トリクス分析"""
+    async def _analyze_metrics(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """トリクス分析"""
+        metric_name = request.get("metric_name")
+        period_hours = request.get("period_hours", 24)
         source_system = request.get("source_system")
 
         start_time = (datetime.now() - timedelta(hours=period_hours)).isoformat()
-:
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             where_conditions = ["collected_at >= ?"]
@@ -942,13 +950,15 @@ class IncidentSage(BaseSage):
 
         return {"success": True, "analysis": analysis}
 
-    async def _security_scan(self, request: Dict[str, Any]) -> Dict[str, Any]scan_type = request.get("scan_type", "basic")target = request.get("target", "system")
-    """キュリティスキャン"""
+    async def _security_scan(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """キュリティスキャン"""
+        scan_type = request.get("scan_type", "basic")
+        target = request.get("target", "system")
 
         # 簡易セキュリティスキャンのシミュレーション
         findings = []
 
-        # ログファイルチェック（シミュレーション）:
+        # ログファイルチェック（シミュレーション）
         if scan_type in ["basic", "full"]:
             # セキュリティパターンマッチング
             for pattern in self.security_patterns[:3]:  # 簡易チェック
@@ -973,7 +983,7 @@ class IncidentSage(BaseSage):
 
         # セキュリティイベント記録
         event_id = str(uuid.uuid4())
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             cursor.execute(
@@ -1000,12 +1010,12 @@ class IncidentSage(BaseSage):
             "findings": findings,
         }
 
-    async def _get_dashboard(self, request: Dict[str, Any]) -> Dict[str, Any]period_hours = request.get("period_hours", 24):
-    """ッシュボードデータ取得"""
+    async def _get_dashboard(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ッシュボードデータ取得"""
+        period_hours = request.get("period_hours", 24)
 
         start_time = (datetime.now() - timedelta(hours=period_hours)).isoformat()
-:
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # インシデント統計
@@ -1085,14 +1095,15 @@ class IncidentSage(BaseSage):
 
         return {"success": True, "dashboard": dashboard}
 
-    async def _escalate_incident(self, request: Dict[str, Any]) -> Dict[str, Any]incident_id = request.get("incident_id")escalation_reason = request.get("reason", "manual_escalation")
-    """ンシデントエスカレーション"""
+    async def _escalate_incident(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ンシデントエスカレーション"""
+        incident_id = request.get("incident_id")
+        escalation_reason = request.get("reason", "manual_escalation")
         user_id = request.get("user_id", "system")
-:
         if not incident_id:
             return {"success": False, "error": "Incident ID is required"}
 
-        with sqlite3connect(self.db_path) as conn:
+        with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
 
             # 現在の重要度取得

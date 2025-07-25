@@ -10,6 +10,12 @@ import uuid
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional
+import sys
+from pathlib import Path
+
+# Add elders_guild to path
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from shared_libs.config import config
 
 from ..base_sage import BaseSage
 
@@ -36,12 +42,12 @@ class TaskPriority(Enum):
 class TaskSage(BaseSage):
     """タスク賢者 - プロジェクト管理とタスク追跡"""
 
-    def __init__(self, data_path: str = "data/tasks"):
+    def __init__(self, data_path: Optional[str] = None):
         """初期化メソッド"""
         super().__init__("Task")
 
-        self.data_path = data_path
-        self.db_path = os.path.join(data_path, "tasks.db")
+        self.data_path = data_path or str(config.get_db_path("tasks"))
+        self.db_path = os.path.join(self.data_path, "tasks.db")
 
         # データベース初期化
         self._init_database()

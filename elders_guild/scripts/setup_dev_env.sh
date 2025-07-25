@@ -7,8 +7,8 @@ set -e
 echo "🏛️ Elder Tree 開発環境セットアップ開始"
 echo "=================================="
 
-# プロジェクトルート
-PROJECT_ROOT="/home/aicompany/elders_guild"
+# プロジェクトルート - 環境変数から取得、なければデフォルト値
+PROJECT_ROOT="${ELDERS_GUILD_HOME:-$(cd "$(dirname "$0")/.." && pwd)}"
 cd "$PROJECT_ROOT"
 
 # Python仮想環境の作成
@@ -70,26 +70,36 @@ fi
 # 環境変数ファイルの作成
 echo "🔧 環境変数ファイルを作成中..."
 if [ ! -f ".env" ]; then
-    cat > .env << EOF
-# Elder Tree Environment Variables
-ELDER_TREE_ENV=development
-ELDER_TREE_LOG_LEVEL=INFO
+    # .env.exampleから.envをコピー
+    if [ -f ".env.example" ]; then
+        cp .env.example .env
+        echo "✅ .env.exampleから.envを作成しました"
+    else
+        # .env.exampleがない場合は基本設定を作成
+        cat > .env << EOF
+# Elder Tree Environment Variables - Auto Generated
+# Please update these values according to your environment
+
+ELDERS_GUILD_HOME=$PROJECT_ROOT
+PROJECT_ROOT=$PROJECT_ROOT
 
 # Database
 DATABASE_URL=postgresql://aicompany:password@localhost/elder_tree
 SQLITE_URL=sqlite+aiosqlite:///elder_tree.db
-
-# Redis
 REDIS_URL=redis://localhost:6379/0
 
-# A2A Communication
-A2A_BROKER_TYPE=local  # local, redis, grpc
-A2A_TIMEOUT=30
+# Service Ports
+API_PORT=8000
+WEB_PORT=8080
+PROMETHEUS_PORT=9090
+REDIS_PORT=6379
 
-# Monitoring
-METRICS_PORT=9090
-HEALTH_CHECK_INTERVAL=30
+# Environment
+ENVIRONMENT=development
+DEBUG=true
+LOG_LEVEL=INFO
 EOF
+    fi
     echo "✅ .envファイル作成完了"
 else
     echo "ℹ️  .envファイルは既に存在します"
@@ -100,12 +110,12 @@ echo "🔧 PYTHONPATHを設定中..."
 export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
 
 # 設定スクリプトの作成
-cat > "$PROJECT_ROOT/scripts/activate_env.sh" << 'EOF'
+cat > "$PROJECT_ROOT/scripts/activate_env.sh" << EOF
 #!/bin/bash
 # Elder Tree環境有効化スクリプト
 
-PROJECT_ROOT="/home/aicompany/elders_guild"
-cd "$PROJECT_ROOT"
+PROJECT_ROOT="\${ELDERS_GUILD_HOME:-$PROJECT_ROOT}"
+cd "\$PROJECT_ROOT"
 source venv/bin/activate
 export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
 echo "🏛️ Elder Tree開発環境が有効化されました"
