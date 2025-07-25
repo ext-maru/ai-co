@@ -11,7 +11,7 @@
 ### インストール
 ```bash
 # セットアップスクリプト実行
-./scripts/setup-elder-commands.sh
+./elder_tree/elder_servants/dwarf_tribe/tools/setup-elder-commands.sh
 
 # 確認
 elder --version
@@ -334,7 +334,7 @@ elder plugin config <plugin-name>
 echo $PATH | grep -q /usr/local/bin || echo "PATH設定が必要"
 
 # 再インストール
-./scripts/setup-elder-commands.sh
+./elder_tree/elder_servants/dwarf_tribe/tools/setup-elder-commands.sh
 ```
 
 #### 権限エラー

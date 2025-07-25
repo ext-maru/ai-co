@@ -93,10 +93,10 @@ if human.approve(judgment):
 ### **1. セットアップ**
 ```bash
 # Elder Command インストール
-./scripts/setup-elder-commands.sh
+./elder_tree/elder_servants/dwarf_tribe/tools/setup-elder-commands.sh
 
 # Quality Pipeline デプロイ
-./scripts/deploy-quality-pipeline.sh
+./elder_tree/elder_servants/dwarf_tribe/tools/deploy-quality-pipeline.sh
 ```
 
 ### **2. 基本使用**

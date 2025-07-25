@@ -94,7 +94,7 @@ class AutonomousSystemImplementer:
 
         implementation_result = {
             "core_guardian": {
-                "file": "scripts/knights_autonomous_guardian.py",
+                "file": "elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/knights_autonomous_guardian.py",
                 "status": "already_implemented",
                 "features": [
                     "24/7自動監視ループ",
@@ -105,7 +105,7 @@ class AutonomousSystemImplementer:
                 ]
             },
             "service_setup": {
-                "file": "scripts/setup_autonomous_service.sh",
+                "file": "elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/setup_autonomous_service.sh",
                 "status": "already_implemented",
                 "features": [
                     "systemdサービス作成",
@@ -290,13 +290,13 @@ async def trigger_elder_flow_on_critical_issue(self, issue_severity: str, issue_
         deployment_steps = [
             {
                 "step": "Service Setup",
-                "command": "./scripts/setup_autonomous_service.sh",
+                "command": "./elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/setup_autonomous_service.sh",
                 "description": "systemdサービス作成・設定",
                 "estimated_time": "2-3 minutes"
             },
             {
                 "step": "Initial Health Check",
-                "command": "python3 scripts/knights_autonomous_guardian.py --report",
+                "command": "python3 elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/knights_autonomous_guardian.py --report",
                 "description": "初期ヘルスチェック実行",
                 "estimated_time": "30 seconds"
             },

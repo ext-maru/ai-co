@@ -19,7 +19,7 @@ new_system/
 ### 1. Elder CLIのセットアップ
 ```bash
 cd elders_guild/new_system
-./scripts/setup-elder-commands.sh
+./elder_tree/elder_servants/dwarf_tribe/tools/setup-elder-commands.sh
 ```
 
 ### 2. 基本コマンド

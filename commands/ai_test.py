@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Elders Guild テスト実行コマンド
-scripts/ai-testを呼び出す
+elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/ai-testを呼び出す
 """
 import subprocess
 import sys
@@ -35,8 +35,8 @@ class AITestCommand(BaseCommand):
 
     def execute(self, args) -> CommandResult:
         """実行"""
-        # scripts/ai-testスクリプトのパス
-        test_script = PROJECT_ROOT / "scripts" / "ai-test"
+        # elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/ai-testスクリプトのパス
+        test_script = PROJECT_ROOT / "elders_guild" / "elder_tree" / "elder_servants" / "dwarf_tribe" / "tools" / "ai-test"
 
         if not test_script.exists():
             return CommandResult(

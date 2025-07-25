@@ -135,7 +135,7 @@ RAG: 「最適解を発見しました」
 #### 🚀 **1コマンドセットアップ**
 ```bash
 # 全品質システム自動インストール・有効化
-./scripts/auto-install-quality-system
+./elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/auto-install-quality-system
 ```
 
 #### 💻 **日常使用コマンド**
@@ -154,7 +154,7 @@ elders-code-quality analyze myfile.py
 elders-code-quality report /path/to/project
 
 # PR品質チェック
-./scripts/pr-quality-check <pr_number> <source_branch> <target_branch>
+./elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/pr-quality-check <pr_number> <source_branch> <target_branch>
 
 # 品質学習（バグケース・パターン）
 elders-code-quality learn-bug bug_case.json
@@ -384,7 +384,7 @@ chore/issue-XX-description    # 雑務
 ### 🔧 標準ワークフロー
 ```bash
 # 1. Feature Branch作成（専用ツール使用）
-./scripts/git-feature 17 data-model
+./elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/git-feature 17 data-model
 
 # 2. 開発・コミット（Issue番号必須）
 git commit -m "feat: データモデル実装 (#17)"
@@ -397,7 +397,7 @@ git push -u origin feature/issue-17-data-model
 
 ### 📚 詳細ガイド
 - [Git ワークフローガイド](docs/GIT_WORKFLOW_GUIDE.md)
-- Feature Branch作成ツール: `scripts/git-feature`
+- Feature Branch作成ツール: `elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/git-feature`
 
 **違反時はエルダー評議会による是正指導対象**
 
@@ -437,7 +437,7 @@ Auto Issue Processor A2Aで実証された高品質Issue作成基準を全プロ
 # 🏛️ エルダーズギルド標準Issue または 🚨 Critical Issue
 
 # 品質自動検証
-python3 scripts/issue_quality_checker.py <issue_file> [priority]
+python3 elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/issue_quality_checker.py <issue_file> [priority]
 
 # 品質スコア目標
 # Tier 1達成率: 100% (絶対必須)
@@ -447,7 +447,7 @@ python3 scripts/issue_quality_checker.py <issue_file> [priority]
 ### 📚 **詳細ガイド**
 - [エルダーズギルドIssue作成標準](knowledge_base/ELDERS_GUILD_ISSUE_CREATION_STANDARDS.md)
 - [GitHub Issue テンプレート](.github/ISSUE_TEMPLATE/)
-- [品質検証ツール](scripts/issue_quality_checker.py)
+- [品質検証ツール](elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/issue_quality_checker.py)
 
 **違反時はエルダー評議会による品質指導・Issue差し戻し対象**
 
@@ -473,14 +473,14 @@ python3 scripts/issue_quality_checker.py <issue_file> [priority]
 ### ⚡ **緊急時対応**
 ```bash
 # 権限確認
-/home/aicompany/ai_co/scripts/fix_docker_permissions.sh
+/home/aicompany/ai_co/elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/fix_docker_permissions.sh
 
 # Docker実行 (推奨)
 sg docker -c "docker ps"
 sg docker -c "docker compose up -d"
 
 # プロジェクトサービス一括起動
-/home/aicompany/ai_co/scripts/start_project_services.sh
+/home/aicompany/ai_co/elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/start_project_services.sh
 ```
 
 ### 📋 **クロードエルダー必須義務**
@@ -634,7 +634,7 @@ ai-tdd new FeatureName "機能要件"
 ### 🌌 nWo (New World Order) システム (2025/7/11実装)
 - `python3 libs/nwo_daily_council.py` - nWo日次評議会実行
 - `python3 commands/ai_nwo_vision.py` - 「未来を見せて」nWo版実行
-- `crontab -e` → `0 9 * * * /home/aicompany/ai_co/scripts/nwo_daily_cron.sh` - 自動実行設定
+- `crontab -e` → `0 9 * * * /home/aicompany/ai_co/elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/nwo_daily_cron.sh` - 自動実行設定
 
 ### タスクエルダー協調システム (Phase 15)
 - `ai-task-elder-delegate <libraries>` - タスクエルダーに大規模処理を一括依頼
@@ -706,7 +706,7 @@ ai-tdd new FeatureName "機能要件"
 │   │   └── test_predictive_evolution.py       # Phase 4
 │   └── TDD_TEST_RULES.md
 ├── templates/                 # TDDテンプレート
-├── scripts/                   # ヘルパースクリプト
+├── elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/  # ヘルパースクリプト
 │   └── ai-tdd                # TDD専用コマンド
 └── knowledge_base/           # ナレッジベース
     ├── CLAUDE_TDD_GUIDE.md
@@ -940,7 +940,7 @@ ai_co/
 │   ├── guides/                 # ガイド・ベストプラクティス
 │   ├── policies/               # ポリシー・プロトコル
 │   └── technical/              # 技術文書
-├── scripts/                    # すべての実行スクリプト
+├── elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/  # すべての実行スクリプト
 │   ├── ai-commands/           # AIコマンドツール
 │   ├── monitoring/            # モニタリングスクリプト
 │   ├── analysis/              # 分析ツール
@@ -968,7 +968,7 @@ ai_co/
    - 技術文書 → `docs/technical/`
 
 3. **スクリプト配置**
-   - 実行可能ファイルは必ず `scripts/` 配下
+   - 実行可能ファイルは必ず `elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/` 配下
    - 用途別にサブディレクトリ分類
 
 4. **テストファイル**

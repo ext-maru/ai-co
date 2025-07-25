@@ -94,6 +94,6 @@ echo -e "  Redis:        localhost:6379"
 
 # Register services with Consul
 echo -e "${GREEN}Registering services with Consul...${NC}"
-./scripts/register_consul_services.sh
+./elder_tree/elder_servants/dwarf_tribe/tools/register_consul_services.sh
 
 echo -e "${GREEN}Elder Tree v2 is ready!${NC}"
