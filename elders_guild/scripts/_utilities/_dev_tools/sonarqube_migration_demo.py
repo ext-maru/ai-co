@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from libs.automated_code_review import CodeAnalyzer, ReviewEngine, SecurityScanner
+from elders_guild.elder_tree.elder_servants.quality_guardian.automated_code_review import CodeAnalyzer, ReviewEngine, SecurityScanner
 from libs.sonarqube_integration_poc import AutomatedCodeReviewCompat, UnifiedCodeReview
 
 

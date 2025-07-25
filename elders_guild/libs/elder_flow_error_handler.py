@@ -24,6 +24,7 @@ import json
 T = TypeVar("T")
 ErrorHandler = Callable[[Exception], Union[T, None]]
 
+
 # Elder Flow専用例外クラス
 class ElderFlowError(Exception):
     """Elder Flow基底例外クラス"""
@@ -36,6 +37,7 @@ class ElderFlowError(Exception):
         self.details = details or {}
         self.timestamp = datetime.now()
 
+
 class SageConsultationError(ElderFlowError):
     """賢者相談エラー"""
 
@@ -45,6 +47,7 @@ class SageConsultationError(ElderFlowError):
             f"Sage consultation failed: {sage_type} - {message}", "EF001", details
         )
         self.sage_type = sage_type
+
 
 class QualityGateError(ElderFlowError):
     """品質ゲートエラー"""
@@ -59,6 +62,7 @@ class QualityGateError(ElderFlowError):
         self.gate_name = gate_name
         self.score = score
 
+
 class ServantExecutionError(ElderFlowError):
     """サーバント実行エラー"""
 
@@ -70,6 +74,7 @@ class ServantExecutionError(ElderFlowError):
             {"servant_type": servant_type, "task_id": task_id},
         )
         self.servant_type = servant_type
+
 
 class GitAutomationError(ElderFlowError):
     """Git自動化エラー"""
@@ -83,6 +88,7 @@ class GitAutomationError(ElderFlowError):
         )
         self.operation = operation
 
+
 class CouncilReportError(ElderFlowError):
     """評議会報告エラー"""
 
@@ -95,6 +101,7 @@ class CouncilReportError(ElderFlowError):
         )
         self.report_type = report_type
 
+
 # リトライ戦略
 class RetryStrategy(Enum):
     """リトライ戦略"""
@@ -103,32 +110,34 @@ class RetryStrategy(Enum):
     LINEAR = "linear"  # 線形バックオフ
     FIXED = "fixed"  # 固定間隔
 
+
 class RetryConfig:
     """リトライ設定"""
 
     def __init__(
         self,
-
+        max_attempts: int = 3,
         strategy: RetryStrategy = RetryStrategy.EXPONENTIAL,
         base_delay: float = 1.0,
         max_delay: float = 60.0,
         exponential_base: float = 2.0,
         jitter: bool = True,
     ):
-
+        self.max_attempts = max_attempts
         self.strategy = strategy
         self.base_delay = base_delay
         self.max_delay = max_delay
         self.exponential_base = exponential_base
         self.jitter = jitter
 
+    def get_delay(self, attempt: int) -> float:
         """リトライ遅延時間を計算"""
         if self.strategy == RetryStrategy.EXPONENTIAL:
             delay = min(
-
+                self.base_delay * (self.exponential_base**attempt), self.max_delay
             )
         elif self.strategy == RetryStrategy.LINEAR:
-
+            delay = min(self.base_delay * attempt, self.max_delay)
         else:  # FIXED
             delay = self.base_delay
 
@@ -140,6 +149,7 @@ class RetryConfig:
 
         return delay
 
+
 # サーキットブレーカー
 class CircuitState(Enum):
     """サーキットブレーカー状態"""
@@ -147,6 +157,7 @@ class CircuitState(Enum):
     CLOSED = "closed"  # 正常（通電）
     OPEN = "open"  # 異常（遮断）
     HALF_OPEN = "half_open"  # 半開（テスト中）
+
 
 class CircuitBreaker:
     """サーキットブレーカーパターン実装"""
@@ -171,9 +182,9 @@ class CircuitBreaker:
     def call(self, func: Callable[..., T], *args, **kwargs) -> T:
         """関数呼び出しをサーキットブレーカー経由で実行"""
         if self.state == CircuitState.OPEN:
-
+            if self._should_attempt_reset():
                 self.state = CircuitState.HALF_OPEN
-
+                self.logger.info(f"Circuit breaker {self.name} attempting reset")
             else:
                 raise ElderFlowError(
                     f"Circuit breaker {self.name} is OPEN",
@@ -189,6 +200,7 @@ class CircuitBreaker:
             self._on_failure()
             raise
 
+    def _should_attempt_reset(self) -> bool:
         """リセットを試みるべきか判定"""
         return (
             self.last_failure_time
@@ -213,6 +225,7 @@ class CircuitBreaker:
             self.logger.warning(f"Circuit breaker {self.name} tripped to OPEN")
             self.state = CircuitState.OPEN
 
+
 # エラーハンドラークラス
 class ElderFlowErrorHandler:
     """Elder Flowエラーハンドラー"""
@@ -236,19 +249,22 @@ class ElderFlowErrorHandler:
                 """wrapperメソッド"""
                 last_exception = None
 
+                for attempt in range(config.max_attempts):
                     try:
                         return await func(*args, **kwargs)
                     except Exception as e:
                         last_exception = e
                         self.logger.warning(
-
+                            f"Attempt {attempt + 1}/{config.max_attempts} failed: {str(e)}"
                         )
 
+                        if attempt < config.max_attempts - 1:
+                            delay = config.get_delay(attempt)
                             self.logger.info(f"Retrying in {delay:0.2f} seconds...")
                             await asyncio.sleep(delay)
                         else:
                             self.logger.error(
-
+                                f"All {config.max_attempts} attempts failed"
                             )
 
                 raise last_exception
@@ -330,8 +346,10 @@ class ElderFlowErrorHandler:
             },
         }
 
+
 # グローバルエラーハンドラーインスタンス
 error_handler = ElderFlowErrorHandler()
+
 
 # 便利なデコレータ
 def with_error_handling(func: Callable[..., T]) -> Callable[..., T]:
@@ -354,6 +372,7 @@ def with_error_handling(func: Callable[..., T]) -> Callable[..., T]:
             raise
 
     return wrapper
+
 
 # エクスポート
 __all__ = [

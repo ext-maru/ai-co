@@ -191,7 +191,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
     from libs.performance_optimizer import PerformanceOptimizer
-    from libs.automated_code_review import CodeAnalyzer
+    from elders_guild.elder_tree.elder_servants.quality_guardian.automated_code_review import CodeAnalyzer
     print("✅ Imports successful!")
 except ImportError as e:
     print(f"❌ Import error: {e}")

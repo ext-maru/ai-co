@@ -144,7 +144,7 @@ class TaskManager:
 
         try:
             # Import Elder code review system
-            from libs.automated_code_review import CodeReviewPipeline
+            from elders_guild.elder_tree.elder_servants.quality_guardian.automated_code_review import CodeReviewPipeline
 
             results = {}
 

@@ -985,6 +985,7 @@ class ElderFlowOrchestrator:
         # タスクの説明から適切なプレフィックスを選択
         description_lower = task.description.lower()
 
+        if "fix" in description_lower or "bug" in description_lower:
             prefix = "fix"
         elif (
             "feat" in description_lower

@@ -649,7 +649,7 @@ ai-tdd new FeatureName "機能要件"
 ### 🌌 nWo (New World Order) システム (2025/7/11実装)
 - `python3 libs/nwo_daily_council.py` - nWo日次評議会実行
 - `python3 commands/ai_nwo_vision.py` - 「未来を見せて」nWo版実行
-- `crontab -e` → `0 9 * * * /home/aicompany/ai_co/elders_guild/elder_tree/elder_servants/dwarf_tribe/tools/nwo_daily_cron.sh` - 自動実行設定
+- `crontab -e` → `0 9 * * * /home/aicompany/ai_co/elders_guild/scripts/_utilities/_scheduler_tools/nwo_daily_cron.sh` - 自動実行設定
 
 ### タスクエルダー協調システム (Phase 15)
 - `ai-task-elder-delegate <libraries>` - タスクエルダーに大規模処理を一括依頼
